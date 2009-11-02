@@ -500,6 +500,10 @@ public class SCEDocument{
     rows[row_nr].moveCharacters(column_nr, column_nr + length);
   }
 
+	public void remove(SCEPosition start, SCEPosition end) {
+		remove(start.getRow(), start.getColumn(), end.getRow(), end.getColumn());
+	}
+
   /**
    * Removes text from the document.
    *

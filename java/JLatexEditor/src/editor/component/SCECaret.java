@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class SCECaret implements ActionListener{
+public class SCECaret implements SCEPosition, ActionListener{
   private SCEPane pane = null;
   private SCEDocument document = null;
 

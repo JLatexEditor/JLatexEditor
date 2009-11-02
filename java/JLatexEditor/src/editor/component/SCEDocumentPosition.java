@@ -5,7 +5,7 @@
 
 package editor.component;
 
-public class SCEDocumentPosition implements Comparable{
+public class SCEDocumentPosition implements SCEPosition, Comparable{
   // dynamic position
   private SCEDocumentChar character = null;
   private SCEDocumentRow  row = null;

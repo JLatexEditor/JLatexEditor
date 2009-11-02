@@ -273,7 +273,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     }
 
     // control-Y
-    if(e.getKeyCode() == KeyEvent.VK_Y && e.isControlDown()){
+    if(e.getKeyCode() == KeyEvent.VK_Y){
       if(caret.getRow() < document.getRowsCount() - 1){
         document.remove(caret.getRow(), 0, caret.getRow() + 1, 0);
       } else if(caret.getRow() > 0){
@@ -287,16 +287,14 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     }
 
 	  // control-U
-	  if(e.getKeyCode() == KeyEvent.VK_U && e.isControlDown()){
-	    if(caret.getRow() < document.getRowsCount() - 1){
-	      document.remove(caret.getRow(), 0, caret.getRow() + 1, 0);
-	    } else if(caret.getRow() > 0){
-	      document.remove(caret.getRow() - 1, document.getRowLength(caret.getRow() - 1), caret.getRow(), document.getRowLength(caret.getRow()));
-	      caret.moveTo(caret.getRow() - 1, caret.getColumn());
-	    } else{
-	      document.remove(0, 0, 0, document.getRowLength(0));
-	      caret.moveTo(0, 0);
-	    }
+	  if(e.getKeyCode() == KeyEvent.VK_U){
+			document.remove(caret.getRow(), 0, caret.getRow(), caret.getColumn());
+	    e.consume();
+	  }
+
+	  // control-K
+	  if(e.getKeyCode() == KeyEvent.VK_K){
+			document.remove(caret.getRow(), caret.getColumn(), caret.getRow(), document.getRowLength(caret.getRow()));
 	    e.consume();
 	  }
 
