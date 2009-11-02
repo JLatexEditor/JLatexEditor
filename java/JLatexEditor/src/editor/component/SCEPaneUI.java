@@ -214,7 +214,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 	      }
 	      e.consume();
 	      return;
-      }else{
+      } else {
 	      SCEDocumentPosition startSel = document.getSelectionStart();
 	      SCEDocumentPosition endSel = document.getSelectionEnd();
 
@@ -245,7 +245,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     // selection
     if(e.isShiftDown()){
       if(caret.getSelectionMark() == null) caret.setSelectionMark();
-    } else{
+    } else {
       if(caret.getSelectionMark() != null && e.isActionKey()){
         caret.removeSelectionMark();
         pane.repaint();
