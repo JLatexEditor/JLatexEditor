@@ -56,8 +56,22 @@ public class SCEDocument{
    */
   public void clear(){
     rowsCount = 1;
-    for(int row_nr = 0; row_nr < rows.length; row_nr++) rows[row_nr].length = 0;
+	  for (SCEDocumentRow row : rows) row.length = 0;
   }
+
+	/**
+	 * Clears the selection.
+	 */
+	public void clearSelection() {
+		setSelectionRange(null, null);
+	}
+
+	/**
+	 * Clears the edit range.
+	 */
+	public void clearEditRange() {
+		setEditRange(null, null);
+	}
 
   /**
    * Returns the number of rows in this document.

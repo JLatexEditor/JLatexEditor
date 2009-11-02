@@ -202,24 +202,44 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     // tab
     if(e.getKeyCode() == KeyEvent.VK_TAB){
       if(!document.hasSelection()){
-        document.insert("  ", caret.getRow(), caret.getColumn());
+	      if(!e.isShiftDown()){
+	        document.insert("  ", caret.getRow(), caret.getColumn());
+	      } else {
+		      int row = caret.getRow();
+		      int col = caret.getColumn();
+		      removeIndentation(caret.getRow());
+		      caret.moveTo(row, Math.max(col-2, 0));
+		      caret.removeSelectionMark();
+		      pane.repaint();
+	      }
+	      e.consume();
+	      return;
       }else{
-        int startRow = document.getSelectionStart().getRow();
-        int endRow = document.getSelectionEnd().getRow() - (document.getSelectionEnd().getColumn() == 0 ? 1 : 0);
+	      SCEDocumentPosition startSel = document.getSelectionStart();
+	      SCEDocumentPosition endSel = document.getSelectionEnd();
+
+        int startRow = startSel.getRow();
+        int endRow = endSel.getRow() - (endSel.getColumn() == 0 ? 1 : 0);
         for(int row = startRow; row <= endRow; row++){
           if(e.isShiftDown()){
-            String rowString = document.getRow(row);
-            if(rowString.startsWith("  ")){
-              document.remove(row, 0, row, 2);
-            } else if(rowString.startsWith(" ")){
-              document.remove(row, 0, row, 1);
-            }
+	          removeIndentation(row);
           } else{
             document.insert("  ", row, 0);
           }
         }
+
+	      int endCol = endSel.getColumn();
+				if (!e.isShiftDown()) {
+					endCol = endCol == 0 ? endCol : endCol+2;
+				} else {
+					endCol = Math.max(endCol, 0);
+				}
+	      endSel = new SCEDocumentPosition(endSel.getRow(), endCol);
+	      caret.moveTo(endSel.getRow(), endCol);
+	      document.setSelectionRange(startSel, endSel);
       }
       e.consume();
+	    return;
     }
 
     // selection
@@ -232,6 +252,15 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
       }
     }
   }
+
+	private void removeIndentation(int row) {
+		String rowString = document.getRow(row);
+		if(rowString.startsWith("  ")){
+		  document.remove(row, 0, row, 2);
+		} else if(rowString.startsWith(" ")){
+		  document.remove(row, 0, row, 1);
+		}
+	}
 
 	private boolean isModifierKey(int keyCode) {
 		return KeyEvent.VK_SHIFT <= keyCode && keyCode <= KeyEvent.VK_ALT;
