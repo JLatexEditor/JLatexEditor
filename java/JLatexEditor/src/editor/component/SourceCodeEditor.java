@@ -56,7 +56,15 @@ public class SourceCodeEditor extends JPanel{
     return textPane.getText();
   }
 
-  /**
+	/**
+	 * Sets the text of the SourceCodePane.
+	 * @param text text of the SourceCodePane
+	 */
+	public void setText(String text) {
+		textPane.setText(text);
+	}
+
+	/**
    * Enable/ disable editing within the SourceCodePane.
    * @param editable true, if the TextPane should be editable
    */

@@ -10,7 +10,6 @@ import java.awt.font.TextAttribute;
 import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class SCEDocument{
@@ -19,10 +18,10 @@ public class SCEDocument{
 
   // text data
   private int rowsCount = 1;
-  private SCEDocumentRow rows[] = null;
+  private SCEDocumentRow[] rows = null;
 
-  // the avaliable attributes
-  private Map stylesMap[] = null;
+  // the available attributes
+  private Map<? extends TextAttribute,?>[] stylesMap = null;
 
   // selection range
   private SCEDocumentPosition selectionStart = null;
@@ -33,9 +32,9 @@ public class SCEDocument{
   private SCEDocumentPosition editRangeEnd = null;
 
   // document listener
-  private ArrayList documentListener = new ArrayList();
+  private ArrayList<SCEDocumentListener> documentListeners = new ArrayList<SCEDocumentListener>();
 
-  /**
+	/**
    * Creates a SCEDocument (the model SCEPane).
    */
   public SCEDocument(){
@@ -47,31 +46,29 @@ public class SCEDocument{
       rows[row_nr].row_nr = row_nr;
     }
 
-    // create an array for avaliable text styles
+    // create an array for available text styles and add default styles
     stylesMap = new Map[256];
+		addDefaultStyles();
   }
 
-  /**
+	private void addDefaultStyles() {
+		Font font = new Font("MonoSpaced", 0, 13);
+		Font fontBold = new Font("MonoSpaced", Font.BOLD, 13);
+		Font fontItalic = new Font("MonoSpaced", Font.ITALIC, 13);
+
+		// Text
+		Map<TextAttribute, Object> styleText = addStyle((byte) 0, null);
+		styleText.put(TextAttribute.FONT, font);
+		styleText.put(TextAttribute.FOREGROUND, Color.BLACK);
+	}
+
+	/**
    * Clears this document.
    */
   public void clear(){
     rowsCount = 1;
 	  for (SCEDocumentRow row : rows) row.length = 0;
   }
-
-	/**
-	 * Clears the selection.
-	 */
-	public void clearSelection() {
-		setSelectionRange(null, null);
-	}
-
-	/**
-	 * Clears the edit range.
-	 */
-	public void clearEditRange() {
-		setEditRange(null, null);
-	}
 
   /**
    * Returns the number of rows in this document.
@@ -135,6 +132,8 @@ public class SCEDocument{
 
   /**
    * Returns the text in this document.
+   *
+   * @return text of this document
    */
   public String getText(){
     StringBuffer textBuffer = new StringBuffer(getRow(0));
@@ -153,7 +152,7 @@ public class SCEDocument{
    * @return the text between start and end
    */
   public String getText(SCEDocumentPosition start, SCEDocumentPosition end){
-    String text = "";
+    String text;
 
     int startRow = start.getRow();
     int endRow = end.getRow();
@@ -198,7 +197,7 @@ public class SCEDocument{
    * @param row_nr the row
    * @param column_nr the column
    */
-  public void setDocuentPosition(SCEDocumentPosition position, int row_nr, int column_nr){
+  public void setDocumentPosition(SCEDocumentPosition position, int row_nr, int column_nr){
     position.setPosition(rows[row_nr].chars[column_nr]);
   }
 
@@ -329,12 +328,12 @@ public class SCEDocument{
   /**
    * Adds a style to the document.
    *
-   * @param id the identifiert for this style
+   * @param id the identifier for this style
    * @param parentStyle the parent style of this style
    * @return a style map
    */
-  public HashMap addStyle(byte id, Map parentStyle){
-    HashMap style = new HashMap();
+  public HashMap<TextAttribute, Object> addStyle(byte id, Map<TextAttribute, Object> parentStyle){
+    HashMap<TextAttribute, Object> style = new HashMap<TextAttribute,Object>();
     if(parentStyle != null) style.putAll(parentStyle);
 
     stylesMap[id] = style;
@@ -422,9 +421,9 @@ public class SCEDocument{
     } else{
       // count the newrow characters
       int newlineCount = 0;
-      for(int char_nr = 0; char_nr < charText.length; char_nr++){
-        if(charText[char_nr] == '\n') newlineCount++;
-      }
+	    for (char aCharText : charText) {
+		    if (aCharText == '\n') newlineCount++;
+	    }
       // insert some new rows
       insertRows(row_nr + 1, newlineCount);
 
@@ -606,6 +605,7 @@ public class SCEDocument{
    * Inserts a new row at the given positoin.
    *
    * @param row the row number
+   * @param count number of rows to insert
    */
   private void insertRows(int row, int count){
     // do we have enough space left?
@@ -680,11 +680,9 @@ public class SCEDocument{
    * @param event the event
    */
   private void documentChanged(SCEDocumentEvent event){
-    Iterator listenerIterator = documentListener.iterator();
-    while(listenerIterator.hasNext()){
-      SCEDocumentListener listener = (SCEDocumentListener) listenerIterator.next();
-      listener.documentChanged(this, event);
-    }
+	  for (SCEDocumentListener documentListener : documentListeners) {
+		  documentListener.documentChanged(this, event);
+	  }
   }
 
   /**
@@ -693,7 +691,7 @@ public class SCEDocument{
    * @param listener the listener
    */
   public void addSCEDocumentListener(SCEDocumentListener listener){
-    documentListener.add(listener);
+    documentListeners.add(listener);
   }
 
   /**
@@ -702,6 +700,6 @@ public class SCEDocument{
    * @param listener the listener
    */
   public void removeSCEDocumentListener(SCEDocumentListener listener){
-    documentListener.remove(listener);
+    documentListeners.remove(listener);
   }
 }

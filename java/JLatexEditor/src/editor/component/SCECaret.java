@@ -1,7 +1,4 @@
 
-/**
- * @author Jörg Endrullis
- */
 
 package editor.component;
 
@@ -12,6 +9,12 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+/**
+ * Cared in a document.
+ *
+ * @author Jörg Endrullis
+ * @author Stefan Endrullis 
+ */
 public class SCECaret implements SCEPosition, ActionListener{
   private SCEPane pane = null;
   private SCEDocument document = null;
@@ -36,12 +39,12 @@ public class SCECaret implements SCEPosition, ActionListener{
   long lastMotionTime = 0;
 
   // caret listener
-  ArrayList caretListeners = new ArrayList();
+  ArrayList<SCECaretListener> caretListeners = new ArrayList<SCECaretListener>();
 
   /**
    * Creates a caret for a uni.editor.component.SCEPane.
    *
-   * @param pane
+   * @param pane SCE pane
    */
   public SCECaret(SCEPane pane){
     this.pane = pane;
@@ -105,6 +108,15 @@ public class SCECaret implements SCEPosition, ActionListener{
     moveTo(row, column, true);
   }
 
+	/**
+	 * Moves the caret to the specified position.
+	 *
+	 * @param pos position
+	 */
+	public void moveTo (SCEPosition pos) {
+		moveTo(pos.getRow(), pos.getColumn());
+	}
+
   /**
    * Moves the caret to the specified position.
    *
@@ -123,7 +135,7 @@ public class SCECaret implements SCEPosition, ActionListener{
     int new_column = Math.max(Math.min(column, document.getRowLength(new_row)), 0);
     position.setPosition(new_row, new_column);
 
-    if(updateVirtualColumn) virtualColumn = getColumn();
+    if (updateVirtualColumn) virtualColumn = getColumn();
 
     showCursor(true);
 
@@ -131,11 +143,9 @@ public class SCECaret implements SCEPosition, ActionListener{
     document.setSelectionRange(position, selectionMark);
 
     // inform listeners
-    Iterator listenerIterator = caretListeners.iterator();
-    while(listenerIterator.hasNext()){
-      SCECaretListener listener = (SCECaretListener) listenerIterator.next();
-      listener.caretMoved(getRow(), getColumn(), lastRow, lastColumn);
-    }
+	  for (SCECaretListener caretListener : caretListeners) {
+			caretListener.caretMoved(getRow(), getColumn(), lastRow, lastColumn);
+	  }
 
     // upate last Motion time
     lastMotionTime = System.currentTimeMillis();

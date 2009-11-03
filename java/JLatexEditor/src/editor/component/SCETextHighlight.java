@@ -28,7 +28,7 @@ public class SCETextHighlight{
   }
 
   /**
-   * Returns the start positoin of this highlight.
+   * Returns the start position of this highlight.
    *
    * @return the start position
    */
@@ -37,7 +37,7 @@ public class SCETextHighlight{
   }
 
   /**
-   * Returns the end positoin of this highlight.
+   * Returns the end position of this highlight.
    *
    * @return the end position
    */

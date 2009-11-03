@@ -40,8 +40,6 @@ public interface SCECharInputStream{
     }
 
     public SCEDocumentChar read() throws IOException{
-      SCEDocumentChar character = null;
-
       // read from a document
       if(row_nr >= rows_count) throw new IOException("Exception: end of document stream reached.");
       if(column_nr >= rows[row_nr].length){
@@ -49,7 +47,7 @@ public interface SCECharInputStream{
         row_nr++;
         return newLine;
       }
-      character = rows[row_nr].chars[column_nr];
+      SCEDocumentChar character = rows[row_nr].chars[column_nr];
       column_nr++;
 
       return character;
@@ -66,12 +64,10 @@ public interface SCECharInputStream{
     }
 
     public SCEDocumentChar read() throws IOException{
-      SCEDocumentChar character = null;
-
       // read from a input stream
       int read = in.read();
       if(read == -1) throw new IOException("Exception: end of input stream reached.");
-      character = new SCEDocumentChar();
+      SCEDocumentChar character = new SCEDocumentChar();
       character.character = (char) read;
 
       return character;

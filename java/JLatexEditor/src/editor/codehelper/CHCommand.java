@@ -14,7 +14,7 @@ public class CHCommand implements Comparable{
   private String usage = null;
   // the hint and arguments
   private String hint = null;
-  private ArrayList arguments = new ArrayList();
+  private ArrayList<CHCommandArgument> arguments = new ArrayList<CHCommandArgument>();
 
   /**
    * Creates a command with the given name.
@@ -85,11 +85,11 @@ public class CHCommand implements Comparable{
    *
    * @return the arguments of the command
    */
-  public ArrayList getArguments(){
+  public ArrayList<CHCommandArgument> getArguments(){
     return arguments;
   }
 
-  // Coparable methods
+  // Comparable methods
   public int compareTo(Object o) {
     if(!(o instanceof CHCommand)) return -1;
     return name.compareTo(((CHCommand) o).getName());

@@ -1,13 +1,15 @@
-
-/**
- * @author Jörg Endrullis
- */
-
 package editor.quickhelp;
 
-import java.util.Enumeration;
+import editor.component.SCEDocument;
 
+/**
+ * Quick help interface.
+ *
+ * @author Jörg Endrullis
+ * @author Stefan Endrullis 
+ */
 public interface QuickHelp{
-  public String getHelpFileName(String command);
-  public Enumeration getCommands();
+  public String getHelpUrl(String command);
+	public String getHelpUrlAt(int row, int column);
+	public void setDocument(SCEDocument document);
 }

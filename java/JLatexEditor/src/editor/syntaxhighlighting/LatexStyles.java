@@ -32,38 +32,38 @@ public class LatexStyles{
     Font fontItalic = new Font("MonoSpaced", Font.ITALIC, 13);
 
     // Text
-    Map styleText = document.addStyle(TEXT, null);
+    Map<TextAttribute, Object> styleText = document.addStyle(TEXT, null);
     styleText.put(TextAttribute.FONT, font);
     styleText.put(TextAttribute.FOREGROUND, Color.BLACK);
     // Command
-    Map styleCommand = document.addStyle(COMMAND, styleText);
+    Map<TextAttribute, Object> styleCommand = document.addStyle(COMMAND, styleText);
     styleCommand.put(TextAttribute.FONT, fontBold);
     styleCommand.put(TextAttribute.FOREGROUND, new Color(0, 0, 128));
     // Comment
-    Map styleComment = document.addStyle(COMMENT, styleText);
+    Map<TextAttribute, Object> styleComment = document.addStyle(COMMENT, styleText);
     styleComment.put(TextAttribute.FONT, fontItalic);
     styleComment.put(TextAttribute.FOREGROUND, new Color(128, 128, 128));
 
     // Bracket
-    Map styleBracket = document.addStyle(BRACKET, styleText);
+    Map<TextAttribute, Object> styleBracket = document.addStyle(BRACKET, styleText);
     styleBracket.put(TextAttribute.FONT, fontBold);
     styleBracket.put(TextAttribute.FOREGROUND, new Color(102, 14, 122));
     // Parentheses
-    Map styleParentheses = document.addStyle(PARENTHESES, styleText);
+    Map<TextAttribute, Object> styleParentheses = document.addStyle(PARENTHESES, styleText);
 
     // Identifier
-    Map styleIdentifier = document.addStyle(IDENTIFIER, styleText);
+    Map<TextAttribute, Object> styleIdentifier = document.addStyle(IDENTIFIER, styleText);
     // Number
-    Map styleNumber = document.addStyle(NUMBER, styleText);
+    Map<TextAttribute, Object> styleNumber = document.addStyle(NUMBER, styleText);
     styleNumber.put(TextAttribute.FOREGROUND, new Color(0, 0, 255));
 
     // Math
-    Map styleMath = document.addStyle(MATH, styleText);
+    Map<TextAttribute, Object> styleMath = document.addStyle(MATH, styleText);
     styleMath.put(TextAttribute.FONT, fontBold);
     styleMath.put(TextAttribute.FOREGROUND, new Color(0, 255, 0));
 
     // Error
-    Map styleError = document.addStyle(ERROR, styleText);
+    Map<TextAttribute, Object> styleError = document.addStyle(ERROR, styleText);
     styleError.put(TextAttribute.FOREGROUND, new Color(255, 0, 0));
   }
 }

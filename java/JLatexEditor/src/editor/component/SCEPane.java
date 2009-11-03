@@ -1,9 +1,7 @@
-
-/**
- * @author Jörg Endrullis
- */
-
 package editor.component;
+
+import editor.codehelper.CodeHelper;
+import editor.quickhelp.QuickHelp;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,12 +9,21 @@ import java.awt.event.FocusListener;
 import java.awt.event.FocusEvent;
 import java.text.AttributedString;
 import java.util.ArrayList;
-import java.util.Iterator;
 
+/**
+ * SourceCodeEditor pane.
+ *
+ * @author Jörg Endrullis
+ * @author Stefan Endrullis
+ */
 public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretListener, FocusListener{
-  // the document
+  /** Document. */
   SCEDocument document = null;
-  // undo manager
+	/** Code Helper (code completion). */
+	CodeHelper codeHelper = null;
+	/** Quick help. */
+	QuickHelp quickHelp = null;
+  /** Undo manager. */
   SCEUndoManager undoManager = null;
 
   // some text properties
@@ -49,8 +56,8 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   private SCETextHighlight editRangeHighlight = new SCEEditRangeHighlight(this, null, null, editRangeHighlightColor);
 
   // highlights
-  private ArrayList rowHighlights = new ArrayList();
-  private ArrayList textHighlights = new ArrayList();
+  private ArrayList<SCERowHighlight> rowHighlights = new ArrayList<SCERowHighlight>();
+  private ArrayList<SCETextHighlight> textHighlights = new ArrayList<SCETextHighlight>();
 
   // is this text pane editable?
   private boolean editable = true;
@@ -85,7 +92,6 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     fontText = new Font("MonoSpaced", 0, 13);
     fontLineNumbers = new Font("SansSerif", 0, 11);
     setFont(fontText);
-
 
     addFocusListener(this);
   }
@@ -130,18 +136,14 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     g2D.fillRect(lineNumberSpacer, caretPos.y, getWidth(), lineHeight);
 
     // draw row highlights
-    Iterator rowHighlightIterator = rowHighlights.iterator();
-    while(rowHighlightIterator.hasNext()){
-      SCERowHighlight highlight = (SCERowHighlight) rowHighlightIterator.next();
-      highlight.paint(g2D, this);
-    }
+	  for (SCERowHighlight rowHighlight : rowHighlights) {
+		  rowHighlight.paint(g2D, this);
+	  }
 
     // draw text highlights
-    Iterator textHighlightIterator = textHighlights.iterator();
-    while(textHighlightIterator.hasNext()){
-      SCETextHighlight highlight = (SCETextHighlight) textHighlightIterator.next();
-      highlight.paint(g2D, this);
-    }
+	  for (SCETextHighlight textHighlight : textHighlights) {
+			textHighlight.paint(g2D, this);
+	  }
 
     // draw the selection
     if(document.hasSelection()){
@@ -184,7 +186,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   /**
    * Returns the preferred size of the component.
    *
-   * @return
+   * @return preferred size of the component
    */
   public Dimension getPreferredSize(){
     return preferredSize;
@@ -222,14 +224,14 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    *
    * @param row the row
    * @param column the column
-   * @return
+   * @return position on the screen
    */
   public Point modelToView(int row, int column){
     return new Point(lineNumberSpacer + column * characterWidth, row * lineHeight);
   }
 
   /**
-   * Converst a position on the screen into model coordinates.
+   * Converts a position on the screen into model coordinates.
    *
    * @param x the x coordinate
    * @param y the y coordinate
@@ -263,7 +265,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    * Returns the margin of the text pane.
    *
    * @param margin MARGIN_TOP/ MARGIN_BOTTOM/ MARGIN_LEFT/ MARGIN_RIGHT
-   * @return
+   * @return margin of the text pane
    */
   public int getMargin(int margin){
     if(margin == MARGIN_LEFT) return lineNumberSpacer;
@@ -309,19 +311,45 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   /**
    * Returns if the text pane is editable.
    *
-   * @return treu, if editable
+   * @return true, if editable
    */
-  public boolean isEditbale(){
+  public boolean isEditable(){
     return editable;
   }
 
+	/**
+	 * Sets the code helper for the source code editor.
+	 *
+	 * @param codeHelper code helper
+	 */
+	public void setCodeHelper(CodeHelper codeHelper) {
+		this.codeHelper = codeHelper;
+		if (ui != null) {
+			ui.codeHelperPane.setCodeHelper(codeHelper);
+		}
+	}
+
+	/**
+	 * Sets the code helper for the source code editor.
+	 *
+	 * @param quickHelp quick help
+	 */
+	public void setQuickHelp(QuickHelp quickHelp) {
+		this.quickHelp = quickHelp;
+		if (ui != null) {
+			ui.codeHelperPane.setCodeHelper(codeHelper);
+		}
+	}
+
   /**
-   * Finds the next splitter in this direction.
+   * Finds the next splitter in the given row and direction.
    *
+   * @param row row
+   * @param column column
    * @param direction -1 / 1
    * @return splitter column
    */
-  public int findSplitter(int row, int column, int direction){
+  public int findSplitterInRow(int row, int column, int direction){
     String text = document.getRow(row);
 
     int position = direction == -1 ? column - 1 : column;
@@ -337,6 +365,32 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 
     return position;
   }
+
+	/**
+	 * Finds the next splitter in the given direction.
+	 *
+	 * @param row row
+	 * @param column column
+	 * @param direction direction -1 / 1
+	 * @return splitter position
+	 */
+	public SCEPosition findSplitterPosition(int row, int column, int direction) {
+		switch (direction) {
+			case -1:
+				if (column == 0 && row > 0) {
+					return new SCEDocumentPosition(row-1, document.getRowLength(row-1));
+				} else {
+					return new SCEDocumentPosition(row, findSplitterInRow(row, column, -1));
+				}
+			case 1:
+				if (column == document.getRowLength(row) && row < document.getRowsCount()-1) {
+					return new SCEDocumentPosition(row+1, 0);
+				} else {
+					return new SCEDocumentPosition(row, findSplitterInRow(row, column, 1));
+				}
+		}
+		return null;
+	}
 
   /**
    * Adds a row highlight.
@@ -431,7 +485,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     if(!focusBack) return;
 
     synchronized(this){
-      try{ wait(100); } catch(InterruptedException e1){ }
+      try{ wait(100); } catch(InterruptedException ignored){ }
     }
 
     frameToFront(this);

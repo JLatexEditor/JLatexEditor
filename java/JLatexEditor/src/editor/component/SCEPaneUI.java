@@ -1,12 +1,8 @@
-
-/**
- * @author Jörg Endrullis
- */
-
 package editor.component;
 
+import editor.codehelper.CodeHelper;
 import editor.codehelper.CodeHelperPane;
-import editor.quickhelp.LatexQuickHelp;
+import editor.quickhelp.QuickHelp;
 import editor.quickhelp.QuickHelpPane;
 
 import java.awt.*;
@@ -14,8 +10,13 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.*;
-import java.io.IOException;
 
+/**
+ * SourceCodeEditor UI.
+ *
+ * @author Jörg Endrullis
+ * @author Stefan Endrullis
+ */
 public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListener{
   // properties
   private SCEPane pane = null;
@@ -23,11 +24,10 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
   private SCECaret caret = null;
 
   // quick help
-  private LatexQuickHelp quickHelp = null;
-  private QuickHelpPane quickHelpPanel = null;
+  QuickHelpPane quickHelpPane = null;
 
   // auto completion
-  private CodeHelperPane codeHelper = null;
+  CodeHelperPane codeHelperPane = null;
 
   // last mouse click
   long lastMouseClick = 0;
@@ -39,23 +39,12 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
           "1234567890" +
           "<>|+*~'#,;.:-_!\"§$%&/()=?`´\\{[]} ";
 
-  public SCEPaneUI(SCEPane pane){
+	public SCEPaneUI(SCEPane pane){
     this.pane = pane;
     this.document = pane.getDocument();
     this.caret = pane.getCaret();
 
-    // create quick help
-    quickHelp = new LatexQuickHelp("data/quickhelp/");
-    quickHelpPanel = new QuickHelpPane();
-    quickHelpPanel.setVisible(false);
-
-    // create auto completion list
-    codeHelper = new CodeHelperPane(pane);
-    codeHelper.setVisible(false);
-
     pane.setLayout(null);
-    pane.add(quickHelpPanel);
-    //pane.add(codeHelper);
 
     // KeyListener
     pane.addKeyListener(this);
@@ -79,38 +68,46 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     caret.removeSelectionMark();
   }
 
+	/**
+	 * Sets the code helper for the source code editor.
+	 *
+	 * @param codeHelper code helper
+	 */
+	public void setCodeHelper(CodeHelper codeHelper) {
+		if (codeHelperPane != null) codeHelperPane.destroy();
+
+		// create auto completion list
+		codeHelperPane = new CodeHelperPane(pane);
+		codeHelperPane.setVisible(false);
+		codeHelperPane.setCodeHelper(codeHelper);
+	}
+
+	/**
+	 * Sets the code helper for the source code editor.
+	 *
+	 * @param quickHelp quick help
+	 */
+	public void setQuickHelp(QuickHelp quickHelp) {
+		if (quickHelpPane != null) quickHelpPane.destroy();
+
+		// create auto completion list
+		quickHelpPane = new QuickHelpPane(pane);
+		quickHelpPane.setVisible(false);
+		quickHelpPane.setQuickHelp(quickHelp);
+	}
+
   /**
-   * Scrolls the visible rect.
+   * Scrolls the visible rectangle.
    *
    * @param rows the number of rows to scroll
+   * @return visible rectangle
    */
-  public Rectangle scollVisibleRect(int rows){
+  public Rectangle scrollVisibleRect(int rows){
     Rectangle visibleRect = pane.getVisibleRect();
     visibleRect.translate(0, rows * pane.getLineHeight());
     pane.scrollRectToVisible(visibleRect);
 
     return visibleRect;
-  }
-
-  /**
-   * Searches for a command at the given position.
-   *
-   * @param row the row
-   * @param column the column
-   * @return the command
-   */
-  public String findCommand(int row, int column){
-    // get the command name
-    SCEDocumentRow documentRow = document.getRows()[row];
-
-    int commandStart = pane.findSplitter(row, column, -1);
-    int commandEnd = pane.findSplitter(row, column, 1);
-    if(column < documentRow.length && documentRow.chars[column].character == '\\') commandEnd = pane.findSplitter(row, column+1, 1);
-    if(column < documentRow.length && documentRow.chars[column].character == ' ') commandEnd = column;
-    if(column > 0 && documentRow.chars[column - 1].character == ' ') commandStart = column;
-    if(commandStart > 0 && documentRow.chars[commandStart - 1].character == '\\') commandStart--;
-
-    return documentRow.toString().substring(commandStart, commandEnd);
   }
 
   // KeyListener Methods
@@ -179,7 +176,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     }
     if(e.getKeyCode() == KeyEvent.VK_PAGE_UP || e.getKeyCode() == KeyEvent.VK_PAGE_DOWN){
       int jump = e.getKeyCode() == KeyEvent.VK_PAGE_UP ? -pane.getVisibleRowsCount() : pane.getVisibleRowsCount();
-      scollVisibleRect(jump);
+      scrollVisibleRect(jump);
       caret.moveTo(caret.getRow() + jump, caret.getColumn());
       e.consume();
     }
@@ -273,7 +270,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     // caret movement
     if(e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN){
       int jump = e.getKeyCode() == KeyEvent.VK_UP ? -1 : 1;
-      Rectangle visibleRect = scollVisibleRect(jump);
+      Rectangle visibleRect = scrollVisibleRect(jump);
 
       int minRow = visibleRect.y / pane.getLineHeight();
       int maxRow = (visibleRect.y + visibleRect.height) / pane.getLineHeight();
@@ -283,11 +280,11 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
       e.consume();
     }
     if(e.getKeyCode() == KeyEvent.VK_LEFT){
-      caret.moveTo(caret.getRow(), pane.findSplitter(caret.getRow(), caret.getColumn(), -1));
+      caret.moveTo(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), -1));
       e.consume();
     }
     if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-      caret.moveTo(caret.getRow(), pane.findSplitter(caret.getRow(), caret.getColumn(), 1));
+      caret.moveTo(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), 1));
       e.consume();
     }
     if(e.getKeyCode() == KeyEvent.VK_HOME){
@@ -301,7 +298,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
       e.consume();
     }
 
-    // control-Y
+    // control+Y
     if(e.getKeyCode() == KeyEvent.VK_Y){
       if(caret.getRow() < document.getRowsCount() - 1){
         document.remove(caret.getRow(), 0, caret.getRow() + 1, 0);
@@ -315,26 +312,35 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
       e.consume();
     }
 
-	  // control-U
+	  // control+U
 	  if(e.getKeyCode() == KeyEvent.VK_U){
 			document.remove(caret.getRow(), 0, caret.getRow(), caret.getColumn());
 	    e.consume();
 	  }
-
-	  // control-K
+	  // control+K
 	  if(e.getKeyCode() == KeyEvent.VK_K){
 			document.remove(caret.getRow(), caret.getColumn(), caret.getRow(), document.getRowLength(caret.getRow()));
 	    e.consume();
 	  }
+	  // control+backspace
+	  if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE){
+			document.remove(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), -1), caret);
+	    e.consume();
+	  }
+	  // control+delete
+	  if(e.getKeyCode() == KeyEvent.VK_DELETE){
+			document.remove(caret, pane.findSplitterPosition(caret.getRow(), caret.getColumn(), 1));
+	    e.consume();
+	  }
 
-    // instert text
+    // insert text
     if(e.getKeyCode() == KeyEvent.VK_V && e.isControlDown()){
       Transferable content = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
       try{
         String string = (String) content.getTransferData(DataFlavor.stringFlavor);
         if(document.hasSelection()) removeSelection();
         document.insert(string, caret.getRow(), caret.getColumn());
-      } catch(Exception ex){
+      } catch(Exception ignored){
       }
       e.consume();
     }
@@ -351,28 +357,6 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
       removeSelection();
       e.consume();
     }
-
-    // quick help
-    if(e.getKeyCode() == KeyEvent.VK_Q){
-      int row = caret.getRow();
-      int column = caret.getColumn();
-
-      String command = findCommand(row, column);
-      try{
-        Point caretPos = pane.modelToView(row, column);
-
-        String fileName = quickHelp.getHelpFileName(command);
-        if(fileName == null) return;
-
-        quickHelpPanel.setPage("file:/" + fileName);
-        quickHelpPanel.setVisible(true);
-        quickHelpPanel.setLocation(caretPos.x, caretPos.y + pane.getLineHeight());
-        quickHelpPanel.setSize(quickHelpPanel.getPreferredSize());
-      } catch(IOException e1){
-        System.out.println("SCEPaneUI: " + e1);
-      }
-      e.consume();
-    }
   }
 
   // MouseListener methods
@@ -383,8 +367,8 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     SCEDocumentPosition position = pane.viewToModel(e.getX(), e.getY());
 
     // hide quick help
-    if(quickHelpPanel.isVisible()){
-      quickHelpPanel.setVisible(false);
+    if(quickHelpPane != null && quickHelpPane.isVisible()){
+      quickHelpPane.setVisible(false);
     }
 
     // request focus
@@ -396,8 +380,8 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
         caret.moveTo(position.getRow(), position.getColumn());
       } else{
         // select the word or line
-        int left = pane.findSplitter(caret.getRow(), caret.getColumn(), -1);
-        int right = pane.findSplitter(caret.getRow(), caret.getColumn(), 1);
+        int left = pane.findSplitterInRow(caret.getRow(), caret.getColumn(), -1);
+        int right = pane.findSplitterInRow(caret.getRow(), caret.getColumn(), 1);
         SCEDocumentPosition leftPosition = new SCEDocumentPosition(caret.getRow(), left);
         SCEDocumentPosition rightPosition = new SCEDocumentPosition(caret.getRow(), right);
 

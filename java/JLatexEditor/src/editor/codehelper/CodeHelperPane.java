@@ -1,25 +1,20 @@
-
-/**
- * @author Jörg Endrullis
- */
-
 package editor.codehelper;
 
 import editor.component.*;
-import my.XML.XMLDocument;
-import my.XML.XMLElement;
-import my.XML.XMLException;
-import my.XML.XMLParser;
-import util.StreamUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 
+/**
+ * Popup window to show options for code completion.
+ *
+ * @author Jörg Endrullis
+ * @author Stefan Endrullis
+ */
 public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocumentListener{
   // the source code pane
   SCEPane pane = null;
@@ -32,8 +27,9 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
   // the model
   private JList list = null;
   private DefaultListModel model = null;
+	private CodeHelper codeHelper = null;
   // the command reference
-  private ArrayList commands = null;
+  private Iterable<CHCommand> commands = null;
 
   // the position of the code helper
   private SCEDocumentPosition commandPosition = null;
@@ -51,9 +47,6 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     this.pane = pane;
     document = pane.getDocument();
     caret = pane.getCaret();
-
-    // collect all commands
-    readCommands("data/codehelper/commands.xml");
 
     // create the list
     list = new JList();
@@ -91,103 +84,18 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     return popup.isVisible();
   }
 
-  /**
-   * Reads the commands from xml file.
-   *
-   * @param filename the filename
-   */
-  private void readCommands(String filename){
-    commands = new ArrayList();
+	public CodeHelper getCodeHelper() {
+		return codeHelper;
+	}
 
-    XMLParser xmlParser = new XMLParser();
-    XMLDocument commandsDocument = null;
-    try {
-      commandsDocument = xmlParser.parse(StreamUtils.readFile(filename));
-    } catch (XMLException e) {
-      return;
-    }
+	public void setCodeHelper(CodeHelper codeHelper) {
+		this.codeHelper = codeHelper;
+		if (codeHelper != null) {
+			this.codeHelper.setDocument(document);
+		}
+	}
 
-    XMLElement commandListXML = commandsDocument.getRootElement();
-    if(!commandListXML.getName().equalsIgnoreCase("commandList")){
-      System.out.println("Error in commands.xml: root element must be 'commandList'");
-      return;
-    }
-
-    // extract commands
-    Iterator commandsIterator = commandListXML.getChildElements().iterator();
-    while(commandsIterator.hasNext()){
-      XMLElement commandXML = (XMLElement) commandsIterator.next();
-      if(!commandXML.getName().equals("command")){
-        System.out.println("Error in commands.xml: expected element 'command'");
-        continue;
-      }
-      String commandName = commandXML.getAttribute("name");
-      if(commandName == null){
-        System.out.println("Error in commands.xml: command must have a name");
-        continue;
-      }
-
-      // create the command and set usage + hint
-      CHCommand command = new CHCommand(commandName);
-      String usage = commandXML.getAttribute("usage");
-      if(usage != null) usage = usage.replaceAll("&nl;", "\n");
-      command.setUsage(usage);
-      command.setHint(commandXML.getAttribute("hint"));
-
-      // read the arguments
-      Iterator argumentsIterator = commandXML.getChildElements().iterator();
-      while(argumentsIterator.hasNext()){
-        XMLElement argumentXML = (XMLElement) argumentsIterator.next();
-        if(!argumentXML.getName().equalsIgnoreCase("argument")){
-          System.out.println("Error in commands.xml: expected element 'argument' - " + argumentXML.getName());
-          continue;
-        }
-        String argumentName = argumentXML.getAttribute("name");
-        if(argumentName == null){
-          System.out.println("Error in commands.xml: argument must have a name");
-          continue;
-        }
-
-        // check if the command is optional
-        boolean optional = false;
-
-        String commandUsage = command.getUsage();
-        if(commandUsage == null){
-          System.out.println("Error in commands.xml: wrong usage deklaration");
-          continue;
-        }
-        int argumentStart = commandUsage.indexOf("@" + argumentName + "@");
-        if(argumentStart == -1){
-          System.out.println("Error in commands.xml: couldn't find argument in usage deklaration - " + argumentName);
-          continue;
-        }
-        int argumentEnd = argumentStart + argumentName.length() + 2;
-        if(commandUsage.substring(0, argumentStart).trim().endsWith("[")) optional = true;
-        if(commandUsage.substring(argumentEnd).trim().startsWith("]")) optional = true;
-
-        // create the argument
-        CHCommandArgument argument = new CHCommandArgument(argumentName, optional);
-        argument.setHint(argumentXML.getAttribute("hint"));
-
-        // read the suggested values if there are some
-        Iterator valuesIterator = argumentXML.getChildElements().iterator();
-        while(valuesIterator.hasNext()){
-          XMLElement valueXML = (XMLElement) valuesIterator.next();
-          argument.addValue(valueXML.getAttribute("value"));
-        }
-
-        // add the argument to the command
-        command.addArgument(argument);
-      }
-
-      // add the command to the commands list
-      commands.add(command);
-    }
-
-    Collections.sort(commands);
-  }
-
-  /**
+	/**
    * Sets the prefix of the commands.
    *
    * @param prefix the prefix
@@ -199,11 +107,9 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     if(model.size() > 0) selectedValue = list.getSelectedValue();
 
     model.removeAllElements();
-    Iterator commandsIterator = commands.iterator();
-    while(commandsIterator.hasNext()){
-      CHCommand command = (CHCommand) commandsIterator.next();
-      if(command.getName().startsWith(prefix)) model.addElement(command);
-    }
+	  for (CHCommand command : commands) {
+		  if (command.getName().startsWith(prefix)) model.addElement(command);
+	  }
 
     list.setSelectedValue(selectedValue, true);
     if(selectedValue == null || !model.contains(selectedValue)) list.setSelectedIndex(0);
@@ -219,24 +125,23 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     int prefixLength = prefix.length();
     String completion = null;
 
-    Iterator commandsIterator = commands.iterator();
-    while(commandsIterator.hasNext()){
-      String command = ((CHCommand) commandsIterator.next()).getName();
-      if(command.startsWith(prefix)){
-        if(completion == null){
-          completion = command;
-        }else{
-          // find the common characters
-          int commonIndex = prefixLength;
-          int commonLength = Math.min(completion.length(), command.length());
-          while(commonIndex < commonLength){
-            if(completion.charAt(commonIndex) != command.charAt(commonIndex)) break;
-            commonIndex++;
-          }
-          completion = completion.substring(0, commonIndex);
-        }
-      }
-    }
+	  for (CHCommand command : commands) {
+		  String commandName = command.getName();
+		  if (commandName.startsWith(prefix)) {
+			  if (completion == null) {
+				  completion = commandName;
+			  } else {
+				  // find the common characters
+				  int commonIndex = prefixLength;
+				  int commonLength = Math.min(completion.length(), commandName.length());
+				  while (commonIndex < commonLength) {
+					  if (completion.charAt(commonIndex) != commandName.charAt(commonIndex)) break;
+					  commonIndex++;
+				  }
+				  completion = completion.substring(0, commonIndex);
+			  }
+		  }
+	  }
 
     return completion;
   }
@@ -265,7 +170,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     // get the command name
     SCEDocumentRow documentRow = document.getRows()[row];
 
-    int commandStart = pane.findSplitter(row, column, -1);
+    int commandStart = pane.findSplitterInRow(row, column, -1);
     if(column > 0 && documentRow.chars[column - 1].character == ' ') commandStart = column;
     if(commandStart > 0 && documentRow.chars[commandStart - 1].character == '\\') commandStart--;
 
@@ -280,6 +185,9 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
     int row = caret.getRow();
     int column = caret.getColumn();
+
+	  // ask code helper for command suggestions at this position
+	  commands = codeHelper.getCommandsAt(row, column);
 
     if(column < commandPosition.getColumn()){
       setVisible(false);
@@ -315,7 +223,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
    * @param row the row
    * @param column the column
    */
-  private void startTemplate(String templateWithAt, ArrayList arguments, int row, int column){
+  private void startTemplate(String templateWithAt, ArrayList<CHCommandArgument> arguments, int row, int column){
     // remember the template and arguments
     template = templateWithAt.replaceAll("@", "");
     templateArguments = arguments;
@@ -353,36 +261,34 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
       templateCaretPosition = document.createDocumentPosition(caret_row, caret_column);
     }
 
-    // initialize the argument values and occurences
-    Iterator argumentsIterator = arguments.iterator();
-    while(argumentsIterator.hasNext()){
-      CHCommandArgument argument = (CHCommandArgument) argumentsIterator.next();
-      argument.setValue(argument.getName());
+    // initialize the argument values and occurrences
+	  for (CHCommandArgument argument : arguments) {
+		  argument.setValue(argument.getName());
 
-      // finc occurences
-      ArrayList occurences = new ArrayList();
-      int index = -1;
-      while((index = templateWithAt.indexOf("@" + argument.getName() + "@", index+1)) != -1){
-        // get the position in the document
-        int occurence_row = row;
-        int occurence_column = column;
+		  // find occurrences
+		  ArrayList<SCEDocumentRange> occurrences = new ArrayList<SCEDocumentRange>();
+		  int index = -1;
+		  while ((index = templateWithAt.indexOf("@" + argument.getName() + "@", index + 1)) != -1) {
+			  // get the position in the document
+			  int occurrence_row = row;
+			  int occurrence_column = column;
 
-        for(int char_nr = 0; char_nr < index; char_nr++){
-          char character = templateWithAt.charAt(char_nr);
+			  for (int char_nr = 0; char_nr < index; char_nr++) {
+				  char character = templateWithAt.charAt(char_nr);
 
-          if(character != '@') occurence_column++;
-          if(character == '\n'){
-            occurence_row++;
-            occurence_column = 0;
-          }
-        }
+				  if (character != '@') occurrence_column++;
+				  if (character == '\n') {
+					  occurrence_row++;
+					  occurrence_column = 0;
+				  }
+			  }
 
-        SCEDocumentPosition occurenceStart = document.createDocumentPosition(occurence_row, occurence_column - 1);
-        SCEDocumentPosition occurenceEnd = document.createDocumentPosition(occurence_row, occurence_column + argument.getName().length());
-        occurences.add(new SCEDocumentRange(occurenceStart, occurenceEnd));
-      }
-      argument.setOccurences(occurences);
-    }
+			  SCEDocumentPosition occurrenceStart = document.createDocumentPosition(occurrence_row, occurrence_column - 1);
+			  SCEDocumentPosition occurrenceEnd = document.createDocumentPosition(occurrence_row, occurrence_column + argument.getName().length());
+			  occurrences.add(new SCEDocumentRange(occurrenceStart, occurrenceEnd));
+		  }
+		  argument.setOccurrences(occurrences);
+	  }
 
     // start editing with argument number 0
     editTemplate(0);
@@ -415,7 +321,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
     // set the document edit range
     CHCommandArgument argument = (CHCommandArgument) templateArguments.get(argument_nr);
-    SCEDocumentRange argumentRange = (SCEDocumentRange) argument.getOccurences().get(0);
+    SCEDocumentRange argumentRange = (SCEDocumentRange) argument.getOccurrences().get(0);
     SCEDocumentPosition start = new SCEDocumentPosition(argumentRange.getStartPosition().getRow(), argumentRange.getStartPosition().getColumn() + 1);
     SCEDocumentPosition end = argumentRange.getEndPosition();
     document.setEditRange(start, end);
@@ -426,6 +332,11 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     caret.moveTo(end.getRow(), end.getColumn());
   }
 
+	public void destroy() {
+		pane.removeKeyListener(this);
+		document.removeSCEDocumentListener(this);
+	}
+	
   // KeyListener methods
   public void keyTyped(KeyEvent e){
   }
@@ -455,7 +366,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
     // hide on escape
     if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
-      // hide codehelper
+      // hide code helper
       setVisible(false);
       commandPosition = null;
       // end template editing
@@ -536,13 +447,13 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
         // get the argument value
         String argumentValue = document.getEditRangeText();
 
-        // update all occurences of the argument
+        // update all occurrences of the argument
         CHCommandArgument argument = (CHCommandArgument) templateArguments.get(templateArgumentNr);
 
-        Iterator occurencesIterator = argument.getOccurences().iterator();
-        occurencesIterator.next(); // jump over the first occurence
-        while(occurencesIterator.hasNext()){
-          SCEDocumentRange argumentRange = (SCEDocumentRange) occurencesIterator.next();
+        Iterator occurrencesIterator = argument.getOccurrences().iterator();
+        occurrencesIterator.next(); // jump over the first occurrence
+        while(occurrencesIterator.hasNext()){
+          SCEDocumentRange argumentRange = (SCEDocumentRange) occurrencesIterator.next();
           SCEDocumentPosition start = new SCEDocumentPosition(argumentRange.getStartPosition().getRow(), argumentRange.getStartPosition().getColumn() + 1);
           SCEDocumentPosition end = argumentRange.getEndPosition();
 

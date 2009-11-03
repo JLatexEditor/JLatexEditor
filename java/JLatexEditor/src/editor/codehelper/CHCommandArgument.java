@@ -117,7 +117,7 @@ public class CHCommandArgument {
    *
    * @return occurences of the argument
    */
-  public ArrayList getOccurences(){
+  public ArrayList getOccurrences(){
     return occurences;
   }
 
@@ -126,7 +126,7 @@ public class CHCommandArgument {
    *
    * @param occurences the occurences
    */
-  public void setOccurences(ArrayList occurences){
+  public void setOccurrences(ArrayList occurences){
     this.occurences = occurences;
   }
 }
