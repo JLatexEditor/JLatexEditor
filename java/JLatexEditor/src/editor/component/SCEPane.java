@@ -104,6 +104,8 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 
     // create the UI
     ui = new SCEPaneUI(this);
+	  ui.setCodeHelper(codeHelper);
+	  ui.setQuickHelp(quickHelp);
 
     // get font properties
     Graphics g2D = getGraphics();

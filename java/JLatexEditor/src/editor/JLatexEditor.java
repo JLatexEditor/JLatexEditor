@@ -6,9 +6,12 @@
 package editor;
 
 import editor.component.SCEDocument;
+import editor.component.SCEPane;
 import editor.component.SourceCodeEditor;
 import editor.errorhighlighting.LatexCompiler;
 import editor.errorhighlighting.LatexErrorHighlighting;
+import editor.latex.LatexCodeHelper;
+import editor.quickhelp.LatexQuickHelp;
 import editor.syntaxhighlighting.LatexStyles;
 import editor.syntaxhighlighting.LatexSyntaxHighlighting;
 import editor.syntaxhighlighting.SyntaxHighlighting;
@@ -92,7 +95,9 @@ public class JLatexEditor extends QaquaFrame implements ActionListener{
 
     // text pane for editing
     editor = new SourceCodeEditor();
-    document = editor.getTextPane().getDocument();
+    SCEPane scePane = editor.getTextPane();
+    document = scePane.getDocument();
+
     // add some styles to the document
     LatexStyles.addStyles(document);
 
@@ -108,12 +113,16 @@ public class JLatexEditor extends QaquaFrame implements ActionListener{
     getContentPane().add(textErrorSplit, BorderLayout.CENTER);
     getContentPane().validate();
 
-    // syntax highlightning
-    syntaxHighlightning = new LatexSyntaxHighlighting(editor.getTextPane());
+    // syntax highlighting
+    syntaxHighlightning = new LatexSyntaxHighlighting(scePane);
     syntaxHighlightning.start();
 
-    // error highlightning
-    errorHighlightning = new LatexErrorHighlighting(editor.getTextPane(), errorMessages);
+	  // code completion and quick help
+	  scePane.setCodeHelper(new LatexCodeHelper("data/codehelper/commands.xml"));
+	  scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
+	  
+    // error highlighting
+    errorHighlightning = new LatexErrorHighlighting(scePane, errorMessages);
   }
 
   // ActionListener methods
