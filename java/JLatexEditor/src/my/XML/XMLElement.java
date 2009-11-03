@@ -15,11 +15,11 @@ public class XMLElement{
   /* Name des XML-Elements */
   private String name = "";
   /* die Attribute des Elements */
-  private Hashtable attributes = new Hashtable();
-  private Vector attributesOrdered = new Vector();
-  private Hashtable attributesLowerCase = new Hashtable();
+  private Hashtable<String, String> attributes = new Hashtable<String, String>();
+  private Vector<String> attributesOrdered = new Vector<String>();
+  private Hashtable<String, String> attributesLowerCase = new Hashtable<String, String>();
   /* die KindElemete des XML-Elements*/
-  private Vector childs = new Vector();
+  private Vector<XMLElement> childs = new Vector<XMLElement>();
   /* falls das Element reinen Text enthält (keine KindElemente) */
   private String text = "";
 
@@ -34,8 +34,8 @@ public class XMLElement{
 
   /* Auslesen der Eigenschaften des XML-Elements */
   public String getAttribute(String key){
-    String caseKey = (String) attributesLowerCase.get(key.toLowerCase());
-    if(caseKey != null) return (String) attributes.get(caseKey);
+    String caseKey = attributesLowerCase.get(key.toLowerCase());
+    if(caseKey != null) return attributes.get(caseKey);
     return null;
   }
 
@@ -46,12 +46,12 @@ public class XMLElement{
     XMLElement element = this;
     while(tokens.hasMoreElements()){
       String name = tokens.nextToken();
-      Vector element_childs = element.getChildElements();
+      Vector<XMLElement> element_childs = element.getChildElements();
 
       /* alle Child-Elemente durchsuchen, nach dem Namen */
       boolean found = false;
       for(int child_nr = 0; child_nr < element_childs.size(); child_nr++){
-        XMLElement child = (XMLElement) element_childs.elementAt(child_nr);
+        XMLElement child = element_childs.elementAt(child_nr);
 
         if((child.getName()).equals(name)){
           element = child;
@@ -66,11 +66,11 @@ public class XMLElement{
     return element;
   }
 
-  public Vector getChildElements(){
-    return (Vector) childs.clone();
+  public Vector<XMLElement> getChildElements(){
+    return (Vector<XMLElement>) childs.clone();
   }
 
-  public Enumeration getAttributeNames(){
+  public Enumeration<String> getAttributeNames(){
     return attributes.keys();
   }
 
@@ -88,7 +88,7 @@ public class XMLElement{
   }
 
   public void removeAttribute(String key){
-    String caseKey = (String) attributesLowerCase.get(key.toLowerCase());
+    String caseKey = attributesLowerCase.get(key.toLowerCase());
     if(caseKey != null){
       attributes.remove(caseKey);
       attributesLowerCase.remove(key.toLowerCase());
@@ -105,7 +105,7 @@ public class XMLElement{
   }
 
   public String getAttributeOrdered(int nr){
-    return (String) attributesOrdered.elementAt(nr);
+    return attributesOrdered.elementAt(nr);
   }
 
   public void setName(String name){
@@ -122,15 +122,15 @@ public class XMLElement{
     /* das XML-Tag öffnen */
     xmlString = "<" + name;
     /* die Attribute hinzufügen */
-    for(Enumeration e = attributes.keys(); e.hasMoreElements();){
-      String key = (String) e.nextElement();
+    for(Enumeration<String> e = attributes.keys(); e.hasMoreElements();){
+      String key = e.nextElement();
       xmlString += " " + key + "=\"" + attributes.get(key) + "\"";
     }
     xmlString += ">";
 
     /* den Körper des Elements (child elements) */
     for(int child_nr = 0; child_nr < childs.size(); child_nr++){
-      xmlString += ((XMLElement) childs.elementAt(child_nr)).toString();
+      xmlString += (childs.elementAt(child_nr)).toString();
     }
     /* falls das Element reinen Text enthält */
     xmlString += text;
