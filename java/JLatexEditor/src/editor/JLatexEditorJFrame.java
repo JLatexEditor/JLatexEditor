@@ -58,13 +58,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener {
   private String fileName = null;
 
   public static void main(String args[]){
-    // set LookAndFeel
-    try{
-      UIManager.setLookAndFeel(new QaquaLookAndFeel());
-    } catch(UnsupportedLookAndFeelException e){
-      e.printStackTrace();
-    }
-
     JLatexEditorJFrame latexEditor = new JLatexEditorJFrame("editor.JLatexEditor");
     latexEditor.setSize(1024, 450);
     latexEditor.setVisible(true);

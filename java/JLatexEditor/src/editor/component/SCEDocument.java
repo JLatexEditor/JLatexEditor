@@ -151,7 +151,7 @@ public class SCEDocument{
    * @param end the end position
    * @return the text between start and end
    */
-  public String getText(SCEDocumentPosition start, SCEDocumentPosition end){
+  public String getText(SCEPosition start, SCEPosition end){
     String text;
 
     int startRow = start.getRow();
