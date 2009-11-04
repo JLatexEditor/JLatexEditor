@@ -304,6 +304,17 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
       e.consume();
     }
 
+	  // control+(shift)+Z -> undo/redo the last edit
+	  if(e.getKeyCode() == KeyEvent.VK_Z){
+		  if (e.isShiftDown()) {
+				pane.getUndoManager().redo();
+		  } else {
+			  pane.getUndoManager().undo();
+		  }
+		  e.consume();
+			return;
+	  }
+
     // control+Y
     if(e.getKeyCode() == KeyEvent.VK_Y){
       if(caret.getRow() < document.getRowsCount() - 1){
