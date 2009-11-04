@@ -17,7 +17,6 @@ import editor.syntaxhighlighting.LatexStyles;
 import editor.syntaxhighlighting.LatexSyntaxHighlighting;
 import editor.syntaxhighlighting.SyntaxHighlighting;
 import qaqua.QaquaFrame;
-import qaqua.QaquaLookAndFeel;
 import util.StreamUtils;
 
 import javax.swing.*;
@@ -46,10 +45,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener {
   private SCEDocument document = null;
 
   // syntax highlighter
-  private SyntaxHighlighting syntaxHighlightning = null;
+  private SyntaxHighlighting syntaxHighlighting = null;
 
   // error highlighter
-  private LatexErrorHighlighting errorHighlightning = null;
+  private LatexErrorHighlighting errorHighlighting = null;
 
   // compile thread
   private LatexCompiler latexCompiler = null;
@@ -57,7 +56,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener {
   // current file
   private String fileName = null;
 
-  public static void main(String args[]){
+	public static void main(String args[]){
     JLatexEditorJFrame latexEditor = new JLatexEditorJFrame("editor.JLatexEditor");
     latexEditor.setSize(1024, 450);
     latexEditor.setVisible(true);
@@ -68,7 +67,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener {
 
     // set Layout
     getContentPane().setLayout(new BorderLayout());
-    setDefaultCloseOperation(QaquaFrame.EXIT_ON_CLOSE);
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     // create menu
     menuBar = new JMenuBar();
@@ -110,15 +109,15 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener {
     getContentPane().validate();
 
     // syntax highlighting
-    syntaxHighlightning = new LatexSyntaxHighlighting(scePane);
-    syntaxHighlightning.start();
+    syntaxHighlighting = new LatexSyntaxHighlighting(scePane);
+    syntaxHighlighting.start();
 
 	  // code completion and quick help
 	  scePane.setCodeHelper(new LatexCodeHelper("data/codehelper/commands.xml"));
 	  scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
 	  
     // error highlighting
-    errorHighlightning = new LatexErrorHighlighting(scePane, errorMessages);
+    errorHighlighting = new LatexErrorHighlighting(scePane, errorMessages);
   }
 
   // ActionListener methods
@@ -163,7 +162,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener {
 
       // Compile thread
       latexCompiler = new LatexCompiler(editor.getTextPane(), fileName);
-      latexCompiler.addLatexCompileListener(errorHighlightning);
+      latexCompiler.addLatexCompileListener(errorHighlighting);
 
       latexCompiler.run();
     }
