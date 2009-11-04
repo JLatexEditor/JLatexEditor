@@ -76,10 +76,16 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 	public void setCodeHelper(CodeHelper codeHelper) {
 		if (codeHelperPane != null) codeHelperPane.destroy();
 
+		// UI key listener shall be at the end of the processor queue
+		pane.removeKeyListener(this);
+
 		// create auto completion list
 		codeHelperPane = new CodeHelperPane(pane);
 		codeHelperPane.setVisible(false);
 		codeHelperPane.setCodeHelper(codeHelper);
+
+		// UI key listener shall be at the end of the processor queue
+		pane.addKeyListener(this);
 	}
 
 	/**
