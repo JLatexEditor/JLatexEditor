@@ -311,6 +311,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
       template = null;
 
       // set the caret to the end position
+	    caret.removeSelectionMark();
       caret.moveTo(templateCaretPosition.getRow(), templateCaretPosition.getColumn());
 
       return;
