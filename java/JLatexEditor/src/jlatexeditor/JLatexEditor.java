@@ -5,12 +5,12 @@
 
 package jlatexeditor;
 
+import jlatexeditor.errorhighlighting.LatexCompiler;
+import jlatexeditor.errorhighlighting.LatexErrorHighlighting;
 import sce.component.SCEDocument;
 import sce.component.SCEPane;
 import sce.component.SourceCodeEditor;
 import jlatexeditor.codehelper.LatexCodeHelper;
-import jlatexeditor.errorhighlighting.LatexCompiler;
-import jlatexeditor.errorhighlighting.LatexErrorHighlighting;
 import jlatexeditor.quickhelp.LatexQuickHelp;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;

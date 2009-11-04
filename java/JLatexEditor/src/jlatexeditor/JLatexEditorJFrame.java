@@ -6,10 +6,10 @@
 
 package jlatexeditor;
 
+import jlatexeditor.errorhighlighting.LatexCompiler;
 import sce.component.SCEDocument;
 import sce.component.SCEPane;
 import sce.component.SourceCodeEditor;
-import jlatexeditor.errorhighlighting.LatexCompiler;
 import jlatexeditor.errorhighlighting.LatexErrorHighlighting;
 import jlatexeditor.quickhelp.LatexQuickHelp;
 import jlatexeditor.codehelper.LatexCodeHelper;
