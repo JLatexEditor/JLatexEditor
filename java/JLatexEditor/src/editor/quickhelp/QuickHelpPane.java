@@ -43,6 +43,9 @@ public class QuickHelpPane extends JScrollPane implements HyperlinkListener, Key
     viewPort.add(htmlPane);
     setViewport(viewPort);
 
+		// add it to the pane (parent component)
+		pane.add(this);
+
 	  // add listeners
 	  pane.addKeyListener(this);
     addKeyListener(this);

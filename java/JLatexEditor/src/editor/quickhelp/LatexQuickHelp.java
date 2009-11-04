@@ -47,7 +47,7 @@ public class LatexQuickHelp implements QuickHelp{
 
     // Extract commands
 		try{
-      String line = null;
+      String line;
       while((line = reader.readLine()) != null){
         Matcher matcher = htmlCommandsPattern.matcher(line);
         if(matcher.find()){
