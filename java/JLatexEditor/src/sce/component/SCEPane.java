@@ -30,7 +30,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   private int lineHeight = 0;
   private int lineAscent = 0;
   private int characterWidth = 0;
-  // spacer for line numbers
+  /** Spacer for line numbers. */
   private int lineNumberSpacer = 30;
   // margin constants
   public static final int MARGIN_TOP = 0;
@@ -42,7 +42,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   private Font fontText = null;
   private Font fontLineNumbers = null;
 
-  // the caret
+  /** Caret in the document. */
   private SCECaret caret = null;
 
   // UI properties
