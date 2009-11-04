@@ -74,18 +74,22 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 	 * @param codeHelper code helper
 	 */
 	public void setCodeHelper(CodeHelper codeHelper) {
+		// remove old code helper
 		if (codeHelperPane != null) codeHelperPane.destroy();
 
-		// UI key listener shall be at the end of the processor queue
-		pane.removeKeyListener(this);
+		// add new code helper
+		if (codeHelper != null) {
+			// UI key listener shall be at the end of the processor queue
+			pane.removeKeyListener(this);
 
-		// create auto completion list
-		codeHelperPane = new CodeHelperPane(pane);
-		codeHelperPane.setVisible(false);
-		codeHelperPane.setCodeHelper(codeHelper);
+			// create auto completion list
+			codeHelperPane = new CodeHelperPane(pane);
+			codeHelperPane.setVisible(false);
+			codeHelperPane.setCodeHelper(codeHelper);
 
-		// UI key listener shall be at the end of the processor queue
-		pane.addKeyListener(this);
+			// UI key listener shall be at the end of the processor queue
+			pane.addKeyListener(this);
+		}
 	}
 
 	/**
@@ -94,12 +98,15 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 	 * @param quickHelp quick help
 	 */
 	public void setQuickHelp(QuickHelp quickHelp) {
+		// remove old quick help
 		if (quickHelpPane != null) quickHelpPane.destroy();
 
-		// create auto completion list
-		quickHelpPane = new QuickHelpPane(pane);
-		quickHelpPane.setVisible(false);
-		quickHelpPane.setQuickHelp(quickHelp);
+		// add new quick help
+		if (quickHelp != null) {
+			quickHelpPane = new QuickHelpPane(pane);
+			quickHelpPane.setVisible(false);
+			quickHelpPane.setQuickHelp(quickHelp);
+		}
 	}
 
   /**
