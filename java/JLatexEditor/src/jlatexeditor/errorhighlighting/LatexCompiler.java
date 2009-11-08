@@ -8,21 +8,22 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
+ * LaTeX compiler.
+ *
  * @author Jörg Endrullis
  */
-
 public class LatexCompiler{
   // The text to compiler
   private SCEPane pane = null;
   private SCEDocument document = null;
 
-  // The temorary tex-file
+  // The temporary tex-file
   private String directory = null;
   private String temporaryFileName = null;
   private String dviFileName = null;
 
   // The listeners
-  private ArrayList compileListeners = new ArrayList();
+  private ArrayList<LatexCompileListener> compileListeners = new ArrayList<LatexCompileListener>();
 
   public LatexCompiler(SCEPane pane, String temporaryFileName){
     this.pane = pane;
@@ -110,11 +111,9 @@ public class LatexCompiler{
           out.flush();
 
           // Inform listeners
-          Iterator iterator = compileListeners.iterator();
-          while(iterator.hasNext()){
-            LatexCompileListener listener = (LatexCompileListener) iterator.next();
-            listener.latexError(error);
-          }
+	        for (LatexCompileListener compileListener : compileListeners) {
+		        compileListener.latexError(error);
+	        }
 
           // Reset error information
           error = new LatexCompileError();
@@ -146,7 +145,7 @@ public class LatexCompiler{
           error.setTextAfter(in.readLine().trim());
         }
       }
-    } catch(IOException e){
+    } catch(IOException ignored){
     }
 
     // View the document with yap
@@ -165,20 +164,16 @@ public class LatexCompiler{
 
   private void compileStart(){
     // Inform listeners
-    Iterator iteratorStart = compileListeners.iterator();
-    while(iteratorStart.hasNext()){
-      LatexCompileListener listener = (LatexCompileListener) iteratorStart.next();
-      listener.compileStarted();
-    }
+	  for (LatexCompileListener compileListener : compileListeners) {
+		  compileListener.compileStarted();
+	  }
   }
 
   private void compileEnd(){
     // Inform listeners
-    Iterator iteratorEnd = compileListeners.iterator();
-    while(iteratorEnd.hasNext()){
-      LatexCompileListener listener = (LatexCompileListener) iteratorEnd.next();
-      listener.compileEnd();
-    }
+	  for (LatexCompileListener compileListener : compileListeners) {
+		  compileListener.compileEnd();
+	  }
   }
 
   // Manage LatexCompileListeners
