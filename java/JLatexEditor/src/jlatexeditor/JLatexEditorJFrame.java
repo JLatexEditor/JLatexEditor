@@ -145,6 +145,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener {
           editor = createSourceCodeEditor();
           tabbedPane.addTab(openDialog.getFile(), editor);
         }
+        tabbedPane.set
 
         editor.getTextPane().getDocument().setText(text);
       } catch(IOException exc){
