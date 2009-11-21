@@ -9,6 +9,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public class SourceCodeEditor extends JPanel{
+  // The file name
+  private String fileName = null;
+
   // The source code pane
   private SCEPane textPane = null;
   private JScrollPane scrollPane = null;
@@ -25,7 +28,9 @@ public class SourceCodeEditor extends JPanel{
   private String errorText = null;
   private SCERowHighlight errorHighlight = null;
 
-  public SourceCodeEditor(){
+  public SourceCodeEditor(String fileName){
+    this.fileName = fileName;
+
     // Change scoll bar colors to nice blue
     UIManager.put("ScrollBar.thumb", new Color(91, 135, 206));
     UIManager.put("ScrollBar.thumbShadow", new Color(10, 36, 106));
@@ -38,6 +43,22 @@ public class SourceCodeEditor extends JPanel{
 
     setLayout(new BorderLayout());
     add(scrollPane, BorderLayout.CENTER);
+  }
+
+  /**
+   * Returns the file name associated to this editor.
+   * @return file name
+   */
+  public String getFileName() {
+    return fileName;
+  }
+
+  /**
+   * Sets the file name associated with this editor.
+   * @param fileName file name
+   */
+  public void setFileName(String fileName) {
+    this.fileName = fileName;
   }
 
   /**

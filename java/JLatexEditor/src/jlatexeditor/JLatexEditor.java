@@ -28,6 +28,8 @@ import qaqua.QaquaLookAndFeel;
 import qaqua.QaquaFrame;
 
 public class JLatexEditor extends QaquaFrame implements ActionListener{
+  private static String UNTITLED = "Untitled";
+
   Properties properties = new Properties();
 
   // the MenuBar
@@ -94,7 +96,7 @@ public class JLatexEditor extends QaquaFrame implements ActionListener{
     fileMenu.add(saveMenuItem);
 
     // text pane for editing
-    editor = new SourceCodeEditor();
+    editor = new SourceCodeEditor(UNTITLED);
     SCEPane scePane = editor.getTextPane();
     document = scePane.getDocument();
 
@@ -166,7 +168,7 @@ public class JLatexEditor extends QaquaFrame implements ActionListener{
       }
 
       // Compile thread
-      latexCompiler = new LatexCompiler(editor.getTextPane(), fileName);
+      latexCompiler = new LatexCompiler(editor, errorMessages);
       latexCompiler.addLatexCompileListener(errorHighlightning);
 
       latexCompiler.run();

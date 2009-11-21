@@ -128,7 +128,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     if(e.isConsumed()) return;
 
     if(allowedChars.indexOf(e.getKeyChar()) == -1) return;
-    if(e.isControlDown()) return;
+    if(e.isControlDown() || e.isAltDown()) return;
 
     if(document.hasSelection()) removeSelection();
     document.insert(e.getKeyChar() + "", caret.getRow(), caret.getColumn());

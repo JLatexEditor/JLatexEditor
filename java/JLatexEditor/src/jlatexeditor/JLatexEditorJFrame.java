@@ -22,6 +22,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.*;
 
 public class JLatexEditorJFrame extends JFrame implements ActionListener {
@@ -36,14 +38,16 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener {
 
   // compile thread
   private LatexCompiler latexCompiler = null;
+  // main file to compile
+  private SourceCodeEditor mainEditor = null;
 
   public static void main(String args[]){
-    JLatexEditorJFrame latexEditor = new JLatexEditorJFrame("jlatexeditor.JLatexEditor");
+    JLatexEditorJFrame latexEditor = new JLatexEditorJFrame("jlatexeditor.JLatexEditor", args);
     latexEditor.setSize(1024, 450);
     latexEditor.setVisible(true);
   }
 
-  public JLatexEditorJFrame(String name){
+  public JLatexEditorJFrame(String name, String args[]){
     super(name);
 
     // set Layout
@@ -69,6 +73,12 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener {
     saveMenuItem.addActionListener(this);
     fileMenu.add(saveMenuItem);
 
+    JMenuItem compileMenuItem = new JMenuItem("Compile");
+    saveMenuItem.setActionCommand("compile");
+    saveMenuItem.setAccelerator(KeyStroke.getKeyStroke("alt 1"));
+    saveMenuItem.addActionListener(this);
+    fileMenu.add(compileMenuItem);
+
     // error messages
     errorMessages = new JTextArea();
     errorMessages.setFont(new Font("MonoSpaced", 0, 13));
@@ -83,10 +93,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener {
 
     getContentPane().add(textErrorSplit, BorderLayout.CENTER);
     getContentPane().validate();
+
+    // open files given in command line
+    for(String arg : args) { open(arg); }
   }
 
   private SourceCodeEditor createSourceCodeEditor() {
-    SourceCodeEditor editor = new SourceCodeEditor();
+    SourceCodeEditor editor = new SourceCodeEditor(UNTITLED);
 
     SCEPane scePane = editor.getTextPane();
     SCEDocument document = scePane.getDocument();
@@ -121,6 +134,67 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener {
     return text;
   }
 
+  public void open(String fileName) {
+    try{
+      File file = new File(fileName);
+      String text = readFile(fileName);
+
+      // replacing the untitled tab?
+      SourceCodeEditor editor = null;
+      if(tabbedPane.getTabCount() == 1
+              && tabbedPane.getTitleAt(0).equals(UNTITLED)
+              && ((SourceCodeEditor) tabbedPane.getComponentAt(0)).getText().trim().equals("")) {
+        tabbedPane.setTitleAt(0, file.getName());
+        editor = ((SourceCodeEditor) tabbedPane.getComponentAt(0));
+      } else {
+        editor = createSourceCodeEditor();
+        tabbedPane.addTab(file.getName(), editor);
+      }
+
+      editor.setFileName(fileName);
+      editor.getTextPane().setText(text);
+    } catch(IOException exc){
+      System.out.println("Error opening file");
+      exc.printStackTrace();
+    }
+  }
+
+  public void saveAll() {
+    for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
+      SourceCodeEditor editor = (SourceCodeEditor) tabbedPane.getComponentAt(tab);
+
+      String fileName = editor.getFileName();
+      File file = new File(fileName);
+      File backup = new File(fileName + "~");
+      if(backup.exists()) backup.delete();
+      file.renameTo(backup);
+
+      String text = editor.getTextPane().getText();
+      try{
+        PrintWriter writer = new PrintWriter(new FileOutputStream(fileName));
+        writer.write(text);
+        writer.close();
+      } catch(IOException ex){
+        ex.printStackTrace();
+      }
+    }
+  }
+
+  public void compile() {
+    SourceCodeEditor editor = mainEditor;
+    if(editor == null) {
+      editor = (SourceCodeEditor) tabbedPane.getSelectedComponent();
+    }
+
+    if(latexCompiler != null) latexCompiler.halt();
+    latexCompiler = new LatexCompiler(editor, errorMessages);
+
+    //latexCompiler.addLatexCompileListener(errorHighlighting);
+
+    latexCompiler.run();
+    latexCompiler = null;
+  }
+
   // ActionListener methods
   public void actionPerformed(ActionEvent e){
     // open a file
@@ -129,51 +203,18 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener {
       openDialog.setVisible(true);
       if(openDialog.getFile() == null) return;
 
-      String fileName = openDialog.getDirectory() + openDialog.getFile();
-
-      try{
-        String text = readFile(fileName);
-
-        // replacing the untitled tab?
-        SourceCodeEditor editor = null;
-        if(tabbedPane.getTabCount() == 1
-                && tabbedPane.getTitleAt(0).equals(UNTITLED)
-                && ((SourceCodeEditor) tabbedPane.getComponentAt(0)).getText().trim().equals("")) {
-          tabbedPane.setTitleAt(0, openDialog.getFile());
-          editor = ((SourceCodeEditor) tabbedPane.getComponentAt(0));
-        } else {
-          editor = createSourceCodeEditor();
-          tabbedPane.addTab(openDialog.getFile(), editor);
-        }
-
-        editor.getTextPane().getDocument().setText(text);
-      } catch(IOException exc){
-        System.out.println("Error opening file");
-        exc.printStackTrace();
-      }
+      open(openDialog.getDirectory() + openDialog.getFile());
     }
 
     // save a file
     if(e.getActionCommand().equals("save")){
-      /*
-      // Write the actual content to a file
-      String text = document.getText();
-      try{
-        PrintWriter writer = new PrintWriter(new FileOutputStream(fileName));
-        writer.write(text);
-        writer.close();
-      } catch(IOException ex){
-        ex.printStackTrace();
-      }
+      saveAll();
+    }
 
-      // Compile thread
-      if(latexCompiler != null) return;
-      latexCompiler = new LatexCompiler(editor.getTextPane(), fileName);
-      latexCompiler.addLatexCompileListener(errorHighlighting);
-
-      latexCompiler.run();
-      latexCompiler = null;
-      */
+    // compile
+    if(e.getActionCommand().equals("compile")){
+      saveAll();
+      compile();
     }
   }
 }
