@@ -22,40 +22,22 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Properties;
+import java.io.*;
 
 public class JLatexEditorJFrame extends JFrame implements ActionListener {
-  Properties properties = new Properties();
+  private static String UNTITLED = "Untitled";
 
-  // the MenuBar
   private JMenuBar menuBar = null;
-
-  // the Latex TextPane
-  private SourceCodeEditor editor = null;
-  // error messages
+  private JTabbedPane tabbedPane = null;
   private JTextArea errorMessages = null;
-  private JSplitPane textErrorSplit = null;
 
-  // the underlying document
-  private SCEDocument document = null;
-
-  // syntax highlighter
-  private SyntaxHighlighting syntaxHighlighting = null;
-
-  // error highlighter
-  private LatexErrorHighlighting errorHighlighting = null;
+  // last directory of the opening dialog
+  private FileDialog openDialog = new FileDialog(this, "Open", FileDialog.LOAD);
 
   // compile thread
   private LatexCompiler latexCompiler = null;
 
-  // current file
-  private String fileName = null;
-
-	public static void main(String args[]){
+  public static void main(String args[]){
     JLatexEditorJFrame latexEditor = new JLatexEditorJFrame("jlatexeditor.JLatexEditor");
     latexEditor.setSize(1024, 450);
     latexEditor.setVisible(true);
@@ -75,80 +57,105 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener {
     JMenu fileMenu = new JMenu("Datei");
     menuBar.add(fileMenu);
 
-    JMenuItem openMenuItem = new JMenuItem("Öffnen");
+    JMenuItem openMenuItem = new JMenuItem("Open");
     openMenuItem.setActionCommand("open");
     openMenuItem.setAccelerator(KeyStroke.getKeyStroke("control O"));
     openMenuItem.addActionListener(this);
     fileMenu.add(openMenuItem);
 
-    JMenuItem saveMenuItem = new JMenuItem("Speichern");
+    JMenuItem saveMenuItem = new JMenuItem("Save");
     saveMenuItem.setActionCommand("save");
     saveMenuItem.setAccelerator(KeyStroke.getKeyStroke("control S"));
     saveMenuItem.addActionListener(this);
     fileMenu.add(saveMenuItem);
 
-    // text pane for editing
-    editor = new SourceCodeEditor();
-	  SCEPane scePane = editor.getTextPane();
-	  document = scePane.getDocument();
-	  
-    // add some styles to the document
-    LatexStyles.addStyles(document);
-
-    // TextArea for error messages
+    // error messages
     errorMessages = new JTextArea();
     errorMessages.setFont(new Font("MonoSpaced", 0, 13));
 
-    textErrorSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, editor, new JScrollPane(errorMessages));
+    // tabs for the files
+    tabbedPane = new JTabbedPane();
+    tabbedPane.addTab(UNTITLED, createSourceCodeEditor());
+
+    JSplitPane textErrorSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, tabbedPane, new JScrollPane(errorMessages));
     textErrorSplit.setOneTouchExpandable(true);
     textErrorSplit.setResizeWeight(0.5);
 
-    // add the ScrollPane
     getContentPane().add(textErrorSplit, BorderLayout.CENTER);
     getContentPane().validate();
+  }
+
+  private SourceCodeEditor createSourceCodeEditor() {
+    SourceCodeEditor editor = new SourceCodeEditor();
+
+    SCEPane scePane = editor.getTextPane();
+    SCEDocument document = scePane.getDocument();
+
+    // add some styles to the document
+    LatexStyles.addStyles(document);
 
     // syntax highlighting
-    syntaxHighlighting = new LatexSyntaxHighlighting(scePane);
+    SyntaxHighlighting syntaxHighlighting = new LatexSyntaxHighlighting(scePane);
     syntaxHighlighting.start();
 
 	  // code completion and quick help
 	  scePane.setCodeHelper(new LatexCodeHelper("data/codehelper/commands.xml"));
 	  scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
-	  
+
     // error highlighting
-    errorHighlighting = new LatexErrorHighlighting(scePane, errorMessages);
+    new LatexErrorHighlighting(scePane, errorMessages);
+
+    return editor;
+  }
+
+  private String readFile(String fileName) throws IOException {
+    FileInputStream fileInputStream = new FileInputStream(fileName);
+    byte data[] = StreamUtils.readBytesFromInputStream(fileInputStream);
+    fileInputStream.close();
+
+    // Set the text contend
+    String text = new String(data);
+    text = text.replaceAll("\n\r", "\n");
+    text = text.replaceAll("\t", "  ");
+
+    return text;
   }
 
   // ActionListener methods
   public void actionPerformed(ActionEvent e){
     // open a file
     if(e.getActionCommand().equals("open")){
-      FileDialog dialog = new FileDialog(this, "Tex-Dokument öffnen", FileDialog.LOAD);
-      dialog.pack();
-      dialog.show();
-      if(dialog.getFile() == null) return;
+      //openDialog.pack();
+      openDialog.setVisible(true);
+      if(openDialog.getFile() == null) return;
 
-      // Remember the file name
-      fileName = dialog.getDirectory() + dialog.getFile();
+      String fileName = openDialog.getDirectory() + openDialog.getFile();
 
-      // Try to open the file
       try{
-        // Read the file
-        FileInputStream fileInputStream = new FileInputStream(fileName);
-        byte data[] = StreamUtils.readBytesFromInputStream(fileInputStream);
-        fileInputStream.close();
+        String text = readFile(fileName);
 
-        // Set the text contend
-        String text = new String(data);
-        text = text.replaceAll("\n\r", "\n");
-        text = text.replaceAll("\t", "  ");
-        document.setText(text);
+        // replacing the untitled tab?
+        SourceCodeEditor editor = null;
+        if(tabbedPane.getTabCount() == 1
+                && tabbedPane.getTitleAt(0).equals(UNTITLED)
+                && ((SourceCodeEditor) tabbedPane.getComponentAt(0)).getText().trim().equals("")) {
+          tabbedPane.setTitleAt(0, openDialog.getFile());
+          editor = ((SourceCodeEditor) tabbedPane.getComponentAt(0));
+        } else {
+          editor = createSourceCodeEditor();
+          tabbedPane.addTab(openDialog.getFile(), editor);
+        }
+
+        editor.getTextPane().getDocument().setText(text);
       } catch(IOException exc){
         System.out.println("Error opening file");
         exc.printStackTrace();
       }
     }
+
+    // save a file
     if(e.getActionCommand().equals("save")){
+      /*
       // Write the actual content to a file
       String text = document.getText();
       try{
@@ -160,10 +167,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener {
       }
 
       // Compile thread
+      if(latexCompiler != null) return;
       latexCompiler = new LatexCompiler(editor.getTextPane(), fileName);
       latexCompiler.addLatexCompileListener(errorHighlighting);
 
       latexCompiler.run();
+      latexCompiler = null;
+      */
     }
   }
 }
