@@ -5,6 +5,7 @@ import sce.component.SourceCodeEditor;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * LaTeX compiler.
@@ -33,7 +34,16 @@ public class LatexCompiler extends Thread {
     Process latexCompiler = null;
     try{
       String compileCommand = "pdflatex -interaction=nonstopmode " + file.getName();
-      latexCompiler = Runtime.getRuntime().exec(compileCommand, new String[0], file.getParentFile());
+
+      ArrayList<String> env = new ArrayList<String>();
+      for(Map.Entry<String, String> entry : System.getenv().entrySet()) {
+        if(entry.getKey().equalsIgnoreCase("PWD")) continue;
+        env.add(entry.getKey() + "=" + entry.getValue());
+      }
+      String[] envArray = new String[env.size()];
+      env.toArray(envArray);
+
+      latexCompiler = Runtime.getRuntime().exec(compileCommand, envArray, file.getParentFile());
     } catch(Exception e){
       e.printStackTrace();
     }

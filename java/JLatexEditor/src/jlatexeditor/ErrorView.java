@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
@@ -19,10 +20,10 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener {
   private static final Color SELECTION_BACKGROUND = new Color(241, 244, 248);
   private static final Color SELECTION_BORDER = new Color(199, 213, 229);
 
-  private JScrollPane outputScroll;
-
-  private JTextArea latexOutput;
   private ArrayList<LatexCompileError> errors = new ArrayList<LatexCompileError>();
+
+  private JTextArea latexOutput = new JTextArea();
+  private JScrollPane scrollOutput = new JScrollPane(latexOutput);
 
   private JTree tree;
   private DefaultMutableTreeNode nodeRoot, nodeError, nodeHbox, nodeWarning, nodeOutput;
@@ -32,11 +33,12 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener {
   private JList listError = new JList(lmError);
   private JList listHbox = new JList(lmHbox);
   private JList listWarning = new JList(lmWarning);
+  private JScrollPane scrollError = new JScrollPane(listError);
+  private JScrollPane scrollHbox = new JScrollPane(listHbox);
+  private JScrollPane scrollWarning = new JScrollPane(listWarning);
 
   public ErrorView() {
-    latexOutput = new JTextArea();
     latexOutput.setFont(new Font("MonoSpaced", 0, 13));
-    outputScroll = new JScrollPane(latexOutput);
 
     nodeRoot = new DefaultMutableTreeNode("compile...");
     nodeError = new DefaultMutableTreeNode();
@@ -51,6 +53,7 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener {
     tree = new JTree(nodeRoot);
     tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     tree.getSelectionModel().addTreeSelectionListener(this);
+    tree.setCellRenderer(new ErrorTreeCellRenderer());
 
     listError.setCellRenderer(new ErrorListCellRenderer());
     listError.setSelectionModel(new DefaultListSelectionModel());
@@ -63,7 +66,7 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener {
     listWarning.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
     setLeftComponent(tree);
-    setRightComponent(outputScroll);
+    setRightComponent(scrollOutput);
 
     setResizeWeight(.2);
   }
@@ -105,19 +108,10 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener {
 
   public void valueChanged(TreeSelectionEvent e) {
     TreeNode node = (TreeNode) e.getNewLeadSelectionPath().getLastPathComponent();
-    if (node == nodeError) {
-      setRightComponent(listError);
-      return;
-    }
-    if (node == nodeHbox) {
-      setRightComponent(listHbox);
-      return;
-    }
-    if (node == nodeWarning) {
-      setRightComponent(listWarning);
-      return;
-    }
-    setRightComponent(outputScroll);
+    if (node == nodeError) { setRightComponent(scrollError); return; }
+    if (node == nodeHbox) { setRightComponent(scrollHbox); return; }
+    if (node == nodeWarning) { setRightComponent(scrollWarning); return; }
+    setRightComponent(scrollOutput);
   }
 
   private class ErrorComponent extends JLabel {
@@ -161,6 +155,16 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener {
       }
 
       return this;
+    }
+  }
+
+  private class ErrorTreeCellRenderer extends DefaultTreeCellRenderer {
+    public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+      Component component = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+      Dimension dimension = component.getPreferredSize();
+      component.setPreferredSize(new Dimension(Math.max(dimension.width,150),dimension.height));
+
+      return component;
     }
   }
 }

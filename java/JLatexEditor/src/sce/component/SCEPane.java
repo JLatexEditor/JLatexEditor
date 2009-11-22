@@ -124,6 +124,8 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     Graphics2D g2D = (Graphics2D) g;
     super.paint(g2D);
 
+    //g2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+    
     // clip bounds
     int y = g2D.getClipBounds().y;
     int height = g2D.getClipBounds().height;
@@ -157,7 +159,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
       editRangeHighlight.paint(g2D, this, document.getEditRangeStart(),  document.getEditRangeEnd());
     }
 
-    // draw the test
+    // draw the text
     for(int line = startRow; line < endRow; line++){
       AttributedString attributedString = document.getRowAttributed(line);
       if(attributedString == null) continue;
