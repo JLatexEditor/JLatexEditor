@@ -38,7 +38,7 @@ public class JLatexEditor extends QaquaFrame implements ActionListener{
   // the Latex TextPane
   private SourceCodeEditor editor = null;
   // error messages
-  private JTextArea errorMessages = null;
+  private ErrorView errorView = null;
   private JSplitPane textErrorSplit = null;
 
   // the underlying document
@@ -104,10 +104,10 @@ public class JLatexEditor extends QaquaFrame implements ActionListener{
     LatexStyles.addStyles(document);
 
     // TextArea for error messages
-    errorMessages = new JTextArea();
-    errorMessages.setFont(new Font("MonoSpaced", 0, 13));
+    errorView = new ErrorView();
+    errorView.setFont(new Font("MonoSpaced", 0, 13));
 
-    textErrorSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, editor, new JScrollPane(errorMessages));
+    textErrorSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, editor, new JScrollPane(errorView));
     textErrorSplit.setOneTouchExpandable(true);
     textErrorSplit.setResizeWeight(0.5);
 
@@ -124,7 +124,7 @@ public class JLatexEditor extends QaquaFrame implements ActionListener{
 	  scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
 	  
     // error highlighting
-    errorHighlightning = new LatexErrorHighlighting(scePane, errorMessages);
+    errorHighlightning = new LatexErrorHighlighting(scePane, errorView);
   }
 
   // ActionListener methods
@@ -168,7 +168,7 @@ public class JLatexEditor extends QaquaFrame implements ActionListener{
       }
 
       // Compile thread
-      latexCompiler = new LatexCompiler(editor, errorMessages);
+      latexCompiler = new LatexCompiler(editor, errorView);
       latexCompiler.addLatexCompileListener(errorHighlightning);
 
       latexCompiler.run();

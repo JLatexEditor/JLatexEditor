@@ -5,58 +5,93 @@
 package jlatexeditor.errorhighlighting;
 
 public class LatexCompileError{
-  private int line = -1;
+  public static final int TYPE_WARNING = 0;
+  public static final int TYPE_OVERFULL_HBOX = 1;
+  public static final int TYPE_ERROR = 2;
+
+  private int type = TYPE_ERROR;
+
+  private String file = null;
+  private int lineStart = -1;
+  private int lineEnd = -1;
+
   private String error = null;
-  private String help = null;
-  private String text_before = null;
-  private String text_after = null;
+  private String textBefore = null;
+  private String textAfter = null;
 
   // Getter and Setter methods
-  public int getLine(){
-    return line;
+  public int getType() {
+    return type;
+  }
+
+  public void setType(int type) {
+    this.type = type;
+  }
+
+  public String getFile() {
+    return file;
+  }
+
+  public void setFile(String file) {
+    this.file = file;
+  }
+
+  public int getLineStart(){
+    return lineStart;
+  }
+
+  public int getLineEnd(){
+    return lineEnd;
   }
 
   public void setLine(int line){
-    this.line = line;
+    lineStart = line;
+    lineEnd = line;
+  }
+
+  public void setLineStart(int lineStart) {
+    this.lineStart = lineStart;
+  }
+
+  public void setLineEnd(int lineEnd) {
+    this.lineEnd = lineEnd;
   }
 
   public String getError(){
     return error;
   }
 
-  public void setError(String error){
+  public void setMessage(String error){
     this.error = error;
   }
 
-  public String getHelp(){
-    return help;
-  }
-
-  public void setHelp(String help){
-    this.help = help;
-  }
-
   public String getTextBefore(){
-    return text_before;
+    return textBefore;
   }
 
-  public void setTextBefore(String text_before){
-    this.text_before = text_before;
+  public void setTextBefore(String textBefore){
+    this.textBefore = textBefore;
   }
 
   public String getTextAfter(){
-    return text_after;
+    return textAfter;
   }
 
-  public void setTextAfter(String text_after){
-    this.text_after = text_after;
+  public void setTextAfter(String textAfter){
+    this.textAfter = textAfter;
   }
 
   public String toString(){
-    String message = "Fehler in Zeile " + line + ":\n";
-    message += "  " + error + "\n";
-    message += "  " + text_before + "[ERROR]" + text_after + "\n";
-    message += "Hinweis: \n  " + help.trim();
-    return message;
+    StringBuffer message = new StringBuffer(getFile()).append(": ");
+    if(getLineStart() != -1) {
+      message.append(getLineStart());
+      if(getLineStart() != getLineEnd()) message.append("--").append(getLineEnd());
+    }
+    message.append("\n");
+    message.append("  ").append(getError()).append("\n");
+    if(getTextBefore() != null) {
+      message.append("  ").append(getTextBefore()).append("[ERROR]").append(getTextAfter()).append("\n");
+    }
+    return message.toString();
   }
 }

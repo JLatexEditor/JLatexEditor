@@ -26,12 +26,13 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.*;
 
-public class JLatexEditorJFrame extends JFrame implements ActionListener {
+public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener {
   private static String UNTITLED = "Untitled";
 
   private JMenuBar menuBar = null;
   private JTabbedPane tabbedPane = null;
-  private JTextArea errorMessages = null;
+  private JSplitPane textErrorSplit = null;
+  private ErrorView errorView = null;
 
   // last directory of the opening dialog
   private FileDialog openDialog = new FileDialog(this, "Open", FileDialog.LOAD);
@@ -43,13 +44,14 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener {
 
   public static void main(String args[]){
     JLatexEditorJFrame latexEditor = new JLatexEditorJFrame("jlatexeditor.JLatexEditor", args);
-    latexEditor.setSize(1024, 450);
     latexEditor.setVisible(true);
   }
 
   public JLatexEditorJFrame(String name, String args[]){
     super(name);
-
+    setSize(1280, 1024);
+    addWindowListener(this);
+    
     // set Layout
     getContentPane().setLayout(new BorderLayout());
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -80,16 +82,15 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener {
     fileMenu.add(compileMenuItem);
 
     // error messages
-    errorMessages = new JTextArea();
-    errorMessages.setFont(new Font("MonoSpaced", 0, 13));
+    errorView = new ErrorView();
 
     // tabs for the files
     tabbedPane = new JTabbedPane();
     tabbedPane.addTab(UNTITLED, createSourceCodeEditor());
 
-    JSplitPane textErrorSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, tabbedPane, new JScrollPane(errorMessages));
+    textErrorSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, tabbedPane, errorView);
     textErrorSplit.setOneTouchExpandable(true);
-    textErrorSplit.setResizeWeight(0.5);
+    textErrorSplit.setResizeWeight(.90);
 
     getContentPane().add(textErrorSplit, BorderLayout.CENTER);
     getContentPane().validate();
@@ -116,7 +117,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener {
 	  scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
 
     // error highlighting
-    new LatexErrorHighlighting(scePane, errorMessages);
+    editor.setErrorHighlighting(new LatexErrorHighlighting(scePane, errorView));
 
     return editor;
   }
@@ -187,9 +188,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener {
     }
 
     if(latexCompiler != null) latexCompiler.halt();
-    latexCompiler = new LatexCompiler(editor, errorMessages);
+    latexCompiler = new LatexCompiler(editor, errorView);
 
-    //latexCompiler.addLatexCompileListener(errorHighlighting);
+    latexCompiler.addLatexCompileListener(editor.getErrorHighlighting());
 
     latexCompiler.run();
     latexCompiler = null;
@@ -216,5 +217,31 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener {
       saveAll();
       compile();
     }
+  }
+
+  public void windowOpened(WindowEvent e) {
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
+      }
+    });
+  }
+
+  public void windowClosing(WindowEvent e) {
+  }
+
+  public void windowClosed(WindowEvent e) {
+  }
+
+  public void windowIconified(WindowEvent e) {
+  }
+
+  public void windowDeiconified(WindowEvent e) {
+  }
+
+  public void windowActivated(WindowEvent e) {
+  }
+
+  public void windowDeactivated(WindowEvent e) {
   }
 }

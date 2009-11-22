@@ -5,6 +5,8 @@
 
 package sce.component;
 
+import jlatexeditor.errorhighlighting.LatexErrorHighlighting;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -15,6 +17,7 @@ public class SourceCodeEditor extends JPanel{
   // The source code pane
   private SCEPane textPane = null;
   private JScrollPane scrollPane = null;
+  private LatexErrorHighlighting errorHighlighting = null;
 
   // The debug mode
   private boolean debugMode = false;
@@ -67,6 +70,22 @@ public class SourceCodeEditor extends JPanel{
    */
   public SCEPane getTextPane(){
     return textPane;
+  }
+
+  /**
+   * Returns the error highlighter.
+   * @return error highlighter
+   */
+  public LatexErrorHighlighting getErrorHighlighting() {
+    return errorHighlighting;
+  }
+
+  /**
+   * Sets the error highlighter.
+   * @param errorHighlighting error highlighter
+   */
+  public void setErrorHighlighting(LatexErrorHighlighting errorHighlighting) {
+    this.errorHighlighting = errorHighlighting;
   }
 
   /**
