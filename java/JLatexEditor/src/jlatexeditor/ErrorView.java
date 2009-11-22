@@ -15,6 +15,7 @@ import java.util.ArrayList;
  * Error view.
  */
 public class ErrorView extends JSplitPane implements TreeSelectionListener {
+  // color definitions
   private static final Color SELECTION_BACKGROUND = new Color(241, 244, 248);
   private static final Color SELECTION_BORDER = new Color(199, 213, 229);
 
