@@ -97,6 +97,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
     // open files given in command line
     for(String arg : args) { open(arg); }
+    if(args.length > 0) {
+      openDialog.setDirectory(new File(args[0]).getParent());
+    }
   }
 
   private SourceCodeEditor createSourceCodeEditor() {
@@ -140,6 +143,15 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       File file = new File(fileName);
       String text = readFile(fileName);
 
+      // already open?
+      for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
+        SourceCodeEditor editor = (SourceCodeEditor) tabbedPane.getComponentAt(tab);
+        if(new File(editor.getFileName()).equals(file)) {
+          tabbedPane.setSelectedIndex(tab);
+          return;
+        }
+      }
+
       // replacing the untitled tab?
       SourceCodeEditor editor = null;
       if(tabbedPane.getTabCount() == 1
@@ -150,6 +162,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       } else {
         editor = createSourceCodeEditor();
         tabbedPane.addTab(file.getName(), editor);
+        tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
       }
 
       editor.setFileName(fileName);
