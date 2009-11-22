@@ -47,7 +47,7 @@
 		
 		<!-- Copy all non-java files to classes. -->
 		<copy todir="${buildClasses}">
-			<fileset dir="src">
+			<fileset dir="${src}">
 				<exclude name="**/*.java"/>
 			</fileset>
 		</copy>
@@ -60,5 +60,11 @@
 				<attribute name="Main-Class" value="jlatexeditor.JLatexEditorJFrame"/>
 			</manifest>
 		</jar>
+		<copy todir="${build}">
+			<fileset dir="scripts">
+				<filename name="jlatexeditor"/>
+			</fileset>
+		</copy>
+		<chmod file="${build}/jlatexeditor" perm="ugo+x"/>
 	</target>
 </project>
