@@ -35,7 +35,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private ErrorView errorView = null;
 
   // last directory of the opening dialog
-  private FileDialog openDialog = new FileDialog(this, "Open", FileDialog.LOAD);
+  private JFileChooser openDialog = new JFileChooser();
 
   // compile thread
   private LatexCompiler latexCompiler = null;
@@ -96,9 +96,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     getContentPane().validate();
 
     // open files given in command line
-    for(String arg : args) { open(arg); }
+    for(String arg : args) { open(new File(arg)); }
+    openDialog.setDialogTitle("Open");
     if(args.length > 0) {
-      openDialog.setDirectory(new File(args[0]).getParent());
+      openDialog.setCurrentDirectory(new File(new File(args[0]).getParent()));
     }
   }
 
@@ -138,10 +139,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     return text;
   }
 
-  public void open(String fileName) {
+  public void open(File file) {
     try{
-      File file = new File(fileName);
-      String text = readFile(fileName);
+      String text = readFile(file.getAbsolutePath());
 
       // already open?
       for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
@@ -165,7 +165,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
       }
 
-      editor.setFileName(fileName);
+      editor.setFileName(file.getAbsolutePath());
       editor.getTextPane().setText(text);
     } catch(IOException exc){
       System.out.println("Error opening file");
@@ -214,10 +214,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // open a file
     if(e.getActionCommand().equals("open")){
       //openDialog.pack();
-      openDialog.setVisible(true);
-      if(openDialog.getFile() == null) return;
+      openDialog.showDialog(this, "Open");
+      if(openDialog.getSelectedFile() == null) return;
 
-      open(openDialog.getDirectory() + openDialog.getFile());
+      open(openDialog.getSelectedFile());
     }
 
     // save a file
