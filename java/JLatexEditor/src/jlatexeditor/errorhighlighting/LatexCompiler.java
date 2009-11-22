@@ -33,7 +33,7 @@ public class LatexCompiler extends Thread {
     // Command line shell
     Process latexCompiler = null;
     try{
-      String compileCommand = "pdflatex -interaction=nonstopmode " + file.getName();
+      String compileCommand = "pdflatex -interaction=nonstopmode main";// + file.getName();
 
       ArrayList<String> env = new ArrayList<String>();
       for(Map.Entry<String, String> entry : System.getenv().entrySet()) {
