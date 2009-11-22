@@ -6,6 +6,7 @@ import my.XML.XMLException;
 import my.XML.XMLParser;
 import util.StreamUtils;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -32,10 +33,14 @@ public class StaticCommandsCodeHelper extends CodeHelper {
 	  try {
 	    commandsDocument = xmlParser.parse(StreamUtils.readFile(filename));
 	  } catch (XMLException e) {
+		  e.printStackTrace();
 	    return;
+	  } catch (FileNotFoundException e) {
+		  e.printStackTrace();
+		  return;
 	  }
 
-	  XMLElement commandListXML = commandsDocument.getRootElement();
+		XMLElement commandListXML = commandsDocument.getRootElement();
 	  if(!commandListXML.getName().equalsIgnoreCase("commandList")){
 	    System.out.println("Error in commands.xml: root element must be 'commandList'");
 	    return;
