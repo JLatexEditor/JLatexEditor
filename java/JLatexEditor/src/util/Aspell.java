@@ -98,6 +98,9 @@ public final class Aspell {
 		} catch (Exception ignored) {}
 	}
 
+	/**
+	 * Aspell result.
+	 */
 	public static class Result {
 		private boolean correct;
 		private List<String> suggestions;
