@@ -160,7 +160,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
               && tabbedPane.getTitleAt(0).equals(UNTITLED)
               && ((SourceCodeEditor) tabbedPane.getComponentAt(0)).getText().trim().equals("")) {
         tabbedPane.setTitleAt(0, file.getName());
-        //tabbedPane.setTabComponentAt(0, new TabLabel(file));
+        tabbedPane.setTabComponentAt(0, new TabLabel(file));
         editor = ((SourceCodeEditor) tabbedPane.getComponentAt(0));
       } else {
         editor = createSourceCodeEditor();
