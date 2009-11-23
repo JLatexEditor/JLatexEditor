@@ -7,6 +7,8 @@
 package util;
 
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class StreamUtils{
   /** Size of the temporary buffer for reading. */
@@ -40,7 +42,7 @@ public class StreamUtils{
    * @return the content of the file
    */
   public static String readFile(String filename) throws FileNotFoundException {
-    InputStream inputStream = getDataInputStream(filename);
+    InputStream inputStream = getInputStream(filename);
 
     byte data[] = readBytesFromInputStream(inputStream);
     if(data == null) return null;
@@ -51,8 +53,8 @@ public class StreamUtils{
 	/**
 	 * Opens an InputStream for the given resource name.
 	 */
-	public static InputStream getDataInputStream(String fileName) throws FileNotFoundException {
-	  // try to find the resource local in class resources
+	public static InputStream getInputStream(String fileName) throws FileNotFoundException {
+	  // try to find the resource in local class resources
 	  InputStream localStream = StreamUtils.class.getResourceAsStream("/" + fileName);
 	  if(localStream != null) return new BufferedInputStream(localStream);
 
@@ -63,5 +65,22 @@ public class StreamUtils{
 
 	  // load the resource from web
 	  //return new URL(DATA_DIRECTORY_CLIENT + fileName).openStream();
+	}
+
+	public static URL getURL(String fileName) {
+		// try to find the resource in local class resources
+		URL url = StreamUtils.class.getResource("/" + fileName);
+		if (url != null) return url;
+
+		File file = new File(fileName);
+
+		if (file.exists())
+			try {
+				return file.toURI().toURL();
+			} catch (MalformedURLException e) {
+				return null;
+			}
+		else
+			return null;
 	}
 }

@@ -56,6 +56,9 @@
 	<!-- Create jar-file. -->
 	<target name="jar" depends="compile">
 		<jar jarfile="${buildJar}" basedir="${buildClasses}">
+			<fileset dir=".">
+				<include name="data/**"/>
+			</fileset>
 			<manifest>
 				<attribute name="Main-Class" value="jlatexeditor.JLatexEditorJFrame"/>
 			</manifest>

@@ -2,11 +2,15 @@ package jlatexeditor.quickhelp;
 
 import sce.component.SCEDocument;
 import sce.quickhelp.QuickHelp;
+import util.StreamUtils;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +21,9 @@ import java.util.regex.Pattern;
  * @author Stefan Endrullis
  */
 public class LatexQuickHelp implements QuickHelp {
+	/** Logger. */
+	private static Logger logger = Logger.getLogger(LatexQuickHelp.class.getName());
+
 	/** Regular expression to extract commands from HTML pages. */
 	static final Pattern htmlCommandsPattern = Pattern.compile("<li>.*<a href=\"([^\"]+)\">(.*)</a>.*</li>");
 	/** Command has to start with a backslash and may only contain letters. */
@@ -40,9 +47,9 @@ public class LatexQuickHelp implements QuickHelp {
 
     BufferedReader reader;
     try{
-      reader = new BufferedReader(new FileReader(toc_file));
+      reader = new BufferedReader(new InputStreamReader(StreamUtils.getInputStream(toc_file)));
     } catch(FileNotFoundException e){
-      System.out.println(e);
+	    logger.warning("TOC File " + toc_file + " not found. Quick help will not be available.");
       return;
     }
 
@@ -62,7 +69,7 @@ public class LatexQuickHelp implements QuickHelp {
         }
       }
     } catch(IOException e){
-      e.printStackTrace();
+			logger.log(Level.SEVERE, "Parser error", e);
     }
   }
 
@@ -107,16 +114,10 @@ public class LatexQuickHelp implements QuickHelp {
     String fileName = commands.get(command);
     if(fileName == null) return null;
 
-	  File file = new File(directory + fileName);
+	  URL url = StreamUtils.getURL(directory + fileName);
+	  if (url == null) return null;
 
-	  if (file.exists())
-		  try {
-			  return file.toURI().toURL().toString();
-		  } catch (MalformedURLException e) {
-			  return null;
-		  }
-	  else
-		  return null;
+	  return url.toString();
   }
 
 	public String getHelpUrlAt(int row, int column) {
