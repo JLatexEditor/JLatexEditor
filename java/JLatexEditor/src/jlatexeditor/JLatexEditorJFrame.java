@@ -20,10 +20,7 @@ import util.StreamUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.*;
 import java.io.*;
 
 public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener {
@@ -33,6 +30,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private JTabbedPane tabbedPane = null;
   private JSplitPane textErrorSplit = null;
   private ErrorView errorView = null;
+
+  // command line arguments
+  private String args[];
 
   // last directory of the opening dialog
   private JFileChooser openDialog = new JFileChooser();
@@ -49,7 +49,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
   public JLatexEditorJFrame(String name, String args[]){
     super(name);
-    setSize(1280, 1024);
+    this.args = args;
     addWindowListener(this);
     
     // set Layout
@@ -94,13 +94,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
     getContentPane().add(textErrorSplit, BorderLayout.CENTER);
     getContentPane().validate();
-
-    // open files given in command line
-    for(String arg : args) { open(new File(arg)); }
-    openDialog.setDialogTitle("Open");
-    if(args.length > 0) {
-      openDialog.setCurrentDirectory(new File(new File(args[0]).getParent()));
-    }
   }
 
   private SourceCodeEditor createSourceCodeEditor() {
@@ -139,18 +132,27 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     return text;
   }
 
+  private int getTab(File file) {
+    for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
+      SourceCodeEditor editor = (SourceCodeEditor) tabbedPane.getComponentAt(tab);
+      if(new File(editor.getFileName()).equals(file)) {
+        return tab;
+      }
+    }
+    return -1;
+  }
+
+  private SourceCodeEditor getEditor(int tab) {
+    return (SourceCodeEditor) tabbedPane.getComponentAt(tab);
+  }
+
   public void open(File file) {
     try{
       String text = readFile(file.getAbsolutePath());
 
       // already open?
-      for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
-        SourceCodeEditor editor = (SourceCodeEditor) tabbedPane.getComponentAt(tab);
-        if(new File(editor.getFileName()).equals(file)) {
-          tabbedPane.setSelectedIndex(tab);
-          return;
-        }
-      }
+      int tab = getTab(file);
+      if(tab != -1) { tabbedPane.setSelectedIndex(tab); return; }
 
       // replacing the untitled tab?
       SourceCodeEditor editor = null;
@@ -158,10 +160,12 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
               && tabbedPane.getTitleAt(0).equals(UNTITLED)
               && ((SourceCodeEditor) tabbedPane.getComponentAt(0)).getText().trim().equals("")) {
         tabbedPane.setTitleAt(0, file.getName());
+        //tabbedPane.setTabComponentAt(0, new TabLabel(file));
         editor = ((SourceCodeEditor) tabbedPane.getComponentAt(0));
       } else {
         editor = createSourceCodeEditor();
         tabbedPane.addTab(file.getName(), editor);
+        tabbedPane.setTabComponentAt(tabbedPane.getTabCount()-1,new TabLabel(file));
         tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
       }
 
@@ -235,6 +239,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   public void windowOpened(WindowEvent e) {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
+        // open files given in command line
+        for(String arg : args) { open(new File(arg)); }
+        openDialog.setDialogTitle("Open");
+        if(args.length > 0) {
+          openDialog.setCurrentDirectory(new File(new File(args[0]).getParent()));
+        }
+
         setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
       }
     });
@@ -256,5 +267,52 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   }
 
   public void windowDeactivated(WindowEvent e) {
+  }
+
+  private class TabLabel extends JPanel implements MouseListener {
+    private File file;
+    private JLabel label;
+    private JLabel closeIcon;
+
+    private TabLabel(File file) {
+      this.file = file;
+      setOpaque(false);
+
+      label = new JLabel(file.getName());
+      closeIcon = new JLabel(new ImageIcon("icons/tab_close_over.png"));
+      closeIcon.setVerticalAlignment(SwingConstants.CENTER);
+
+      BorderLayout layout = new BorderLayout(4, 1);
+      setLayout(layout);
+      setBackground(new Color(255,255,255, 255));
+      add(label, BorderLayout.CENTER);
+      add(closeIcon, BorderLayout.EAST);
+
+      addMouseListener(this);
+    }
+
+    @Override
+    public boolean contains(int x, int y) {
+      return x >= -4 && x <= getWidth() + 4 && y >= -2 && y <= getHeight() + 2;
+    }
+
+    public void mouseClicked(MouseEvent e) {
+      tabbedPane.setSelectedIndex(getTab(file));
+      if(e.getClickCount() >= 2) {
+
+      }
+    }
+
+    public void mousePressed(MouseEvent e) {
+    }
+
+    public void mouseReleased(MouseEvent e) {
+    }
+
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    public void mouseExited(MouseEvent e) {
+    }
   }
 }
