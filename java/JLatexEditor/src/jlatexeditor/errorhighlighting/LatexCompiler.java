@@ -25,7 +25,7 @@ public class LatexCompiler extends Thread {
   }
 
   public void run(){
-    File file = new File(editor.getFileName());
+    File file = editor.getFile();
 
     errorView.clear();
     compileStart();
@@ -33,7 +33,7 @@ public class LatexCompiler extends Thread {
     // Command line shell
     Process latexCompiler = null;
     try{
-      String compileCommand = "pdflatex -interaction=nonstopmode main";// + file.getName();
+      String compileCommand = "pdflatex -interaction=nonstopmode " + file.getName();
 
       ArrayList<String> env = new ArrayList<String>();
       for(Map.Entry<String, String> entry : System.getenv().entrySet()) {
@@ -49,53 +49,27 @@ public class LatexCompiler extends Thread {
     }
 
     PrintWriter out = new PrintWriter(new OutputStreamWriter(latexCompiler.getOutputStream()));
-    BufferedReader in = new BufferedReader(new InputStreamReader(latexCompiler.getInputStream()));
+    BufferedReader in = new BufferedReader(new InputStreamReader(latexCompiler.getInputStream()), 500000);
 
-    // Compile messages -> errors ?
     try{
-      // Collect information about the error -> inform the listener, if we read a "?"
-      LatexCompileError error = new LatexCompileError();
+      LatexCompileError error;
 
       ArrayList<String> fileStack = new ArrayList<String>();
       String line = in.readLine(); errorView.appendLine(line);
       while(line != null){
-        // opening and closing files
-        if(line.startsWith("(") || line.startsWith(")")) {
-          int position = 0;
-
-          while(position < line.length()) {
-            int open = line.indexOf('(', position);
-            int close = line.indexOf(')', position);
-
-            if(close == -1 && open == -1) break;
-
-            if(close == -1 || (open != -1 && open < close)) {
-              int space = line.indexOf(' ', open);
-              if(space == -1) space = line.length();
-              close = line.indexOf(')', open);
-              if(close != -1 && close < space) space = close;
-
-              fileStack.add(line.substring(open + 1, space));
-              position = space;
-            } else {
-              fileStack.remove(fileStack.size() - 1);
-              position = close + 1;
-            }
-          }
-
-          line = in.readLine(); errorView.appendLine(line);
-          continue;
-        }
-
         // error messages
         if(line.startsWith("!")) {
           error = new LatexCompileError();
           error.setType(LatexCompileError.TYPE_ERROR);
-          error.setFile(fileStack.get(fileStack.size() - 1));
+          String fileName = fileStack.get(fileStack.size() - 1);
+          error.setFile(new File(editor.getFile().getParentFile(), fileName), fileName);
 
           error.setMessage(line.substring(1).trim());
 
-          line = in.readLine(); errorView.appendLine(line);
+          while(!line.startsWith("l.")) {
+            line = in.readLine(); errorView.appendLine(line);
+          }
+
           if(line.startsWith("l.")) {
             int space = line.indexOf(' ');
             if(space == -1) space = line.length();
@@ -124,7 +98,8 @@ public class LatexCompiler extends Thread {
         if(line.startsWith("LaTeX Warning:")) {
           error = new LatexCompileError();
           error.setType(LatexCompileError.TYPE_WARNING);
-          error.setFile(fileStack.get(fileStack.size() - 1));
+          String fileName = fileStack.get(fileStack.size() - 1);
+          error.setFile(new File(editor.getFile().getParentFile(), fileName), fileName);
 
           StringBuffer errorMessage = new StringBuffer(line.substring("LaTeX Warning:".length()).trim());
           for(int i = 0; i < 5; i++) {
@@ -141,7 +116,8 @@ public class LatexCompiler extends Thread {
         if(line.startsWith("Overfull \\hbox")) {
           error = new LatexCompileError();
           error.setType(LatexCompileError.TYPE_OVERFULL_HBOX);
-          error.setFile(fileStack.get(fileStack.size() - 1));
+          String fileName = fileStack.get(fileStack.size() - 1);
+          error.setFile(new File(editor.getFile().getParentFile(), fileName), fileName);
 
           int linePos = line.indexOf("at lines ");
           if(linePos != -1) {
@@ -155,6 +131,42 @@ public class LatexCompiler extends Thread {
 
           error.setMessage(line);
           compileError(error);
+          line = in.readLine(); errorView.appendLine(line);
+          continue;
+        }
+
+        // opening and closing files
+        if((line.startsWith("(") && !line.startsWith("(see")) || line.indexOf(')') != -1) {
+          int position = 0;
+
+          while(position < line.length()) {
+            int open = line.indexOf('(', position);
+            int close = line.indexOf(')', position);
+
+            if(close == -1 && open == -1) break;
+
+            if(close == -1 || (open != -1 && open < close)) {
+              String fileName = "";
+              while(true) {
+                int space = line.indexOf(' ', open);
+                if(space == -1) space = line.length();
+                close = line.indexOf(')', open);
+                if(close != -1 && close < space) space = close;
+
+                position = space;
+                fileName += line.substring(open + 1, space);
+                if(line.length() == 79 && position == line.length()) {
+                  line = in.readLine(); errorView.appendLine(line);
+                  open = -1;
+                } else break;
+              }
+              fileStack.add(fileName);
+            } else {
+              fileStack.remove(fileStack.size() - 1);
+              position = close + 1;
+            }
+          }
+
           line = in.readLine(); errorView.appendLine(line);
           continue;
         }

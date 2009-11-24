@@ -96,7 +96,7 @@ public class JLatexEditor extends QaquaFrame implements ActionListener{
     fileMenu.add(saveMenuItem);
 
     // text pane for editing
-    editor = new SourceCodeEditor(UNTITLED);
+    editor = new SourceCodeEditor(null);
     SCEPane scePane = editor.getTextPane();
     document = scePane.getDocument();
 
@@ -104,7 +104,7 @@ public class JLatexEditor extends QaquaFrame implements ActionListener{
     LatexStyles.addStyles(document);
 
     // TextArea for error messages
-    errorView = new ErrorView();
+    errorView = null; // new ErrorView();
     errorView.setFont(new Font("MonoSpaced", 0, 13));
 
     textErrorSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, editor, new JScrollPane(errorView));
@@ -124,7 +124,7 @@ public class JLatexEditor extends QaquaFrame implements ActionListener{
 	  scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
 	  
     // error highlighting
-    errorHighlightning = new LatexErrorHighlighting(scePane, errorView);
+    errorHighlightning = new LatexErrorHighlighting(editor, errorView);
   }
 
   // ActionListener methods

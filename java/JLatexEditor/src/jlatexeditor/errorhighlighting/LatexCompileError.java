@@ -4,6 +4,8 @@
 
 package jlatexeditor.errorhighlighting;
 
+import java.io.File;
+
 public class LatexCompileError{
   public static final int TYPE_WARNING = 0;
   public static final int TYPE_OVERFULL_HBOX = 1;
@@ -11,7 +13,8 @@ public class LatexCompileError{
 
   private int type = TYPE_ERROR;
 
-  private String file = null;
+  private File file = null;
+  private String fileName = null;
   private int lineStart = -1;
   private int lineEnd = -1;
 
@@ -28,12 +31,17 @@ public class LatexCompileError{
     this.type = type;
   }
 
-  public String getFile() {
+  public File getFile() {
     return file;
   }
 
-  public void setFile(String file) {
+  public String getFileName() {
+    return fileName;
+  }
+
+  public void setFile(File file, String fileName) {
     this.file = file;
+    this.fileName = fileName;
   }
 
   public int getLineStart(){
@@ -82,7 +90,7 @@ public class LatexCompileError{
   }
 
   public String toString(){
-    StringBuffer message = new StringBuffer(getFile()).append(": ");
+    StringBuffer message = new StringBuffer(getFileName()).append(": ");
     if(getLineStart() != -1) {
       message.append(getLineStart());
       if(getLineStart() != getLineEnd()) message.append("--").append(getLineEnd());

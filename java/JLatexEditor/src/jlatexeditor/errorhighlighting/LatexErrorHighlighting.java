@@ -5,64 +5,53 @@
 package jlatexeditor.errorhighlighting;
 
 import jlatexeditor.ErrorView;
-import sce.component.SCEDocument;
-import sce.component.SCEPane;
-import sce.component.SCEErrorHighlight;
-import sce.component.SCEDocumentPosition;
+import sce.component.*;
 
+import javax.xml.transform.Source;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 public class LatexErrorHighlighting implements LatexCompileListener {
-  // The TextPane and document
-  SCEPane pane = null;
-  SCEDocument document = null;
+  // editor and document
+  private SourceCodeEditor editor = null;
+  private SCEPane pane = null;
+  private SCEDocument document = null;
 
-  // The errors
-  ArrayList errors = new ArrayList();
-  ArrayList errorHighlights = new ArrayList();
-  // TextArea for error messages
-  ErrorView errorView = null;
+  // error highlights
+  private ArrayList<SCEErrorHighlight> errorHighlights = new ArrayList<SCEErrorHighlight>();
 
-  public LatexErrorHighlighting(SCEPane pane, ErrorView errorView){
-    this.pane = pane;
+  public LatexErrorHighlighting(SourceCodeEditor editor, ErrorView errorView){
+    this.editor = editor;
+    pane = editor.getTextPane();
     document = pane.getDocument();
-    this.errorView = errorView;
   }
 
   // LatexCompileListener
   public void compileStarted(){
-    errors.clear();
-  }
-
-  public void compileEnd(){
     // remove old error highlights
     Iterator highlightsIterator = errorHighlights.iterator();
     while(highlightsIterator.hasNext()){
       pane.removeTextHighlight((SCEErrorHighlight) highlightsIterator.next());
       highlightsIterator.remove();
     }
+  }
 
-    // add highlights
-    Iterator iterator = errors.iterator();
-    while(iterator.hasNext()){
-      LatexCompileError error = (LatexCompileError) iterator.next();
-      if(error.getType() != LatexCompileError.TYPE_ERROR) continue;
-
-      // add error highlights
-      int errorRow = error.getLineStart() - 1;
-      int errorColunm = document.getRow(errorRow).indexOf(error.getTextBefore()) + error.getTextBefore().length();
-      SCEDocumentPosition start = document.createDocumentPosition(errorRow, errorColunm - 5);
-      SCEDocumentPosition end = document.createDocumentPosition(errorRow, errorColunm);
-      SCEErrorHighlight errorHighlight = new SCEErrorHighlight(pane, start, end, new Color(255, 0, 0));
-
-      pane.addTextHighlight(errorHighlight);
-      errorHighlights.add(errorHighlight);
-    }
+  public void compileEnd(){
   }
 
   public void latexError(LatexCompileError error){
-    errors.add(error);
+    if(error.getType() != LatexCompileError.TYPE_ERROR) return;
+    if(!error.getFile().equals(editor.getFile())) return;
+
+    // add error highlights
+    int errorRow = error.getLineStart() - 1;
+    int errorColumn = document.getRow(errorRow).indexOf(error.getTextBefore()) + error.getTextBefore().length();
+    SCEDocumentPosition start = document.createDocumentPosition(errorRow, errorColumn - 5);
+    SCEDocumentPosition end = document.createDocumentPosition(errorRow, errorColumn);
+    SCEErrorHighlight errorHighlight = new SCEErrorHighlight(pane, start, end, new Color(255, 0, 0));
+
+    pane.addTextHighlight(errorHighlight);
+    errorHighlights.add(errorHighlight);
   }
 }

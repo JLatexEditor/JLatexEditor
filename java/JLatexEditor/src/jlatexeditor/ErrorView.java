@@ -3,6 +3,8 @@ package jlatexeditor;
 import jlatexeditor.errorhighlighting.LatexCompileError;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -15,10 +17,12 @@ import java.util.ArrayList;
 /**
  * Error view.
  */
-public class ErrorView extends JSplitPane implements TreeSelectionListener {
+public class ErrorView extends JSplitPane implements TreeSelectionListener, ListSelectionListener {
   // color definitions
   private static final Color SELECTION_BACKGROUND = new Color(241, 244, 248);
   private static final Color SELECTION_BORDER = new Color(199, 213, 229);
+
+  private JLatexEditorJFrame latexEditor;
 
   private ArrayList<LatexCompileError> errors = new ArrayList<LatexCompileError>();
 
@@ -37,7 +41,9 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener {
   private JScrollPane scrollHbox = new JScrollPane(listHbox);
   private JScrollPane scrollWarning = new JScrollPane(listWarning);
 
-  public ErrorView() {
+  public ErrorView(JLatexEditorJFrame latexEditor) {
+    this.latexEditor = latexEditor;
+
     latexOutput.setFont(new Font("MonoSpaced", 0, 13));
 
     nodeRoot = new DefaultMutableTreeNode("compile...");
@@ -55,15 +61,12 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener {
     tree.getSelectionModel().addTreeSelectionListener(this);
     tree.setCellRenderer(new ErrorTreeCellRenderer());
 
-    listError.setCellRenderer(new ErrorListCellRenderer());
-    listError.setSelectionModel(new DefaultListSelectionModel());
-    listError.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    listHbox.setCellRenderer(new ErrorListCellRenderer());
-    listHbox.setSelectionModel(new DefaultListSelectionModel());
-    listHbox.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    listWarning.setCellRenderer(new ErrorListCellRenderer());
-    listWarning.setSelectionModel(new DefaultListSelectionModel());
-    listWarning.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    for(JList list : new JList[] {listError, listHbox, listWarning}) {
+      list.setCellRenderer(new ErrorListCellRenderer());
+      list.setSelectionModel(new DefaultListSelectionModel());
+      list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      list.addListSelectionListener(this);
+    }
 
     setLeftComponent(tree);
     setRightComponent(scrollOutput);
@@ -114,6 +117,12 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener {
     setRightComponent(scrollOutput);
   }
 
+  public void valueChanged(ListSelectionEvent e) {
+    JList list = (JList) e.getSource();
+    ErrorComponent error = (ErrorComponent) list.getModel().getElementAt(e.getFirstIndex());
+    latexEditor.open(error.getError().getFile());
+  }
+
   private class ErrorComponent extends JLabel {
     private LatexCompileError error;
     private boolean isSelected = false;
@@ -121,6 +130,10 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener {
     public ErrorComponent(LatexCompileError error) {
       this.error = error;
       setText("<html><pre>" + error.toString() + "</pre></html>");
+    }
+
+    public LatexCompileError getError() {
+      return error;
     }
 
     public boolean isSelected() {

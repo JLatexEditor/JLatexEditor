@@ -82,7 +82,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     fileMenu.add(compileMenuItem);
 
     // error messages
-    errorView = new ErrorView();
+    errorView = new ErrorView(this);
 
     // tabs for the files
     tabbedPane = new JTabbedPane();
@@ -97,7 +97,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   }
 
   private SourceCodeEditor createSourceCodeEditor() {
-    SourceCodeEditor editor = new SourceCodeEditor(UNTITLED);
+    SourceCodeEditor editor = new SourceCodeEditor(null);
 
     SCEPane scePane = editor.getTextPane();
     SCEDocument document = scePane.getDocument();
@@ -114,7 +114,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
 
     // error highlighting
-    editor.setErrorHighlighting(new LatexErrorHighlighting(scePane, errorView));
+    editor.setErrorHighlighting(new LatexErrorHighlighting(editor, errorView));
 
     return editor;
   }
@@ -135,7 +135,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private int getTab(File file) {
     for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
       SourceCodeEditor editor = (SourceCodeEditor) tabbedPane.getComponentAt(tab);
-      if(new File(editor.getFileName()).equals(file)) {
+      if(editor.getFile() != null && editor.getFile().equals(file)) {
         return tab;
       }
     }
@@ -169,7 +169,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
       }
 
-      editor.setFileName(file.getAbsolutePath());
+      editor.setFile(file);
       editor.getTextPane().setText(text);
     } catch(IOException exc){
       System.out.println("Error opening file");
@@ -181,15 +181,14 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
       SourceCodeEditor editor = (SourceCodeEditor) tabbedPane.getComponentAt(tab);
 
-      String fileName = editor.getFileName();
-      File file = new File(fileName);
-      File backup = new File(fileName + "~");
+      File file = editor.getFile();
+      File backup = new File(file.getAbsolutePath() + "~");
       if(backup.exists()) backup.delete();
       file.renameTo(backup);
 
       String text = editor.getTextPane().getText();
       try{
-        PrintWriter writer = new PrintWriter(new FileOutputStream(fileName));
+        PrintWriter writer = new PrintWriter(new FileOutputStream(file));
         writer.write(text);
         writer.close();
       } catch(IOException ex){

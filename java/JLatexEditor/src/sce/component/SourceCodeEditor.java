@@ -9,10 +9,11 @@ import jlatexeditor.errorhighlighting.LatexErrorHighlighting;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 public class SourceCodeEditor extends JPanel{
   // The file name
-  private String fileName = null;
+  private File file = null;
 
   // The source code pane
   private SCEPane textPane = null;
@@ -31,8 +32,8 @@ public class SourceCodeEditor extends JPanel{
   private String errorText = null;
   private SCERowHighlight errorHighlight = null;
 
-  public SourceCodeEditor(String fileName){
-    this.fileName = fileName;
+  public SourceCodeEditor(File file){
+    this.file = file;
 
     // Change scoll bar colors to nice blue
     UIManager.put("ScrollBar.thumb", new Color(91, 135, 206));
@@ -49,19 +50,19 @@ public class SourceCodeEditor extends JPanel{
   }
 
   /**
-   * Returns the file name associated to this editor.
-   * @return file name
+   * Returns the file associated to this editor.
+   * @return file
    */
-  public String getFileName() {
-    return fileName;
+  public File getFile() {
+    return file;
   }
 
   /**
-   * Sets the file name associated with this editor.
-   * @param fileName file name
+   * Sets the file associated with this editor.
+   * @param file file
    */
-  public void setFileName(String fileName) {
-    this.fileName = fileName;
+  public void setFile(File file) {
+    this.file = file;
   }
 
   /**
