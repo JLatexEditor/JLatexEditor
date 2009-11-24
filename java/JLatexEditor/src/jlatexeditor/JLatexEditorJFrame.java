@@ -132,27 +132,31 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     return text;
   }
 
-  private int getTab(File file) {
-    for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
-      SourceCodeEditor editor = (SourceCodeEditor) tabbedPane.getComponentAt(tab);
-      if(editor.getFile() != null && editor.getFile().equals(file)) {
-        return tab;
+  public int getTab(File file) {
+    try {
+      String fileCanonical = file.getCanonicalPath();
+      for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
+        SourceCodeEditor editor = (SourceCodeEditor) tabbedPane.getComponentAt(tab);
+        String editorCanonical = editor.getFile() != null ? editor.getFile().getCanonicalPath() : "";
+        if(fileCanonical.equals(editorCanonical)) return tab;
       }
+    } catch (IOException e) {
+      e.printStackTrace();
     }
     return -1;
   }
 
-  private SourceCodeEditor getEditor(int tab) {
+  public SourceCodeEditor getEditor(int tab) {
     return (SourceCodeEditor) tabbedPane.getComponentAt(tab);
   }
 
-  public void open(File file) {
+  public SourceCodeEditor open(File file) {
     try{
       String text = readFile(file.getAbsolutePath());
 
       // already open?
       int tab = getTab(file);
-      if(tab != -1) { tabbedPane.setSelectedIndex(tab); return; }
+      if(tab != -1) { tabbedPane.setSelectedIndex(tab); return getEditor(tab); }
 
       // replacing the untitled tab?
       SourceCodeEditor editor = null;
@@ -171,10 +175,12 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
       editor.setFile(file);
       editor.getTextPane().setText(text);
+      return editor;
     } catch(IOException exc){
       System.out.println("Error opening file");
       exc.printStackTrace();
     }
+    return null;
   }
 
   public void saveAll() {

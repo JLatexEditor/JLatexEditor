@@ -50,7 +50,7 @@ public final class Aspell {
 			"--lang=" + lang,
 			"--language-tag=" + langTag
 		};
-		
+
 		Process aspellProcess = Runtime.getRuntime().exec(aspellCommand);
 
 		// see if aspell died
@@ -73,7 +73,9 @@ public final class Aspell {
 	public synchronized Result check(String word) throws IOException {
 		aspellIn.println(word);
 		aspellOut.readLine();
-		String line = aspellOut.readLine();
+
+    String line = aspellOut.readLine();
+    if(line.equals("")) line = aspellOut.readLine();
 
 		if (line.equals("*")) {
 			return new Result();

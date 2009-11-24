@@ -1,6 +1,7 @@
 package jlatexeditor;
 
 import jlatexeditor.errorhighlighting.LatexCompileError;
+import sce.component.SourceCodeEditor;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -63,8 +64,10 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
 
     for(JList list : new JList[] {listError, listHbox, listWarning}) {
       list.setCellRenderer(new ErrorListCellRenderer());
-      list.setSelectionModel(new DefaultListSelectionModel());
-      list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      DefaultListSelectionModel selectionModel = new DefaultListSelectionModel();
+      selectionModel.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
+      selectionModel.setLeadAnchorNotificationEnabled(false);
+      list.setSelectionModel(selectionModel);
       list.addListSelectionListener(this);
     }
 
@@ -111,16 +114,21 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
 
   public void valueChanged(TreeSelectionEvent e) {
     TreeNode node = (TreeNode) e.getNewLeadSelectionPath().getLastPathComponent();
-    if (node == nodeError) { setRightComponent(scrollError); return; }
-    if (node == nodeHbox) { setRightComponent(scrollHbox); return; }
-    if (node == nodeWarning) { setRightComponent(scrollWarning); return; }
-    setRightComponent(scrollOutput);
+    listError.clearSelection();
+    listHbox.clearSelection();
+    listWarning.clearSelection();
+    if (node == nodeError) { setRightComponent(scrollError); }
+    if (node == nodeHbox) { setRightComponent(scrollHbox); }
+    if (node == nodeWarning) { setRightComponent(scrollWarning); }
+    if (node == nodeOutput) { setRightComponent(scrollOutput); }
   }
 
   public void valueChanged(ListSelectionEvent e) {
     JList list = (JList) e.getSource();
-    ErrorComponent error = (ErrorComponent) list.getModel().getElementAt(e.getFirstIndex());
-    latexEditor.open(error.getError().getFile());
+    DefaultListSelectionModel selectionModel = (DefaultListSelectionModel) list.getSelectionModel();
+    ErrorComponent error = (ErrorComponent) list.getModel().getElementAt(selectionModel.getLeadSelectionIndex());
+
+    SourceCodeEditor editor = latexEditor.open(error.getError().getFile());
   }
 
   private class ErrorComponent extends JLabel {
