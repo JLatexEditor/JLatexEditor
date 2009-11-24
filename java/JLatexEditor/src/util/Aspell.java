@@ -69,7 +69,7 @@ public final class Aspell {
 	 * @param word word to check
 	 * @return aspell result
 	 */
-	public Result check(String word) throws IOException {
+	public synchronized Result check(String word) throws IOException {
 		aspellIn.println(word);
 		aspellOut.readLine();
 		String line = aspellOut.readLine();

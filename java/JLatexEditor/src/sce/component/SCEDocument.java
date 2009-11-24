@@ -360,8 +360,11 @@ public class SCEDocument{
 
     for(int column_nr = 0; column_nr < row.length; column_nr++){
       int begin_index = column_nr;
-      while(column_nr < row.length - 1 && row.chars[column_nr].style == row.chars[column_nr + 1].style) column_nr++;
+      while(column_nr < row.length - 1 &&
+	      row.chars[column_nr].style == row.chars[column_nr + 1].style &&
+	      row.chars[column_nr].overlayStyle == row.chars[column_nr + 1].overlayStyle) column_nr++;
       attributedString.addAttributes(stylesMap[row.chars[begin_index].style], begin_index, column_nr + 1);
+      attributedString.addAttributes(stylesMap[row.chars[begin_index].overlayStyle], begin_index, column_nr + 1);
     }
 
     // pay attention to selection

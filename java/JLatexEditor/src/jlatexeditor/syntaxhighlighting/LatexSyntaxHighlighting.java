@@ -9,8 +9,16 @@ import sce.component.*;
 import sce.syntaxhighlighting.ParserState;
 import sce.syntaxhighlighting.ParserStateStack;
 import sce.syntaxhighlighting.SyntaxHighlighting;
+import util.Aspell;
+
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDocumentListener{
+	private static final Pattern TERM_PATTERN = Pattern.compile("(\\\\?[\\w_\\-\\^]+)");
+	private static final Pattern BAD_TERM_CHARS = Pattern.compile("[\\\\\\d\\-\\^]");
+
   // text pane and document
   private SCEPane pane = null;
   private SCEDocument document = null;
@@ -19,7 +27,16 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
   private boolean parseNeeded = false;
   private boolean currentlyChanging = false;
 
-  public LatexSyntaxHighlighting(SCEPane pane){
+	private static Aspell aspell;
+	static {
+		try {
+			aspell = new Aspell();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public LatexSyntaxHighlighting(SCEPane pane){
     this.pane = pane;
     document = pane.getDocument();
     document.addSCEDocumentListener(this);
@@ -113,7 +130,7 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
     while(!ready && row_nr < rowsCount){
       SCEDocumentRow row = rows[row_nr];
       // this may never be
-      if(row.parserStateStack == null) throw new RuntimeException("Internel parser error occured.");
+      if(row.parserStateStack == null) throw new RuntimeException("Internal parser error occured.");
 
       // the current parser state (at the beginning of the row)
       ParserStateStack stateStack = row.parserStateStack.copy();
@@ -178,6 +195,31 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
           chars[char_nr].style = LatexStyles.TEXT;
         }
       }
+
+	    // extract word from row that shell be checked for misspellings
+	    String rowString = document.getRow(row_nr);
+
+	    // for each term in this row
+	    Matcher matcher = TERM_PATTERN.matcher(rowString);
+	    while(matcher.find()) {
+		    // check if it's not a tex command and does not contain formula specific characters ("_" and numbers)
+		    String termString = matcher.group(1);
+		    StyleableTerm term;
+		    if (BAD_TERM_CHARS.matcher(termString).find()) {
+			    term = new StyleableTerm(termString, chars, matcher.start(1), LatexStyles.U_NORMAL);
+		    } else {
+			    // spell check
+			    try {
+				    Aspell.Result aspellResult = aspell.check(termString);
+				    term = new StyleableTerm(termString, chars, matcher.start(1), aspellResult.isCorrect() ? LatexStyles.U_NORMAL : LatexStyles.U_MISSPELLED);
+			    } catch (IOException e) {
+				    term = new StyleableTerm(termString, chars, matcher.start(1), LatexStyles.U_NORMAL);
+				    e.printStackTrace();
+			    }
+		    }
+
+		    term.applyStyleToDoc();
+	    }
 
       // go to the next row
       row_nr++;

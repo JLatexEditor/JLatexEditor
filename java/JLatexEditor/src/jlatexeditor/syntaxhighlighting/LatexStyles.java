@@ -26,7 +26,10 @@ public class LatexStyles{
 
   public static final byte ERROR = Byte.MAX_VALUE;
 
-  public static void addStyles(SCEDocument document){
+  public static final byte U_NORMAL      = 100;
+  public static final byte U_MISSPELLED = 101;
+
+	public static void addStyles(SCEDocument document){
     Font font = new Font("MonoSpaced", 0, 13);
     Font fontBold = new Font("MonoSpaced", Font.BOLD, 13);
     Font fontItalic = new Font("MonoSpaced", Font.ITALIC, 13);
@@ -65,5 +68,14 @@ public class LatexStyles{
     // Error
     Map<TextAttribute, Object> styleError = document.addStyle(ERROR, styleText);
     styleError.put(TextAttribute.FOREGROUND, new Color(255, 0, 0));
+
+	  //// underline styles ////
+
+	  // normal
+	  Map<TextAttribute, Object> underlineNormal = document.addStyle(U_NORMAL, null);
+
+	  // misspelling
+	  Map<TextAttribute, Object> underlineMisspelling = document.addStyle(U_MISSPELLED, null);
+	  underlineMisspelling.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_LOW_GRAY);
   }
 }
