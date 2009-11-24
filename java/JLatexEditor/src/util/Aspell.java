@@ -23,6 +23,7 @@ public final class Aspell {
 		System.out.println(aspell.check("the"));
 		System.out.println(aspell.check("bla"));
 		System.out.println(aspell.check("teh"));
+		System.out.println(aspell.check("linebreak"));
 		aspell.shutdown();
 	}
 
