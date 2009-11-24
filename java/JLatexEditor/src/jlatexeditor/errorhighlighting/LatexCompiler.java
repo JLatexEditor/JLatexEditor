@@ -49,7 +49,7 @@ public class LatexCompiler extends Thread {
     }
 
     PrintWriter out = new PrintWriter(new OutputStreamWriter(latexCompiler.getOutputStream()));
-    BufferedReader in = new BufferedReader(new InputStreamReader(latexCompiler.getInputStream()), 500000);
+    BufferedReader in = new BufferedReader(new InputStreamReader(latexCompiler.getInputStream()));
 
     try{
       LatexCompileError error;

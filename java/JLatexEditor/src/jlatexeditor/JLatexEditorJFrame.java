@@ -76,9 +76,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     fileMenu.add(saveMenuItem);
 
     JMenuItem compileMenuItem = new JMenuItem("Compile");
-    saveMenuItem.setActionCommand("compile");
-    saveMenuItem.setAccelerator(KeyStroke.getKeyStroke("alt 1"));
-    saveMenuItem.addActionListener(this);
+    compileMenuItem.setActionCommand("compile");
+    compileMenuItem.setAccelerator(KeyStroke.getKeyStroke("alt 1"));
+    compileMenuItem.addActionListener(this);
     fileMenu.add(compileMenuItem);
 
     // error messages
@@ -209,7 +209,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     latexCompiler.addLatexCompileListener(editor.getErrorHighlighting());
 
     latexCompiler.start();
-    latexCompiler = null;
   }
 
   // ActionListener methods
