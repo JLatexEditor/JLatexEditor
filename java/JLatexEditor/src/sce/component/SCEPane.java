@@ -44,6 +44,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 
   /** Caret in the document. */
   private SCECaret caret = null;
+  private boolean freezeCaret = false;
 
   // UI properties
   private SCEPaneUI ui = null;
@@ -291,7 +292,9 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    * @param text the text
    */
   public void setText(String text){
+    freezeCaret = true;
     document.setText(text);
+    freezeCaret = false;
   }
 
   /**
@@ -453,7 +456,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     }
 
     // update the caret position
-    if(event.isInsert()){
+    if(event.isInsert() && !freezeCaret){
       caret.moveTo(end.getRow(), end.getColumn());
       if(caret.getSelectionMark() != null){
         caret.removeSelectionMark();
@@ -478,7 +481,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 
     // scroll to caret
     Point caretPos = modelToView(row, column);
-    scrollRectToVisible(new Rectangle(caretPos.x - 30, caretPos.y - 20, 60, lineHeight + 40));
+    scrollRectToVisible(new Rectangle(Math.max(0,caretPos.x - 30), Math.max(0, caretPos.y - 20), 60, lineHeight + 40));
   }
 
   // FocusListener methods

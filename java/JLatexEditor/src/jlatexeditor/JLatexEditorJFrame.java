@@ -19,11 +19,13 @@ import sce.syntaxhighlighting.SyntaxHighlighting;
 import util.StreamUtils;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 
-public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener {
+public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener {
   private static String UNTITLED = "Untitled";
 
   private JMenuBar menuBar = null;
@@ -41,6 +43,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private LatexCompiler latexCompiler = null;
   // main file to compile
   private SourceCodeEditor mainEditor = null;
+
+  private LatexErrorHighlighting errorHighlighting = new LatexErrorHighlighting();
 
   public static void main(String args[]){
     JLatexEditorJFrame latexEditor = new JLatexEditorJFrame("jlatexeditor.JLatexEditor", args);
@@ -87,6 +91,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // tabs for the files
     tabbedPane = new JTabbedPane();
     tabbedPane.addTab(UNTITLED, createSourceCodeEditor());
+    tabbedPane.addChangeListener(this);
 
     textErrorSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, tabbedPane, errorView);
     textErrorSplit.setOneTouchExpandable(true);
@@ -94,6 +99,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
     getContentPane().add(textErrorSplit, BorderLayout.CENTER);
     getContentPane().validate();
+
+    errorHighlighting.attach(getEditor(0), errorView);
   }
 
   private SourceCodeEditor createSourceCodeEditor() {
@@ -112,9 +119,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  // code completion and quick help
 	  scePane.setCodeHelper(new LatexCodeHelper("data/codehelper/commands.xml"));
 	  scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
-
-    // error highlighting
-    editor.setErrorHighlighting(new LatexErrorHighlighting(editor, errorView));
 
     return editor;
   }
@@ -158,6 +162,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       int tab = getTab(file);
       if(tab != -1) { tabbedPane.setSelectedIndex(tab); return getEditor(tab); }
 
+      boolean addTab = true;
+
       // replacing the untitled tab?
       SourceCodeEditor editor = null;
       if(tabbedPane.getTabCount() == 1
@@ -168,13 +174,21 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         editor = ((SourceCodeEditor) tabbedPane.getComponentAt(0));
       } else {
         editor = createSourceCodeEditor();
+        tabbedPane.removeChangeListener(this);
         tabbedPane.addTab(file.getName(), editor);
+        tabbedPane.addChangeListener(this);
         tabbedPane.setTabComponentAt(tabbedPane.getTabCount()-1,new TabLabel(file));
         tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
       }
 
       editor.setFile(file);
-      editor.getTextPane().setText(text);
+      SCEPane pane = editor.getTextPane();
+      pane.setText(text);
+      pane.getCaret().moveTo(0,0);
+
+      errorHighlighting.detach();
+      errorHighlighting.attach(editor, errorView);
+      errorHighlighting.update();
       return editor;
     } catch(IOException exc){
       System.out.println("Error opening file");
@@ -212,7 +226,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     if(latexCompiler != null) latexCompiler.halt();
     latexCompiler = new LatexCompiler(editor, errorView);
 
-    latexCompiler.addLatexCompileListener(editor.getErrorHighlighting());
+    errorHighlighting.clear();
+    latexCompiler.addLatexCompileListener(errorHighlighting);
 
     latexCompiler.start();
   }
@@ -271,6 +286,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   }
 
   public void windowDeactivated(WindowEvent e) {
+  }
+
+  public void stateChanged(ChangeEvent e) {
+    if(e.getSource() == tabbedPane) {
+      errorHighlighting.detach();
+      errorHighlighting.attach(getEditor(tabbedPane.getSelectedIndex()), errorView);
+    }
   }
 
   private class TabLabel extends JPanel implements MouseListener {

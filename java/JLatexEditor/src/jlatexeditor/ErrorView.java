@@ -1,6 +1,7 @@
 package jlatexeditor;
 
 import jlatexeditor.errorhighlighting.LatexCompileError;
+import sce.component.SCEPane;
 import sce.component.SourceCodeEditor;
 
 import javax.swing.*;
@@ -82,6 +83,7 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     lmError.clear();
     lmHbox.clear();
     lmWarning.clear();
+    errors.clear();
   }
 
   public void update() {
@@ -102,6 +104,10 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     if (error.getType() == LatexCompileError.TYPE_WARNING) lmWarning.addElement(new ErrorComponent(error));
     update();
     repaint();
+  }
+
+  public ArrayList<LatexCompileError> getErrors() {
+    return errors;
   }
 
   public void setText(String text) {
@@ -125,10 +131,29 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
 
   public void valueChanged(ListSelectionEvent e) {
     JList list = (JList) e.getSource();
+    DefaultListModel model = (DefaultListModel) list.getModel();
     DefaultListSelectionModel selectionModel = (DefaultListSelectionModel) list.getSelectionModel();
-    ErrorComponent error = (ErrorComponent) list.getModel().getElementAt(selectionModel.getLeadSelectionIndex());
+    int index = selectionModel.getLeadSelectionIndex();
+    if(index < 0 || index >= model.size()) return;
+    
+    ErrorComponent errorComponent = (ErrorComponent) model.getElementAt(index);
+    LatexCompileError error = errorComponent.getError();
 
-    SourceCodeEditor editor = latexEditor.open(error.getError().getFile());
+    SourceCodeEditor editor = latexEditor.open(error.getFile());
+    SCEPane pane = editor.getTextPane();
+
+    int column = 0;
+    if(error.getTextBefore() != null) {
+      String line = pane.getDocument().getRow(error.getLineStart());
+      column = Math.max(0, line.indexOf(error.getTextBefore()));
+    }
+
+    int rowStart = Math.max(0, error.getLineStart()-1);
+    int rowEnd = Math.max(0, error.getLineEnd()-1);
+    Point errorStart = pane.modelToView(rowStart, column);
+    Point errorEnd = pane.modelToView(rowEnd, column);
+    scrollRectToVisible(new Rectangle(errorStart.x-150, errorStart.y - 300, 300, errorEnd.y - errorStart.y + 300));
+    pane.getCaret().moveTo(rowStart, column);
   }
 
   private class ErrorComponent extends JLabel {

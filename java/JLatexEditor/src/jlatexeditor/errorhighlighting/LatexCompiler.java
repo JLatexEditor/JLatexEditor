@@ -49,7 +49,7 @@ public class LatexCompiler extends Thread {
     }
 
     PrintWriter out = new PrintWriter(new OutputStreamWriter(latexCompiler.getOutputStream()));
-    BufferedReader in = new BufferedReader(new InputStreamReader(latexCompiler.getInputStream()));
+    BufferedReader in = new BufferedReader(new InputStreamReader(latexCompiler.getInputStream()), 500000);
 
     try{
       LatexCompileError error;
@@ -66,8 +66,16 @@ public class LatexCompiler extends Thread {
 
           error.setMessage(line.substring(1).trim());
 
-          while(!line.startsWith("l.")) {
+          while(line != null && !line.startsWith("l.")) {
+            if(line.startsWith("<argument>")) {
+              error.setCommand(line.substring("<argument>".length()).trim());
+            }
             line = in.readLine(); errorView.appendLine(line);
+          }
+
+          if(line == null) {
+            compileError(error);
+            continue;
           }
 
           if(line.startsWith("l.")) {
@@ -95,13 +103,13 @@ public class LatexCompiler extends Thread {
           }
         }
 
-        if(line.startsWith("LaTeX Warning:")) {
+        if(line.startsWith("LaTeX Warning:") || line.startsWith("LaTeX Font Warning:")) {
           error = new LatexCompileError();
           error.setType(LatexCompileError.TYPE_WARNING);
           String fileName = fileStack.get(fileStack.size() - 1);
           error.setFile(new File(editor.getFile().getParentFile(), fileName), fileName);
 
-          StringBuffer errorMessage = new StringBuffer(line.substring("LaTeX Warning:".length()).trim());
+          StringBuffer errorMessage = new StringBuffer(line.substring(line.indexOf(':')+1).trim());
           for(int i = 0; i < 5; i++) {
             line = in.readLine(); errorView.appendLine(line);
             if(line.trim().equals("")) break;
@@ -118,18 +126,21 @@ public class LatexCompiler extends Thread {
           error.setType(LatexCompileError.TYPE_OVERFULL_HBOX);
           String fileName = fileStack.get(fileStack.size() - 1);
           error.setFile(new File(editor.getFile().getParentFile(), fileName), fileName);
+          error.setMessage(line);
 
-          int linePos = line.indexOf("at lines ");
-          if(linePos != -1) {
-            linePos += "at lines ".length();
-            int mmPos = line.indexOf("--", linePos);
-            try {
-              error.setLineStart(Integer.parseInt(line.substring(linePos,mmPos)));
-              error.setLineEnd(Integer.parseInt(line.substring(mmPos+2)));
-            } catch (Exception e) { continue; }
+          while(!line.trim().equals("")) {
+            int linePos = line.indexOf("at lines ");
+            if(linePos != -1) {
+              linePos += "at lines ".length();
+              int mmPos = line.indexOf("--", linePos);
+              try {
+                error.setLineStart(Integer.parseInt(line.substring(linePos,mmPos)));
+                error.setLineEnd(Integer.parseInt(line.substring(mmPos+2)));
+              } catch (Exception e) { continue; }
+            }
+            line = in.readLine(); errorView.appendLine(line);
           }
 
-          error.setMessage(line);
           compileError(error);
           line = in.readLine(); errorView.appendLine(line);
           continue;

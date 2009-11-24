@@ -18,7 +18,8 @@ public class LatexCompileError{
   private int lineStart = -1;
   private int lineEnd = -1;
 
-  private String error = null;
+  private String message = null;
+  private String command = null;
   private String textBefore = null;
   private String textAfter = null;
 
@@ -65,12 +66,20 @@ public class LatexCompileError{
     this.lineEnd = lineEnd;
   }
 
-  public String getError(){
-    return error;
+  public String getMessage(){
+    return message;
   }
 
   public void setMessage(String error){
-    this.error = error;
+    this.message = error;
+  }
+
+  public String getCommand() {
+    return command;
+  }
+
+  public void setCommand(String command) {
+    this.command = command;
   }
 
   public String getTextBefore(){
@@ -96,7 +105,7 @@ public class LatexCompileError{
       if(getLineStart() != getLineEnd()) message.append("--").append(getLineEnd());
     }
     message.append("\n");
-    message.append("  ").append(getError()).append("\n");
+    message.append("  ").append(getMessage()).append("\n");
     if(getTextBefore() != null) {
       message.append("  ").append(getTextBefore()).append("[ERROR]").append(getTextAfter()).append("\n");
     }

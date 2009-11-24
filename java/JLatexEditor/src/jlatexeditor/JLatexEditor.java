@@ -124,7 +124,7 @@ public class JLatexEditor extends QaquaFrame implements ActionListener{
 	  scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
 	  
     // error highlighting
-    errorHighlightning = new LatexErrorHighlighting(editor, errorView);
+    errorHighlightning = new LatexErrorHighlighting();
   }
 
   // ActionListener methods
