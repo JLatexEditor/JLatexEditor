@@ -140,11 +140,15 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     // is control down?
     if(e.isControlDown()){
       keyControlDown(e);
+	    if (!isModifierKey(e.getKeyCode())) return;
+	    /*
+	    TODO: Jörg, diesen Coded verstehe ich nicht. Wieso ist das nötig? Macht nur die control+shift-Selektion kaputt
 	    if (!isModifierKey(e.getKeyCode())) {
         caret.removeSelectionMark();
         pane.repaint();
         return;
       }
+      */
     }
 
     // undo the last edit
