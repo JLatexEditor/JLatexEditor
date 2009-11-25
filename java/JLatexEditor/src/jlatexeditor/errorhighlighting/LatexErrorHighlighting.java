@@ -7,18 +7,14 @@ package jlatexeditor.errorhighlighting;
 import jlatexeditor.ErrorView;
 import sce.component.*;
 
-import javax.xml.transform.Source;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 public class LatexErrorHighlighting implements LatexCompileListener {
-  // editor and document
+  // editor
   private SourceCodeEditor editor = null;
-  private SCEPane pane = null;
-  private SCEDocument document = null;
-
   private ErrorView errorView = null;
 
   // error highlights
@@ -30,22 +26,20 @@ public class LatexErrorHighlighting implements LatexCompileListener {
 
   public void attach(SourceCodeEditor editor, ErrorView errorView) {
     this.editor = editor;
-    pane = editor.getTextPane();
-    document = pane.getDocument();
     this.errorView = errorView;
 
     update();
   }
 
   public void detach() {
-    if(pane != null) clear();
-    editor = null;
-    pane = null;
-    document = null;
+    if(editor != null) clear();
   }
 
   public void clear() {
+    editor.getMarkerBar().clear();
+
     // remove old error highlights
+    SCEPane pane = editor.getTextPane();
     Iterator highlightsIterator = errorHighlights.iterator();
     while(highlightsIterator.hasNext()){
       pane.removeTextHighlight((SCEErrorHighlight) highlightsIterator.next());
@@ -56,14 +50,22 @@ public class LatexErrorHighlighting implements LatexCompileListener {
   public void update() {
     if(errorView == null || editor == null || editor.getFile() == null) return;
 
+    SCEPane pane = editor.getTextPane();
+    SCEDocument document = pane.getDocument();
+    SCEMarkerBar markerBar = editor.getMarkerBar();
     try {
       String canonicalFile = editor.getFile().getCanonicalPath();
       for(LatexCompileError error : errorView.getErrors()) {
-        if(error.getType() != LatexCompileError.TYPE_ERROR) continue;
         if(!canonicalFile.equals(error.getFile().getCanonicalPath())) continue;
 
         // add error highlights
         int errorRow = Math.max(0, error.getLineStart() - 1);
+
+        int markerType = LatexCompileError.errorType2markerType(error.getType());
+        markerBar.addMarker(new SCEMarkerBar.Marker(markerType, errorRow, error));
+
+        if(error.getType() != LatexCompileError.TYPE_ERROR) continue;
+
         String row = document.getRow(errorRow);
 
         int errorColumn = 0;
@@ -85,6 +87,7 @@ public class LatexErrorHighlighting implements LatexCompileListener {
         pane.addTextHighlight(errorHighlight);
         errorHighlights.add(errorHighlight);
       }
+      markerBar.repaint();
     } catch (IOException e) { }
   }
 

@@ -64,7 +64,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     menuBar = new JMenuBar();
     setJMenuBar(menuBar);
 
-    JMenu fileMenu = new JMenu("Datei");
+    JMenu fileMenu = new JMenu("File");
     menuBar.add(fileMenu);
 
     JMenuItem openMenuItem = new JMenuItem("Open");
@@ -79,11 +79,25 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     saveMenuItem.addActionListener(this);
     fileMenu.add(saveMenuItem);
 
+    JMenuItem closeMenuItem = new JMenuItem("Close");
+    closeMenuItem.setActionCommand("close");
+    closeMenuItem.setAccelerator(KeyStroke.getKeyStroke("control W"));
+    closeMenuItem.addActionListener(this);
+    fileMenu.add(closeMenuItem);
+
+    JMenuItem exitMenuItem = new JMenuItem("Exit");
+    exitMenuItem.setActionCommand("exit");
+    exitMenuItem.addActionListener(this);
+    fileMenu.add(exitMenuItem);
+
+    JMenu buildMenu = new JMenu("Build");
+    menuBar.add(buildMenu);
+
     JMenuItem compileMenuItem = new JMenuItem("Compile");
     compileMenuItem.setActionCommand("compile");
     compileMenuItem.setAccelerator(KeyStroke.getKeyStroke("alt 1"));
     compileMenuItem.addActionListener(this);
-    fileMenu.add(compileMenuItem);
+    buildMenu.add(compileMenuItem);
 
     // error messages
     errorView = new ErrorView(this);
@@ -232,6 +246,12 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     latexCompiler.start();
   }
 
+  private void closeTab(int tab) {
+    SourceCodeEditor editor = getEditor(tab);
+    tabbedPane.removeTabAt(tab);
+    editor.getTextPane().setText("");
+  }
+
   // ActionListener methods
   public void actionPerformed(ActionEvent e){
     // open a file
@@ -246,6 +266,17 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // save a file
     if(e.getActionCommand().equals("save")){
       saveAll();
+    }
+
+    // close
+    if(e.getActionCommand().equals("close")){
+      closeTab(tabbedPane.getSelectedIndex());
+    }
+
+    // exit
+    if(e.getActionCommand().equals("exit")){
+      saveAll();
+      System.exit(-1);
     }
 
     // compile
@@ -317,7 +348,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       addMouseListener(this);
     }
 
-    @Override
     public boolean contains(int x, int y) {
       return x >= -4 && x <= getWidth() + 4 && y >= -2 && y <= getHeight() + 2;
     }
@@ -325,8 +355,20 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     public void mouseClicked(MouseEvent e) {
       tabbedPane.setSelectedIndex(getTab(file));
       if(e.getClickCount() >= 2) {
-
+        mainEditor = getEditor(getTab(file));
+        for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
+          tabbedPane.getTabComponentAt(tab).setForeground(Color.BLACK);
+        }
+        label.setForeground(Color.RED);
       }
+      if(closeIcon.contains(e.getX() - closeIcon.getX(), e.getY() - closeIcon.getY())) {
+        closeTab(getTab(file));
+      }
+    }
+
+    public void setForeground(Color fg) {
+      super.setForeground(fg);
+      if(label != null) label.setForeground(fg);
     }
 
     public void mousePressed(MouseEvent e) {

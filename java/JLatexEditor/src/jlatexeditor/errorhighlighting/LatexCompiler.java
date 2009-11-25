@@ -109,6 +109,14 @@ public class LatexCompiler extends Thread {
           String fileName = fileStack.get(fileStack.size() - 1);
           error.setFile(new File(editor.getFile().getParentFile(), fileName), fileName);
 
+          int linePos = line.indexOf("on input line ");
+          if(linePos != -1) {
+            linePos += "on input line ".length();
+            try {
+              error.setLine(Integer.parseInt(line.substring(linePos, line.indexOf('.', linePos))));
+            } catch (Exception e) { }
+          }
+
           StringBuffer errorMessage = new StringBuffer(line.substring(line.indexOf(':')+1).trim());
           for(int i = 0; i < 5; i++) {
             line = in.readLine(); errorView.appendLine(line);
@@ -121,7 +129,7 @@ public class LatexCompiler extends Thread {
           continue;
         }
 
-        if(line.startsWith("Overfull \\hbox")) {
+        if(line.startsWith("Overfull \\hbox") || line.startsWith("Underfull \\hbox")) {
           error = new LatexCompileError();
           error.setType(LatexCompileError.TYPE_OVERFULL_HBOX);
           String fileName = fileStack.get(fileStack.size() - 1);
@@ -139,6 +147,7 @@ public class LatexCompiler extends Thread {
               } catch (Exception e) { continue; }
             }
             line = in.readLine(); errorView.appendLine(line);
+            if(line.indexOf("/10") == -1) break;
           }
 
           compileError(error);
@@ -177,6 +186,10 @@ public class LatexCompiler extends Thread {
               position = close + 1;
             }
           }
+          
+          // for debugging: print the stack of open files
+          // for(String fileName : fileStack) System.out.print(fileName + " ");
+          // System.out.println();
 
           line = in.readLine(); errorView.appendLine(line);
           continue;

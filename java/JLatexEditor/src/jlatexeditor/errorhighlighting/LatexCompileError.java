@@ -6,10 +6,14 @@ package jlatexeditor.errorhighlighting;
 
 import java.io.File;
 
-public class LatexCompileError{
-  public static final int TYPE_WARNING = 0;
-  public static final int TYPE_OVERFULL_HBOX = 1;
-  public static final int TYPE_ERROR = 2;
+public class LatexCompileError {
+  public static final int TYPE_ERROR         = 0;
+  public static final int TYPE_WARNING       = 1;
+  public static final int TYPE_OVERFULL_HBOX = 2;
+
+  public static int errorType2markerType(int type) {
+    return type;
+  }
 
   private int type = TYPE_ERROR;
 

@@ -16,6 +16,7 @@ public class SourceCodeEditor extends JPanel{
   // The source code pane
   private SCEPane textPane = null;
   private JScrollPane scrollPane = null;
+  private SCEMarkerBar markerBar = null;
 
   public SourceCodeEditor(File file){
     this.file = file;
@@ -30,8 +31,11 @@ public class SourceCodeEditor extends JPanel{
     scrollPane = new JScrollPane(textPane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
     scrollPane.getVerticalScrollBar().setUnitIncrement(30);
 
+    markerBar = new SCEMarkerBar(this);
+
     setLayout(new BorderLayout());
     add(scrollPane, BorderLayout.CENTER);
+    add(markerBar, BorderLayout.EAST);
   }
 
   /**
@@ -66,7 +70,21 @@ public class SourceCodeEditor extends JPanel{
     return textPane.getText();
   }
 
-	/**
+  /**
+   * Returns the marker bar.
+   */
+  public SCEMarkerBar getMarkerBar() {
+    return markerBar;
+  }
+
+  /**
+   * Sets the marker bar.
+   */
+  public void setMarkerBar(SCEMarkerBar markerBar) {
+    this.markerBar = markerBar;
+  }
+
+  /**
 	 * Sets the text of the SourceCodePane.
 	 * @param text text of the SourceCodePane
 	 */
