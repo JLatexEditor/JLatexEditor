@@ -32,6 +32,8 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   private int characterWidth = 0;
   /** Spacer for line numbers. */
   private int lineNumberSpacer = 30;
+  private final int SPACE_LEFT = 3;
+
   // margin constants
   public static final int MARGIN_TOP = 0;
   public static final int MARGIN_BOTTOM = 1;
@@ -164,7 +166,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     for(int line = startRow; line < endRow; line++){
       AttributedString attributedString = document.getRowAttributed(line);
       if(attributedString == null) continue;
-      int posx = lineNumberSpacer;
+      int posx = lineNumberSpacer + SPACE_LEFT;
       int posy = line * lineHeight + lineAscent - 1;
       g2D.drawString(attributedString.getIterator(), posx, posy);
     }
@@ -232,7 +234,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    * @return position on the screen
    */
   public Point modelToView(int row, int column){
-    return new Point(lineNumberSpacer + column * characterWidth, row * lineHeight);
+    return new Point(lineNumberSpacer + SPACE_LEFT + column * characterWidth, row * lineHeight);
   }
 
   /**
@@ -244,7 +246,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    */
   public SCEDocumentPosition viewToModel(int x, int y){
     int row = y / lineHeight;
-    int column = Math.max((x + characterWidth / 2 - lineNumberSpacer) / characterWidth, 0);
+    int column = Math.max((x + characterWidth / 2 - lineNumberSpacer - SPACE_LEFT) / characterWidth, 0);
     return new SCEDocumentPosition(row, column);
   }
 
@@ -273,7 +275,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    * @return margin of the text pane
    */
   public int getMargin(int margin){
-    if(margin == MARGIN_LEFT) return lineNumberSpacer;
+    if(margin == MARGIN_LEFT) return lineNumberSpacer + SPACE_LEFT;
     return 0;
   }
 
