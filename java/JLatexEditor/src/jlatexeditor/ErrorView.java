@@ -75,7 +75,7 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     setLeftComponent(tree);
     setRightComponent(scrollOutput);
 
-    setResizeWeight(.2);
+    setResizeWeight(0);
   }
 
   public void clear() {

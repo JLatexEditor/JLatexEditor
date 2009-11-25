@@ -141,14 +141,6 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     if(e.isControlDown()){
       keyControlDown(e);
 	    if (!isModifierKey(e.getKeyCode())) return;
-	    /*
-	    TODO: Jörg, diesen Coded verstehe ich nicht. Wieso ist das nötig? Macht nur die control+shift-Selektion kaputt
-	    if (!isModifierKey(e.getKeyCode())) {
-        caret.removeSelectionMark();
-        pane.repaint();
-        return;
-      }
-      */
     }
 
     // undo the last edit
@@ -264,11 +256,13 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     if(e.isShiftDown()){
       if(caret.getSelectionMark() == null) caret.setSelectionMark();
     } else {
-      if(caret.getSelectionMark() != null && e.isActionKey()){
-        caret.removeSelectionMark();
-        pane.repaint();
-      }
+      if(caret.getSelectionMark() != null && e.isActionKey()) clearSelection();
     }
+  }
+
+  private void clearSelection() {
+    caret.removeSelectionMark();
+    pane.repaint();
   }
 
 	private void removeIndentation(int row) {
@@ -303,20 +297,24 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     if(e.getKeyCode() == KeyEvent.VK_LEFT){
       caret.moveTo(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), -1));
       e.consume();
+      clearSelection();
     }
     if(e.getKeyCode() == KeyEvent.VK_RIGHT){
       caret.moveTo(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), 1));
       e.consume();
+      clearSelection();
     }
     if(e.getKeyCode() == KeyEvent.VK_HOME){
       caret.moveTo(0, 0);
       e.consume();
+      clearSelection();
     }
     if(e.getKeyCode() == KeyEvent.VK_END){
       int row = document.getRowsCount() - 1;
       int column = document.getRowLength(row);
       caret.moveTo(row, column);
       e.consume();
+      clearSelection();
     }
 
 	  // control+(shift)+Z -> undo/redo the last edit

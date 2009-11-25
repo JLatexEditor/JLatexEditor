@@ -95,7 +95,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
     textErrorSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, tabbedPane, errorView);
     textErrorSplit.setOneTouchExpandable(true);
-    textErrorSplit.setResizeWeight(.90);
+    textErrorSplit.setResizeWeight(.85);
 
     getContentPane().add(textErrorSplit, BorderLayout.CENTER);
     getContentPane().validate();
