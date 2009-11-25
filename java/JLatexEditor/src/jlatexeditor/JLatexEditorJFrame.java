@@ -90,6 +90,15 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     exitMenuItem.addActionListener(this);
     fileMenu.add(exitMenuItem);
 
+    JMenu editMenu = new JMenu("Edit");
+    menuBar.add(editMenu);
+
+    JMenuItem findMenuItem = new JMenuItem("Find");
+    findMenuItem.setActionCommand("find");
+    findMenuItem.setAccelerator(KeyStroke.getKeyStroke("control F"));
+    findMenuItem.addActionListener(this);
+    fileMenu.add(findMenuItem);
+
     JMenu buildMenu = new JMenu("Build");
     menuBar.add(buildMenu);
 
