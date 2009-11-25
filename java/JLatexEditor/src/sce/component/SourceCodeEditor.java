@@ -17,6 +17,7 @@ public class SourceCodeEditor extends JPanel{
   private SCEPane textPane = null;
   private JScrollPane scrollPane = null;
   private SCEMarkerBar markerBar = null;
+  private SCESearch search = null;
 
   public SourceCodeEditor(File file){
     this.file = file;
@@ -32,6 +33,8 @@ public class SourceCodeEditor extends JPanel{
     scrollPane.getVerticalScrollBar().setUnitIncrement(30);
 
     markerBar = new SCEMarkerBar(this);
+
+    search = new SCESearch(this);
 
     setLayout(new BorderLayout());
     add(scrollPane, BorderLayout.CENTER);
@@ -98,5 +101,21 @@ public class SourceCodeEditor extends JPanel{
    */
   public void setEditable(boolean editable){
     textPane.setEditable(editable);
+  }
+
+  public void moveTo(int row, int column) {
+    Point pos = textPane.modelToView(row, column);
+    scrollPane.scrollRectToVisible(new Rectangle(pos.x-150, pos.y - 300, 300, pos.y - pos.y + 300));
+    textPane.getCaret().moveTo(row, column);
+  }
+
+  /**
+   * Show search field.
+   */
+  public void search() {
+    add(search, BorderLayout.NORTH);
+    search.setVisible(true);
+    validate();
+    search.focus();
   }
 }

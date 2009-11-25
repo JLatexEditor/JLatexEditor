@@ -209,6 +209,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       pane.setText(text);
       pane.getCaret().moveTo(0,0);
 
+      pane.getUndoManager().clear();
+
       errorHighlighting.detach();
       errorHighlighting.attach(editor, errorView);
       errorHighlighting.update();
@@ -286,6 +288,11 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     if(e.getActionCommand().equals("exit")){
       saveAll();
       System.exit(-1);
+    }
+
+    // find
+    if(e.getActionCommand().equals("find")){
+      getEditor(tabbedPane.getSelectedIndex()).search();
     }
 
     // compile

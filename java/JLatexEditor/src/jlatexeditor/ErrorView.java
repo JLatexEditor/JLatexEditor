@@ -149,11 +149,7 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     }
 
     int rowStart = Math.max(0, error.getLineStart()-1);
-    int rowEnd = Math.max(0, error.getLineEnd()-1);
-    Point errorStart = pane.modelToView(rowStart, column);
-    Point errorEnd = pane.modelToView(rowEnd, column);
-    editor.scrollRectToVisible(new Rectangle(errorStart.x-150, errorStart.y - 300, 300, errorEnd.y - errorStart.y + 300));
-    pane.getCaret().moveTo(rowStart, column);
+    editor.moveTo(rowStart, column);
   }
 
   private class ErrorComponent extends JLabel {

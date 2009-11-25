@@ -53,6 +53,14 @@ public class SCEUndoManager implements SCEDocumentListener{
 	  // TODO
   }
 
+  /**
+   * Clear undo list.
+   */
+  public void clear() {
+    lastEvents.clear();
+    nextEvents.clear();
+  }
+
   // add event to lastEvents vector
   public void documentChanged(SCEDocument sender, SCEDocumentEvent event){
     // don't work with undo events
