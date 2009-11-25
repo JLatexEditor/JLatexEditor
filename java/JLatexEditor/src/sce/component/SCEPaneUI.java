@@ -297,24 +297,24 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     if(e.getKeyCode() == KeyEvent.VK_LEFT){
       caret.moveTo(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), -1));
       e.consume();
-      clearSelection();
+      if(!e.isShiftDown()) clearSelection();
     }
     if(e.getKeyCode() == KeyEvent.VK_RIGHT){
       caret.moveTo(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), 1));
       e.consume();
-      clearSelection();
+      if(!e.isShiftDown()) clearSelection();
     }
     if(e.getKeyCode() == KeyEvent.VK_HOME){
       caret.moveTo(0, 0);
       e.consume();
-      clearSelection();
+      if(!e.isShiftDown()) clearSelection();
     }
     if(e.getKeyCode() == KeyEvent.VK_END){
       int row = document.getRowsCount() - 1;
       int column = document.getRowLength(row);
       caret.moveTo(row, column);
       e.consume();
-      clearSelection();
+      if(!e.isShiftDown()) clearSelection();
     }
 
 	  // control+(shift)+Z -> undo/redo the last edit
