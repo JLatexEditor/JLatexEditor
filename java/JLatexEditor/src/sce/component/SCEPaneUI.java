@@ -271,8 +271,8 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
   }
 
 	private void keyAltDown(KeyEvent e) {
-		// control+enter
-	 if(e.getKeyCode() == KeyEvent.VK_ENTER && e.isAltDown()) {
+		// alt+enter
+	 if(e.getKeyCode() == KeyEvent.VK_ENTER) {
 		 pane.callCodeAssistants();
 		 e.consume();
 	 }

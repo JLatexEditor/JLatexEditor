@@ -6,6 +6,7 @@
 
 package jlatexeditor;
 
+import jlatexeditor.codehelper.SpellCheckSuggester;
 import jlatexeditor.errorhighlighting.LatexCompiler;
 import sce.codehelper.CodeAssistant;
 import sce.codehelper.SCEPopup;
@@ -155,21 +156,14 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  scePane.setCodeHelper(new LatexCodeHelper("data/codehelper/commands.xml"));
 	  scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
 
-	  final List<String> items = new ArrayList<String>();
-	  items.add("test");
-	  scePane.addCodeAssistantListener(new CodeAssistant() {
-		  public boolean assistAt(SCEPane pane) {
-			  pane.getPopup().openPopup(items, new SCEPopup.ItemHandler() {
-		      public void perform(Object item) {
-			      System.out.println(item);
-					}
-				});
+	  try {
+		  scePane.addCodeAssistantListener(new SpellCheckSuggester());
+	  } catch (IOException e) {
+		  System.err.println("Initialization of the spell check suggester failed!");
+		  e.printStackTrace();
+	  }
 
-			  return false;
-		  }
-	  });
-
-    return editor;
+	  return editor;
   }
 
   public int getTab(File file) {

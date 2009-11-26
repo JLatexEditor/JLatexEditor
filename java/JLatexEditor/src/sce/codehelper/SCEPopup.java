@@ -199,11 +199,17 @@ public class SCEPopup extends JScrollPane implements KeyListener {
     if((e.getKeyCode() == KeyEvent.VK_ENTER || (e.getKeyCode() == KeyEvent.VK_SPACE) && !e.isControlDown())){
       if(model.size() == 0) return;
 
+	    setVisible(false);
+
       // pass the selected item to the item handler
       Object item = list.getSelectedValue();
 	    itemHandler.perform(item);
       e.consume();
     }
+
+	  if (!e.isConsumed()) {
+		  setVisible(false);
+	  }
   }
 
   public void keyReleased(KeyEvent e){
