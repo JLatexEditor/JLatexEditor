@@ -3,7 +3,6 @@ package sce.quickhelp;
 import sce.component.SCECaret;
 import sce.component.SCEDocument;
 import sce.component.SCEPane;
-import sce.component.SourceCodeEditor;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
@@ -14,7 +13,6 @@ import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.net.URL;
 
 /**
  * Window showing the help information for commands.
