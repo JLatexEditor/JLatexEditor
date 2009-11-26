@@ -53,6 +53,7 @@ public class SpellCheckSuggester implements CodeAssistant, SCEPopup.ItemHandler 
 
 			try {
 				Aspell.Result aspellResult = aspell.check(misspelledWord.word);
+				if (aspellResult.isCorrect()) return false;
 
 				List<Object> list = new ArrayList<Object>();
 				list.add(addToDictionary);
