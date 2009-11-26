@@ -5,9 +5,13 @@
 
 package sce.component;
 
+import util.StreamUtils;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 public class SourceCodeEditor extends JPanel{
   // The file name
@@ -18,6 +22,9 @@ public class SourceCodeEditor extends JPanel{
   private JScrollPane scrollPane = null;
   private SCEMarkerBar markerBar = null;
   private SCESearch search = null;
+
+  // Has the document been modified since the last save?
+  private boolean modified = false;
 
   public SourceCodeEditor(File file){
     this.file = file;
@@ -55,6 +62,32 @@ public class SourceCodeEditor extends JPanel{
    */
   public void setFile(File file) {
     this.file = file;
+  }
+
+  public static String readFile(String fileName) throws IOException {
+    FileInputStream fileInputStream = new FileInputStream(fileName);
+    byte data[] = StreamUtils.readBytesFromInputStream(fileInputStream);
+    fileInputStream.close();
+
+    // Set the text contend
+    String text = new String(data);
+    text = text.replaceAll("\n\r", "\n");
+    text = text.replaceAll("\t", "  ");
+
+    return text;
+  }
+
+  /**
+   * Opens the given file.
+   * @param file file
+   */
+  public void open(File file) throws IOException {
+    String text = readFile(file.getAbsolutePath());
+    this.file = file;
+
+    textPane.setText(text);
+    textPane.getCaret().moveTo(0,0);
+    textPane.getUndoManager().clear();
   }
 
   /**

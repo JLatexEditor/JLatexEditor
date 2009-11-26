@@ -146,19 +146,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     return editor;
   }
 
-  private String readFile(String fileName) throws IOException {
-    FileInputStream fileInputStream = new FileInputStream(fileName);
-    byte data[] = StreamUtils.readBytesFromInputStream(fileInputStream);
-    fileInputStream.close();
-
-    // Set the text contend
-    String text = new String(data);
-    text = text.replaceAll("\n\r", "\n");
-    text = text.replaceAll("\t", "  ");
-
-    return text;
-  }
-
   public int getTab(File file) {
     try {
       String fileCanonical = file.getCanonicalPath();
@@ -179,8 +166,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
   public SourceCodeEditor open(File file) {
     try{
-      String text = readFile(file.getAbsolutePath());
-
       // already open?
       int tab = getTab(file);
       if(tab != -1) { tabbedPane.setSelectedIndex(tab); return getEditor(tab); }
@@ -204,12 +189,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
       }
 
-      editor.setFile(file);
-      SCEPane pane = editor.getTextPane();
-      pane.setText(text);
-      pane.getCaret().moveTo(0,0);
-
-      pane.getUndoManager().clear();
+      editor.open(file);
 
       errorHighlighting.detach();
       errorHighlighting.attach(editor, errorView);

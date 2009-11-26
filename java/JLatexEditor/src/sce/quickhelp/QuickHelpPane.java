@@ -3,6 +3,7 @@ package sce.quickhelp;
 import sce.component.SCECaret;
 import sce.component.SCEDocument;
 import sce.component.SCEPane;
+import sce.component.SourceCodeEditor;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
@@ -10,7 +11,9 @@ import javax.swing.event.HyperlinkListener;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * Window showing the help information for commands.
@@ -25,6 +28,7 @@ public class QuickHelpPane extends JScrollPane implements HyperlinkListener, Key
 	SCECaret caret = null;
 
 	/** Window like component showing the help information. */
+  JPopupMenu popup = null;
 	JEditorPane htmlPane = null;
 	/** Quick help. */
 	QuickHelp quickHelp;
@@ -43,8 +47,10 @@ public class QuickHelpPane extends JScrollPane implements HyperlinkListener, Key
     viewPort.add(htmlPane);
     setViewport(viewPort);
 
-		// add it to the pane (parent component)
-		pane.add(this);
+    // popup menu
+    popup = new JPopupMenu();
+    popup.add(this);
+    popup.setFocusable(false);
 
 	  // add listeners
 	  pane.addKeyListener(this);
@@ -63,14 +69,19 @@ public class QuickHelpPane extends JScrollPane implements HyperlinkListener, Key
     } catch(IOException ignored){ }
   }
 
-  public void setPage(String page) throws IOException{
-    htmlPane.setPage(page);
+  public void setVisible(boolean visible){
+    popup.setVisible(visible);
+    if(visible) requestFocus();
   }
 
-  public void setVisible(boolean visible){
-    super.setVisible(visible);
+  private void showPopup() {
+    Point caretPos = pane.modelToView(caret.getRow(), caret.getColumn());
 
-    if(visible) requestFocus();
+    setVisible(true);
+    popup.show(pane, caretPos.x, caretPos.y + pane.getLineHeight());
+
+    setSize(getPreferredSize());
+    popup.pack();
   }
 
   public Dimension getPreferredSize(){
@@ -103,19 +114,13 @@ public class QuickHelpPane extends JScrollPane implements HyperlinkListener, Key
 
 	  if (src == pane) {
 		  if (e.getKeyCode() == KeyEvent.VK_Q && e.getModifiers() == KeyEvent.CTRL_MASK) {
-			  int row = caret.getRow();
-			  int column = caret.getColumn();
-
 			  try{
-			    Point caretPos = pane.modelToView(row, column);
-
-			    String url = quickHelp.getHelpUrlAt(row, column);
+			    String url = quickHelp.getHelpUrlAt(caret.getRow(), caret.getColumn());
 			    if(url == null) return;
 
-			    setPage(url);
-			    setVisible(true);
-			    setLocation(caretPos.x, caretPos.y + pane.getLineHeight());
-			    setSize(getPreferredSize());
+			    htmlPane.setContentType("text/html");
+          htmlPane.setText(SourceCodeEditor.readFile(new URL(url).getFile()));
+          showPopup();
 			  } catch(IOException e1){
 			    System.out.println("SCEPaneUI: " + e1);
 			  }
