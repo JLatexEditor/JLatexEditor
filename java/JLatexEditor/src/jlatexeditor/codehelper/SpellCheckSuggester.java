@@ -45,7 +45,12 @@ public class SpellCheckSuggester implements CodeAssistant, SCEPopup.ItemHandler 
 		int column = caret.getColumn();
 
 		// test if caret stands over a misspelled word
-		if (document.getRows()[row].chars[column].overlayStyle == LatexStyles.U_MISSPELLED) {
+		boolean misspelled = document.getRows()[row].chars[column].overlayStyle == LatexStyles.U_MISSPELLED;
+		if (!misspelled && column > 0) {
+			misspelled = document.getRows()[row].chars[column-1].overlayStyle == LatexStyles.U_MISSPELLED;
+		}
+
+		if (misspelled) {
 			// get the word under the caret
 			misspelledWord = findWord(document.getRow(row), row, column);
 
