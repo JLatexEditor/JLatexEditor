@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDocumentListener{
 	private static final Pattern TERM_PATTERN = Pattern.compile("(\\\\?[\\w_\\-\\^]+)");
-	private static final Pattern BAD_TERM_CHARS = Pattern.compile("[\\\\\\d\\-\\^]");
+	private static final Pattern BAD_TERM_CHARS = Pattern.compile("[\\\\\\d_\\-\\^]");
 
   // text pane and document
   private SCEPane pane = null;
