@@ -23,9 +23,6 @@ public class SourceCodeEditor extends JPanel{
   private SCEMarkerBar markerBar = null;
   private SCESearch search = null;
 
-  // Has the document been modified since the last save?
-  private boolean modified = false;
-
   public SourceCodeEditor(File file){
     this.file = file;
 
@@ -88,6 +85,11 @@ public class SourceCodeEditor extends JPanel{
     textPane.setText(text);
     textPane.getCaret().moveTo(0,0);
     textPane.getUndoManager().clear();
+  }
+
+  public void reload() throws IOException {
+    String text = readFile(file.getAbsolutePath());
+    textPane.setText(text);
   }
 
   /**

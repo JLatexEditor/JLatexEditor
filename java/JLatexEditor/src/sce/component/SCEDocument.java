@@ -34,6 +34,9 @@ public class SCEDocument{
   // document listener
   private ArrayList<SCEDocumentListener> documentListeners = new ArrayList<SCEDocumentListener>();
 
+  // Has the document been modified since the last save?
+  private boolean modified = false;
+
 	/**
    * Creates a SCEDocument (the model SCEPane).
    */
@@ -677,12 +680,21 @@ public class SCEDocument{
     rows = newRows;
   }
 
+  public boolean isModified() {
+    return modified;
+  }
+
+  public void setModified(boolean modified) {
+    this.modified = modified;
+  }
+
   /**
    * Informs the listeners about the document change.
    *
    * @param event the event
    */
   private void documentChanged(SCEDocumentEvent event){
+    modified = true;
 	  for (SCEDocumentListener documentListener : documentListeners) {
 		  documentListener.documentChanged(this, event);
 	  }

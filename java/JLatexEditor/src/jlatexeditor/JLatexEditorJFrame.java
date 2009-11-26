@@ -16,7 +16,6 @@ import jlatexeditor.codehelper.LatexCodeHelper;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
 import sce.syntaxhighlighting.SyntaxHighlighting;
-import util.StreamUtils;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -24,6 +23,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.HashMap;
 
 public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener {
   private static String UNTITLED = "Untitled";
@@ -45,6 +45,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private SourceCodeEditor mainEditor = null;
 
   private LatexErrorHighlighting errorHighlighting = new LatexErrorHighlighting();
+
+  // file changed time
+  private Timer timer = new Timer(2000, this);
+  private HashMap<File,Long> lastModified = new HashMap<File, Long>();
 
   public static void main(String args[]){
     JLatexEditorJFrame latexEditor = new JLatexEditorJFrame("jlatexeditor.JLatexEditor", args);
@@ -124,6 +128,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     getContentPane().validate();
 
     errorHighlighting.attach(getEditor(0), errorView);
+
+    // file changed timer
+    timer.setActionCommand("timer");
+    timer.start();
   }
 
   private SourceCodeEditor createSourceCodeEditor() {
@@ -190,6 +198,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       }
 
       editor.open(file);
+      lastModified.put(file, file.lastModified());
 
       errorHighlighting.detach();
       errorHighlighting.attach(editor, errorView);
@@ -279,6 +288,31 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     if(e.getActionCommand().equals("compile")){
       saveAll();
       compile();
+    }
+
+    // timer
+    if(e.getActionCommand().equals("timer")){
+      for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
+        SourceCodeEditor editor = getEditor(tab);
+        File file = editor.getFile();
+        if(file == null) continue;
+
+        Long oldModified = lastModified.get(file);
+        Long newModified = file.lastModified();
+        // has the file been changed?
+        if(!oldModified.equals(newModified)) {
+          if(editor.getTextPane().getDocument().isModified()) {
+            // TODO: show warning or diff
+          } else {
+            // reload
+            try {
+              editor.reload();
+            } catch (IOException e1) {
+              e1.printStackTrace();
+            }
+          }
+        }
+      }
     }
   }
 
