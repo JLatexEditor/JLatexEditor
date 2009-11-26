@@ -34,7 +34,7 @@ public class SpellCheckSuggester implements CodeAssistant, SCEPopup.ItemHandler 
 
 
 	public SpellCheckSuggester() throws IOException {
-		aspell = new Aspell();
+		aspell = Aspell.getInstance();
 	}
 
 	public boolean assistAt (SCEPane pane) {
@@ -97,7 +97,10 @@ public class SpellCheckSuggester implements CodeAssistant, SCEPopup.ItemHandler 
 
 	public void perform(Object item) {
 		if (item instanceof Action) {
-			System.out.println("not implemented yet");
+			aspell.addToDict(misspelledWord.word);
+			// add and remove for reparsing
+			document.remove(misspelledWord.row, misspelledWord.startColumn, misspelledWord.row, misspelledWord.endColumn);
+			document.insert(misspelledWord.word, misspelledWord.row, misspelledWord.startColumn);
 		} else
 		if (item instanceof Suggestion) {
 			Suggestion suggestion = (Suggestion) item;

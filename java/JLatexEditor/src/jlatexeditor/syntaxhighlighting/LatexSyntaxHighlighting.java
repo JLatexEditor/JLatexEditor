@@ -30,7 +30,7 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 	private static Aspell aspell;
 	static {
 		try {
-			aspell = new Aspell();
+			aspell = Aspell.getInstance();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

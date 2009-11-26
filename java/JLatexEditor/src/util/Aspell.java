@@ -17,6 +17,7 @@ public final class Aspell {
 	private PrintStream aspellIn;
 	private BufferedReader aspellOut;
 	private BufferedReader aspellErr;
+	private static Aspell instance = null;
 
 	public static void main(String[] args) throws IOException {
 		Aspell aspell = new Aspell();
@@ -91,6 +92,16 @@ public final class Aspell {
 	}
 
 	/**
+	 * Adds the word to the aspell user dictionary.
+	 *
+	 * @param word word to add
+	 */
+	public synchronized void addToDict(String word) {
+		aspellIn.println("*" + word);
+		aspellIn.println("#");
+	}
+
+	/**
 	 * Shutdown aspell.
 	 */
 	public void shutdown() {
@@ -99,6 +110,13 @@ public final class Aspell {
 			aspellOut.close();
 			aspellErr.close();
 		} catch (Exception ignored) {}
+	}
+
+	public static Aspell getInstance() throws IOException {
+		if (instance == null) {
+			instance = new Aspell();
+		}
+		return instance;
 	}
 
 	/**
