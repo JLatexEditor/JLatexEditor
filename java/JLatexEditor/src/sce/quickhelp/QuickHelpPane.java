@@ -11,6 +11,8 @@ import javax.swing.event.HyperlinkListener;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.net.URL;
 
@@ -20,7 +22,7 @@ import java.net.URL;
  * @author Jörg Endrullis
  * @author Stefan Endrullis
  */
-public class QuickHelpPane extends JScrollPane implements HyperlinkListener, KeyListener{
+public class QuickHelpPane extends JScrollPane implements HyperlinkListener, KeyListener, PropertyChangeListener {
 	// the source code pane
 	SCEPane pane = null;
 	SCEDocument document = null;
@@ -40,6 +42,7 @@ public class QuickHelpPane extends JScrollPane implements HyperlinkListener, Key
     htmlPane = new JEditorPane();
     htmlPane.addHyperlinkListener(this);
     htmlPane.setEditable(false);
+    htmlPane.addPropertyChangeListener(this);
 
     // add the component to the viewport
     JViewport viewPort = new JViewport();
@@ -117,9 +120,7 @@ public class QuickHelpPane extends JScrollPane implements HyperlinkListener, Key
 			    String url = quickHelp.getHelpUrlAt(caret.getRow(), caret.getColumn());
 			    if(url == null) return;
 
-			    htmlPane.setContentType("text/html");
-          htmlPane.setText(SourceCodeEditor.readFile(new URL(url).getFile()));
-          showPopup();
+          htmlPane.setPage(url + "?" + Math.random());
 			  } catch(IOException e1){
 			    System.out.println("SCEPaneUI: " + e1);
 			  }
@@ -136,5 +137,15 @@ public class QuickHelpPane extends JScrollPane implements HyperlinkListener, Key
   }
 
   public void keyReleased(KeyEvent e){
+  }
+
+  public void propertyChange(PropertyChangeEvent evt) {
+    if(evt.getPropertyName().equals("page")) {
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          showPopup();
+        }
+      });
+    }
   }
 }
