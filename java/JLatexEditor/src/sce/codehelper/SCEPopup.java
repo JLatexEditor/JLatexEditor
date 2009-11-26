@@ -1,4 +1,8 @@
-package sce.component;
+package sce.codehelper;
+
+import sce.component.SCEDocument;
+import sce.component.SCEPane;
+import sce.component.SCEPosition;
 
 import javax.swing.*;
 import java.awt.*;

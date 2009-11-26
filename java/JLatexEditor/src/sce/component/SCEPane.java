@@ -1,6 +1,8 @@
 package sce.component;
 
+import sce.codehelper.CodeAssistant;
 import sce.codehelper.CodeHelper;
+import sce.codehelper.SCEPopup;
 import sce.quickhelp.QuickHelp;
 
 import javax.swing.*;
@@ -25,6 +27,8 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 	QuickHelp quickHelp = null;
   /** Undo manager. */
   SCEUndoManager undoManager = null;
+	/** General SCE Popup. */
+	SCEPopup popup = null;
 
   // some text properties
   private int lineHeight = 0;
@@ -74,6 +78,10 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   // some characters
   private String splitterChars = " ,;.:!\"§$%&/()=?{[]}\\'´`+-*^°";
 
+	/** Code assistants that are informed about alt+enter events. */
+	private ArrayList<CodeAssistant> codeAssistants = new ArrayList<CodeAssistant>();
+
+
   /**
    * Creates a SCEPane (a text pane for editing source code).
    */
@@ -90,6 +98,9 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     // create a caret
     caret = new SCECaret(this);
     caret.addSCECaretListener(this);
+
+	  // create popup
+	  popup = new SCEPopup(this);
 
     // normal text font
     fontText = new Font("MonoSpaced", 0, 13);
@@ -226,7 +237,16 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     return caret;
   }
 
-  /**
+	/**
+	 * Returns the popup for code assistants.
+	 *
+	 * @return popup for code assistants
+	 */
+	public SCEPopup getPopup() {
+		return popup;
+	}
+
+	/**
    * Calculates the position on the screen.
    *
    * @param row the row
@@ -350,6 +370,34 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 		}
 	}
 
+	/**
+	 * Registers a code assistant in order to be informed about alt+enter events.
+	 *
+	 * @param codeAssistant code assistant which wants to be informed about alt+enter events
+	 */
+	public void addCodeAssistantListener(CodeAssistant codeAssistant){
+	  if(codeAssistants.contains(codeAssistant)) return;
+	  codeAssistants.add(codeAssistant);
+	}
+
+	/**
+	 * Unregisters a code assistant.
+	 *
+	 * @param codeAssistant code assistant to unregister
+	 */
+	public void removeCodeAssistantListener(CodeAssistant codeAssistant){
+	  codeAssistants.remove(codeAssistant);
+	}
+
+	/**
+	 * Informs the code assistants about alt+enter events.
+	 */
+	void callCodeAssistants() {
+	  for (CodeAssistant codeAssistant : codeAssistants) {
+	    if (codeAssistant.assistAt(this)) return;
+	  }
+	}
+	
   /**
    * Finds the next splitter in the given row and direction.
    *

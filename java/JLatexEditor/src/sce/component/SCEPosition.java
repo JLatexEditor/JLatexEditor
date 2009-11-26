@@ -5,7 +5,7 @@ package sce.component;
  *
  * @author Stefan Endrullis
  */
-interface SCEPosition {
+public interface SCEPosition {
 	/**
 	 * Returns the row.
 	 *

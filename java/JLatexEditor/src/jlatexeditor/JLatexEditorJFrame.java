@@ -7,6 +7,8 @@
 package jlatexeditor;
 
 import jlatexeditor.errorhighlighting.LatexCompiler;
+import sce.codehelper.CodeAssistant;
+import sce.codehelper.SCEPopup;
 import sce.component.SCEDocument;
 import sce.component.SCEPane;
 import sce.component.SourceCodeEditor;
@@ -23,6 +25,8 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener {
@@ -150,6 +154,20 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  // code completion and quick help
 	  scePane.setCodeHelper(new LatexCodeHelper("data/codehelper/commands.xml"));
 	  scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
+
+	  final List<String> items = new ArrayList<String>();
+	  items.add("test");
+	  scePane.addCodeAssistantListener(new CodeAssistant() {
+		  public boolean assistAt(SCEPane pane) {
+			  pane.getPopup().openPopup(items, new SCEPopup.ItemHandler() {
+		      public void perform(Object item) {
+			      System.out.println(item);
+					}
+				});
+
+			  return false;
+		  }
+	  });
 
     return editor;
   }

@@ -91,17 +91,6 @@ public class LatexQuickHelp implements QuickHelp {
 		}
 
 		return "";
-
-		/*
-	  int commandStart = document.get.findSplitterInRow(row, column, -1);
-	  int commandEnd = pane.findSplitterInRow(row, column, 1);
-	  if(column < documentRow.length && documentRow.chars[column].character == '\\') commandEnd = pane.findSplitterInRow(row, column+1, 1);
-	  if(column < documentRow.length && documentRow.chars[column].character == ' ') commandEnd = column;
-	  if(column > 0 && documentRow.chars[column - 1].character == ' ') commandStart = column;
-	  if(commandStart > 0 && documentRow.chars[commandStart - 1].character == '\\') commandStart--;
-
-	  return documentRow.toString().substring(commandStart, commandEnd);
-	  */
 	}
 
   /**

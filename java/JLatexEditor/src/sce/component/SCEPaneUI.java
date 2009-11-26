@@ -1,7 +1,9 @@
 package sce.component;
 
+import sce.codehelper.CodeAssistant;
 import sce.codehelper.CodeHelper;
 import sce.codehelper.CodeHelperPane;
+import sce.codehelper.SCEPopup;
 import sce.quickhelp.QuickHelp;
 import sce.quickhelp.QuickHelpPane;
 
@@ -30,8 +32,6 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 
   // auto completion
   CodeHelperPane codeHelperPane = null;
-	// general SCE Popup
-	SCEPopup popup = null;
 
   // last mouse click
   long lastMouseClick = 0;
@@ -49,8 +49,6 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     this.caret = pane.getCaret();
 
     pane.setLayout(null);
-
-		popup = new SCEPopup(pane);
 
     // KeyListener
     pane.addKeyListener(this);
@@ -274,15 +272,8 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 
 	private void keyAltDown(KeyEvent e) {
 		// control+enter
-	 if(e.getKeyCode() == KeyEvent.VK_ENTER && e.isAltDown()){
-		 System.out.println("TODO: add a spell checker component here");
-		 List<String> items = new ArrayList<String>();
-		 items.add("bla");
-		 popup.openPopup(items, new SCEPopup.ItemHandler() {
-			 public void perform(Object item) {
-				 return;
-			 }
-		 });
+	 if(e.getKeyCode() == KeyEvent.VK_ENTER && e.isAltDown()) {
+		 pane.callCodeAssistants();
 		 e.consume();
 	 }
 	}
