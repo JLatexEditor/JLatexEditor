@@ -142,18 +142,21 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
       // parse the row
       SCEDocumentChar chars[] = row.chars;
       for(int char_nr = 0; char_nr < row.length; char_nr++){
+        SCEDocumentChar sce_char = chars[char_nr];
+        char c = sce_char.character;
+
         // search for a backslash '\'
-        if(chars[char_nr].character == '\\'){
+        if(c == '\\'){
           String command = getCommandString(row, char_nr + 1);
 
           if(command == null){
             // if there is no command -> '\' escapes the next character -> set style text
             if(char_nr < row.length - 1){
-              chars[char_nr].style = LatexStyles.TEXT;
+              sce_char.style = LatexStyles.TEXT;
               chars[char_nr + 1].style = LatexStyles.TEXT;
               char_nr += 1;
             }else{
-              chars[char_nr].style = LatexStyles.ERROR;
+              sce_char.style = LatexStyles.ERROR;
             }
           }else{
             // highlight the command
@@ -167,32 +170,32 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
         }
 
         // search for '$' and "$$"
-        if(chars[char_nr].character == '$'){
+        if(c == '$'){
 
           continue;
         }
 
         // search for '{' and '}'
-        if(chars[char_nr].character == '{'){
-          chars[char_nr].style = LatexStyles.BRACKET;
+        if(c == '{'){
+          sce_char.style = LatexStyles.BRACKET;
           continue;
         }
-        if(chars[char_nr].character == '}'){
-          chars[char_nr].style = LatexStyles.BRACKET;
+        if(c == '}'){
+          sce_char.style = LatexStyles.BRACKET;
           continue;
         }
 
         // search for '%' (comment)
-        if(chars[char_nr].character == '%'){
+        if(c == '%'){
           while(char_nr < row.length) chars[char_nr++].style = LatexStyles.COMMENT;
           continue;
         }
 
         // default style is text or number
-        if(chars[char_nr].character >= '0' && chars[char_nr].character <= '9'){
-          chars[char_nr].style = LatexStyles.NUMBER;
+        if(c >= '0' && c <= '9'){
+          sce_char.style = LatexStyles.NUMBER;
         }else{
-          chars[char_nr].style = LatexStyles.TEXT;
+          sce_char.style = LatexStyles.TEXT;
         }
       }
 
