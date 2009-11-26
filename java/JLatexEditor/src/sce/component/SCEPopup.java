@@ -28,6 +28,8 @@ public class SCEPopup extends JScrollPane implements KeyListener {
   // the position of the last popup
 	private int lastRow;
 	private int lastColumn;
+	/** Item handler. */
+	private ItemHandler itemHandler;
 
 	public SCEPopup(SCEPane pane){
     this.pane = pane;
@@ -73,8 +75,8 @@ public class SCEPopup extends JScrollPane implements KeyListener {
    *
 	 * @param newContent new content of the popup
    */
-  public void openPopup(List<Callable> newContent){
-		openPopup(pane.getCaret(), newContent);
+  public void openPopup(List<?> newContent, ItemHandler itemHandler){
+		openPopup(pane.getCaret(), newContent, itemHandler);
   }
 
 	/**
@@ -82,9 +84,10 @@ public class SCEPopup extends JScrollPane implements KeyListener {
    *
    * @param pos position of the popup
 	 * @param newContent new content of the popup
+	 * @param itemHandler item handler
    */
-  public void openPopup(SCEPosition pos, List<Callable> newContent){
-		setContent(newContent);
+  public void openPopup(SCEPosition pos, List<?> newContent, ItemHandler itemHandler){
+		setContent(newContent, itemHandler);
 		showPopupAt(pos.getRow(), pos.getColumn());
   }
 
@@ -94,9 +97,10 @@ public class SCEPopup extends JScrollPane implements KeyListener {
 	 * @param row row of the popup position
 	 * @param column column of the popup position
 	 * @param newContent new content of the popup
+	 * @param itemHandler item handler
    */
-  public void openPopup(int row, int column, List<Callable> newContent){
-		setContent(newContent);
+  public void openPopup(int row, int column, List<Object> newContent, ItemHandler itemHandler){
+		setContent(newContent, itemHandler);
 		showPopupAt(row, column);
   }
 
@@ -115,11 +119,13 @@ public class SCEPopup extends JScrollPane implements KeyListener {
 		lastColumn = column;
 	}
 
-	private void setContent(List<Callable> newContent) {
+	private void setContent(List<?> newContent, ItemHandler itemHandler) {
+		this.itemHandler = itemHandler;
+
 		Object selectedValue = list.getSelectedValue();
 
 		model.removeAllElements();
-		for (Callable item : newContent) {
+		for (Object item : newContent) {
 			model.addElement(item);
 		}
 
@@ -189,17 +195,19 @@ public class SCEPopup extends JScrollPane implements KeyListener {
     if((e.getKeyCode() == KeyEvent.VK_ENTER || (e.getKeyCode() == KeyEvent.VK_SPACE) && !e.isControlDown())){
       if(model.size() == 0) return;
 
-      // remove the current text and then start the template
-      Callable callable = (Callable) list.getSelectedValue();
-	    try {
-		    callable.call();
-	    } catch (Exception e1) {
-		    e1.printStackTrace();
-	    }
+      // pass the selected item to the item handler
+      Object item = list.getSelectedValue();
+	    itemHandler.perform(item);
       e.consume();
     }
   }
 
   public void keyReleased(KeyEvent e){
   }
+
+
+	// inner classes
+	public static interface ItemHandler {
+		public void perform(Object item);
+	}
 }

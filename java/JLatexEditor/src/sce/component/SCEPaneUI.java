@@ -10,6 +10,8 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * SourceCodeEditor UI.
@@ -28,6 +30,8 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 
   // auto completion
   CodeHelperPane codeHelperPane = null;
+	// general SCE Popup
+	SCEPopup popup = null;
 
   // last mouse click
   long lastMouseClick = 0;
@@ -45,6 +49,8 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     this.caret = pane.getCaret();
 
     pane.setLayout(null);
+
+		popup = new SCEPopup(pane);
 
     // KeyListener
     pane.addKeyListener(this);
@@ -142,6 +148,12 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
       keyControlDown(e);
 	    if (!isModifierKey(e.getKeyCode())) return;
     }
+
+	  // is alt down?
+	  if(e.isAltDown()){
+	    keyAltDown(e);
+		  return;
+	  }
 
     // undo the last edit
     if(e.isAltDown() && e.getKeyCode() == KeyEvent.VK_BACK_SPACE){
@@ -260,7 +272,22 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     }
   }
 
-  private void clearSelection() {
+	private void keyAltDown(KeyEvent e) {
+		// control+enter
+	 if(e.getKeyCode() == KeyEvent.VK_ENTER && e.isAltDown()){
+		 System.out.println("TODO: add a spell checker component here");
+		 List<String> items = new ArrayList<String>();
+		 items.add("bla");
+		 popup.openPopup(items, new SCEPopup.ItemHandler() {
+			 public void perform(Object item) {
+				 return;
+			 }
+		 });
+		 e.consume();
+	 }
+	}
+
+	private void clearSelection() {
     caret.removeSelectionMark();
     pane.repaint();
   }
