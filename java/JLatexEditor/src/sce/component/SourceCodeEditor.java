@@ -85,11 +85,13 @@ public class SourceCodeEditor extends JPanel{
     textPane.setText(text);
     textPane.getCaret().moveTo(0,0);
     textPane.getUndoManager().clear();
+    textPane.getDocument().setModified(false);
   }
 
   public void reload() throws IOException {
     String text = readFile(file.getAbsolutePath());
     textPane.setText(text);
+    textPane.getDocument().setModified(false);
   }
 
   /**

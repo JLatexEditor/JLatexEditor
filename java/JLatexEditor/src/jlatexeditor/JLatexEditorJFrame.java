@@ -232,20 +232,26 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   public void saveAll() {
     for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
       SourceCodeEditor editor = (SourceCodeEditor) tabbedPane.getComponentAt(tab);
+      save(editor);
+    }
+  }
 
-      File file = editor.getFile();
-      File backup = new File(file.getAbsolutePath() + "~");
-      if(backup.exists()) backup.delete();
-      file.renameTo(backup);
+  private void save(SourceCodeEditor editor) {
+    File file = editor.getFile();
+    File backup = new File(file.getAbsolutePath() + "~");
+    if(backup.exists()) backup.delete();
+    file.renameTo(backup);
 
-      String text = editor.getTextPane().getText();
-      try{
-        PrintWriter writer = new PrintWriter(new FileOutputStream(file));
-        writer.write(text);
-        writer.close();
-      } catch(IOException ex){
-        ex.printStackTrace();
-      }
+    String text = editor.getTextPane().getText();
+    try{
+      PrintWriter writer = new PrintWriter(new FileOutputStream(file));
+      writer.write(text);
+      writer.close();
+
+      lastModified.put(file, file.lastModified());
+      editor.getTextPane().getDocument().setModified(false);
+    } catch(IOException ex){
+      ex.printStackTrace();
     }
   }
 
@@ -319,12 +325,30 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         Long newModified = file.lastModified();
         // has the file been changed?
         if(!oldModified.equals(newModified)) {
+          boolean reload = false;
           if(editor.getTextPane().getDocument().isModified()) {
-            // TODO: show warning or diff
+            int choice = JOptionPane.showOptionDialog(
+                    this,
+                    "The document `" + editor.getFile().toString() + "'\n" +
+                    "has been modified externally as well as in the editor.\n" +
+                    "Overwriting will discard the external modifications in file.\n" +
+                    "Reloading will discard the modifications in the editor.\n",
+                    "External Modification",
+                    JOptionPane.WARNING_MESSAGE,
+                    JOptionPane.YES_NO_OPTION,
+                    null,
+                    new Object[] {"Overwrite", "Reload", "Don't reload"},
+                    2
+            );
+            if(choice == 0) save(editor);
+            if(choice == 1) reload = true;
           } else {
-            // reload
+            reload = true;
+          }
+          if(reload) {
             try {
               editor.reload();
+              lastModified.put(file, newModified);
             } catch (IOException e1) {
               e1.printStackTrace();
             }
