@@ -102,16 +102,49 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     findMenuItem.setActionCommand("find");
     findMenuItem.setAccelerator(KeyStroke.getKeyStroke("control F"));
     findMenuItem.addActionListener(this);
-    fileMenu.add(findMenuItem);
+    editMenu.add(findMenuItem);
 
     JMenu buildMenu = new JMenu("Build");
     menuBar.add(buildMenu);
 
-    JMenuItem compileMenuItem = new JMenuItem("Compile");
-    compileMenuItem.setActionCommand("compile");
-    compileMenuItem.setAccelerator(KeyStroke.getKeyStroke("alt 1"));
-    compileMenuItem.addActionListener(this);
-    buildMenu.add(compileMenuItem);
+    JMenuItem pdfMenuItem = new JMenuItem("pdf");
+    pdfMenuItem.setActionCommand("pdf");
+    pdfMenuItem.setAccelerator(KeyStroke.getKeyStroke("alt 1"));
+    pdfMenuItem.addActionListener(this);
+    buildMenu.add(pdfMenuItem);
+
+    JMenuItem dviMenuItem = new JMenuItem("dvi");
+    dviMenuItem.setActionCommand("dvi");
+    dviMenuItem.setAccelerator(KeyStroke.getKeyStroke("alt 2"));
+    dviMenuItem.addActionListener(this);
+    buildMenu.add(dviMenuItem);
+
+    JMenuItem dvipsMenuItem = new JMenuItem("dvi + ps");
+    dvipsMenuItem.setActionCommand("dvi + ps");
+    dvipsMenuItem.setAccelerator(KeyStroke.getKeyStroke("alt 3"));
+    dvipsMenuItem.addActionListener(this);
+    buildMenu.add(dvipsMenuItem);
+
+    JMenuItem dvipspdfMenuItem = new JMenuItem("dvi + ps + pdf");
+    dvipspdfMenuItem.setActionCommand("dvi + ps + pdf");
+    dvipspdfMenuItem.setAccelerator(KeyStroke.getKeyStroke("alt 4"));
+    dvipspdfMenuItem.addActionListener(this);
+    buildMenu.add(dvipspdfMenuItem);
+
+    JMenu vcMenu = new JMenu("Version Control");
+    menuBar.add(vcMenu);
+
+    JMenuItem svnMenuItem = new JMenuItem("SVN up");
+    svnMenuItem.setActionCommand("svn up");
+    svnMenuItem.setAccelerator(KeyStroke.getKeyStroke("alt u"));
+    svnMenuItem.addActionListener(this);
+    buildMenu.add(svnMenuItem);
+
+    JMenuItem svnCommitItem = new JMenuItem("SVN commit");
+    svnCommitItem.setActionCommand("svn commit");
+    svnCommitItem.setAccelerator(KeyStroke.getKeyStroke("alt c"));
+    svnCommitItem.addActionListener(this);
+    buildMenu.add(svnCommitItem);
 
     // error messages
     errorView = new ErrorView(this);
@@ -246,14 +279,14 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     }
   }
 
-  public void compile() {
+  public void compile(int type) {
     SourceCodeEditor editor = mainEditor;
     if(editor == null) {
       editor = (SourceCodeEditor) tabbedPane.getSelectedComponent();
     }
 
     if(latexCompiler != null) latexCompiler.halt();
-    latexCompiler = new LatexCompiler(editor, errorView);
+    latexCompiler = new LatexCompiler(type, editor, errorView);
 
     errorHighlighting.clear();
     latexCompiler.addLatexCompileListener(errorHighlighting);
@@ -269,8 +302,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
   // ActionListener methods
   public void actionPerformed(ActionEvent e){
+    String action = e.getActionCommand();
+    
     // open a file
-    if(e.getActionCommand().equals("open")){
+    if(action.equals("open")){
       //openDialog.pack();
       openDialog.showDialog(this, "Open");
       if(openDialog.getSelectedFile() == null) return;
@@ -279,34 +314,34 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     }
 
     // save a file
-    if(e.getActionCommand().equals("save")){
+    if(action.equals("save")){
       saveAll();
     }
 
     // close
-    if(e.getActionCommand().equals("close")){
+    if(action.equals("close")){
       closeTab(tabbedPane.getSelectedIndex());
     }
 
     // exit
-    if(e.getActionCommand().equals("exit")){
+    if(action.equals("exit")){
       saveAll();
       System.exit(-1);
     }
 
     // find
-    if(e.getActionCommand().equals("find")){
+    if(action.equals("find")){
       getEditor(tabbedPane.getSelectedIndex()).search();
     }
 
     // compile
-    if(e.getActionCommand().equals("compile")){
-      saveAll();
-      compile();
-    }
+    if(action.equals("pdf")) { saveAll(); compile(LatexCompiler.TYPE_PDF); }
+    if(action.equals("dvi")) { saveAll(); compile(LatexCompiler.TYPE_DVI); }
+    if(action.equals("dvi + ps")) { saveAll(); compile(LatexCompiler.TYPE_DVI_PS); }
+    if(action.equals("dvi + ps + pdf")) { saveAll(); compile(LatexCompiler.TYPE_DVI_PS_PDF); }
 
     // timer
-    if(e.getActionCommand().equals("timer")){
+    if(action.equals("timer")){
       for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
         SourceCodeEditor editor = getEditor(tab);
         File file = editor.getFile();

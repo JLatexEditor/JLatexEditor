@@ -13,13 +13,20 @@ import java.util.Map;
  * @author Jörg Endrullis
  */
 public class LatexCompiler extends Thread {
+  public static int TYPE_PDF        = 0;
+  public static int TYPE_DVI        = 1;
+  public static int TYPE_DVI_PS     = 2; 
+  public static int TYPE_DVI_PS_PDF = 3;
+
+  private int type = 0;
   private SourceCodeEditor editor;
   private ErrorView errorView;
 
   // The listeners
   private ArrayList<LatexCompileListener> compileListeners = new ArrayList<LatexCompileListener>();
 
-  public LatexCompiler(SourceCodeEditor editor, ErrorView errorView){
+  public LatexCompiler(int type, SourceCodeEditor editor, ErrorView errorView){
+    this.type = type;
     this.editor = editor;
     this.errorView = errorView;
   }
@@ -30,26 +37,23 @@ public class LatexCompiler extends Thread {
     errorView.clear();
     compileStart();
 
+    String baseName = file.getName();
+    baseName = baseName.substring(0, baseName.lastIndexOf(".tex"));
+
     // Command line shell
     Process latexCompiler = null;
     try{
-      String compileCommand = "pdflatex -interaction=nonstopmode " + file.getName();
-
-      ArrayList<String> env = new ArrayList<String>();
-      for(Map.Entry<String, String> entry : System.getenv().entrySet()) {
-        if(entry.getKey().equalsIgnoreCase("PWD")) continue;
-        env.add(entry.getKey() + "=" + entry.getValue());
+      if(type == TYPE_PDF) {
+        latexCompiler = exec("pdflatex -interaction=nonstopmode " + baseName + ".tex", file.getParentFile());
+      } else {
+        latexCompiler = exec("latex -interaction=nonstopmode -output-format=dvi " + baseName + ".tex", file.getParentFile());
       }
-      String[] envArray = new String[env.size()];
-      env.toArray(envArray);
-
-      latexCompiler = Runtime.getRuntime().exec(compileCommand, envArray, file.getParentFile());
     } catch(Exception e){
       e.printStackTrace();
+      return;
     }
 
-    PrintWriter out = new PrintWriter(new OutputStreamWriter(latexCompiler.getOutputStream()));
-    BufferedReader in = new BufferedReader(new InputStreamReader(latexCompiler.getInputStream()), 500000);
+    BufferedReader in = new BufferedReader(new InputStreamReader(latexCompiler.getInputStream()), 100000);
 
     try{
       LatexCompileError error;
@@ -200,11 +204,43 @@ public class LatexCompiler extends Thread {
     } catch(IOException ignored){
     }
 
+    try {
+      Process bibtex = exec("bibtex " + baseName, file.getParentFile());
+      bibtex.waitFor();
+
+      if(type == TYPE_DVI_PS || type == TYPE_DVI_PS_PDF) {
+        Process dvips = exec("dvips " + baseName + ".dvi", file.getParentFile());
+        dvips.waitFor();
+      }
+      if(type == TYPE_DVI_PS_PDF) {
+        Process ps2pdf = exec("ps2pdf " + baseName + ".ps", file.getParentFile());
+        ps2pdf.waitFor();
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
     compileEnd();
   }
 
   public void halt() {
     stop();
+  }
+
+  private Process exec(String command, File dir) throws IOException {
+    Process process;
+
+    ArrayList<String> env = new ArrayList<String>();
+    for(Map.Entry<String, String> entry : System.getenv().entrySet()) {
+      if(entry.getKey().equalsIgnoreCase("PWD")) continue;
+      env.add(entry.getKey() + "=" + entry.getValue());
+    }
+    String[] envArray = new String[env.size()];
+    env.toArray(envArray);
+
+    process = Runtime.getRuntime().exec(command, envArray, dir);
+
+    return process;
   }
 
   private void compileStart(){

@@ -168,7 +168,7 @@ public class JLatexEditor extends QaquaFrame implements ActionListener{
       }
 
       // Compile thread
-      latexCompiler = new LatexCompiler(editor, errorView);
+      latexCompiler = new LatexCompiler(0, editor, errorView);
       latexCompiler.addLatexCompileListener(errorHighlightning);
 
       latexCompiler.run();
