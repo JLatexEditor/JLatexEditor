@@ -5,6 +5,7 @@
 
 package sce.component;
 
+import sce.syntaxhighlighting.BracketHighlighting;
 import util.StreamUtils;
 
 import javax.swing.*;
@@ -43,6 +44,8 @@ public class SourceCodeEditor extends JPanel{
     setLayout(new BorderLayout());
     add(scrollPane, BorderLayout.CENTER);
     add(markerBar, BorderLayout.EAST);
+
+    new BracketHighlighting(this);
   }
 
   /**
