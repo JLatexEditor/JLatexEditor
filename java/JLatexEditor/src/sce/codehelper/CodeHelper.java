@@ -12,7 +12,9 @@ public abstract class CodeHelper {
 
 	public abstract Iterable<CHCommand> getCommandsAt(int row, int column);
 
-// getters and setters
+  public abstract Iterable<CHCommand> getCommands();
+
+  // getters and setters
 	public void setDocument(SCEDocument document) {
 		this.document = document;
 	}

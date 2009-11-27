@@ -78,7 +78,7 @@
   <command name="\baselinestretch" hint="scales the value of \baselineskip">
   </command>
 
-  <command name="\bf" usage="{\bf |}" hint="boldface typeface">
+  <command name="\bf" usage="{\bf @|@}" hint="boldface typeface">
   </command>
 
   <command name="\bibitem" usage="\bibitem[@label@]{@cite_key@}" hint="generates an entry labeled by label">
@@ -92,7 +92,7 @@
   <command name="\boldmath" hint="switches to a bold math italic font">
   </command>
 
-  <command name="\cal" usage="{\cal |}" hint="twenty-six calligraphic letters are provided, these can only be used in math mode">
+  <command name="\cal" usage="{\cal @|@}" hint="twenty-six calligraphic letters are provided, these can only be used in math mode">
   </command>
 
   <command name="\caption" usage="\caption[@lst-entry@]{@text of table caption@}" hint="used to generate a caption for a figure or a table">
@@ -131,7 +131,7 @@
     <argument name="text" hint="mandatory argument, text is the desired text"/>
   </command>
 
-  <command name="\dashbox" usage="\dashbox{@dash length@}(@width@,@height@)[@pos@]{ | }" hint="like \framebox but has an extra argument which specifies the width of each dash">
+  <command name="\dashbox" usage="\dashbox{@dash length@}(@width@,@height@)[@pos@]{ @|@ }" hint="like \framebox but has an extra argument which specifies the width of each dash">
     <argument name="dash length"/>
     <argument name="width"/>
     <argument name="height"/>
@@ -188,7 +188,7 @@
     <argument name="den"/>
   </command>
 
-  <command name="\frame" usage="\frame{ | }" hint="puts a rectangular frame around the object specified in the argument">
+  <command name="\frame" usage="\frame{ @|@ }" hint="puts a rectangular frame around the object specified in the argument">
   </command>
 
   <command name="\framebox" usage="\framebox[@width@][@position@]{@text@}" hint="same as the \makebox command, except that it puts a frame around the box">
@@ -215,10 +215,10 @@
     <argument name="len"/>
   </command>
 
-  <command name="\huge" usage="{\huge |}" hint="aecond largest of 10 typefaces available">
+  <command name="\huge" usage="{\huge @|@}" hint="aecond largest of 10 typefaces available">
   </command>
 
-  <command name="\Huge" usage="{\Huge |}" hint="largest of 10 typefaces available">
+  <command name="\Huge" usage="{\Huge @|@}" hint="largest of 10 typefaces available">
   </command>
 
   <command name="\hyphenation" usage="\hyphenation{@words@}" hint="declares allowed hyphenation points">
@@ -240,10 +240,10 @@
     <argument name="file"/>
   </command>
 
-  <command name="\it" usage="{\it |}" hint="italics typeface">
+  <command name="\it" usage="{\it @|@}" hint="italics typeface">
   </command>
 
-  <command name="\item" usage="\item[@label@] |" hint="starts a new item in a List Environment">
+  <command name="\item" usage="\item[@label@] @|@" hint="starts a new item in a List Environment">
     <argument name="label"/>
   </command>
 
@@ -254,13 +254,13 @@
     <argument name="key"/>
   </command>
 
-  <command name="\large" usage="{\large |}" hint="slightly larger than default typeface size">
+  <command name="\large" usage="{\large @|@}" hint="slightly larger than default typeface size">
   </command>
 
-  <command name="\LARGE" usage="{\LARGE |}" hint="third largest of typefaces available">
+  <command name="\LARGE" usage="{\LARGE @|@}" hint="third largest of typefaces available">
   </command>
 
-  <command name="\Large" usage="{\Large |}" hint="fourth largest of typefaces available">
+  <command name="\Large" usage="{\Large @|@}" hint="fourth largest of typefaces available">
   </command>
 
   <command name="\ldots" hint="produces an ellipsis">
@@ -507,7 +507,7 @@
   <command name="\raggedright" hint="corresponds to the flushleft environment">
   </command>
 
-  <command name="\raisebox" usage="\raisebox{@distance@}[@extend-above@][@extend-below@]{|}" hint="creates a LR box containing text; it is used to raise or lower text">
+  <command name="\raisebox" usage="\raisebox{@distance@}[@extend-above@][@extend-below@]{@|@}" hint="creates a LR box containing text; it is used to raise or lower text">
     <argument name="distance" hint="specifies how high the text is to be raised">
     </argument>
     <argument name="extend-above" hint="makes LaTeX think that the text extends above the current line">
@@ -731,7 +731,7 @@
     </argument>
   </command>
 
-  <command name="\verb" usage="\verb=|=" hint="verbatim text">
+  <command name="\verb" usage="\verb=@|@=" hint="verbatim text">
   </command>
 
   <command name="\vfill" hint="produces a rubber length which can stretch or shrink vertically">
@@ -752,7 +752,7 @@
     </argument>
   </command>
 
-  <command name="\begin" usage="\begin{@environment@}|&nl;\end{@environment@}" hint="paragraph-making environments">
+  <command name="\begin" usage="\begin{@environment@}@|@&nl;\end{@environment@}" hint="paragraph-making environments">
     <argument name="environment">
       <argumentValue value="abstract"/>
       <argumentValue value="array"/>
@@ -836,7 +836,7 @@
       </argument>
     </command>
 
-    <command name="\mathop" usage="\mathop{|}" hint="argument is considered to be a single variable sized math symbol">
+    <command name="\mathop" usage="\mathop{@|@}" hint="argument is considered to be a single variable sized math symbol">
     </command>
 
     <command name="\not" hint="a slash is placed through the next symbol (or letter)">

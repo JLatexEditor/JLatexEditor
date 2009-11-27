@@ -118,4 +118,9 @@ public class StaticCommandsCodeHelper extends CodeHelper {
 	public Iterable<CHCommand> getCommandsAt(int row, int column) {
 		return commands;
 	}
+
+  @Override
+  public Iterable<CHCommand> getCommands() {
+    return commands;
+  }
 }

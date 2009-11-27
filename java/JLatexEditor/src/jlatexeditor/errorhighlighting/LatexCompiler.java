@@ -156,7 +156,7 @@ public class LatexCompiler extends Thread {
         }
 
         // opening and closing files
-        if((line.startsWith("(") && !line.startsWith("(see")) || line.indexOf(')') != -1) {
+        if((line.indexOf("(") != -1 && !line.startsWith("(see")) || line.indexOf(')') != -1) {
           int position = 0;
 
           while(position < line.length()) {

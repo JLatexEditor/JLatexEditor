@@ -28,6 +28,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
   private JList list = null;
   private DefaultListModel model = null;
 	private CodeHelper codeHelper = null;
+	private CodeHelper tabCompletion = null;
   // the command reference
   private Iterable<CHCommand> commands = null;
 
@@ -42,6 +43,8 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
   // template argument values
   private ArrayList templateArguments = null;
   private int templateArgumentNr = -1;
+
+  private static String spaces = "                                                                                          ";
 
   public CodeHelperPane(SCEPane pane){
     this.pane = pane;
@@ -94,6 +97,17 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 			this.codeHelper.setDocument(document);
 		}
 	}
+
+  public CodeHelper getTabCompletion() {
+    return tabCompletion;
+  }
+
+  public void setTabCompletion(CodeHelper tabCompletion) {
+    this.tabCompletion = tabCompletion;
+    if (tabCompletion != null) {
+      this.tabCompletion.setDocument(document);
+    }
+  }
 
 	/**
    * Sets the prefix of the commands.
@@ -224,20 +238,24 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
    * @param column the column
    */
   private void startTemplate(String templateWithAt, ArrayList<CHCommandArgument> arguments, int row, int column){
-    // remember the template and arguments
-    template = templateWithAt.replaceAll("@", "");
-    templateArguments = arguments;
+    // convert to real line breaks
+    templateWithAt = templateWithAt.replaceAll("\\\\n", "\n");
+    template = templateWithAt;
 
     // remove the caret mark
-    int caretIndex = template.lastIndexOf('|');
-    if(caretIndex != -1) template = template.substring(0, caretIndex) + template.substring(caretIndex + 1);
+    int caretIndex = template.lastIndexOf("@|@");
+    if(caretIndex != -1) template = template.substring(0, caretIndex) + template.substring(caretIndex + 3);
+
+    // remember the template and arguments
+    template = template.replaceAll("@", "");
+    templateArguments = arguments;
 
     // insert the template in the document
     document.insert(template, row, column);
 
     // where to put the caret?
     {
-      int cursorIndex = templateWithAt.lastIndexOf('|');
+      int cursorIndex = templateWithAt.lastIndexOf("@|@");
       if(cursorIndex != -1){
         templateWithAt = templateWithAt.substring(0, cursorIndex) + templateWithAt.substring(cursorIndex + 1);
       }else{
@@ -289,6 +307,13 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 		  }
 		  argument.setOccurrences(occurrences);
 	  }
+
+    // line breaks
+    String indentation = spaces.substring(0, column);
+    int linebreakPos = -1;
+    while((linebreakPos = template.indexOf('\n', linebreakPos+1)) != -1) {
+      document.insert(indentation, ++row, 0);
+    }
 
     // start editing with argument number 0
     editTemplate(0);
@@ -388,6 +413,22 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
       e.consume();
     }
 
+    // tab completion
+    if(e.getKeyCode() == KeyEvent.VK_TAB){
+      int commandStart = findPrefixStart(row, column);
+      String commandName = document.getRow(row).substring(commandStart, column);
+
+      for (CHCommand command : tabCompletion.getCommands()) {
+        if(commandName.equals(command.getName())) {
+          document.remove(row, commandStart, row, column);
+          startTemplate(command.getUsage(), command.getArguments(), row, commandStart);
+
+          e.consume();
+          return;
+        }
+      }
+    }
+
     // continue only if the code helper is visible
     if(!isVisible()) return;
 
@@ -410,6 +451,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
       e.consume();
     }
+
     // page up and down
     if(e.getKeyCode() == KeyEvent.VK_PAGE_UP || e.getKeyCode() == KeyEvent.VK_PAGE_DOWN){
       int direction = e.getKeyCode() == KeyEvent.VK_PAGE_UP ? -1 : 1;
@@ -422,6 +464,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
       e.consume();
     }
+
     // enter
     if(e.getKeyCode() == KeyEvent.VK_ENTER || (e.getKeyCode() == KeyEvent.VK_SPACE && !e.isControlDown())){
       if(model.size() == 0) return;

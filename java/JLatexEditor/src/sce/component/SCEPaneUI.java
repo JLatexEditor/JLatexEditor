@@ -96,6 +96,16 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 		}
 	}
 
+  /**
+   * Sets the tab completion for the source code editor.
+   *
+   * @param tabCompletion tab completion
+   */
+  public void setTabCompletion(CodeHelper tabCompletion) {
+    if(codeHelperPane == null) return;
+    codeHelperPane.setTabCompletion(tabCompletion);
+  }
+
 	/**
 	 * Sets the code helper for the source code editor.
 	 *
