@@ -20,7 +20,16 @@ public final class Aspell {
 	private static Aspell instance = null;
 
 	public static void main(String[] args) throws IOException {
+		// print all available dictionaries
+		System.out.println("available dictionaries");
+		for (String dict: availableDicts()) {
+			System.out.println(dict);
+		}
+
+		// start aspell with language "en" / "en_GB"
 		Aspell aspell = new Aspell();
+		// test some words
+		System.out.println("\ntest come words");
 		System.out.println(aspell.check("the"));
 		System.out.println(aspell.check("bla"));
 		System.out.println(aspell.check("teh"));
@@ -70,6 +79,7 @@ public final class Aspell {
 	 *
 	 * @param word word to check
 	 * @return aspell result
+	 * @throws IOException thrown if execution of aspell failed
 	 */
 	public synchronized Result check(String word) throws IOException {
 		aspellIn.println(word);
@@ -117,6 +127,27 @@ public final class Aspell {
 			instance = new Aspell();
 		}
 		return instance;
+	}
+
+	/**
+	 * Returns the available dictionaries provided by aspell.
+	 *
+	 * @return list of dictionaries provided by aspell
+	 * @throws IOException thrown if execution of aspell failed
+	 */
+	public static List<String> availableDicts() throws IOException {
+		Process process = Runtime.getRuntime().exec(new String[]{
+			"aspell",
+			"dump",
+			"dicts"
+		});
+		BufferedReader r = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+		List<String> dicts = new ArrayList<String>();
+		String line;
+		while ((line = r.readLine()) != null) dicts.add(line);
+
+		return dicts;
 	}
 
 	/**
