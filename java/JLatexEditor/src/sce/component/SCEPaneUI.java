@@ -1,9 +1,7 @@
 package sce.component;
 
-import sce.codehelper.CodeAssistant;
 import sce.codehelper.CodeHelper;
 import sce.codehelper.CodeHelperPane;
-import sce.codehelper.SCEPopup;
 import sce.quickhelp.QuickHelp;
 import sce.quickhelp.QuickHelpPane;
 
@@ -12,8 +10,6 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * SourceCodeEditor UI.
@@ -225,7 +221,17 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     // enter
     if(e.getKeyCode() == KeyEvent.VK_ENTER){
       if(document.hasSelection()) removeSelection();
-      document.insert("\n", caret.getRow(), caret.getColumn());
+      int row = caret.getRow();
+      int column = caret.getColumn();
+
+      String line = document.getRow(row);
+      document.insert("\n", row, column);
+      for(int x = 0; x < line.length(); x++) {
+        if(line.charAt(x) != ' ') {
+          document.insert(line.substring(0,x), row+1, 0);
+          break;
+        }
+      }
       e.consume();
     }
 

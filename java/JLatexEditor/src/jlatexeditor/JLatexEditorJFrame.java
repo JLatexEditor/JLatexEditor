@@ -8,8 +8,6 @@ package jlatexeditor;
 
 import jlatexeditor.codehelper.SpellCheckSuggester;
 import jlatexeditor.errorhighlighting.LatexCompiler;
-import sce.codehelper.CodeAssistant;
-import sce.codehelper.SCEPopup;
 import sce.component.SCEDocument;
 import sce.component.SCEPane;
 import sce.component.SourceCodeEditor;
@@ -26,8 +24,6 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener {

@@ -44,7 +44,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
   private ArrayList templateArguments = null;
   private int templateArgumentNr = -1;
 
-  private static String spaces = "                                                                                          ";
+  private static final String spaces = "                                                                                          ";
 
   public CodeHelperPane(SCEPane pane){
     this.pane = pane;
