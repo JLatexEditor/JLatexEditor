@@ -40,7 +40,7 @@ public class ProgramUpdater extends JFrame implements ActionListener {
 
 	/**
 	 * Creates an update program (window and download thread).
-	 * @param title title of the application
+	 * @param title title of the updater
 	 * @param urlPrefix URL prefix where the update files are located
 	 */
 	public ProgramUpdater(String title, String urlPrefix) throws HeadlessException {
@@ -91,6 +91,8 @@ public class ProgramUpdater extends JFrame implements ActionListener {
 	 * @return true if the update was successful
 	 */
 	public boolean performUpdate(boolean confirmation) {
+		setVisible(true);
+
 	  try {
 	    compareVersions();
 	    downloadFiles();
@@ -108,7 +110,7 @@ public class ProgramUpdater extends JFrame implements ActionListener {
 
 	    if(totalSize > 0) {
 	      if(confirmation) {
-	        JOptionPane.showMessageDialog(this, "Update was successful.");
+	        JOptionPane.showMessageDialog(this, "Update was successful. The program will be restartet.");
 	      }
 		    setVisible(false);
 		    dispose();
@@ -159,7 +161,7 @@ public class ProgramUpdater extends JFrame implements ActionListener {
 	      // compare versions
 	      String localVersion = files.get(name).getAttribute("version");
 	      if (!localVersion.equals(webVersion)) {
-	        System.out.println("Updating " + name + " from version " + localVersion + " to version " + webVersion);
+	        //System.out.println("Want to update " + name + " from version " + localVersion + " to version " + webVersion);
 	        files.put(name, fileXml);
 	        files2download.add(name);
 	        totalSize += Integer.parseInt(fileXml.getAttribute("length"));
@@ -167,7 +169,7 @@ public class ProgramUpdater extends JFrame implements ActionListener {
 	    } else {
 	      String os = fileXml.getAttribute("os");
 	      if(os == null || os.indexOf(SystemUtils.getSimpleOSType()) != -1) {
-	        System.out.println("Downloading " + name + " version " + webVersion);
+	        //System.out.println("Want to download " + name + " version " + webVersion);
 	        // download the file
 	        files.put(name, fileXml);
 	        files2download.add(name);
@@ -267,6 +269,7 @@ public class ProgramUpdater extends JFrame implements ActionListener {
 	 */
 	private void updatePercentage() {
 	  progressBar.setValue((100*currentSize/totalSize));
+		progressBar.repaint();
 	}
 
 	private InputStream getInputStream(String fileName) throws IOException {

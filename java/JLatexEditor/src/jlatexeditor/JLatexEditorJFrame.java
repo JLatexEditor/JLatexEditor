@@ -18,6 +18,7 @@ import jlatexeditor.codehelper.LatexCodeHelper;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
 import sce.syntaxhighlighting.SyntaxHighlighting;
+import util.StreamUtils;
 import util.updater.ProgramUpdater;
 
 import javax.swing.*;
@@ -80,7 +81,12 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     } catch (Exception e) { }
     */
 
-    JLatexEditorJFrame latexEditor = new JLatexEditorJFrame("jlatexeditor.JLatexEditor", args);
+	  String version = "*Bleeding Edge*";
+	  try {
+		  version = StreamUtils.readFile("version.txt");
+	  } catch (IOException ignored) {}
+
+	  JLatexEditorJFrame latexEditor = new JLatexEditorJFrame("JLatexEditor " + version, args);
     latexEditor.setSize(1024,800);
     latexEditor.setVisible(true);
   }
@@ -450,7 +456,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     if(action.equals("dvi + ps + pdf")) { saveAll(); compile(LatexCompiler.TYPE_DVI_PS_PDF); } else
 
 	  if(action.equals("update")){
-	    ProgramUpdater updater = new ProgramUpdater("JLatexEditor", "http://joerg.endrullis.de/jlatexeditor/update/");
+	    ProgramUpdater updater = new ProgramUpdater("JLatexEditor update", "http://joerg.endrullis.de/jlatexeditor/update/");
 
 		  // check for new version
 		  if (updater.isNewVersionAvailable()) {
