@@ -71,7 +71,7 @@ public class QuickHelpPane extends JScrollPane implements HyperlinkListener, Key
 
   public void setVisible(boolean visible){
     popup.setVisible(visible);
-    if(visible) requestFocus();
+    //if(visible) requestFocus();
   }
 
   private void showPopup() {
@@ -110,36 +110,33 @@ public class QuickHelpPane extends JScrollPane implements HyperlinkListener, Key
   }
 
   public void keyPressed(KeyEvent e){
-	  Object src = e.getSource();
+	  // show on control+Q
+	  if (!popup.isVisible() && e.getKeyCode() == KeyEvent.VK_Q && e.getModifiers() == KeyEvent.CTRL_MASK) {
+			try{
+				String url = quickHelp.getHelpUrlAt(caret.getRow(), caret.getColumn());
+				if(url == null) return;
 
-	  if (src == pane) {
-		  if (e.getKeyCode() == KeyEvent.VK_Q && e.getModifiers() == KeyEvent.CTRL_MASK) {
-			  try{
-			    String url = quickHelp.getHelpUrlAt(caret.getRow(), caret.getColumn());
-			    if(url == null) return;
-
-				  if (htmlPane.getPage() != null && htmlPane.getPage().toString().equals(url)) {
-					  SwingUtilities.invokeLater(new Runnable() {
-					    public void run() {
-					      showPopup();
-					    }
-					  });
-				  } else {
-					  htmlPane.setPage(url);
-				  }
-			  } catch(IOException e1){
-			    System.out.println("SCEPaneUI: " + e1);
-			  }
-			  e.consume();
-		  }
-	  } else {
-			// hide on escape
-			if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
-				setVisible(false);
-				getParent().requestFocus();
-				e.consume();
+				if (htmlPane.getPage() != null && htmlPane.getPage().toString().equals(url)) {
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							showPopup();
+						}
+					});
+				} else {
+					htmlPane.setPage(url);
+				}
+			} catch(IOException e1){
+				System.out.println("SCEPaneUI: " + e1);
 			}
+			e.consume();
 	  }
+
+		// hide on escape
+		if(popup.isVisible() && e.getKeyCode() == KeyEvent.VK_ESCAPE){
+			setVisible(false);
+			getParent().requestFocus();
+			e.consume();
+		}
   }
 
   public void keyReleased(KeyEvent e){
