@@ -31,8 +31,10 @@ public class SCEDocument{
   private SCEDocumentPosition editRangeStart = null;
   private SCEDocumentPosition editRangeEnd = null;
 
-  // document listener
+  // document listeners
   private ArrayList<SCEDocumentListener> documentListeners = new ArrayList<SCEDocumentListener>();
+	// modification state listeners
+  private ArrayList<SCEModificationStateListener> modificationStateListeners = new ArrayList<SCEModificationStateListener>();
 
   // Has the document been modified since the last save?
   private boolean modified = false;
@@ -685,7 +687,12 @@ public class SCEDocument{
   }
 
   public void setModified(boolean modified) {
-    this.modified = modified;
+	  if (this.modified != modified) {
+			this.modified = modified;
+			for (SCEModificationStateListener modificationStateListener : modificationStateListeners) {
+				modificationStateListener.modificationStateChanged(modified);
+			}
+	  }
   }
 
   /**
@@ -694,7 +701,7 @@ public class SCEDocument{
    * @param event the event
    */
   private void documentChanged(SCEDocumentEvent event){
-    modified = true;
+	  setModified(true);
 	  for (SCEDocumentListener documentListener : documentListeners) {
 		  documentListener.documentChanged(this, event);
 	  }
@@ -717,4 +724,22 @@ public class SCEDocument{
   public void removeSCEDocumentListener(SCEDocumentListener listener){
     documentListeners.remove(listener);
   }
+
+	/**
+	 * Adds a modification state listener.
+	 *
+	 * @param listener the listener
+	 */
+	public void addSCEModificationStateListener(SCEModificationStateListener listener){
+	  modificationStateListeners.add(listener);
+	}
+
+	/**
+	 * Removes a modification state listener.
+	 *
+	 * @param listener the listener
+	 */
+	public void removeSCEModificationStateListener(SCEModificationStateListener listener){
+	  modificationStateListeners.remove(listener);
+	}
 }

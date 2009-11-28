@@ -9,6 +9,7 @@ package jlatexeditor;
 import jlatexeditor.codehelper.SpellCheckSuggester;
 import jlatexeditor.errorhighlighting.LatexCompiler;
 import sce.component.SCEDocument;
+import sce.component.SCEModificationStateListener;
 import sce.component.SCEPane;
 import sce.component.SourceCodeEditor;
 import jlatexeditor.errorhighlighting.LatexErrorHighlighting;
@@ -261,15 +262,15 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       if(tabbedPane.getTabCount() == 1
               && tabbedPane.getTitleAt(0).equals(UNTITLED)
               && ((SourceCodeEditor) tabbedPane.getComponentAt(0)).getText().trim().equals("")) {
+	      editor = ((SourceCodeEditor) tabbedPane.getComponentAt(0));
         tabbedPane.setTitleAt(0, file.getName());
-        tabbedPane.setTabComponentAt(0, new TabLabel(file));
-        editor = ((SourceCodeEditor) tabbedPane.getComponentAt(0));
+        tabbedPane.setTabComponentAt(0, new TabLabel(file, editor));
       } else {
         editor = createSourceCodeEditor();
         tabbedPane.removeChangeListener(this);
         tabbedPane.addTab(file.getName(), editor);
         tabbedPane.addChangeListener(this);
-        tabbedPane.setTabComponentAt(tabbedPane.getTabCount()-1,new TabLabel(file));
+        tabbedPane.setTabComponentAt(tabbedPane.getTabCount()-1, new TabLabel(file, editor));
         tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
       }
 
@@ -287,6 +288,24 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     return null;
   }
 
+	/**
+	 * Returns true if any modifications have been done at an open file.
+	 *
+	 * @return true if any modifications have been done at an open file
+	 */
+	public boolean anyModifications () {
+		for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
+		  SourceCodeEditor editor = (SourceCodeEditor) tabbedPane.getComponentAt(tab);
+			if (editor.getTextPane().getDocument().isModified()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Saves all open documents.
+	 */
   public void saveAll() {
     for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
       SourceCodeEditor editor = (SourceCodeEditor) tabbedPane.getComponentAt(tab);
@@ -294,6 +313,11 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     }
   }
 
+	/**
+	 * Saves the document given by the editor.
+	 *
+	 * @param editor editor containing the document to save
+	 */
   private void save(SourceCodeEditor editor) {
     File file = editor.getFile();
     File backup = new File(file.getAbsolutePath() + "~");
@@ -458,12 +482,12 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     }
   }
 
-  private class TabLabel extends JPanel implements MouseListener {
+  private class TabLabel extends JPanel implements MouseListener, SCEModificationStateListener {
     private File file;
     private JLabel label;
     private JLabel closeIcon;
 
-    private TabLabel(File file) {
+    private TabLabel(File file, SourceCodeEditor editor) {
       this.file = file;
       setOpaque(false);
 
@@ -478,6 +502,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       add(closeIcon, BorderLayout.EAST);
 
       addMouseListener(this);
+	    editor.getTextPane().getDocument().addSCEModificationStateListener(this);
     }
 
     public boolean contains(int x, int y) {
@@ -514,5 +539,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
     public void mouseExited(MouseEvent e) {
     }
+
+	  // SCEModificationStateListener
+	  public void modificationStateChanged(boolean modified) {
+		  label.setText(modified ? "*"+file.getName() : file.getName());
+	  }
   }
 }
