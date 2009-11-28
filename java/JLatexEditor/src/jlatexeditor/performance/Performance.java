@@ -21,7 +21,7 @@ import java.util.Random;
  * Performance measurement.
  */
 public class Performance {
-  public static void main(String[] args) throws MalformedURLException, FileNotFoundException {
+  public static void main(String[] args) throws IOException, FileNotFoundException {
     File file = new File("./src/jlatexeditor/performance/test.tex");
     SourceCodeEditor editor = new SourceCodeEditor(file);
 
