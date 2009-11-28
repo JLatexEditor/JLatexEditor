@@ -118,7 +118,15 @@ public class QuickHelpPane extends JScrollPane implements HyperlinkListener, Key
 			    String url = quickHelp.getHelpUrlAt(caret.getRow(), caret.getColumn());
 			    if(url == null) return;
 
-          htmlPane.setPage(url + "?" + Math.random());
+				  if (htmlPane.getPage() != null && htmlPane.getPage().toString().equals(url)) {
+					  SwingUtilities.invokeLater(new Runnable() {
+					    public void run() {
+					      showPopup();
+					    }
+					  });
+				  } else {
+					  htmlPane.setPage(url);
+				  }
 			  } catch(IOException e1){
 			    System.out.println("SCEPaneUI: " + e1);
 			  }
