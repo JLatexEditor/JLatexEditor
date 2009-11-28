@@ -104,7 +104,7 @@ public class JLatexEditor extends QaquaFrame implements ActionListener{
     LatexStyles.addStyles(document);
 
     // TextArea for error messages
-    errorView = null; // new ErrorView();
+    errorView = new ErrorView(new JLatexEditorJFrame("", new String[]{}));
     errorView.setFont(new Font("MonoSpaced", 0, 13));
 
     textErrorSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, editor, new JScrollPane(errorView));

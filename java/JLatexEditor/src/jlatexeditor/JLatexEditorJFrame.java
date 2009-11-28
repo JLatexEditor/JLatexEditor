@@ -6,6 +6,8 @@
 
 package jlatexeditor;
 
+import ch.randelshofer.quaqua.QuaquaManager;
+import ch.randelshofer.quaqua.util.Methods;
 import jlatexeditor.codehelper.SpellCheckSuggester;
 import jlatexeditor.errorhighlighting.LatexCompiler;
 import sce.component.SCEDocument;
@@ -52,7 +54,34 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private HashMap<File,Long> lastModified = new HashMap<File, Long>();
 
   public static void main(String args[]){
+    /*
+    try {
+      //System.setProperty("swing.aatext", "true");
+      System.setProperty("Quaqua.tabLayoutPolicy","wrap");
+      System.setProperty("apple.laf.useScreenMenuBar", "true");
+      System.setProperty("com.apple.macos.useScreenMenuBar", "true");
+
+      try {
+        Methods.invokeStatic(JFrame.class, "setDefaultLookAndFeelDecorated", Boolean.TYPE, Boolean.TRUE);
+        Methods.invokeStatic(JDialog.class, "setDefaultLookAndFeelDecorated", Boolean.TYPE, Boolean.TRUE);
+      } catch (NoSuchMethodException e) { }
+
+      String lafName = QuaquaManager.getLookAndFeelClassName();
+      if(!lafName.equals("default")) {
+        if(lafName.equals("system")) {
+          lafName = UIManager.getSystemLookAndFeelClassName();
+        } else if (lafName.equals("crossplatform")) {
+          lafName = UIManager.getCrossPlatformLookAndFeelClassName();
+        }
+
+        LookAndFeel laf = (LookAndFeel) Class.forName(lafName).newInstance();
+        UIManager.setLookAndFeel(laf);
+      }
+    } catch (Exception e) { }
+    */
+
     JLatexEditorJFrame latexEditor = new JLatexEditorJFrame("jlatexeditor.JLatexEditor", args);
+    latexEditor.setSize(1024,800);
     latexEditor.setVisible(true);
   }
 
@@ -60,7 +89,14 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     super(name);
     this.args = args;
     addWindowListener(this);
-    
+
+    /*
+    JRootPane rootPane = getRootPane();
+    rootPane.setWindowDecorationStyle(JRootPane.FRAME);
+    rootPane.putClientProperty("Quaqua.RootPane.isVertical", Boolean.FALSE);
+    rootPane.putClientProperty("Quaqua.RootPane.isPalette", Boolean.FALSE);
+    */
+
     // set Layout
     getContentPane().setLayout(new BorderLayout());
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -138,13 +174,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     svnMenuItem.setActionCommand("svn up");
     svnMenuItem.setAccelerator(KeyStroke.getKeyStroke("alt u"));
     svnMenuItem.addActionListener(this);
-    buildMenu.add(svnMenuItem);
+    vcMenu.add(svnMenuItem);
 
     JMenuItem svnCommitItem = new JMenuItem("SVN commit");
     svnCommitItem.setActionCommand("svn commit");
     svnCommitItem.setAccelerator(KeyStroke.getKeyStroke("alt c"));
     svnCommitItem.addActionListener(this);
-    buildMenu.add(svnCommitItem);
+    vcMenu.add(svnCommitItem);
 
     // error messages
     errorView = new ErrorView(this);
