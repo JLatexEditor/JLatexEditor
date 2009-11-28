@@ -6,8 +6,6 @@
 
 package jlatexeditor;
 
-import ch.randelshofer.quaqua.QuaquaManager;
-import ch.randelshofer.quaqua.util.Methods;
 import jlatexeditor.codehelper.SpellCheckSuggester;
 import jlatexeditor.errorhighlighting.LatexCompiler;
 import sce.component.SCEDocument;
