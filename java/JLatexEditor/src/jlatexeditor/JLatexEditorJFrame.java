@@ -18,7 +18,6 @@ import jlatexeditor.codehelper.LatexCodeHelper;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
 import sce.syntaxhighlighting.SyntaxHighlighting;
-import util.StreamUtils;
 import util.updater.ProgramUpdater;
 
 import javax.swing.*;
@@ -443,11 +442,11 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 				  // save all files
 				  saveAll();
 
-				  // start update
-				  updater.startUpdate(true);
-
-				  // restart the editor
-				  System.exit(255);
+				  // perform update
+				  if (updater.performUpdate(true)) {
+						// restart the editor
+						System.exit(255);
+				  }
 			  }
 		  } else {
 			  JOptionPane.showMessageDialog(this, "JLatexEditor is up-to-date.", "JLatexEditor - Updater", JOptionPane.INFORMATION_MESSAGE);

@@ -34,7 +34,6 @@ public class ProgramUpdater extends JFrame implements ActionListener {
 	private int totalSize = 0;
 	private int currentSize = 0;
 
-	private boolean updateNeeded;
 	private InputStream in = null;
 	private OutputStream out = null;
 	private boolean abort = false;
@@ -86,12 +85,12 @@ public class ProgramUpdater extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * Starts the update process.
+	 * Performs the update process and returns true if it was successful.
 	 *
 	 * @param confirmation if true a dialog is shown if the update process was successful
-	 * @return true if the update was successful or an update is not necessary
+	 * @return true if the update was successful
 	 */
-	public boolean startUpdate(boolean confirmation) {
+	public boolean performUpdate(boolean confirmation) {
 	  try {
 	    compareVersions();
 	    downloadFiles();
@@ -108,20 +107,20 @@ public class ProgramUpdater extends JFrame implements ActionListener {
 	    }
 
 	    if(totalSize > 0) {
-	      updateNeeded = true;
 	      if(confirmation) {
 	        JOptionPane.showMessageDialog(this, "Update was successful.");
 	      }
+		    setVisible(false);
+		    dispose();
+		    return true;
 	    } else {
-	      updateNeeded = false;
 	      if(confirmation) {
 	        JOptionPane.showMessageDialog(this, "The software is already up-to-date.");
 	      }
+		    setVisible(false);
+		    dispose();
+		    return false;
 	    }
-
-	    setVisible(false);
-	    dispose();
-	    return true;
 	  } catch (Exception e) {
 	    JOptionPane.showMessageDialog(this, "Update failed.", "Update", JOptionPane.WARNING_MESSAGE);
 
