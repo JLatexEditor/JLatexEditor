@@ -12,25 +12,15 @@ import java.net.URL;
 
 public class StreamUtils{
   /** Size of the temporary buffer for reading. */
-  private static int temporary_buffer_size = 10000;
+  private static int temporary_buffer_size = 64*1024;
 
   /** Reads an InputStream and returns it as byte array. */
-  public static byte[] readBytesFromInputStream(InputStream stream){
-    BufferedInputStream bufferedStream = new BufferedInputStream(stream, 10000);
+  public static byte[] readBytesFromInputStream(InputStream stream) throws IOException {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-    // create temp buffer for reading
-    byte temporary_buffer[] = new byte[temporary_buffer_size];
-
-    // read input stream in blocks
-    try{
-      int bytes_read = 0;
-      while((bytes_read = bufferedStream.read(temporary_buffer)) != -1){
-        if(bytes_read != 0) outputStream.write(temporary_buffer, 0, bytes_read);
-      }
-    } catch(IOException e){
-      System.out.println(e);
-    }
+	  copyStream(stream, outputStream);
+	  stream.close();
+	  outputStream.close();
 
     return outputStream.toByteArray();
   }
@@ -41,7 +31,7 @@ public class StreamUtils{
    * @param filename the filename
    * @return the content of the file
    */
-  public static String readFile(String filename) throws FileNotFoundException {
+  public static String readFile(String filename) throws IOException {
     InputStream inputStream = getInputStream(filename);
 
     byte data[] = readBytesFromInputStream(inputStream);
@@ -82,5 +72,55 @@ public class StreamUtils{
 			}
 		else
 			return null;
+	}
+
+	/**
+	 * Copy the content of one stream to another.
+	 *
+	 * @param in input stream
+	 * @param out output stream
+	 * @throws IOException thrown if reading or writing has failed
+	 */
+	public static void copyStream(InputStream in, OutputStream out) throws IOException {
+	  byte[] bytes = new byte[temporary_buffer_size];
+	  int len;
+	  while((len = in.read(bytes)) != -1) out.write(bytes, 0, len);
+	}
+	
+	/**
+	 * Reads the specified InputStream and returns it as String in an encoding
+	 * found in the first 100 bytes defined by encoding="...".
+	 * If no encoding definition is found the default UTF-8 is used.
+	 *
+	 * @param stream input stream.
+	 * @return decoded xml string
+	 */
+	public static String readXmlStream(InputStream stream) throws IOException {
+	  ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		copyStream(stream, outputStream);
+		stream.close();
+		outputStream.close();
+
+	  // try to guess the encoding  todo evaluate also POST header
+	  String encoding = "UTF-8";
+	  int length = Math.min(outputStream.size(), 100);
+	  String beginning = new String(outputStream.toByteArray(), 0, length);
+	  if(beginning.indexOf("encoding=\"") != -1){
+	    int encodingStart = beginning.indexOf("encoding=\"") + 10;
+	    int encodingEnd = beginning.indexOf('"', encodingStart);
+	    if(encodingStart < encodingEnd) encoding = beginning.substring(encodingStart, encodingEnd);
+	  }
+
+	  if (encoding != null) {
+	    try {
+	      return outputStream.toString(encoding);
+	    } catch (UnsupportedEncodingException e) {
+	      System.err.println("Error in StreamUtils.readStringFromInputStream during encoding.");
+	      e.printStackTrace();
+	      return null;
+	    }
+	  } else {
+	    return outputStream.toString();
+	  }
 	}
 }

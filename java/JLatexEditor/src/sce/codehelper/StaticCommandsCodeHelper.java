@@ -7,6 +7,7 @@ import my.XML.XMLParser;
 import util.StreamUtils;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -32,12 +33,9 @@ public class StaticCommandsCodeHelper extends CodeHelper {
 	  XMLDocument commandsDocument;
 	  try {
 	    commandsDocument = xmlParser.parse(StreamUtils.readFile(filename));
-	  } catch (XMLException e) {
+	  } catch (Exception e) {
 		  e.printStackTrace();
 	    return;
-	  } catch (FileNotFoundException e) {
-		  e.printStackTrace();
-		  return;
 	  }
 
 		XMLElement commandListXML = commandsDocument.getRootElement();

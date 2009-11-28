@@ -18,6 +18,8 @@ import jlatexeditor.codehelper.LatexCodeHelper;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
 import sce.syntaxhighlighting.SyntaxHighlighting;
+import util.StreamUtils;
+import util.updater.ProgramUpdater;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -348,6 +350,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	 * @param editor editor containing the document to save
 	 */
   private void save(SourceCodeEditor editor) {
+		if (!editor.getTextPane().getDocument().isModified()) return;
+
     File file = editor.getFile();
     File backup = new File(file.getAbsolutePath() + "~");
     if(backup.exists()) backup.delete();
@@ -398,34 +402,57 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       if(openDialog.getSelectedFile() == null) return;
 
       open(openDialog.getSelectedFile());
-    }
+    } else
 
     // save a file
     if(action.equals("save")){
       saveAll();
-    }
+    } else
 
     // close
     if(action.equals("close")){
       closeTab(tabbedPane.getSelectedIndex());
-    }
+    } else
 
     // exit
     if(action.equals("exit")){
       saveAll();
       System.exit(-1);
-    }
+    } else
 
     // find
     if(action.equals("find")){
       getEditor(tabbedPane.getSelectedIndex()).search();
-    }
+    } else
 
     // compile
-    if(action.equals("pdf")) { saveAll(); compile(LatexCompiler.TYPE_PDF); }
-    if(action.equals("dvi")) { saveAll(); compile(LatexCompiler.TYPE_DVI); }
-    if(action.equals("dvi + ps")) { saveAll(); compile(LatexCompiler.TYPE_DVI_PS); }
-    if(action.equals("dvi + ps + pdf")) { saveAll(); compile(LatexCompiler.TYPE_DVI_PS_PDF); }
+    if(action.equals("pdf")) { saveAll(); compile(LatexCompiler.TYPE_PDF); } else
+    if(action.equals("dvi")) { saveAll(); compile(LatexCompiler.TYPE_DVI); } else
+    if(action.equals("dvi + ps")) { saveAll(); compile(LatexCompiler.TYPE_DVI_PS); } else
+    if(action.equals("dvi + ps + pdf")) { saveAll(); compile(LatexCompiler.TYPE_DVI_PS_PDF); } else
+
+	  if(action.equals("update")){
+	    ProgramUpdater updater = new ProgramUpdater("JLatexEditor", "http://joerg.endrullis.de/jlatexeditor/update/");
+
+		  // check for new version
+		  if (updater.isNewVersionAvailable()) {
+			  // ask user if (s)he wants to update
+			  if (JOptionPane.showConfirmDialog(this, "A new version of the JLatexEditor is available. Your changes will be saved beforehand, since JLatexEditor has to be restarted. Do you want to update?",
+				    "JLatexEditor - Updater", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+
+				  // save all files
+				  saveAll();
+
+				  // start update
+				  updater.startUpdate(true);
+
+				  // restart the editor
+				  System.exit(255);
+			  }
+		  } else {
+			  JOptionPane.showMessageDialog(this, "JLatexEditor is up-to-date.", "JLatexEditor - Updater", JOptionPane.INFORMATION_MESSAGE);
+		  }
+	  } else
 
     // timer
     if(action.equals("timer")){
