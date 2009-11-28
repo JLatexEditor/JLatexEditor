@@ -2,6 +2,7 @@ package sce.component;
 
 import sce.codehelper.CodeHelper;
 import sce.codehelper.CodeHelperPane;
+import sce.codehelper.SCEPopup;
 import sce.quickhelp.QuickHelp;
 import sce.quickhelp.QuickHelpPane;
 
@@ -159,12 +160,6 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 		  return;
 	  }
 
-    // undo the last edit
-    if(e.isAltDown() && e.getKeyCode() == KeyEvent.VK_BACK_SPACE){
-      pane.getUndoManager().undo();
-      return;
-    }
-
     // delete and back space
     if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE){
       if(caret.getRow() == 0 && caret.getColumn() == 0) return;
@@ -287,11 +282,17 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
   }
 
 	private void keyAltDown(KeyEvent e) {
-		// alt+enter
-	 if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-		 pane.callCodeAssistants();
-		 e.consume();
-	 }
+		// alt+enter -> code assistant
+		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+			pane.callCodeAssistants();
+			e.consume();
+		}
+
+		// alt+backspace -> undo the last edit
+		if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE){
+			pane.getUndoManager().undo();
+			e.consume();
+		}
 	}
 
 	private void clearSelection() {
