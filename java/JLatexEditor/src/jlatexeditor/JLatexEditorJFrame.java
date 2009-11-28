@@ -6,8 +6,6 @@
 
 package jlatexeditor;
 
-import ch.randelshofer.quaqua.QuaquaManager;
-import ch.randelshofer.quaqua.util.Methods;
 import jlatexeditor.codehelper.SpellCheckSuggester;
 import jlatexeditor.errorhighlighting.LatexCompiler;
 import sce.component.SCEDocument;
@@ -55,6 +53,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private HashMap<File,Long> lastModified = new HashMap<File, Long>();
 
   public static void main(String args[]){
+    /*
     try {
       //System.setProperty("swing.aatext", "true");
       System.setProperty("Quaqua.tabLayoutPolicy","wrap");
@@ -78,6 +77,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         UIManager.setLookAndFeel(laf);
       }
     } catch (Exception e) { }
+    */
 
     JLatexEditorJFrame latexEditor = new JLatexEditorJFrame("jlatexeditor.JLatexEditor", args);
     latexEditor.setSize(1024,800);
@@ -89,10 +89,12 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     this.args = args;
     addWindowListener(this);
 
+    /*
     JRootPane rootPane = getRootPane();
     rootPane.setWindowDecorationStyle(JRootPane.FRAME);
     rootPane.putClientProperty("Quaqua.RootPane.isVertical", Boolean.FALSE);
     rootPane.putClientProperty("Quaqua.RootPane.isPalette", Boolean.FALSE);
+    */
 
     // set Layout
     getContentPane().setLayout(new BorderLayout());
