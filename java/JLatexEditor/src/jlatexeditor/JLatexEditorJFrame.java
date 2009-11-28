@@ -147,6 +147,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     findMenuItem.addActionListener(this);
     editMenu.add(findMenuItem);
 
+    JMenuItem diffMenuItem = new JMenuItem("Diff");
+    diffMenuItem.setActionCommand("diff");
+	  diffMenuItem.setMnemonic('D');
+    diffMenuItem.setAccelerator(KeyStroke.getKeyStroke("control D"));
+    diffMenuItem.addActionListener(this);
+    editMenu.add(diffMenuItem);
+
     JMenu buildMenu = new JMenu("Build");
 	  buildMenu.setMnemonic('B');
     menuBar.add(buildMenu);
@@ -396,7 +403,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     
     // open a file
     if(action.equals("open")){
-      //openDialog.pack();
       openDialog.showDialog(this, "Open");
       if(openDialog.getSelectedFile() == null) return;
 
@@ -422,6 +428,19 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // find
     if(action.equals("find")){
       getEditor(tabbedPane.getSelectedIndex()).search();
+    } else
+
+    // diff
+    if(action.equals("diff")){
+      openDialog.showDialog(this, "Diff View");
+      if(openDialog.getSelectedFile() == null) return;
+
+      try {
+        String text = SourceCodeEditor.readFile(openDialog.getSelectedFile().getCanonicalPath());
+        getEditor(tabbedPane.getSelectedIndex()).diffView(text);
+      } catch (IOException e1) {
+        e1.printStackTrace();
+      }
     } else
 
     // compile

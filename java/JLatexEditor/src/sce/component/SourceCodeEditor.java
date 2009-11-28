@@ -5,6 +5,7 @@
 
 package sce.component;
 
+import jlatexeditor.syntaxhighlighting.LatexStyles;
 import sce.syntaxhighlighting.BracketHighlighting;
 import util.StreamUtils;
 
@@ -23,6 +24,11 @@ public class SourceCodeEditor extends JPanel{
   private JScrollPane scrollPane = null;
   private SCEMarkerBar markerBar = null;
   private SCESearch search = null;
+
+  // diff
+  private SCEDiff diff = null;
+  private SCEPane diffPane = null;
+  private JScrollPane scrollDiffPane = null;
 
   public SourceCodeEditor(File file){
     this.file = file;
@@ -95,6 +101,18 @@ public class SourceCodeEditor extends JPanel{
     String text = readFile(file.getAbsolutePath());
     textPane.setText(text);
     textPane.getDocument().setModified(false);
+  }
+
+  public void diffView(String text) {
+    remove(scrollPane);
+
+    diffPane = new SCEPane();
+    LatexStyles.addStyles(diffPane.getDocument());
+    scrollDiffPane = new JScrollPane(diffPane);
+
+    diff = new SCEDiff(scrollPane, textPane, text, scrollDiffPane, diffPane);
+
+    add(diff, BorderLayout.CENTER);
   }
 
   /**
