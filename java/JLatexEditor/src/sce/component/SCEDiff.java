@@ -1,5 +1,7 @@
 package sce.component;
 
+import util.diff.Diff;
+
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
@@ -44,6 +46,25 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
     setUI(new SCEDiffUI());
   }
 
+  public void updateDiff() {
+    SCEDocument paneDocument = pane.getDocument();
+    SCEDocument diffDocument = diff.getDocument();
+
+    String paneRows[] = getRows(paneDocument);
+    String diffRows[] = getRows(diffDocument);
+
+  }
+
+  private String[] getRows(SCEDocument document) {
+    SCEDocumentRow[] sceRows = document.getRows();
+
+    String rows[] = new String[sceRows.length];
+    for(int row = 0; row < rows.length; row++) {
+      rows[row] = sceRows[row].toString();
+    }
+    return rows;
+  }
+
   public void paint(Graphics g) {
     super.paint(g);
 
@@ -54,6 +75,8 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
       diff.getDocument().setModified(false);
       diff.setEditable(false);
       setDividerLocation(.5);
+
+      updateDiff();
     }
   }
 
