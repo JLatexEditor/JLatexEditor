@@ -397,31 +397,6 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 			document.remove(caret, pane.findSplitterPosition(caret.getRow(), caret.getColumn(), 1));
 	    e.consume();
 	  }
-
-    // insert text
-    if(e.getKeyCode() == KeyEvent.VK_V && e.isControlDown()){
-      Transferable content = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
-      try{
-        String string = (String) content.getTransferData(DataFlavor.stringFlavor);
-        if(document.hasSelection()) removeSelection();
-        document.insert(string, caret.getRow(), caret.getColumn());
-      } catch(Exception ignored){
-      }
-      e.consume();
-    }
-    // copy text
-    if(e.getKeyCode() == KeyEvent.VK_C && e.isControlDown() && document.hasSelection()){
-      StringSelection s = new StringSelection(document.getSelectedText());
-      Toolkit.getDefaultToolkit().getSystemClipboard().setContents(s, null);
-      e.consume();
-    }
-    // cut text
-    if(e.getKeyCode() == KeyEvent.VK_X && e.isControlDown() && document.hasSelection()){
-      StringSelection s = new StringSelection(document.getSelectedText());
-      Toolkit.getDefaultToolkit().getSystemClipboard().setContents(s, null);
-      removeSelection();
-      e.consume();
-    }
   }
 
   // MouseListener methods

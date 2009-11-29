@@ -7,8 +7,12 @@ import sce.quickhelp.QuickHelp;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.FocusListener;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyEvent;
 import java.text.AttributedString;
 import java.util.ArrayList;
 
@@ -239,7 +243,38 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     return caret;
   }
 
-	/**
+  /**
+   * Insert text from clipboard.
+   */
+  public void paste() {
+    Transferable content = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
+    try{
+      String string = (String) content.getTransferData(DataFlavor.stringFlavor);
+      if(document.hasSelection()) ui.removeSelection();
+      document.insert(string, caret.getRow(), caret.getColumn());
+    } catch(Exception ignored){
+    }
+  }
+
+  /**
+   * Copy text to clipboard.
+   */
+  public void copy() {
+    StringSelection s = new StringSelection(document.getSelectedText());
+    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(s, null);
+  }
+
+  /**
+   * Cut text to clipboard.
+   */
+  public void cut() {
+    StringSelection s = new StringSelection(document.getSelectedText());
+    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(s, null);
+    ui.removeSelection();
+  }
+
+
+  /**
 	 * Returns the popup for code assistants.
 	 *
 	 * @return popup for code assistants

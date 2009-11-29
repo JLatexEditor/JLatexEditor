@@ -161,6 +161,24 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     findMenuItem.addActionListener(this);
     editMenu.add(findMenuItem);
 
+    JMenuItem cutMenuItem = new JMenuItem("Cut");
+    cutMenuItem.setActionCommand("cut");
+    cutMenuItem.setAccelerator(KeyStroke.getKeyStroke("control X"));
+    cutMenuItem.addActionListener(this);
+    editMenu.add(cutMenuItem);
+
+    JMenuItem copyMenuItem = new JMenuItem("Copy");
+    copyMenuItem.setActionCommand("copy");
+    copyMenuItem.setAccelerator(KeyStroke.getKeyStroke("control C"));
+    copyMenuItem.addActionListener(this);
+    editMenu.add(copyMenuItem);
+
+    JMenuItem pasteMenuItem = new JMenuItem("Paste");
+    pasteMenuItem.setActionCommand("paste");
+    pasteMenuItem.setAccelerator(KeyStroke.getKeyStroke("control V"));
+    pasteMenuItem.addActionListener(this);
+    editMenu.add(pasteMenuItem);
+
     JMenuItem diffMenuItem = new JMenuItem("Diff");
     diffMenuItem.setActionCommand("diff");
 	  diffMenuItem.setMnemonic('D');
@@ -473,6 +491,21 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // find
     if(action.equals("find")){
       getEditor(tabbedPane.getSelectedIndex()).search();
+    } else
+
+    // cut
+    if(action.equals("cut")){
+      getEditor(tabbedPane.getSelectedIndex()).getTextPane().cut();
+    } else
+
+    // copy
+    if(action.equals("copy")){
+      getEditor(tabbedPane.getSelectedIndex()).getTextPane().copy();
+    } else
+
+    // paste
+    if(action.equals("paste")){
+      getEditor(tabbedPane.getSelectedIndex()).getTextPane().paste();
     } else
 
     // diff
