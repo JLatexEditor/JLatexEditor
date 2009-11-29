@@ -112,6 +112,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  fileMenu.setMnemonic('F');
     menuBar.add(fileMenu);
 
+	  JMenuItem newMenuItem = new JMenuItem("New");
+	  newMenuItem.setActionCommand("new");
+		newMenuItem.setMnemonic('N');
+	  newMenuItem.setAccelerator(KeyStroke.getKeyStroke("control N"));
+	  newMenuItem.addActionListener(this);
+	  fileMenu.add(newMenuItem);
+
     JMenuItem openMenuItem = new JMenuItem("Open");
     openMenuItem.setActionCommand("open");
 	  openMenuItem.setMnemonic('O');
@@ -427,7 +434,14 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   public void actionPerformed(ActionEvent e){
     String action = e.getActionCommand();
     
-    // open a file
+    // new file
+	  if(action.equals("new")){
+		  try {
+			  addTab(new UntitledDoc());
+		  } catch (IOException ignored) {}
+	  } else
+
+		// open a file
     if(action.equals("open")){
       openDialog.showDialog(this, "Open");
       if(openDialog.getSelectedFile() == null) return;
