@@ -232,6 +232,21 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     svnCommitItem.addActionListener(this);
     vcMenu.add(svnCommitItem);
 
+    JMenu settingsMenu = new JMenu("Settings");
+    settingsMenu.setMnemonic('S');
+    menuBar.add(settingsMenu);
+
+    JMenu textAntialiasingMenu = new JMenu("Text Antialiasign");
+	  textAntialiasingMenu.setMnemonic('T');
+    settingsMenu.add(textAntialiasingMenu);
+
+    for(String key : GProperties.textAntialiasignMapKeys) {
+      JMenuItem entry = new JMenuItem(key);
+      entry.setActionCommand("TextAntialias: " + key);
+      entry.addActionListener(this);
+      textAntialiasingMenu.add(entry);
+    }
+
 	  JMenu helpMenu = new JMenu("Help");
 	  helpMenu.setMnemonic('H');
 	  menuBar.add(helpMenu);
@@ -526,6 +541,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     if(action.equals("dvi")) { saveAll(); compile(LatexCompiler.TYPE_DVI); } else
     if(action.equals("dvi + ps")) { saveAll(); compile(LatexCompiler.TYPE_DVI_PS); } else
     if(action.equals("dvi + ps + pdf")) { saveAll(); compile(LatexCompiler.TYPE_DVI_PS_PDF); } else
+
+    // text antialiasing
+    if(action.startsWith("TextAntialias: ")) {
+      String key = action.substring(action.indexOf(": ") + 2);
+      GProperties.textAntialiasign = GProperties.textAntialiasignMap.get(key);
+      getEditor(tabbedPane.getSelectedIndex()).repaint();
+    }
 
 	  if(action.equals("update")){
 	    ProgramUpdater updater = new ProgramUpdater("JLatexEditor update", "http://joerg.endrullis.de/jlatexeditor/update/");

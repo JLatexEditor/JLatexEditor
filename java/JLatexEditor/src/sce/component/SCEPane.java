@@ -1,5 +1,6 @@
 package sce.component;
 
+import jlatexeditor.GProperties;
 import sce.codehelper.CodeAssistant;
 import sce.codehelper.CodeHelper;
 import sce.codehelper.SCEPopup;
@@ -144,7 +145,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     Graphics2D g2D = (Graphics2D) g;
     super.paint(g2D);
 
-    //g2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+    g2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, GProperties.textAntialiasign);
     
     // clip bounds
     int y = g2D.getClipBounds().y;
