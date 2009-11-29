@@ -26,4 +26,8 @@
     <argument name="label">
     </argument>
   </command>
+  <command name="frame" usage="\begin{frame}\n  \frametitle{@title@}\n  @|@\n\end{frame}" hint="latex beamer frame">
+    <argument name="title">
+    </argument>
+  </command>
 </commandList>
