@@ -11,6 +11,9 @@ import java.io.PrintStream;
 /**
  * Java API for the command line tool aspell.
  *
+ * A documentation about aspell can be found here:
+ * http://aspell.net/man-html/Through-A-Pipe.html#Through-A-Pipe
+ *
  * @author Stefan Endrullis
  */
 public final class Aspell {
@@ -109,6 +112,58 @@ public final class Aspell {
 	public synchronized void addToDict(String word) {
 		aspellIn.println("*" + word);
 		aspellIn.println("#");
+	}
+
+	/**
+	 * Returns the value of the given option.
+	 * For a list of aspell options see
+	 * <a href="http://aspell.net/man-html/The-Options.html#The-Options">http://aspell.net/man-html/The-Options.html#The-Options</a>.
+	 * 
+	 * @param option option name
+	 * @return value
+	 * @throws IOException
+	 */
+	public synchronized String getOption(String option) throws IOException {
+		return call("$$cr " + option);
+	}
+
+	/**
+	 * Sets the value of the given option.
+	 * For a list of aspell options see
+	 * <a href="http://aspell.net/man-html/The-Options.html#The-Options">http://aspell.net/man-html/The-Options.html#The-Options</a>.
+	 *
+	 * @param option option name
+	 * @param value value
+	 */
+	public synchronized void setOption(String option, String value) {
+		aspellIn.println("$$cs " + option + "," + value);
+	}
+
+	public void   setLang(String lang) { setOption("lang", lang);	}
+	public String getLang() throws IOException { return getOption("lang"); }
+	
+	public void   setLanguageTag(String languageTag) { setOption("language-tag", languageTag); }
+	public String getLanguageTag() throws IOException { return getOption("language-tag"); }
+
+	public void addReplacement(String misspelling, String correction) {
+		aspellIn.println("$$ra " + misspelling + "," + correction);
+	}
+
+	public String[] getPersonalWordList() throws IOException {
+		String listString = call("$$pp");
+		listString = listString.substring(listString.indexOf(':')).trim();
+		return listString.split(", ");
+	}
+
+	public String[] getSessionWordList() throws IOException {
+		String listString = call("$$ps");
+		listString = listString.substring(listString.indexOf(':')).trim();
+		return listString.split(", ");
+	}
+
+	private String call(String input) throws IOException {
+		aspellIn.println(input);
+		return aspellOut.readLine();
 	}
 
 	/**
