@@ -29,6 +29,15 @@ import java.util.HashMap;
 public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener {
   private static String UNTITLED = "Untitled";
 
+	private static String version = "*Bleeding Edge*";
+	private static boolean devVersion = true;
+	static {
+		try {
+			version = StreamUtils.readFile("version.txt");
+			devVersion = false;
+		} catch (IOException ignored) {}
+	}
+
   private JMenuBar menuBar = null;
   private JTabbedPane tabbedPane = null;
   private JSplitPane textErrorSplit = null;
@@ -78,18 +87,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     } catch (Exception e) { }
     */
 
-	  String version = "*Bleeding Edge*";
-	  try {
-		  version = StreamUtils.readFile("version.txt");
-	  } catch (IOException ignored) {}
-
-	  JLatexEditorJFrame latexEditor = new JLatexEditorJFrame("JLatexEditor " + version, args);
+	  JLatexEditorJFrame latexEditor = new JLatexEditorJFrame(args);
     latexEditor.setSize(1024,800);
     latexEditor.setVisible(true);
   }
 
-  public JLatexEditorJFrame(String name, String args[]){
-    super(name);
+  public JLatexEditorJFrame(String args[]){
+	  super("JLatexEditor " + version);
     this.args = args;
     addWindowListener(this);
 
@@ -219,6 +223,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  updateMenuItem.setMnemonic('u');
 	  //updateMenuItem.setAccelerator(KeyStroke.getKeyStroke("alt u"));
 	  updateMenuItem.addActionListener(this);
+	  if (devVersion) updateMenuItem.setEnabled(false);
 	  helpMenu.add(updateMenuItem);
 
 	  JMenuItem aboutCommitItem = new JMenuItem("About");
