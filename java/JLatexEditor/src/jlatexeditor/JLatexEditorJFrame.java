@@ -462,7 +462,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // exit
     if(action.equals("exit")){
       saveAll();
-      System.exit(-1);
+      System.exit(0);
     } else
 
     // find
