@@ -5,6 +5,8 @@
 
 package sce.component;
 
+import jlatexeditor.GProperties;
+
 import java.awt.*;
 import java.awt.font.TextAttribute;
 import java.text.AttributedString;
@@ -57,9 +59,7 @@ public class SCEDocument{
   }
 
 	private void addDefaultStyles() {
-		Font font = new Font("MonoSpaced", 0, 13);
-		Font fontBold = new Font("MonoSpaced", Font.BOLD, 13);
-		Font fontItalic = new Font("MonoSpaced", Font.ITALIC, 13);
+		Font font = GProperties.getEditorFont();
 
 		// Text
 		Map<TextAttribute, Object> styleText = addStyle((byte) 0, null);

@@ -5,6 +5,7 @@
 
 package jlatexeditor.syntaxhighlighting;
 
+import jlatexeditor.GProperties;
 import sce.component.SCEDocument;
 
 import java.awt.*;
@@ -30,9 +31,9 @@ public class LatexStyles{
   public static final byte U_MISSPELLED = 101;
 
 	public static void addStyles(SCEDocument document){
-    Font font = new Font("MonoSpaced", 0, 13);
-    Font fontBold = new Font("MonoSpaced", Font.BOLD, 13);
-    Font fontItalic = new Font("MonoSpaced", Font.ITALIC, 13);
+    Font font = GProperties.getEditorFont();
+    Font fontBold = GProperties.getEditorFont().deriveFont(Font.BOLD);
+    Font fontItalic = GProperties.getEditorFont().deriveFont(Font.ITALIC);
 
     // Text
     Map<TextAttribute, Object> styleText = document.addStyle(TEXT, null);

@@ -109,7 +109,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 	  popup = new SCEPopup(this);
 
     // normal text font
-    fontText = new Font("MonoSpaced", 0, 13);
+    fontText = GProperties.getEditorFont();
     fontLineNumbers = new Font("SansSerif", 0, 11);
     setFont(fontText);
 
@@ -145,7 +145,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     Graphics2D g2D = (Graphics2D) g;
     super.paint(g2D);
 
-    g2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, GProperties.textAntialiasign);
+    g2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, GProperties.getTextAntialiasign());
     
     // clip bounds
     int y = g2D.getClipBounds().y;

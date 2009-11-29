@@ -26,7 +26,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.HashMap;
 
-public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener {
+public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener {
   private static String UNTITLED = "Untitled";
 
 	private static String version = "*Bleeding Edge*";
@@ -236,11 +236,34 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     settingsMenu.setMnemonic('S');
     menuBar.add(settingsMenu);
 
-    JMenu textAntialiasingMenu = new JMenu("Text Antialiasign");
-	  textAntialiasingMenu.setMnemonic('T');
+    JMenu fontMenu = new JMenu("Font");
+	  fontMenu.setMnemonic('F');
+    settingsMenu.add(fontMenu);
+
+    for(String fontName : GProperties.MONOSPACE_FONTS) {
+      JMenuItem entry = new JMenuItem(fontName);
+      entry.setActionCommand("Font: " + fontName);
+      entry.addActionListener(this);
+      entry.addMouseMotionListener(this);
+      fontMenu.add(entry);
+    }
+
+    JMenu fontSizeMenu = new JMenu("Font Size");
+	  fontSizeMenu.setMnemonic('S');
+    settingsMenu.add(fontSizeMenu);
+
+    for(int size = 6; size <= 48; size++) {
+      JMenuItem entry = new JMenuItem(size + "");
+      entry.setActionCommand("FontSize: " + size);
+      entry.addActionListener(this);
+      fontSizeMenu.add(entry);
+    }
+
+    JMenu textAntialiasingMenu = new JMenu("Font Antialiasign");
+	  textAntialiasingMenu.setMnemonic('A');
     settingsMenu.add(textAntialiasingMenu);
 
-    for(String key : GProperties.textAntialiasignMapKeys) {
+    for(String key : GProperties.TEXT_ANTIALIAS_KEYS) {
       JMenuItem entry = new JMenuItem(key);
       entry.setActionCommand("TextAntialias: " + key);
       entry.addActionListener(this);
@@ -542,10 +565,16 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     if(action.equals("dvi + ps")) { saveAll(); compile(LatexCompiler.TYPE_DVI_PS); } else
     if(action.equals("dvi + ps + pdf")) { saveAll(); compile(LatexCompiler.TYPE_DVI_PS_PDF); } else
 
+    // font
+    if(action.startsWith("Font: ")) {
+      String fontName = action.substring(action.indexOf(": ") + 2);
+      GProperties.setEditorFont(new Font(fontName, Font.PLAIN, GProperties.getEditorFont().getSize()));
+      getEditor(tabbedPane.getSelectedIndex()).repaint();
+    }
     // text antialiasing
     if(action.startsWith("TextAntialias: ")) {
       String key = action.substring(action.indexOf(": ") + 2);
-      GProperties.textAntialiasign = GProperties.textAntialiasignMap.get(key);
+      GProperties.setTextAntialiasign(GProperties.TEXT_ANTIALIAS_MAP.get(key));
       getEditor(tabbedPane.getSelectedIndex()).repaint();
     }
 
@@ -664,6 +693,22 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       errorHighlighting.detach();
       errorHighlighting.attach(getEditor(tabbedPane.getSelectedIndex()), errorView);
     }
+  }
+
+  public void mouseDragged(MouseEvent e) {
+  }
+
+  public void mouseMoved(MouseEvent e) {
+    JMenuItem item = (JMenuItem) e.getSource();
+    String action = item.getActionCommand();
+    String fontName = action.substring(action.indexOf(": ") + 2);
+    GProperties.setEditorFont(new Font(fontName, Font.PLAIN, GProperties.getEditorFont().getSize()));
+
+    SourceCodeEditor editor = getEditor(tabbedPane.getSelectedIndex());
+    SCEPane pane = editor.getTextPane();
+    pane.setFont(GProperties.getEditorFont());
+    LatexStyles.addStyles(pane.getDocument());
+    editor.repaint();
   }
 
   private class TabLabel extends JPanel implements MouseListener, SCEModificationStateListener {
