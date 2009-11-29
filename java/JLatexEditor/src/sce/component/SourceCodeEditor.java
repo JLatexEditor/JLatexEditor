@@ -15,9 +15,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class SourceCodeEditor extends JPanel{
-  // The file name
-  private File file = null;
+public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel{
+  /** The resource that has been opened in this editor. */
+	private Rs resource = null;
 
   // The source code pane
   private SCEPane textPane = null;
@@ -30,8 +30,8 @@ public class SourceCodeEditor extends JPanel{
   private SCEPane diffPane = null;
   private JScrollPane scrollDiffPane = null;
 
-  public SourceCodeEditor(File file){
-    this.file = file;
+  public SourceCodeEditor(Rs resource){
+    this.resource = resource;
 
     // Change scoll bar colors to nice blue
     UIManager.put("ScrollBar.thumb", new Color(91, 135, 206));
@@ -55,28 +55,26 @@ public class SourceCodeEditor extends JPanel{
   }
 
   /**
-   * Returns the file associated to this editor.
-   * @return file
+   * Returns the resource associated to this editor.
+   * @return resource
    */
-  public File getFile() {
-    return file;
+  public Rs getResource() {
+    return resource;
   }
 
   /**
-   * Sets the file associated with this editor.
-   * @param file file
+   * Sets the resource associated with this editor.
+   * @param resource resource
    */
-  public void setFile(File file) {
-    this.file = file;
+  public void setResource(Rs resource) {
+    this.resource = resource;
   }
 
   public static String readFile(String fileName) throws IOException {
-    FileInputStream fileInputStream = new FileInputStream(fileName);
-    byte data[] = StreamUtils.readBytesFromInputStream(fileInputStream);
-    fileInputStream.close();
+	  return makeEditorConform(StreamUtils.readFile(fileName));
+  }
 
-    // Set the text contend
-    String text = new String(data);
+	private static String makeEditorConform(String text) {
     text = text.replaceAll("\n\r", "\n");
     text = text.replaceAll("\t", "  ");
 
@@ -84,12 +82,12 @@ public class SourceCodeEditor extends JPanel{
   }
 
   /**
-   * Opens the given file.
-   * @param file file
+   * Opens the given resource.
+   * @param resource resource
    */
-  public void open(File file) throws IOException {
-    String text = readFile(file.getAbsolutePath());
-    this.file = file;
+  public void open(Rs resource) throws IOException {
+    String text = makeEditorConform(resource.getContent());
+    this.resource = resource;
 
     textPane.setText(text);
     textPane.getCaret().moveTo(0,0);
@@ -98,7 +96,7 @@ public class SourceCodeEditor extends JPanel{
   }
 
   public void reload() throws IOException {
-    String text = readFile(file.getAbsolutePath());
+	  String text = makeEditorConform(resource.getContent());
     textPane.setText(text);
     textPane.getDocument().setModified(false);
   }

@@ -5,9 +5,11 @@
 package jlatexeditor.errorhighlighting;
 
 import jlatexeditor.ErrorView;
+import jlatexeditor.JLatexEditorJFrame;
 import sce.component.*;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -48,13 +50,20 @@ public class LatexErrorHighlighting implements LatexCompileListener {
   }
 
   public void update() {
-    if(errorView == null || editor == null || editor.getFile() == null) return;
+	  if(errorView == null || editor == null) return;
+
+	  File file;
+	  if (editor.getResource() instanceof JLatexEditorJFrame.FileDoc) {
+		  file = ((JLatexEditorJFrame.FileDoc) editor.getResource()).getFile();
+	  } else {
+		  return;
+	  }
 
     SCEPane pane = editor.getTextPane();
     SCEDocument document = pane.getDocument();
     SCEMarkerBar markerBar = editor.getMarkerBar();
     try {
-      String canonicalFile = editor.getFile().getCanonicalPath();
+      String canonicalFile = file.getCanonicalPath();
       for(LatexCompileError error : errorView.getErrors()) {
         if(!canonicalFile.equals(error.getFile().getCanonicalPath())) continue;
 
@@ -88,7 +97,7 @@ public class LatexErrorHighlighting implements LatexCompileListener {
         errorHighlights.add(errorHighlight);
       }
       markerBar.repaint();
-    } catch (IOException e) { }
+    } catch (IOException ignored) { }
   }
 
   // LatexCompileListener

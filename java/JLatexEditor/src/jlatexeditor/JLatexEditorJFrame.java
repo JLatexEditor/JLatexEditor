@@ -8,10 +8,7 @@ package jlatexeditor;
 
 import jlatexeditor.codehelper.SpellCheckSuggester;
 import jlatexeditor.errorhighlighting.LatexCompiler;
-import sce.component.SCEDocument;
-import sce.component.SCEModificationStateListener;
-import sce.component.SCEPane;
-import sce.component.SourceCodeEditor;
+import sce.component.*;
 import jlatexeditor.errorhighlighting.LatexErrorHighlighting;
 import jlatexeditor.quickhelp.LatexQuickHelp;
 import jlatexeditor.codehelper.LatexCodeHelper;
@@ -229,10 +226,11 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
     // tabs for the files
     tabbedPane = new JTabbedPane();
-    tabbedPane.addTab(UNTITLED, createSourceCodeEditor());
-    tabbedPane.addChangeListener(this);
+	  try {
+		  addTab(new UntitledDoc());
+	  } catch (IOException ignored) {}
 
-    textErrorSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, tabbedPane, errorView);
+	  textErrorSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, tabbedPane, errorView);
     textErrorSplit.setOneTouchExpandable(true);
     textErrorSplit.setResizeWeight(.85);
 
@@ -274,17 +272,11 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  return editor;
   }
 
-  public int getTab(File file) {
-    try {
-      String fileCanonical = file.getCanonicalPath();
-      for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
-        SourceCodeEditor editor = (SourceCodeEditor) tabbedPane.getComponentAt(tab);
-        String editorCanonical = editor.getFile() != null ? editor.getFile().getCanonicalPath() : "";
-        if(fileCanonical.equals(editorCanonical)) return tab;
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+  public int getTab(AbstractResource resource) {
+		for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
+			SourceCodeEditor editor = (SourceCodeEditor) tabbedPane.getComponentAt(tab);
+			if(resource.equals(editor.getResource())) return tab;
+		}
     return -1;
   }
 
@@ -292,33 +284,41 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     return (SourceCodeEditor) tabbedPane.getComponentAt(tab);
   }
 
-  public SourceCodeEditor open(File file) {
+	private SourceCodeEditor addTab(AbstractResource resource) throws IOException {
+		SourceCodeEditor editor = createSourceCodeEditor();
+		tabbedPane.removeChangeListener(this);
+		tabbedPane.addTab(resource.getName(), editor);
+		tabbedPane.addChangeListener(this);
+		tabbedPane.setTabComponentAt(tabbedPane.getTabCount()-1, new TabLabel(resource, editor));
+		tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
+	  editor.open(resource);
+
+		return editor;
+	}
+
+  public SourceCodeEditor open(AbstractResource resource) {
     try{
       // already open?
-      int tab = getTab(file);
+      int tab = getTab(resource);
       if(tab != -1) { tabbedPane.setSelectedIndex(tab); return getEditor(tab); }
 
-      boolean addTab = true;
-
       // replacing the untitled tab?
-      SourceCodeEditor editor = null;
-      if(tabbedPane.getTabCount() == 1
-              && tabbedPane.getTitleAt(0).equals(UNTITLED)
-              && ((SourceCodeEditor) tabbedPane.getComponentAt(0)).getText().trim().equals("")) {
-	      editor = ((SourceCodeEditor) tabbedPane.getComponentAt(0));
-        tabbedPane.setTitleAt(0, file.getName());
-        tabbedPane.setTabComponentAt(0, new TabLabel(file, editor));
-      } else {
-        editor = createSourceCodeEditor();
-        tabbedPane.removeChangeListener(this);
-        tabbedPane.addTab(file.getName(), editor);
-        tabbedPane.addChangeListener(this);
-        tabbedPane.setTabComponentAt(tabbedPane.getTabCount()-1, new TabLabel(file, editor));
-        tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
+	    boolean closeFirstTab = false;
+      if(tabbedPane.getTabCount() == 1) {
+	      SourceCodeEditor firstEditor = getEditor(0);
+	      if (firstEditor.getResource() instanceof UntitledDoc && !firstEditor.getTextPane().getDocument().isModified()) {
+		      closeFirstTab = true;
+	      }
       }
 
-      editor.open(file);
-      lastModified.put(file, file.lastModified());
+	    SourceCodeEditor editor = addTab(resource);
+	    if (closeFirstTab) closeTab(0);
+
+
+	    if (resource instanceof FileDoc) {
+	      FileDoc fileDoc = (FileDoc) resource;
+		    lastModified.put(fileDoc.file, fileDoc.file.lastModified());
+	    }
 
       errorHighlighting.detach();
       errorHighlighting.attach(editor, errorView);
@@ -364,7 +364,20 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private void save(SourceCodeEditor editor) {
 		if (!editor.getTextPane().getDocument().isModified()) return;
 
-    File file = editor.getFile();
+		AbstractResource resource = editor.getResource();
+
+		File file = null;
+		if (resource instanceof UntitledDoc) {
+		  UntitledDoc untitledDoc = (UntitledDoc) resource;
+		  // TODO call save file dialog to assign a file to this new document
+			JOptionPane.showMessageDialog(this, "Saving new files not implemented yet.");
+			return;
+		} else
+		if (resource instanceof FileDoc) {
+		  FileDoc fileDoc = (FileDoc) resource;
+		  file = fileDoc.getFile();
+		}
+
     File backup = new File(file.getAbsolutePath() + "~");
     if(backup.exists()) backup.delete();
     file.renameTo(backup);
@@ -399,7 +412,14 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
   private void closeTab(int tab) {
     SourceCodeEditor editor = getEditor(tab);
-    tabbedPane.removeTabAt(tab);
+	  if (tabbedPane.getTabCount() > 1) {
+		  tabbedPane.removeTabAt(tab);
+	  } else {
+		  try {
+			  addTab(new UntitledDoc());
+		  } catch (IOException ignored) {}
+		  tabbedPane.removeTabAt(tab);
+	  }
     editor.getTextPane().setText("");
   }
 
@@ -412,7 +432,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       openDialog.showDialog(this, "Open");
       if(openDialog.getSelectedFile() == null) return;
 
-      open(openDialog.getSelectedFile());
+      open(new FileDoc(openDialog.getSelectedFile()));
     } else
 
     // save a file
@@ -478,12 +498,22 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		  }
 	  } else
 
+	  if(action.equals("about")){
+			JOptionPane.showMessageDialog(this, "<html><h2>JLatexEditor</h2><p>TODO</p></html>", "JLatexEditor", JOptionPane.INFORMATION_MESSAGE);
+	  } else
+
     // timer
     if(action.equals("timer")){
       for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
         SourceCodeEditor editor = getEditor(tab);
-        File file = editor.getFile();
-        if(file == null) continue;
+	      
+        File file;
+	      if (editor.getResource() instanceof FileDoc) {
+	        FileDoc fileDoc = (FileDoc) editor.getResource();
+	        file = fileDoc.getFile();
+	      } else {
+		      continue;
+	      }
 
         Long oldModified = lastModified.get(file);
         Long newModified = file.lastModified();
@@ -493,7 +523,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
           if(editor.getTextPane().getDocument().isModified()) {
             int choice = JOptionPane.showOptionDialog(
                     this,
-                    "The document `" + editor.getFile().toString() + "'\n" +
+                    "The document `" + file.toString() + "'\n" +
                     "has been modified externally as well as in the editor.\n" +
                     "Overwriting will discard the external modifications in file.\n" +
                     "Reloading will discard the modifications in the editor.\n",
@@ -526,7 +556,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         // open files given in command line
-        for(String arg : args) { open(new File(arg)); }
+        for(String arg : args) { open(new FileDoc(new File(arg))); }
         openDialog.setDialogTitle("Open");
         if(args.length > 0) {
           openDialog.setCurrentDirectory(new File(new File(args[0]).getParent()));
@@ -563,15 +593,15 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   }
 
   private class TabLabel extends JPanel implements MouseListener, SCEModificationStateListener {
-    private File file;
+    private AbstractResource resource;
     private JLabel label;
     private JLabel closeIcon;
 
-    private TabLabel(File file, SourceCodeEditor editor) {
-      this.file = file;
+    private TabLabel(AbstractResource resource, SourceCodeEditor editor) {
+      this.resource = resource;
       setOpaque(false);
 
-      label = new JLabel(file.getName());
+      label = new JLabel(resource.getName());
       closeIcon = new JLabel(new ImageIcon("icons/tab_close_over.png"));
       closeIcon.setVerticalAlignment(SwingConstants.CENTER);
 
@@ -590,16 +620,16 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     }
 
     public void mouseClicked(MouseEvent e) {
-      tabbedPane.setSelectedIndex(getTab(file));
+      tabbedPane.setSelectedIndex(getTab(resource));
       if(e.getClickCount() >= 2) {
-        mainEditor = getEditor(getTab(file));
+        mainEditor = getEditor(getTab(resource));
         for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
           tabbedPane.getTabComponentAt(tab).setForeground(Color.BLACK);
         }
         label.setForeground(Color.RED);
       }
       if(closeIcon.contains(e.getX() - closeIcon.getX(), e.getY() - closeIcon.getY())) {
-        closeTab(getTab(file));
+        closeTab(getTab(resource));
       }
     }
 
@@ -622,7 +652,79 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 	  // SCEModificationStateListener
 	  public void modificationStateChanged(boolean modified) {
-		  label.setText(modified ? "*"+file.getName() : file.getName());
+		  label.setText(modified ? "*"+resource.getName() : resource.getName());
 	  }
   }
+
+	/**
+	 * Document read from file.
+	 */
+	public static class FileDoc implements AbstractResource {
+		private File file;
+		private String id;
+
+		public FileDoc(File file) {
+			this.file = file;
+			try {
+				this.id = file.getCanonicalPath();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public int hashCode() {
+			return id.hashCode();
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof FileDoc) {
+			  FileDoc that = (FileDoc) obj;
+			  return this.id.equals(that.id);
+			}
+			return false;
+		}
+
+		public File getFile() {
+			return file;
+		}
+
+		public String getContent() throws IOException {
+			return StreamUtils.readFile(file.getAbsolutePath());
+		}
+
+		public String getName() { return file.getName(); }
+		public String toString() { return file.toString(); }
+	}
+
+	/**
+	 * Unsaved document.
+	 */
+	public static class UntitledDoc implements AbstractResource {
+		private static int untitledNr = 1;
+		private String name;
+
+		public UntitledDoc() {
+			name = UNTITLED + " " + untitledNr++;
+		}
+
+		@Override
+		public int hashCode() {
+			return name.hashCode();
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof UntitledDoc) {
+				UntitledDoc that = (UntitledDoc) obj;
+				return this.name.equals(that.name);
+			}
+			return false;
+		}
+
+		public String getContent() { return ""; }
+		public String getName() { return name; }
+		public String toString() { return name; }
+	}
 }

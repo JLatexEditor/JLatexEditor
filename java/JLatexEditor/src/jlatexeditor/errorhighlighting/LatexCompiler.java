@@ -1,6 +1,8 @@
 package jlatexeditor.errorhighlighting;
 
 import jlatexeditor.ErrorView;
+import jlatexeditor.JLatexEditorJFrame;
+import sce.component.AbstractResource;
 import sce.component.SourceCodeEditor;
 
 import java.io.*;
@@ -32,7 +34,14 @@ public class LatexCompiler extends Thread {
   }
 
   public void run(){
-    File file = editor.getFile();
+	  File file;
+	  AbstractResource resource = editor.getResource();
+	  if (resource instanceof JLatexEditorJFrame.FileDoc) {
+	    JLatexEditorJFrame.FileDoc fileDoc = (JLatexEditorJFrame.FileDoc) resource;
+	    file = fileDoc.getFile();
+	  } else {
+		  return;
+	  }
 
     errorView.clear();
     compileStart();
@@ -66,7 +75,7 @@ public class LatexCompiler extends Thread {
           error = new LatexCompileError();
           error.setType(LatexCompileError.TYPE_ERROR);
           String fileName = fileStack.get(fileStack.size() - 1);
-          error.setFile(new File(editor.getFile().getParentFile(), fileName), fileName);
+          error.setFile(new File(file.getParentFile(), fileName), fileName);
 
           error.setMessage(line.substring(1).trim());
 
@@ -111,7 +120,7 @@ public class LatexCompiler extends Thread {
           error = new LatexCompileError();
           error.setType(LatexCompileError.TYPE_WARNING);
           String fileName = fileStack.get(fileStack.size() - 1);
-          error.setFile(new File(editor.getFile().getParentFile(), fileName), fileName);
+          error.setFile(new File(file.getParentFile(), fileName), fileName);
 
           int linePos = line.indexOf("on input line ");
           if(linePos != -1) {
@@ -137,7 +146,7 @@ public class LatexCompiler extends Thread {
           error = new LatexCompileError();
           error.setType(LatexCompileError.TYPE_OVERFULL_HBOX);
           String fileName = fileStack.get(fileStack.size() - 1);
-          error.setFile(new File(editor.getFile().getParentFile(), fileName), fileName);
+          error.setFile(new File(file.getParentFile(), fileName), fileName);
           error.setMessage(line);
 
           while(!line.trim().equals("")) {

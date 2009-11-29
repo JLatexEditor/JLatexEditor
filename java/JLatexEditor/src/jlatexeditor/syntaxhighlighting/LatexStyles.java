@@ -26,7 +26,7 @@ public class LatexStyles{
 
   public static final byte ERROR = Byte.MAX_VALUE;
 
-  public static final byte U_NORMAL      = 100;
+  public static final byte U_NORMAL     = 100;
   public static final byte U_MISSPELLED = 101;
 
 	public static void addStyles(SCEDocument document){
