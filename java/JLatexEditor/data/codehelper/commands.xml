@@ -19,6 +19,11 @@
   <command name="\)" hint="define math environment"/>
   <command name="\[" hint="define displaymath environment"/>
   <command name="\]" hint="define displaymath environment"/>
+  
+  <command name="\documentclass" usage="\documentclass[@opt@]{@style@}" hint="declares a document to be of the specified style">
+    <argument name="opt"/>
+    <argument name="style"/>
+  </command>
 
   <command name="\addcontentsline" usage="\addcontentsline{@file@}{@sec_unit@}{@entry@}" hint="adds an entry to the specified list or table">
     <argument name="file" hint="extension of the file on which information is to be written">
