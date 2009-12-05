@@ -159,9 +159,10 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
               sce_char.style = LatexStyles.ERROR;
             }
           }else{
+            Byte style = LatexStyles.getCommandStyle(command);
             // highlight the command
             for(int i = 0; i <= command.length(); i++){
-              chars[char_nr + i].style = LatexStyles.COMMAND;
+              chars[char_nr + i].style = style;
             }
             char_nr += command.length();
           }

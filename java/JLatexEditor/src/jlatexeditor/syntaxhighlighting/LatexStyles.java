@@ -24,20 +24,28 @@ public class LatexStyles{
 
   public static final byte BRACKET = 3;
 
-  public static final byte NUMBER = 6;
+  public static final byte NUMBER = 4;
 
-  public static final byte MATH = 7;
+  public static final byte MATH = 5;
 
-  public static final byte ERROR = Byte.MAX_VALUE;
+  public static final byte ERROR = 6;
+
+  public static final byte USER = 50;
 
   public static final byte U_NORMAL     = 100;
   public static final byte U_MISSPELLED = 101;
 
   private static Map<TextAttribute, Object>[] stylesMap = new Map[Byte.MAX_VALUE+1];
+  private static Map<String, Byte> commandsMap = new HashMap<String, Byte>();
 
   private static Map<String,Byte> name2Id = new HashMap<String, Byte>();
 
   static {
+    init();
+    load("data/styles/user.xml");
+  }
+
+  private static void init() {
     name2Id.put("text", TEXT);
     name2Id.put("command", COMMAND);
     name2Id.put("comment", COMMENT);
@@ -46,7 +54,7 @@ public class LatexStyles{
     name2Id.put("math", MATH);
     name2Id.put("error", ERROR);
 
-    load("data/styles/user.xml");
+    for(int i = 0; i < stylesMap.length; i++) stylesMap[i] = null;
   }
 
 	public static void addStyles(SCEDocument document){
@@ -67,7 +75,14 @@ public class LatexStyles{
 	  underlineMisspelling.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_LOW_GRAY);
   }
 
+  public static Byte getCommandStyle(String command) {
+    Byte style = commandsMap.get(command);
+    return style != null ? style : COMMAND;
+  }
+
   public static void load(String filename) {
+    init();
+
     XMLParser xmlParser = new XMLParser();
     XMLDocument stylesDocument;
     try {
@@ -83,37 +98,53 @@ public class LatexStyles{
       return;
     }
 
-    Font font = GProperties.getEditorFont();
-    Font fontBold = GProperties.getEditorFont().deriveFont(Font.BOLD);
-    Font fontItalic = GProperties.getEditorFont().deriveFont(Font.ITALIC);
-
+    int userStyle = USER;
     for(XMLElement styleElement : stylesXML.getChildElements()) {
-      Byte id = name2Id.get(styleElement.getAttribute("name"));
-      if(id == null) {
-        System.out.println("Unknown [styles].xml element: " + styleElement.getAttribute("name"));
+      if(styleElement.getName().equals("special")) {
+        for(XMLElement element : styleElement.getChildElements()) {
+          if(element.getName().equals("command")) {
+            commandsMap.put(element.getAttribute("name"), name2Id.get(element.getAttribute("style")));
+          }
+        }
         continue;
       }
 
-      Map<TextAttribute, Object> style = new HashMap<TextAttribute, Object>();
-      stylesMap[id] = style;
-      style.put(TextAttribute.FONT, font);
-      if(styleElement.getAttribute("style").equals("bold")) style.put(TextAttribute.FONT, fontBold);
-      if(styleElement.getAttribute("style").equals("italic")) style.put(TextAttribute.FONT, fontItalic);
-
-      XMLElement foreground = styleElement.getChildElement("foreground");
-      if(foreground != null) {
-        style.put(TextAttribute.FOREGROUND, getColor(foreground.getChildElement("color")));
+      Byte id = name2Id.get(styleElement.getAttribute("name"));
+      if(id == null) {
+        id = (byte) userStyle++;
+        name2Id.put(styleElement.getAttribute("name"), id);
       }
 
-      XMLElement background = styleElement.getChildElement("background");
-      if(background != null) {
-        style.put(TextAttribute.BACKGROUND, getColor(background.getChildElement("color")));
-      }
+      stylesMap[id] = getStyle(styleElement);
     }
   }
 
   public static void save(String fileName) {
-    
+    // TODO
+  }
+
+  private static Map<TextAttribute, Object> getStyle(XMLElement styleElement) {
+    Map<TextAttribute, Object> style = new HashMap<TextAttribute, Object>();
+
+    Font font = GProperties.getEditorFont();
+    Font fontBold = GProperties.getEditorFont().deriveFont(Font.BOLD);
+    Font fontItalic = GProperties.getEditorFont().deriveFont(Font.ITALIC);
+
+    style.put(TextAttribute.FONT, font);
+    if(styleElement.getAttribute("style").equals("bold")) style.put(TextAttribute.FONT, fontBold);
+    if(styleElement.getAttribute("style").equals("italic")) style.put(TextAttribute.FONT, fontItalic);
+
+    XMLElement foreground = styleElement.getChildElement("foreground");
+    if(foreground != null) {
+      style.put(TextAttribute.FOREGROUND, getColor(foreground.getChildElement("color")));
+    }
+
+    XMLElement background = styleElement.getChildElement("background");
+    if(background != null) {
+      style.put(TextAttribute.BACKGROUND, getColor(background.getChildElement("color")));
+    }
+
+    return style;
   }
 
   private static Color getColor(XMLElement color) {

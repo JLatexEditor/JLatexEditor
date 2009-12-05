@@ -5,20 +5,20 @@
     <!-- <background><color r="255" g="255" b="255"/></background> -->
   </element>
 
-  <element name="command" style="bold">
-    <foreground><color r="0" g="0" b="128"/></foreground>
+  <element name="command" style="plain">
+    <foreground><color r="128" g="0" b="0"/></foreground>
   </element>
 
   <element name="comment" style="italic">
     <foreground><color r="128" g="128" b="128"/></foreground>
   </element>
 
-  <element name="bracket" style="bold">
-    <foreground><color r="102" g="14" b="122"/></foreground>
+  <element name="bracket" style="plain">
+    <foreground><color r="0" g="0" b="0"/></foreground>
   </element>
 
   <element name="number" style="plain">
-    <foreground><color r="0" g="0" b="255"/></foreground>
+    <foreground><color r="0" g="0" b="0"/></foreground>
   </element>
 
   <element name="math" style="plain">
@@ -28,4 +28,29 @@
   <element name="error" style="plain">
     <foreground><color r="255" g="0" b="0"/></foreground>
   </element>
+
+  <element name="begin" style="bold">
+    <foreground><color r="0" g="0" b="128"/></foreground>
+  </element>
+
+  <element name="section" style="bold">
+    <foreground><color r="240" g="0" b="0"/></foreground>
+  </element>
+
+  <element name="important_command" style="plain">
+    <foreground><color r="240" g="0" b="0"/></foreground>
+  </element>
+
+  <special>
+    <command name="begin" style="begin"/>
+    <command name="end" style="end"/>
+    <command name="section" style="section"/>
+    <command name="subsection" style="section"/>
+    <command name="subsubsection" style="section"/>
+    <command name="paragraph" style="important_command"/>
+    <command name="label" style="important_command"/>
+    <command name="ref" style="important_command"/>
+    <command name="eqref" style="important_command"/>
+    <command name="cite" style="important_command"/>
+  </special>
 </styles>

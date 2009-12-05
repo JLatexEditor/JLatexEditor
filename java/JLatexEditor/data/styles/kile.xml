@@ -28,4 +28,28 @@
   <element name="error" style="plain">
     <foreground><color r="255" g="0" b="0"/></foreground>
   </element>
+
+  <element name="begin" style="bold">
+    <foreground><color r="0" g="0" b="128"/></foreground>
+  </element>
+
+  <element name="section" style="bold">
+    <foreground><color r="240" g="0" b="0"/></foreground>
+  </element>
+
+  <element name="important_command" style="plain">
+    <foreground><color r="240" g="0" b="0"/></foreground>
+  </element>
+
+  <special>
+    <command name="begin" style="begin"/>
+    <command name="section" style="section"/>
+    <command name="subsection" style="section"/>
+    <command name="subsubsection" style="section"/>
+    <command name="paragraph" style="important_command"/>
+    <command name="label" style="important_command"/>
+    <command name="ref" style="important_command"/>
+    <command name="eqref" style="important_command"/>
+    <command name="cite" style="important_command"/>
+  </special>
 </styles>
