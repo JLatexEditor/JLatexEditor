@@ -43,6 +43,7 @@
 
   <special>
     <command name="begin" style="begin"/>
+    <command name="end" style="begin"/>
     <command name="section" style="section"/>
     <command name="subsection" style="section"/>
     <command name="subsubsection" style="section"/>
