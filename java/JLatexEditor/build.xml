@@ -75,15 +75,13 @@
 		</jar>
 
 		<!-- Copy start scripts. -->
-		<copy todir="${upload}">
-			<fileset dir="scripts">
-				<filename name="jlatexeditor"/>
-			</fileset>
-		</copy>
+		<copy todir="${upload}" file="scripts/jlatexeditor"/>
+		<copy todir="${upload}" file="scripts/jlatexeditor.bat"/>
 		<chmod file="${upload}/jlatexeditor" perm="ugo+x"/>
 
 		<length file="${buildJar}" property="jle.length"/>
 		<length file="${upload}/jlatexeditor" property="sh.length"/>
+		<length file="${upload}/jlatexeditor.bat" property="bat.length"/>
 
 		<!-- Create versions.xml. -->
 		<copy todir="${upload}" file="templates/versions.xml"/>
@@ -91,6 +89,7 @@
 		  <replacefilter token="@jle.version@" value="${jle.version}"/>
 			<replacefilter token="@jle.length@" value="${jle.length}"/>
 			<replacefilter token="@sh.length@" value="${sh.length}"/>
+			<replacefilter token="@bat.length@" value="${bat.length}"/>
 		  <replacefilter token="@build.number@" value="${build.number}"/>
 		</replace>
 	</target>
