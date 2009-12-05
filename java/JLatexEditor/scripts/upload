@@ -1,5 +1,0 @@
-#!/bin/bash
-
-prefix=$1
-scp dist/upload/* endrullis.de:/home/stefan/www/joerg.endrullis.de/jlatexeditor/update/
-scp dist/$prefix.* endrullis.de:/home/stefan/www/joerg.endrullis.de/jlatexeditor/releases/

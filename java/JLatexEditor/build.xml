@@ -9,7 +9,7 @@
 	<property name="build"              location="build"/>
 	<property name="lib"                location="lib"/>
 	<property name="dist"               location="dist"/>
-	<property name="upload"             location="${dist}/upload"/>
+	<property name="upload"             location="${dist}/JLatexEditor"/>
 	<property name="releases"           location="${dist}/releases"/>
 
 	<property name="buildClasses"       location="${build}/classes"/>
@@ -96,20 +96,11 @@
 	</target>
 
 	<!-- Build all files needed for deployment. -->
-	<target name="dist" depends="jar">
+	<target name="create_release" depends="jar">
 		<mkdir dir="${releases}"/>
 
-		<!-- Build archives. -->
-		<zip basedir="${upload}" zipfile="${releases}/JLatexEditor-${jle.version}.${build.number}.zip"/>
-		<!-- tar from ant is unable to take over all file attributes -> therefore we use the command line tar.
-		<tar basedir="${upload}" tarfile="${dist}/tmp.tar"/>
-		<bzip2 src="${dist}/tmp.tar" destfile="${dist}/JLatexEditor-${jle.version}.${build.number}.tar.bz2"/>
-		<delete file="${releases}/tmp.tar"/>
-		-->
-		<exec executable="/bin/tar">
-			<arg value="-czf"/>
-			<arg value="${releases}/JLatexEditor-${jle.version}.${build.number}.zip"/>
-			<arg value="${upload}/*"/>
+		<exec executable="scripts/create_release">
+			<arg value="JLatexEditor-${jle.version}.${build.number}"/>
 		</exec>
 	</target>
 
@@ -120,9 +111,16 @@
 		<echo message="${jle.version}.${build.number}" file="${buildClasses}/version.txt"/>
 	</target>
 
-	<!-- Uploads all files to deploy. -->
-	<target name="upload" depends="dist">
-		<exec executable="scripts/upload">
+	<!-- Copies all files to deploy into the corresponding web directories. -->
+	<target name="copy_release" depends="create_release">
+		<exec executable="scripts/copy_release">
+			<arg value="JLatexEditor-${jle.version}.${build.number}"/>
+		</exec>
+	</target>
+
+	<!-- Validates the source code and creates a new release on the remote server. -->
+	<target name="create_remote_release" depends="compile">
+		<exec executable="scripts/create_remote_release">
 			<arg value="JLatexEditor-${jle.version}.${build.number}"/>
 		</exec>
 	</target>
