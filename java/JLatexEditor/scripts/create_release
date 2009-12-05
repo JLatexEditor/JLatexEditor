@@ -13,8 +13,8 @@ mv $prefix.* releases/
 # create symbolic links (last.*)
 cd releases
 for ext in zip tar.gz; do
-	[ -e latest.$ext ] && rm latest.$ext
-	ln -s $prefix.$ext latest.$ext
+	[ -e JLatexEditor-latest.$ext ] && rm JLatexEditor-latest.$ext
+	ln -s $prefix.$ext JLatexEditor-latest.$ext
 done
 
 cd ../..
