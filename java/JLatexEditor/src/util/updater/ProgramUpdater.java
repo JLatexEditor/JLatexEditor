@@ -91,6 +91,7 @@ public class ProgramUpdater extends JFrame implements ActionListener {
 	 * @return true if the update was successful
 	 */
 	public boolean performUpdate(boolean confirmation) {
+		setAlwaysOnTop(true);
 		setVisible(true);
 
 	  try {
