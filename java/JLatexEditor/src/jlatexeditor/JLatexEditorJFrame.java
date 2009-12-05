@@ -60,6 +60,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private Timer timer = new Timer(2000, this);
   private HashMap<File,Long> lastModified = new HashMap<File, Long>();
 
+	private final ProgramUpdater updater = new ProgramUpdater("JLatexEditor update", "http://joerg.endrullis.de/jlatexeditor/update/");
+
+
   public static void main(String args[]){
     /*
     try {
@@ -310,6 +313,15 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // file changed timer
     timer.setActionCommand("timer");
     timer.start();
+
+	  // search for updates in the background
+	  if (!devVersion) {
+			new Thread(){
+				public void run() {
+					checkForUpdates();
+				}
+			}.start();
+	  }
   }
 
   private SourceCodeEditor createSourceCodeEditor() {
@@ -416,21 +428,26 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 	/**
 	 * Saves all open documents.
+	 *
+	 * @return true if the process of saving the documents has NOT been canceled
 	 */
-  public void saveAll() {
+  public boolean saveAll() {
     for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
       SourceCodeEditor editor = (SourceCodeEditor) tabbedPane.getComponentAt(tab);
-      save(editor);
+      if (!save(editor)) return false;
     }
+
+		return true;
   }
 
 	/**
 	 * Saves the document given by the editor.
 	 *
 	 * @param editor editor containing the document to save
+	 * @return true if saving the document has NOT been canceled
 	 */
-  private void save(SourceCodeEditor editor) {
-		if (!editor.getTextPane().getDocument().isModified()) return;
+  private boolean save(SourceCodeEditor editor) {
+		if (!editor.getTextPane().getDocument().isModified()) return true;
 
 		AbstractResource resource = editor.getResource();
 
@@ -439,7 +456,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		  UntitledDoc untitledDoc = (UntitledDoc) resource;
 		  // TODO call save file dialog to assign a file to this new document
 			JOptionPane.showMessageDialog(this, "Saving new files not implemented yet.");
-			return;
+			return false;
 		} else
 		if (resource instanceof FileDoc) {
 		  FileDoc fileDoc = (FileDoc) resource;
@@ -461,6 +478,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     } catch(IOException ex){
       ex.printStackTrace();
     }
+
+		return true;
   }
 
   public void compile(int type) {
@@ -579,26 +598,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     }
 
 	  if(action.equals("update")){
-	    ProgramUpdater updater = new ProgramUpdater("JLatexEditor update", "http://joerg.endrullis.de/jlatexeditor/update/");
-
-		  // check for new version
-		  if (updater.isNewVersionAvailable()) {
-			  // ask user if (s)he wants to update
-			  if (JOptionPane.showConfirmDialog(this, "A new version of the JLatexEditor is available. Your changes will be saved beforehand, since JLatexEditor has to be restarted. Do you want to update?",
-				    "JLatexEditor - Updater", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-
-				  // save all files
-				  saveAll();
-
-				  // perform update
-				  if (updater.performUpdate(true)) {
-						// restart the editor
-						System.exit(255);
-				  }
-			  }
-		  } else {
-			  JOptionPane.showMessageDialog(this, "JLatexEditor is up-to-date.", "JLatexEditor - Updater", JOptionPane.INFORMATION_MESSAGE);
-		  }
+		  checkForUpdates();
 	  } else
 
 	  if(action.equals("about")){
@@ -655,7 +655,32 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     }
   }
 
-  public void windowOpened(WindowEvent e) {
+	private void checkForUpdates() {
+		// check for new version
+		if (updater.isNewVersionAvailable()) {
+			// ask user if (s)he wants to update
+			String changes = "";
+			if (anyModifications()) {
+				changes = "Your changes will be saved beforehand, since JLatexEditor has to be restarted. ";
+			}
+			if (JOptionPane.showConfirmDialog(this, "A new version of the JLatexEditor is available. " + changes + "Do you want to update?",
+				  "JLatexEditor - Updater", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+
+				// save all files
+				if (!saveAll()) return;
+
+				// perform update
+				if (updater.performUpdate(true)) {
+					// restart the editor
+					System.exit(255);
+				}
+			}
+		} else {
+			JOptionPane.showMessageDialog(this, "JLatexEditor is up-to-date.", "JLatexEditor - Updater", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+	public void windowOpened(WindowEvent e) {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         // open files given in command line
