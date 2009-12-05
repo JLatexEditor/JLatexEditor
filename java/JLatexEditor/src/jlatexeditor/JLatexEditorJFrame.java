@@ -318,7 +318,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  if (!devVersion) {
 			new Thread(){
 				public void run() {
-					checkForUpdates();
+					checkForUpdates(true);
 				}
 			}.start();
 	  }
@@ -598,7 +598,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     }
 
 	  if(action.equals("update")){
-		  checkForUpdates();
+		  checkForUpdates(false);
 	  } else
 
 	  if(action.equals("about")){
@@ -655,7 +655,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     }
   }
 
-	private void checkForUpdates() {
+	private void checkForUpdates(boolean startup) {
 		// check for new version
 		if (updater.isNewVersionAvailable()) {
 			// ask user if (s)he wants to update
@@ -676,7 +676,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 				}
 			}
 		} else {
-			JOptionPane.showMessageDialog(this, "JLatexEditor is up-to-date.", "JLatexEditor - Updater", JOptionPane.INFORMATION_MESSAGE);
+			if (!startup) {
+				JOptionPane.showMessageDialog(this, "JLatexEditor is up-to-date.", "JLatexEditor - Updater", JOptionPane.INFORMATION_MESSAGE);
+			}
 		}
 	}
 
