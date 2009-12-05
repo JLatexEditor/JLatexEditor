@@ -10,6 +10,7 @@
 	<property name="lib"                location="lib"/>
 	<property name="dist"               location="dist"/>
 	<property name="upload"             location="${dist}/upload"/>
+	<property name="releases"           location="${dist}/releases"/>
 
 	<property name="buildClasses"       location="${build}/classes"/>
 	<property name="buildJar"           location="${upload}/JLatexEditor.jar"/>
@@ -96,13 +97,20 @@
 
 	<!-- Build all files needed for deployment. -->
 	<target name="dist" depends="jar">
-		<mkdir dir="${dist}"/>
+		<mkdir dir="${releases}"/>
 
 		<!-- Build archives. -->
-		<zip basedir="${upload}" zipfile="${dist}/JLatexEditor-${jle.version}.${build.number}.zip"/>
+		<zip basedir="${upload}" zipfile="${releases}/JLatexEditor-${jle.version}.${build.number}.zip"/>
+		<!-- tar from ant is unable to take over all file attributes -> therefore we use the command line tar.
 		<tar basedir="${upload}" tarfile="${dist}/tmp.tar"/>
 		<bzip2 src="${dist}/tmp.tar" destfile="${dist}/JLatexEditor-${jle.version}.${build.number}.tar.bz2"/>
-		<delete file="${dist}/tmp.tar"/>
+		<delete file="${releases}/tmp.tar"/>
+		-->
+		<exec executable="/bin/tar">
+			<arg value="-czf"/>
+			<arg value="${releases}/JLatexEditor-${jle.version}.${build.number}.zip"/>
+			<arg value="${upload}/*"/>
+		</exec>
 	</target>
 
 	<!-- Increments the build number. -->
