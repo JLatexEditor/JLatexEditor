@@ -84,6 +84,8 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     lmHbox.clear();
     lmWarning.clear();
     errors.clear();
+    update();
+    repaint();
   }
 
   public void update() {

@@ -6,10 +6,15 @@
 package jlatexeditor.syntaxhighlighting;
 
 import jlatexeditor.GProperties;
+import my.XML.XMLDocument;
+import my.XML.XMLElement;
+import my.XML.XMLParser;
 import sce.component.SCEDocument;
+import util.StreamUtils;
 
 import java.awt.*;
 import java.awt.font.TextAttribute;
+import java.util.HashMap;
 import java.util.Map;
 
 public class LatexStyles{
@@ -18,9 +23,7 @@ public class LatexStyles{
   public static final byte COMMENT = 2;
 
   public static final byte BRACKET = 3;
-  public static final byte PARENTHESES = 4;
 
-  public static final byte IDENTIFIER = 5;
   public static final byte NUMBER = 6;
 
   public static final byte MATH = 7;
@@ -30,45 +33,29 @@ public class LatexStyles{
   public static final byte U_NORMAL     = 100;
   public static final byte U_MISSPELLED = 101;
 
+  private static Map<TextAttribute, Object>[] stylesMap = new Map[Byte.MAX_VALUE+1];
+
+  private static Map<String,Byte> name2Id = new HashMap<String, Byte>();
+
+  static {
+    name2Id.put("text", TEXT);
+    name2Id.put("command", COMMAND);
+    name2Id.put("comment", COMMENT);
+    name2Id.put("bracket", BRACKET);
+    name2Id.put("number", NUMBER);
+    name2Id.put("math", MATH);
+    name2Id.put("error", ERROR);
+
+    load("data/styles/user.xml");
+  }
+
 	public static void addStyles(SCEDocument document){
-    Font font = GProperties.getEditorFont();
-    Font fontBold = GProperties.getEditorFont().deriveFont(Font.BOLD);
-    Font fontItalic = GProperties.getEditorFont().deriveFont(Font.ITALIC);
-
-    // Text
-    Map<TextAttribute, Object> styleText = document.addStyle(TEXT, null);
-    styleText.put(TextAttribute.FONT, font);
-    styleText.put(TextAttribute.FOREGROUND, Color.BLACK);
-    // Command
-    Map<TextAttribute, Object> styleCommand = document.addStyle(COMMAND, styleText);
-    styleCommand.put(TextAttribute.FONT, fontBold);
-    styleCommand.put(TextAttribute.FOREGROUND, new Color(0, 0, 128));
-    // Comment
-    Map<TextAttribute, Object> styleComment = document.addStyle(COMMENT, styleText);
-    styleComment.put(TextAttribute.FONT, fontItalic);
-    styleComment.put(TextAttribute.FOREGROUND, new Color(128, 128, 128));
-
-    // Bracket
-    Map<TextAttribute, Object> styleBracket = document.addStyle(BRACKET, styleText);
-    styleBracket.put(TextAttribute.FONT, fontBold);
-    styleBracket.put(TextAttribute.FOREGROUND, new Color(102, 14, 122));
-    // Parentheses
-    Map<TextAttribute, Object> styleParentheses = document.addStyle(PARENTHESES, styleText);
-
-    // Identifier
-    Map<TextAttribute, Object> styleIdentifier = document.addStyle(IDENTIFIER, styleText);
-    // Number
-    Map<TextAttribute, Object> styleNumber = document.addStyle(NUMBER, styleText);
-    styleNumber.put(TextAttribute.FOREGROUND, new Color(0, 0, 255));
-
-    // Math
-    Map<TextAttribute, Object> styleMath = document.addStyle(MATH, styleText);
-    styleMath.put(TextAttribute.FONT, fontBold);
-    styleMath.put(TextAttribute.FOREGROUND, new Color(0, 255, 0));
-
-    // Error
-    Map<TextAttribute, Object> styleError = document.addStyle(ERROR, styleText);
-    styleError.put(TextAttribute.FOREGROUND, new Color(255, 0, 0));
+    Map<TextAttribute, Object> styleText = stylesMap[TEXT];
+    for(int id = 0; id < stylesMap.length; id++) {
+      if(stylesMap[id] == null) continue;
+      Map<TextAttribute, Object> style = document.addStyle((byte) id, styleText);
+      style.putAll(stylesMap[id]);
+    }
 
 	  //// underline styles ////
 
@@ -78,5 +65,57 @@ public class LatexStyles{
 	  // misspelling
 	  Map<TextAttribute, Object> underlineMisspelling = document.addStyle(U_MISSPELLED, null);
 	  underlineMisspelling.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_LOW_GRAY);
+  }
+
+  public static void load(String filename) {
+    XMLParser xmlParser = new XMLParser();
+    XMLDocument stylesDocument;
+    try {
+      stylesDocument = xmlParser.parse(StreamUtils.readFile(filename));
+    } catch (Exception e) {
+      e.printStackTrace();
+      return;
+    }
+
+    XMLElement stylesXML = stylesDocument.getRootElement();
+    if(!stylesXML.getName().equalsIgnoreCase("styles")){
+      System.out.println("Error in [styles].xml: root element must be 'styles'");
+      return;
+    }
+
+    Font font = GProperties.getEditorFont();
+    Font fontBold = GProperties.getEditorFont().deriveFont(Font.BOLD);
+    Font fontItalic = GProperties.getEditorFont().deriveFont(Font.ITALIC);
+
+    for(XMLElement styleElement : stylesXML.getChildElements()) {
+      Byte id = name2Id.get(styleElement.getAttribute("name"));
+      if(id == null) {
+        System.out.println("Unknown [styles].xml element: " + styleElement.getAttribute("name"));
+        continue;
+      }
+
+      Map<TextAttribute, Object> style = new HashMap<TextAttribute, Object>();
+      stylesMap[id] = style;
+      style.put(TextAttribute.FONT, font);
+      if(styleElement.getAttribute("style").equals("bold")) style.put(TextAttribute.FONT, fontBold);
+      if(styleElement.getAttribute("style").equals("italic")) style.put(TextAttribute.FONT, fontItalic);
+
+      XMLElement foreground = styleElement.getChildElement("foreground");
+      if(foreground != null) {
+        style.put(TextAttribute.FOREGROUND, getColor(foreground.getChildElement("color")));
+      }
+
+      XMLElement background = styleElement.getChildElement("background");
+      if(background != null) {
+        style.put(TextAttribute.BACKGROUND, getColor(background.getChildElement("color")));
+      }
+    }
+  }
+
+  private static Color getColor(XMLElement color) {
+    int r = Integer.parseInt(color.getAttribute("r"));
+    int g = Integer.parseInt(color.getAttribute("g"));
+    int b = Integer.parseInt(color.getAttribute("b"));
+    return new Color(r,g,b);
   }
 }
