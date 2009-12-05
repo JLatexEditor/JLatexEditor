@@ -112,6 +112,10 @@ public class LatexStyles{
     }
   }
 
+  public static void save(String fileName) {
+    
+  }
+
   private static Color getColor(XMLElement color) {
     int r = Integer.parseInt(color.getAttribute("r"));
     int g = Integer.parseInt(color.getAttribute("g"));
