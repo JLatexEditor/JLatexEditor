@@ -62,7 +62,8 @@ public class SCEFontWindow extends JFrame {
     JLabel antiasLabel = new JLabel("Antialias");
     antiasLabel.setLabelFor(aaList);
 
-
+    JButton ok = new JButton("OK");
+    JButton cancel = new JButton("Cancel");
 
     //adding the components to Frame
     constraints.weightx = 1;
@@ -88,7 +89,13 @@ public class SCEFontWindow extends JFrame {
     constraints.gridy ++ ;
     cp.add(antiasLabel, constraints);
     constraints.gridx ++ ;
-    cp.add(aaList,constraints);
+    cp.add(aaList, constraints);
+    //constraints.gridx = 0;
+    constraints.gridy++;
+    constraints.gridx--;
+    cp.add(ok, constraints);
+    constraints.gridx ++;
+    cp.add(cancel, constraints);
 
     pack();
     setVisible(true);
