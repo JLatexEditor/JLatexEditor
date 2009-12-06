@@ -3,6 +3,8 @@ package sce.component;
 import jlatexeditor.GProperties;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -10,26 +12,32 @@ import java.awt.event.*;
  * Window for choosing a font for displaying the latex source text.
  * @author Rena
  */
-public class SCEFontWindow extends JFrame {
+public class SCEFontWindow extends JFrame implements ListSelectionListener, ActionListener {
+  private JList fontList;
+  private String fontName;
+  private String prevFontName;
+
   public static void main(String[] args){
-    JFrame frame = new SCEFontWindow();
+    JFrame frame = new SCEFontWindow("Monospaced");
     frame.setVisible(true);
   }
 
 
-  public SCEFontWindow() {
+  public SCEFontWindow(String fontName) {
     super("Font Configuration");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    this.fontName = this.prevFontName = fontName;
 
     Container cp = getContentPane();
     GridBagLayout layout = new GridBagLayout();
     cp.setLayout(layout);
     GridBagConstraints constraints = new GridBagConstraints();
 
-    JList fontList = new JList(GProperties.getMonospaceFonts().toArray());
-    fontList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+    fontList = new JList(GProperties.getMonospaceFonts().toArray());
+    fontList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     fontList.setLayoutOrientation(JList.VERTICAL);
     fontList.setVisibleRowCount(-1);
+    fontList.getSelectionModel().addListSelectionListener(this);
 
     JScrollPane fontScroller = new JScrollPane(fontList);
     fontScroller.setPreferredSize(new Dimension(250,225));
@@ -37,7 +45,7 @@ public class SCEFontWindow extends JFrame {
 
     DefaultListModel sizeModel = new DefaultListModel();
     JList sizeList = new JList(sizeModel);
-    sizeList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+    sizeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     sizeList.setLayoutOrientation(JList.VERTICAL);
     sizeList.setVisibleRowCount(-1);
     for(int size = 6; size <= 48; size++) {
@@ -63,7 +71,11 @@ public class SCEFontWindow extends JFrame {
     antiasLabel.setLabelFor(aaList);
 
     JButton ok = new JButton("OK");
+    ok.addActionListener(this);
+    ok.setActionCommand("okFont");
     JButton cancel = new JButton("Cancel");
+    cancel.addActionListener(this);
+    cancel.setActionCommand("cancelFont");
 
     //adding the components to Frame
     constraints.weightx = 1;
@@ -100,4 +112,21 @@ public class SCEFontWindow extends JFrame {
     pack();
     setVisible(true);
   }
+
+  public void valueChanged(ListSelectionEvent e) {
+    if(e.getSource() == fontList) {
+      fontName = fontList.getSelectedValue().toString();
+      //actionListener.actionEvent(..);
+    }
+  }
+
+  public void actionPerformed(ActionEvent e) {
+    if(e.getActionCommand().equals("okFont")){
+      dispose();
+    } else
+    if (e.getActionCommand().equals("cancelFont")) {
+      dispose();
+    }
+  }
+  
 }
