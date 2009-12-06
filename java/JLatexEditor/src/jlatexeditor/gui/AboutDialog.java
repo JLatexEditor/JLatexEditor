@@ -1,13 +1,10 @@
 package jlatexeditor.gui;
 
-import com.sun.imageio.plugins.common.I18N;
-import jlatexeditor.JLatexEditorJFrame;
 import jlatexeditor.translation.I18n;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ResourceBundle;
 
 /**
  * About dialog.
