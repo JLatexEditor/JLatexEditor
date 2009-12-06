@@ -9,6 +9,7 @@ package jlatexeditor;
 import jlatexeditor.codehelper.JumpTo;
 import jlatexeditor.codehelper.SpellCheckSuggester;
 import jlatexeditor.errorhighlighting.LatexCompiler;
+import jlatexeditor.gui.AboutDialog;
 import sce.component.*;
 import jlatexeditor.errorhighlighting.LatexErrorHighlighting;
 import jlatexeditor.quickhelp.LatexQuickHelp;
@@ -61,7 +62,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private Timer timer = new Timer(2000, this);
   private HashMap<File,Long> lastModified = new HashMap<File, Long>();
 
-	private final ProgramUpdater updater = new ProgramUpdater("JLatexEditor update", "http://joerg.endrullis.de/jlatexeditor/update/");
+	private final ProgramUpdater updater = new ProgramUpdater("JLatexEditor update", "http://endrullis.de/JLatexEditor/update/");
 
 
   public static void main(String args[]){
@@ -607,7 +608,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  } else
 
 	  if(action.equals("about")){
-			JOptionPane.showMessageDialog(this, "<html><h2>JLatexEditor</h2><p>TODO</p></html>", "JLatexEditor", JOptionPane.INFORMATION_MESSAGE);
+		  AboutDialog aboutDialog = new AboutDialog(version);
+		  aboutDialog.setVisible(true);
+
+			//JOptionPane.showMessageDialog(this, "<html><h2>JLatexEditor</h2><p>TODO</p></html>", "JLatexEditor", JOptionPane.INFORMATION_MESSAGE);
 	  } else
 
     // timer
