@@ -46,7 +46,7 @@
 		<javac srcdir="${src}" destdir="${buildClasses}" target="1.5" source="1.5" encoding="UTF-8" debug="on">
 			<classpath>
 				<pathelement location="${buildClasses}"/>
-<!-- 				<path refid="libraries"/> -->
+				<path refid="libraries"/>
 			</classpath>
 		</javac>
 		
