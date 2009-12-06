@@ -7,6 +7,12 @@ import java.util.List;
  * Diff.
  */
 public class Diff {
+  public static final int COST_REMOVE = 3;
+  public static final int COST_ADD    = 3;
+  public static final int COST_CHANGE = 3;
+  
+  private ArrayList<Cost> garbage = new ArrayList<Cost>();
+
   public <T extends Metric> List<Modification> diff(T[] list1, T[] list2) {
     int length1 = list1.length;
     int length2 = list2.length;
@@ -21,44 +27,46 @@ public class Diff {
       return modifications;
     }
 
+    Cost[] previousCosts = new Cost[length1+1];
+    Cost[] costs = new Cost[length1+1];
+
+    previousCosts[0] = createCost(Cost.TYPE_UNCHANGED, 0, null);
+    for(int i = 1; i<=length1; i++) previousCosts[i] = createCost(Cost.TYPE_REMOVE, i, previousCosts[i-1]);
+
     /*
-    int p[] = new int[length1+1]; //'previous' cost array, horizontally
-    int d[] = new int[length1+1]; // cost array, horizontally
-    int _d[]; //placeholder to assist in swapping p and d
+    for(int j = 1; j<=length2; j++) {
+       T t_j = list2[j-1];
+       costs[0] = j;
 
-    // indexes into strings list1 and list2
-    int i; // iterates through list1
-    int j; // iterates through list2
-
-    char t_j; // jth character of list2
-
-    int cost; // cost
-
-    for (i = 0; i<=length1; i++) {
-       p[i] = i;
-    }
-
-    for (j = 1; j<=length2; j++) {
-       t_j = list2.charAt(j-1);
-       d[0] = j;
-
-       for (i=1; i<=length1; i++) {
+       for(int i=1; i<=length1; i++) {
           cost = list1.charAt(i-1)==t_j ? 0 : 1;
           // minimum of cell to the left+1, to the top+1, diagonally left and up +cost
-          d[i] = Math.min(Math.min(d[i-1]+1, p[i]+1),  p[i-1]+cost);
+          costs[i] = Math.min(Math.min(costs[i-1]+1, previousCosts[i]+1),  previousCosts[i-1]+cost);
        }
 
        // copy current distance counts to 'previous row' distance counts
-       _d = p;
-       p = d;
-       d = _d;
+       Cost[] swap = previousCosts;
+       previousCosts = costs;
+       costs = swap;
     }
+    */
 
     // our last action in the above loop was to switch d and p, so p now
     // actually has the most recent cost counts
-    return p[length1];
-    */
+    //return p[length1];
+
     return null;
+  }
+
+  private Cost createCost(int type, int costs, Cost parent) {
+    Cost cost;
+    if(garbage.isEmpty()) {
+      cost = new Cost();
+    } else {
+      cost = garbage.remove(garbage.size()-1);
+    }
+    cost.create(type, costs, parent);
+    return cost;
   }
 
   private class Cost {
@@ -74,36 +82,37 @@ public class Diff {
     // references count for own garbage reuse
     private int references = 1;
 
-    private Cost() {
+    public void create(int type, int costs, Cost parent) {
+      this.type = type;
+      this.parent = parent;
+      this.costs = costs;
+
+      references = 1;
+      if(parent != null) parent.referencesIncrease();
     }
 
     public int getType() {
       return type;
     }
 
-    public void setType(int type) {
-      this.type = type;
-    }
-
     public int getCosts() {
       return costs;
-    }
-
-    public void setCosts(int costs) {
-      this.costs = costs;
     }
 
     public Cost getParent() {
       return parent;
     }
 
-    public void setParent(Cost parent) {
-      if(parent != null) parent.referencesDecrease();
-      this.parent = parent;
+    public void referencesDecrease() {
+      references--;
+      if(references == 0) {
+        if(this.parent != null) this.parent.referencesDecrease();
+        garbage.add(this);
+      }
     }
 
-    public void referencesDecrease() {
-
+    private void referencesIncrease() {
+      references++;
     }
   }
 }
