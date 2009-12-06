@@ -16,6 +16,8 @@ import java.util.regex.Pattern;
 
 /**
  * Spell checker for the SourceCodeEditor.
+ *
+ * @author Stefan Endrullis
  */
 public class SpellCheckSuggester implements CodeAssistant, SCEPopup.ItemHandler {
 	/** Command has to start with a backslash and may only contain letters. */
@@ -111,19 +113,6 @@ public class SpellCheckSuggester implements CodeAssistant, SCEPopup.ItemHandler 
 
 
 // inner classes
-	class WordWithPos {
-		String word;
-		int row;
-		int startColumn;
-		int endColumn;
-
-		WordWithPos(String word, int row, int startColumn) {
-			this.word = word;
-			this.row = row;
-			this.startColumn = startColumn;
-			this.endColumn = startColumn + word.length();
-		}
-	}
 
 	static class Action {
 		String name;

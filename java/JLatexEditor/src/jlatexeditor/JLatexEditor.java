@@ -7,6 +7,7 @@ package jlatexeditor;
 
 import jlatexeditor.errorhighlighting.LatexCompiler;
 import jlatexeditor.errorhighlighting.LatexErrorHighlighting;
+import sce.component.AbstractResource;
 import sce.component.SCEDocument;
 import sce.component.SCEPane;
 import sce.component.SourceCodeEditor;
@@ -96,7 +97,7 @@ public class JLatexEditor extends QaquaFrame implements ActionListener{
     fileMenu.add(saveMenuItem);
 
     // text pane for editing
-    editor = new SourceCodeEditor(null);
+    editor = new SourceCodeEditor<AbstractResource>(null);
     SCEPane scePane = editor.getTextPane();
     document = scePane.getDocument();
 
@@ -131,7 +132,7 @@ public class JLatexEditor extends QaquaFrame implements ActionListener{
   public void actionPerformed(ActionEvent e){
     // open a file
     if(e.getActionCommand().equals("open")){
-      FileDialog dialog = new FileDialog(getJFrameOwner(), "Tex-Dokument öffnen", FileDialog.LOAD);
+      FileDialog dialog = new FileDialog(getJFrameOwner(), "Open TeX document", FileDialog.LOAD);
       dialog.pack();
       dialog.show();
       if(dialog.getFile() == null) return;

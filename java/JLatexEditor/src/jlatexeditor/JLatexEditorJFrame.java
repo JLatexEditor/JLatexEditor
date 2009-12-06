@@ -6,6 +6,7 @@
 
 package jlatexeditor;
 
+import jlatexeditor.codehelper.JumpTo;
 import jlatexeditor.codehelper.SpellCheckSuggester;
 import jlatexeditor.errorhighlighting.LatexCompiler;
 import sce.component.*;
@@ -325,7 +326,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   }
 
   private SourceCodeEditor createSourceCodeEditor() {
-    SourceCodeEditor editor = new SourceCodeEditor(null);
+    SourceCodeEditor editor = new SourceCodeEditor<AbstractResource>(null);
 
     SCEPane scePane = editor.getTextPane();
     SCEDocument document = scePane.getDocument();
@@ -341,6 +342,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  scePane.setCodeHelper(new LatexCodeHelper("data/codehelper/commands.xml"));
 	  scePane.setTabCompletion(new LatexCodeHelper("data/codehelper/tabCompletion.xml"));
 	  scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
+
+	  new JumpTo(editor, this);
 
 	  try {
 		  scePane.addCodeAssistantListener(new SpellCheckSuggester());
