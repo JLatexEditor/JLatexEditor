@@ -7,10 +7,7 @@ package jlatexeditor;
 
 import jlatexeditor.errorhighlighting.LatexCompiler;
 import jlatexeditor.errorhighlighting.LatexErrorHighlighting;
-import sce.component.AbstractResource;
-import sce.component.SCEDocument;
-import sce.component.SCEPane;
-import sce.component.SourceCodeEditor;
+import sce.component.*;
 import jlatexeditor.codehelper.LatexCodeHelper;
 import jlatexeditor.quickhelp.LatexQuickHelp;
 import jlatexeditor.syntaxhighlighting.LatexStyles;

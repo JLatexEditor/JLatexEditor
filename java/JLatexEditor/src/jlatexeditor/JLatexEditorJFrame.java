@@ -243,11 +243,11 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     settingsMenu.setMnemonic('S');
     menuBar.add(settingsMenu);
 
-    JMenu fontMenu = new JMenu("Font");
-	  fontMenu.setMnemonic('F');
-    fontMenu.addActionListener(this);
-    settingsMenu.add(fontMenu);
-    
+    JMenuItem fontMenuItem = new JMenuItem("Font");
+	  fontMenuItem.setActionCommand("font");
+    fontMenuItem.setMnemonic('F');
+    fontMenuItem.addActionListener(this);
+    settingsMenu.add(fontMenuItem);
 
 /*    for(String fontName : GProperties.getMonospaceFonts()) {
       JMenuItem entry = new JMenuItem(fontName);
@@ -595,6 +595,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     if(action.equals("dvi + ps")) { saveAll(); compile(LatexCompiler.TYPE_DVI_PS); } else
     if(action.equals("dvi + ps + pdf")) { saveAll(); compile(LatexCompiler.TYPE_DVI_PS_PDF); } else
 
+/*
     // font
     if(action.startsWith("Font: ")) {
       String fontName = action.substring(action.indexOf(": ") + 2);
@@ -607,8 +608,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       GProperties.setTextAntialiasign(GProperties.TEXT_ANTIALIAS_MAP.get(key));
       getEditor(tabbedPane.getSelectedIndex()).repaint();
     }
+*/
+	  if(action.equals("font")){
+		  SCEFontWindow fontDialog = new SCEFontWindow();
+		  fontDialog.setVisible(true);
+	  } else
 
-	  if(action.equals("update")){
+    if(action.equals("update")){
 		  checkForUpdates(false);
 	  } else
 
