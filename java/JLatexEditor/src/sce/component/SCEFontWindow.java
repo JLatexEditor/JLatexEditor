@@ -62,9 +62,9 @@ public class SCEFontWindow extends JFrame {
     JLabel antiasLabel = new JLabel("Antialias");
     antiasLabel.setLabelFor(aaList);
 
-//GProperties.getTextAntialiasign
 
-    //First row
+
+    //adding the components to Frame
     constraints.weightx = 1;
     constraints.fill = GridBagConstraints.BOTH;
 
