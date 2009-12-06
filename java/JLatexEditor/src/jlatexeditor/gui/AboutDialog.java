@@ -34,7 +34,9 @@ public class AboutDialog extends JFrame {
 		credits.setHorizontalAlignment(2);
 		credits.setHorizontalTextPosition(0);
 		credits.setIcon(new ImageIcon(getClass().getResource("/logo.png")));
-		credits.setText(I18n.getString("about_dialog.text", version, System.getProperty("java.version"), vmString));
+		if (version != null) {
+			credits.setText(I18n.getString("about_dialog.text", version, System.getProperty("java.version"), vmString));
+		}
 
 		GridBagConstraints gbc;
 		gbc = new GridBagConstraints();
@@ -44,15 +46,13 @@ public class AboutDialog extends JFrame {
 		contentPane.add(credits, gbc);
 
 		// set window size and location
-		setSize(credits.getIcon().getIconWidth(), credits.getIcon().getIconHeight());
+		setSize(credits.getIcon().getIconWidth()+4, credits.getIcon().getIconHeight()+4);
 		// place window in the center of the screen
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension windowSize = getSize();
 		setLocation(screenSize.width / 2 - (windowSize.width / 2), screenSize.height / 2 - (windowSize.height / 2));
 		setContentPane(contentPane);
 //		setModal(true);
-
-		pack();
 
 		// add listeners
 		addMouseListener(new MouseAdapter() {
@@ -77,7 +77,6 @@ public class AboutDialog extends JFrame {
 	}
 
 	public void showMe() {
-//		pack();
 		setVisible(true);
 	}
 }
