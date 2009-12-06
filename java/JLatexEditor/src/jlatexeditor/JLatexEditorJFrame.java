@@ -92,6 +92,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     } catch (Exception e) { }
     */
 
+	  new AboutDialog(null).showAndAutoHideAfter(5000);
+
 	  JLatexEditorJFrame latexEditor = new JLatexEditorJFrame(args);
     latexEditor.setSize(1024,800);
     latexEditor.setVisible(true);
@@ -612,7 +614,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 	  if(action.equals("about")){
 		  AboutDialog aboutDialog = new AboutDialog(version);
-		  aboutDialog.setVisible(true);
+		  aboutDialog.showIt();
 
 			//JOptionPane.showMessageDialog(this, "<html><h2>JLatexEditor</h2><p>TODO</p></html>", "JLatexEditor", JOptionPane.INFORMATION_MESSAGE);
 	  } else

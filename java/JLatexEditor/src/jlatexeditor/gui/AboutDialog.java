@@ -76,7 +76,21 @@ public class AboutDialog extends JFrame {
 		dispose();
 	}
 
-	public void showMe() {
+	public void showIt() {
 		setVisible(true);
+	}
+
+	public void showAndAutoHideAfter(final int ms) {
+		setAlwaysOnTop(true);
+		setVisible(true);
+		new Thread() {
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(ms);
+				} catch (InterruptedException ignored) {}
+				onClick();
+			}
+		}.start();
 	}
 }
