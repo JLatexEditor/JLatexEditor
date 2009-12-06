@@ -487,7 +487,10 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
   public void documentChanged(SCEDocument sender, SCEDocumentEvent event){
     // if we edit a template -> update other positions
     if(template != null && templateArguments != null && templateArguments.size() > 0 && templateArgumentNr >= 0){
-      if(event.isInsert() || event.isRemove()){
+      if(document.hasEditRange() &&
+              event.getRangeStart().compareTo(document.getEditRangeStart()) >= 0 &&
+              event.getRangeStart().compareTo(document.getEditRangeEnd()) <= 0 &&
+              (event.isInsert() || event.isRemove())) {
         // get the argument value
         String argumentValue = document.getEditRangeText();
 
@@ -501,8 +504,10 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
           SCEDocumentPosition start = new SCEDocumentPosition(argumentRange.getStartPosition().getRow(), argumentRange.getStartPosition().getColumn() + 1);
           SCEDocumentPosition end = argumentRange.getEndPosition();
 
+          pane.setFreezeCaret(true);
           document.remove(start.getRow(), start.getColumn(), end.getRow(), end.getColumn(), 0);
           document.insert(argumentValue, start.getRow(), start.getColumn(), 0);
+          pane.setFreezeCaret(false);
         }
       }
     }

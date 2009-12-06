@@ -245,6 +245,20 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   }
 
   /**
+   * Do not move the caret with document changes?
+   */
+  public boolean isFreezeCaret() {
+    return freezeCaret;
+  }
+
+  /**
+   * Do not move the caret with document changes?
+   */
+  public void setFreezeCaret(boolean freezeCaret) {
+    this.freezeCaret = freezeCaret;
+  }
+
+  /**
    * Insert text from clipboard.
    */
   public void paste() {
@@ -567,7 +581,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
         caret.setSelectionMark();
       }
     }
-    if(event.isRemove()){
+    if(event.isRemove() && !freezeCaret){
       caret.moveTo(start.getRow(), start.getColumn());
     }
 
