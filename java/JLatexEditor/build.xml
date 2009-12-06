@@ -35,7 +35,6 @@
 	<!-- Delete class and jar files. -->
 	<target name="clean">
 		<delete dir="${buildClasses}"/>
-		<delete file="${buildJar}"/>
 		<delete dir="${build}"/>
 	</target>
 	
