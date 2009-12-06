@@ -1,12 +1,16 @@
 package util.diff;
 
+import util.StreamUtils;
+
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Diff test.
  */
 public class DiffTest {
-  public static void main(String args[]) {
+  public static void main(String args[]) throws IOException {
     System.out.println("Test 1: ");
     /*
     1123345678910
@@ -29,6 +33,47 @@ public class DiffTest {
     for(Modification modification : modifications) {
       System.out.println(modification);
     }
-    
+
+    System.out.println("Test 2: ");
+    TokenList[] file1 = readFile("test-src/util/diff/diff1.tex");
+    TokenList[] file2 = readFile("test-src/util/diff/diff2.tex");
+
+    long startTime = System.nanoTime();
+    modifications = new Diff().diff(file1, file2);
+    long endTime = System.nanoTime();
+    for(Modification modification : modifications) {
+      System.out.println(modification);
+    }
+    System.out.println("time: " + (((endTime - startTime) / 10000000) /100.));
+  }
+
+  /*
+  private static Token[] readFile(String fileName) throws IOException {
+    BufferedReader reader = new BufferedReader(new InputStreamReader(StreamUtils.getInputStream(fileName)));
+
+    ArrayList<Token> lines = new ArrayList<Token>();
+    String line;
+    while((line = reader.readLine()) != null) {
+      lines.add(new Token(line));
+    }
+
+    Token[] linesList = new Token[lines.size()];
+    lines.toArray(linesList);
+    return linesList;
+  }
+  */
+
+  private static TokenList[] readFile(String fileName) throws IOException {
+    BufferedReader reader = new BufferedReader(new InputStreamReader(StreamUtils.getInputStream(fileName)));
+
+    ArrayList<TokenList> lines = new ArrayList<TokenList>();
+    String line;
+    while((line = reader.readLine()) != null) {
+      lines.add(new TokenList(line, true));
+    }
+
+    TokenList[] linesList = new TokenList[lines.size()];
+    lines.toArray(linesList);
+    return linesList;
   }
 }
