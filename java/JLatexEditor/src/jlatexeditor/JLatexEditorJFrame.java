@@ -243,9 +243,11 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
     JMenu fontMenu = new JMenu("Font");
 	  fontMenu.setMnemonic('F');
+    fontMenu.addActionListener(this);
     settingsMenu.add(fontMenu);
+    
 
-    for(String fontName : GProperties.getMonospaceFonts()) {
+/*    for(String fontName : GProperties.getMonospaceFonts()) {
       JMenuItem entry = new JMenuItem(fontName);
       entry.setActionCommand("Font: " + fontName);
       entry.addActionListener(this);
@@ -274,6 +276,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       entry.addActionListener(this);
       textAntialiasingMenu.add(entry);
     }
+*/    
 
 	  JMenu helpMenu = new JMenu("Help");
 	  helpMenu.setMnemonic('H');
