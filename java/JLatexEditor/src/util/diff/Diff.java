@@ -184,14 +184,4 @@ public class Diff {
       references++;
     }
   }
-
-  public static void main(String args[]) {
-    Token[] tokens1 = new TokenList("LAHYQQKPGKA", false).getTokens();
-    Token[] tokens2 = new TokenList("YHCQPGK", false).getTokens();
-
-    List<Modification> modifications = new Diff().diff(tokens1, tokens2);
-    for(Modification modification : modifications) {
-      System.out.println(modification);
-    }
-  }
 }
