@@ -12,7 +12,7 @@ public class GProperties {
   public static HashMap<String,Object> TEXT_ANTIALIAS_MAP = new HashMap<String, Object>();
   public static String[] TEXT_ANTIALIAS_KEYS;
 
-  public static ArrayList<String> MONOSPACE_FONTS = new ArrayList<String>();
+  private static ArrayList<String> MONOSPACE_FONTS = new ArrayList<String>();
 
   // properties
   private static Font editorFont = new Font("MonoSpaced", 0, 13);
@@ -45,6 +45,11 @@ public class GProperties {
         MONOSPACE_FONTS.add(fontName);
       }
     }
+  }
+
+
+  public static ArrayList<String> getMonospaceFonts() {
+    return MONOSPACE_FONTS;
   }
 
   public static Object getTextAntialiasign() {

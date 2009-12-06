@@ -245,7 +245,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  fontMenu.setMnemonic('F');
     settingsMenu.add(fontMenu);
 
-    for(String fontName : GProperties.MONOSPACE_FONTS) {
+    for(String fontName : GProperties.getMonospaceFonts()) {
       JMenuItem entry = new JMenuItem(fontName);
       entry.setActionCommand("Font: " + fontName);
       entry.addActionListener(this);
