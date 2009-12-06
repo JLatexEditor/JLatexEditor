@@ -27,7 +27,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.HashMap;
 
-public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener {
+public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener, KeyListener {
   private static String UNTITLED = "Untitled";
 
 	private static String version = "*Bleeding Edge*";
@@ -343,14 +343,16 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  scePane.setTabCompletion(new LatexCodeHelper("data/codehelper/tabCompletion.xml"));
 	  scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
 
-	  new JumpTo(editor, this);
-
 	  try {
 		  scePane.addCodeAssistantListener(new SpellCheckSuggester());
 	  } catch (IOException e) {
 		  System.err.println("Initialization of the spell check suggester failed!");
 		  e.printStackTrace();
 	  }
+
+	  new JumpTo(editor, this);
+
+	  scePane.addKeyListener(this);
 
 	  return editor;
   }
@@ -741,7 +743,36 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     editor.repaint();
   }
 
-  private class TabLabel extends JPanel implements MouseListener, SCEModificationStateListener {
+	// KeyListener
+	public void keyTyped(KeyEvent e) {
+	}
+
+	public void keyPressed(KeyEvent e) {
+		// alt left/right
+		if (e.getModifiers() == KeyEvent.ALT_MASK) {
+			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+				// select the left tab
+				int index = tabbedPane.getSelectedIndex() - 1;
+				if (index < 0) index = tabbedPane.getTabCount() - 1;
+				tabbedPane.setSelectedIndex(index);
+
+				e.consume();
+			}
+			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+				// select the right tab
+				int index = tabbedPane.getSelectedIndex() + 1;
+				if (index >= tabbedPane.getTabCount()) index = 0;
+				tabbedPane.setSelectedIndex(index);
+
+				e.consume();
+			}
+		}
+	}
+
+	public void keyReleased(KeyEvent e) {
+	}
+
+	private class TabLabel extends JPanel implements MouseListener, SCEModificationStateListener {
     private AbstractResource resource;
     private JLabel label;
     private JLabel closeIcon;
