@@ -25,7 +25,7 @@ public class SCEFontWindow extends JFrame implements ListSelectionListener, Acti
 
   public SCEFontWindow(String fontName) {
     super("Font Configuration");
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     this.fontName = this.prevFontName = fontName;
 
     Container cp = getContentPane();
