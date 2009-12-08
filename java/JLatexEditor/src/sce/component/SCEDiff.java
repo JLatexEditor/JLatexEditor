@@ -5,19 +5,15 @@ import util.diff.SystemDiff;
 import util.diff.TokenList;
 
 import javax.swing.*;
-import javax.swing.plaf.ScrollPaneUI;
-import javax.swing.plaf.basic.BasicScrollPaneUI;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
 import java.util.List;
 
 /**
  * Diff component.
  */
-public class SCEDiff extends JSplitPane implements AdjustmentListener {
+public class SCEDiff extends JSplitPane {
   private static final int WIDTH = 50;
 
   public static Color COLOR_ADD = new Color(189, 238, 192);
@@ -26,7 +22,9 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
 
   private String text;
   private SCEPane pane;
+  private JViewport paneViewport;
   private SCEPane diff;
+  private JViewport diffViewport;
   private JScrollPane scrollPane;
 
   private int preferredLines = 0;
@@ -40,11 +38,15 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
   private double[] line2Diff;
 
   public SCEDiff(SCEPane pane, String text, SCEPane diff) {
-    super(JSplitPane.HORIZONTAL_SPLIT, pane, diff);
+    super(JSplitPane.HORIZONTAL_SPLIT, new JViewport(), new JViewport());
     setDoubleBuffered(false);
+    paneViewport = (JViewport) getLeftComponent();
+    diffViewport = (JViewport) getRightComponent();
     this.text = text;
     this.pane = pane;
     this.diff = diff;
+    paneViewport.setView(pane);
+    diffViewport.setView(diff);
 
     diff.setText(text);
     diff.getCaret().moveTo(0, 0);
@@ -126,8 +128,8 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
 
     double paneLine = (1 - lineFraction) * line2Pane[line] + lineFraction * line2Pane[line + 1];
     double diffLine = (1 - lineFraction) * line2Diff[line] + lineFraction * line2Diff[line + 1];
-    pane.setLocation(pane.getX(), (int) (-paneLine * lineHeight) + visibleHeight/2);
-    diff.setLocation(diff.getX(), (int) (-diffLine * lineHeight) + visibleHeight/2);
+    paneViewport.setViewPosition(new Point(pane.getX(), (int) (paneLine * lineHeight) - visibleHeight/2));
+    diffViewport.setViewPosition(new Point(diff.getX(), (int) (diffLine * lineHeight) - visibleHeight/2));
 
     repaint();
   }
@@ -150,51 +152,20 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
     return rows;
   }
 
-  public void paint(Graphics g) {
-    super.paint(g);
+  public void update(Graphics g) {
   }
 
-  public void adjustmentValueChanged(AdjustmentEvent e) {
-    JScrollBar scrollBar = (JScrollBar) e.getSource();
-    /*
-    if(scrollBar.getName().equals("paneV") && !paneScrollBarAdjusting) {
-      if(linesMapPaneDiff == null) return;
-      
-      int paneY = pane.getVisibleRect().y + pane.getVisibleRect().height/2;
-      int paneRow = pane.viewToModel(0,paneY).getRow();
-      double paneRowFraction = (paneY - pane.modelToView(paneRow, 0).y) / (double) pane.getLineHeight();
-
-      int diffRow = (int) linesMapPaneDiff[paneRow];
-      int diffY = diff.modelToView(diffRow, 0).y + (int) ((paneRowFraction) * diff.getLineHeight());
-
-      JScrollBar bar = scrollDiff.getVerticalScrollBar();
-      diffScrollBarAdjusting = true;
-      bar.setValue(diffY - diff.getVisibleRect().height/2);
-      diffScrollBarAdjusting = false;
-      repaint();
-    }
-    if(scrollBar.getName().equals("diffV") && !diffScrollBarAdjusting) {
-      if(linesMapDiffPane == null) return;
-
-      int diffY = diff.getVisibleRect().y + diff.getVisibleRect().height/2;
-      int diffRow = diff.viewToModel(0,diffY).getRow();
-      double diffRowFraction = (diffY - diff.modelToView(diffRow, 0).y) / (double) diff.getLineHeight();
-
-      int paneRow = (int) linesMapDiffPane[diffRow];
-      int paneY = diff.modelToView(paneRow, 0).y + (int) ((diffRowFraction) * diff.getLineHeight());
-
-      JScrollBar bar = scrollPane.getVerticalScrollBar();
-      paneScrollBarAdjusting = true;
-      bar.setValue(paneY - pane.getVisibleRect().height/2);
-      paneScrollBarAdjusting = false;
-      repaint();
-    }
-    */
+  public void paint(Graphics g) {
+    super.paint(g);
   }
 
   private class SCEDiffUI extends BasicSplitPaneUI {
     public BasicSplitPaneDivider createDefaultDivider() {
       return new SCEDiffDivider(this);
+    }
+
+    public void paint(Graphics g, JComponent jc) {
+      super.paint(g, jc);
     }
   }
 
