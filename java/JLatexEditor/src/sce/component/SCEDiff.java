@@ -84,7 +84,7 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
       for(int lineNr = 0; lineNr < modification.getSourceLength(); lineNr++) {
         linesMapDiffPane[diffLine + lineNr] = paneLine + targetOffset + targetFactor*lineNr;
       }
-      for(int lineNr = 0; lineNr < modification.getSourceLength(); lineNr++) {
+      for(int lineNr = 0; lineNr < modification.getTargetLength(); lineNr++) {
         linesMapPaneDiff[paneLine + lineNr] = diffLine + sourceOffset + sourceFactor*lineNr;
       }
       paneLine += modification.getTargetLength();
@@ -121,7 +121,7 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
     if(scrollBar.getName().equals("diffH")) {
       scrollPane.getHorizontalScrollBar().setValue(e.getValue());
     }
-    if(scrollBar.getName().equals("paneV")) {
+    if(scrollBar.getName().equals("paneV") && !e.getValueIsAdjusting()) {
       if(linesMapPaneDiff == null) return;
       
       int paneY = pane.getVisibleRect().y + pane.getVisibleRect().height/2;
@@ -131,9 +131,26 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
       int diffRow = (int) linesMapPaneDiff[paneRow];
       int diffY = diff.modelToView(diffRow, 0).y + (int) ((paneRowFraction) * diff.getLineHeight());
 
-      scrollDiff.getVerticalScrollBar().setValue(diffY - diff.getVisibleRect().height/2);
+      JScrollBar bar = scrollDiff.getVerticalScrollBar();
+      bar.setValueIsAdjusting(true);
+      bar.setValue(diffY - diff.getVisibleRect().height/2);
+      bar.setValueIsAdjusting(false);
+      repaint();
     }
-    if(scrollBar.getName().equals("diffV")) {
+    if(scrollBar.getName().equals("diffV") && !e.getValueIsAdjusting()) {
+      if(linesMapDiffPane == null) return;
+
+      int diffY = diff.getVisibleRect().y + diff.getVisibleRect().height/2;
+      int diffRow = diff.viewToModel(0,diffY).getRow();
+      double diffRowFraction = (diffY - diff.modelToView(diffRow, 0).y) / (double) diff.getLineHeight();
+
+      int paneRow = (int) linesMapDiffPane[diffRow];
+      int paneY = diff.modelToView(paneRow, 0).y + (int) ((diffRowFraction) * diff.getLineHeight());
+
+      JScrollBar bar = scrollPane.getVerticalScrollBar();
+      bar.setValueIsAdjusting(true);
+      bar.setValue(paneY - pane.getVisibleRect().height/2);
+      bar.setValueIsAdjusting(false);
       repaint();
     }
   }
