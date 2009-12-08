@@ -258,10 +258,6 @@ public class SCEDiff extends JSplitPane {
       Dimension size = getViewSize();
       return new Rectangle(viewPosition.x, viewPosition.y, size.width, size.height);
     }
-
-    public void paint(Graphics g) {
-      super.paint(g);
-    }
   }
 
   private static class SCEDiffViewport extends JViewport {
@@ -279,10 +275,6 @@ public class SCEDiff extends JSplitPane {
     public void setView(Component view) {
       super.setView(view);
       setViewPosition(new Point(-1,-1));
-    }
-
-    public void paint(Graphics g) {
-      super.paint(g);
     }
   }
 }
