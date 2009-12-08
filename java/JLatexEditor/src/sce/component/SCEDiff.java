@@ -109,8 +109,8 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
     }
 
     while (diffLine < diffRows && paneLine < paneRows) {
-      line2Diff[paneLine] = diffLine;
-      line2Pane[diffLine] = paneLine;
+      line2Diff[preferredLines] = diffLine;
+      line2Pane[preferredLines] = paneLine;
       paneLine++;
       diffLine++;
       preferredLines++;
@@ -119,13 +119,15 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
 
   public void setLocation(int x, int y) {
     int lineHeight = pane.getLineHeight();
-    int line = -y / lineHeight;
+    int visibleHeight = scrollPane.getVisibleRect().height;
+    y = y - visibleHeight/2;
+    int line = -y/lineHeight;
     double lineFraction = (-y - line * lineHeight) / (double) lineHeight;
 
     double paneLine = (1 - lineFraction) * line2Pane[line] + lineFraction * line2Pane[line + 1];
     double diffLine = (1 - lineFraction) * line2Diff[line] + lineFraction * line2Diff[line + 1];
-    pane.setLocation(pane.getX(), (int) (-paneLine * lineHeight));
-    diff.setLocation(diff.getX(), (int) (-diffLine * lineHeight));
+    pane.setLocation(pane.getX(), (int) (-paneLine * lineHeight) + visibleHeight/2);
+    diff.setLocation(diff.getX(), (int) (-diffLine * lineHeight) + visibleHeight/2);
 
     repaint();
   }
