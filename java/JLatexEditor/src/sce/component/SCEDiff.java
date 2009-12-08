@@ -1,15 +1,16 @@
 package sce.component;
 
 import util.diff.Diff;
+import util.diff.Modification;
 import util.diff.TokenList;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
+import java.util.List;
 
 /**
  * Diff component.
@@ -22,6 +23,12 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
   private JScrollPane scrollPane;
   private SCEPane diff;
   private JScrollPane scrollDiff;
+
+  /**
+   * Forwards and backwards correspondence of the lines.
+   */
+  private double[] linesMapPaneDiff;
+  private double[] linesMapDiffPane;
 
   public SCEDiff(JScrollPane scrollPane, SCEPane pane, String text, JScrollPane scrollDiff, SCEPane diff) {
     super(JSplitPane.HORIZONTAL_SPLIT, scrollPane, scrollDiff);
@@ -54,7 +61,41 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
     TokenList[] paneRows = getRows(paneDocument);
     TokenList[] diffRows = getRows(diffDocument);
 
-    
+    List<Modification> modifications = new Diff().diff(diffRows, paneRows);
+
+    // create a mapping for line correspondence
+    int diffLine = 0;
+    int paneLine = 0;
+    linesMapPaneDiff = new double[paneRows.length];
+    linesMapDiffPane = new double[diffRows.length];
+    for(Modification modification : modifications) {
+      while(diffLine < modification.getSourceStartIndex() && paneLine < modification.getTargetStartIndex()) {
+        linesMapPaneDiff[paneLine] = diffLine + .5;
+        linesMapDiffPane[diffLine] = paneLine + .5;
+        paneLine++;
+        diffLine++;
+      }
+
+      double sourceOffset = modification.getSourceLength() > 0 ? .5 : 0;
+      double targetOffset = modification.getTargetLength() > 0 ? .5 : 0;
+      double sourceFactor = Math.max(0, modification.getSourceLength() - 1) / (double) Math.max(1, modification.getTargetLength() - 1);
+      double targetFactor = Math.max(0, modification.getTargetLength() - 1) / (double) Math.max(1, modification.getSourceLength() - 1);
+      for(int lineNr = 0; lineNr < modification.getSourceLength(); lineNr++) {
+        linesMapDiffPane[diffLine + lineNr] = paneLine + targetOffset + targetFactor*lineNr;
+      }
+      for(int lineNr = 0; lineNr < modification.getSourceLength(); lineNr++) {
+        linesMapPaneDiff[paneLine + lineNr] = diffLine + sourceOffset + sourceFactor*lineNr;
+      }
+      paneLine += modification.getTargetLength();
+      diffLine += modification.getSourceLength();
+    }
+
+    while(diffLine < diffRows.length && paneLine < paneRows.length) {
+      linesMapPaneDiff[paneLine] = diffLine + .5;
+      linesMapDiffPane[diffLine] = paneLine + .5;
+      paneLine++;
+      diffLine++;
+    }
   }
 
   private TokenList[] getRows(SCEDocument document) {
@@ -69,17 +110,6 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
 
   public void paint(Graphics g) {
     super.paint(g);
-
-    if(diff.isEditable()) {
-      diff.setText(text);
-      diff.getCaret().moveTo(0,0);
-      diff.getUndoManager().clear();
-      diff.getDocument().setModified(false);
-      diff.setEditable(false);
-      setDividerLocation(.5);
-
-      updateDiff();
-    }
   }
 
   public void adjustmentValueChanged(AdjustmentEvent e) {
@@ -93,8 +123,44 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
   }
 
   private class SCEDiffUI extends BasicSplitPaneUI {
-    public void paint(Graphics g, JComponent jc) {
-      //super.paint(g, jc);
+    public BasicSplitPaneDivider createDefaultDivider() {
+      return new SCEDiffDivider(this);
+    }
+  }
+
+  private class SCEDiffDivider extends BasicSplitPaneDivider {
+    public SCEDiffDivider(BasicSplitPaneUI basicSplitPaneUI) {
+      super(basicSplitPaneUI);
+    }
+
+    public void paint(Graphics g) {
+      super.paint(g);
+
+      if(diff.isEditable()) {
+        diff.setText(text);
+        diff.getCaret().moveTo(0,0);
+        diff.getUndoManager().clear();
+        diff.getDocument().setModified(false);
+        diff.setEditable(false);
+        setDividerLocation(.5);
+
+        updateDiff();
+      }
+
+      int paneFirstRow = pane.viewToModel(0,0).getRow();
+      int left = 0;
+      int right = getWidth();
+      int lineHeight = pane.getLineHeight();
+      int paneOffsetY = pane.getVisibleRect().y;
+      int diffOffsetY = diff.getVisibleRect().y;
+      for(int rowNr = 0; rowNr < pane.getVisibleRowsCount() + 1; rowNr++) {
+        int paneRow = paneFirstRow + rowNr;
+        if(paneRow >= linesMapPaneDiff.length) break;
+        int diffRow = (int) linesMapPaneDiff[paneRow];
+        int paneY = pane.modelToView(paneRow, 0).y + (lineHeight / 2);
+        int diffY = diff.modelToView(diffRow, 0).y + (int) (lineHeight * (linesMapPaneDiff[paneRow] - diffRow));
+        g.drawLine(left, paneY - paneOffsetY, right, diffY - diffOffsetY);
+      }
     }
   }
 }

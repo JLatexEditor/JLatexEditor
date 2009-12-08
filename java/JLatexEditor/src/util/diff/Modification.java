@@ -1,7 +1,5 @@
 package util.diff;
 
-import javax.xml.ws.soap.Addressing;
-
 /**
  * Diff modifications.
  */
@@ -12,14 +10,16 @@ public class Modification {
 
   private int type;
   private int sourceStartIndex;
+  private int sourceLength;
   private int targetStartIndex;
-  private int length;
+  private int targetLength;
 
-  public Modification(int type, int sourceStartIndex, int targetStartIndex, int length) {
+  public Modification(int type, int sourceStartIndex, int sourceLength, int targetStartIndex, int targetLength) {
     this.type = type;
     this.sourceStartIndex = sourceStartIndex;
+    this.sourceLength = sourceLength;
     this.targetStartIndex = targetStartIndex;
-    this.length = length;
+    this.targetLength = targetLength;
   }
 
   public int getType() {
@@ -30,16 +30,20 @@ public class Modification {
     return sourceStartIndex;
   }
 
+  public int getSourceLength() {
+    return sourceLength;
+  }
+
   public int getTargetStartIndex() {
     return targetStartIndex;
   }
 
-  public int getLength() {
-    return length;
+  public int getTargetLength() {
+    return targetLength;
   }
 
   public String toString() {
     return (type == TYPE_ADD ? "ADD " : (type == TYPE_REMOVE ? "REMOVE " : "CHANGED ")) +
-            sourceStartIndex + " " + targetStartIndex + " " + length;
+            sourceStartIndex + ":" + sourceLength + " " + targetStartIndex + ":" + targetLength;
   }
 }

@@ -56,11 +56,11 @@ public class Diff {
 
     ArrayList<Modification> modifications = new ArrayList<Modification>();
     if (length1 == 0) {
-      modifications.add(new Modification(Modification.TYPE_ADD, 0, 0, length2));
+      modifications.add(new Modification(Modification.TYPE_ADD, 0, 0, 0, length2));
       return modifications;
     }
     if (length2 == 0) {
-      modifications.add(new Modification(Modification.TYPE_REMOVE, 0, 0, length1));
+      modifications.add(new Modification(Modification.TYPE_REMOVE, 0, length1, 0, 0));
       return modifications;
     }
 
@@ -123,16 +123,16 @@ public class Diff {
         count++;
       }
 
-      if(cost.type == Cost.TYPE_ADD) {
-        modifications.add(new Modification(Modification.TYPE_ADD, index1, index2, count));
+      if(cost.getType() == Cost.TYPE_ADD) {
+        modifications.add(new Modification(Modification.TYPE_ADD, index1, 0, index2, count));
         index2 += count;
       } else
-      if(cost.type == Cost.TYPE_REMOVE) {
-        modifications.add(new Modification(Modification.TYPE_REMOVE, index1, index2, count));
+      if(cost.getType() == Cost.TYPE_REMOVE) {
+        modifications.add(new Modification(Modification.TYPE_REMOVE, index1, count, index2, 0));
         index1 += count;
       } else
-      if(cost.type == Cost.TYPE_CHANGE) {
-        modifications.add(new Modification(Modification.TYPE_CHANGED, index1, index2, count));
+      if(cost.getType() == Cost.TYPE_CHANGE) {
+        modifications.add(new Modification(Modification.TYPE_CHANGED, index1, count, index2, count));
         index1 += count;
         index2 += count;
       }

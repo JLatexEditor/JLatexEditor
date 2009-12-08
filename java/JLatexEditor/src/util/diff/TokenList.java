@@ -1,6 +1,7 @@
 package util.diff;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * List of tokens.
@@ -69,7 +70,11 @@ public class TokenList implements Metric<TokenList> {
 
   public int getDistance(TokenList list, int max) {
     int costs = new Diff().costs(this.tokenList, list.tokenList);
-    int length = Math.min(Math.max(1, tokenList.length), Math.max(1, list.tokenList.length));
-    return Math.min(max, (max * costs) / length);
+    int length = Math.min(tokenList.length+1, list.tokenList.length+1);
+    return Math.min(max, (2*max * costs) / length);
+  }
+
+  public String toString() {
+    return Arrays.asList(tokenList) + "";
   }
 }

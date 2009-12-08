@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.font.TextAttribute;
 import java.text.AttributedString;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -91,7 +92,9 @@ public class SCEDocument{
    * @return the rows
    */
   public SCEDocumentRow[] getRows(){
-    return rows;
+    SCEDocumentRow[] usedRows = new SCEDocumentRow[rowsCount];
+    System.arraycopy(rows, 0, usedRows, 0, rowsCount);
+    return usedRows;
   }
 
   /**
