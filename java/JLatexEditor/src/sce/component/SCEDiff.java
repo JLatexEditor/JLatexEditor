@@ -2,6 +2,7 @@ package sce.component;
 
 import util.diff.Diff;
 import util.diff.Modification;
+import util.diff.SystemDiff;
 import util.diff.TokenList;
 
 import javax.swing.*;
@@ -58,16 +59,16 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
     SCEDocument paneDocument = pane.getDocument();
     SCEDocument diffDocument = diff.getDocument();
 
-    TokenList[] paneRows = getRows(paneDocument);
-    TokenList[] diffRows = getRows(diffDocument);
+    int paneRows = paneDocument.getRowsCount();
+    int diffRows = diffDocument.getRowsCount();
 
-    List<Modification> modifications = new Diff().diff(diffRows, paneRows);
+    List<Modification> modifications = new SystemDiff().diff(diffDocument.getText(), paneDocument.getText());
 
     // create a mapping for line correspondence
     int diffLine = 0;
     int paneLine = 0;
-    linesMapPaneDiff = new double[paneRows.length];
-    linesMapDiffPane = new double[diffRows.length];
+    linesMapPaneDiff = new double[paneRows];
+    linesMapDiffPane = new double[diffRows];
     for(Modification modification : modifications) {
       while(diffLine < modification.getSourceStartIndex() && paneLine < modification.getTargetStartIndex()) {
         linesMapPaneDiff[paneLine] = diffLine + .5;
@@ -90,7 +91,7 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
       diffLine += modification.getSourceLength();
     }
 
-    while(diffLine < diffRows.length && paneLine < paneRows.length) {
+    while(diffLine < diffRows && paneLine < paneRows) {
       linesMapPaneDiff[paneLine] = diffLine + .5;
       linesMapDiffPane[diffLine] = paneLine + .5;
       paneLine++;
@@ -120,6 +121,21 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
     if(scrollBar.getName().equals("diffH")) {
       scrollPane.getHorizontalScrollBar().setValue(e.getValue());
     }
+    if(scrollBar.getName().equals("paneV")) {
+      if(linesMapPaneDiff == null) return;
+      
+      int paneY = pane.getVisibleRect().y + pane.getVisibleRect().height/2;
+      int paneRow = pane.viewToModel(0,paneY).getRow();
+      double paneRowFraction = (paneY - pane.modelToView(paneRow, 0).y) / (double) pane.getLineHeight();
+
+      int diffRow = (int) linesMapPaneDiff[paneRow];
+      int diffY = diff.modelToView(diffRow, 0).y + (int) ((paneRowFraction) * diff.getLineHeight());
+
+      scrollDiff.getVerticalScrollBar().setValue(diffY - diff.getVisibleRect().height/2);
+    }
+    if(scrollBar.getName().equals("diffV")) {
+      repaint();
+    }
   }
 
   private class SCEDiffUI extends BasicSplitPaneUI {
@@ -147,12 +163,13 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
         updateDiff();
       }
 
-      int paneFirstRow = pane.viewToModel(0,0).getRow();
       int left = 0;
       int right = getWidth();
-      int lineHeight = pane.getLineHeight();
+
       int paneOffsetY = pane.getVisibleRect().y;
+      int paneFirstRow = pane.viewToModel(0,paneOffsetY).getRow();
       int diffOffsetY = diff.getVisibleRect().y;
+      int lineHeight = pane.getLineHeight();
       for(int rowNr = 0; rowNr < pane.getVisibleRowsCount() + 1; rowNr++) {
         int paneRow = paneFirstRow + rowNr;
         if(paneRow >= linesMapPaneDiff.length) break;
