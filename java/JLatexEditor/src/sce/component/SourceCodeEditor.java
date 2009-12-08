@@ -28,7 +28,6 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel{
   // diff
   private SCEDiff diff = null;
   private SCEPane diffPane = null;
-  private JScrollPane scrollDiffPane = null;
 
   public SourceCodeEditor(Rs resource){
     this.resource = resource;
@@ -104,15 +103,13 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel{
   public void diffView(String text) {
     remove(scrollPane);
 
-    scrollPane.setLayout(new ScrollPaneLayoutLeft());
     diffPane = new SCEPane();
     LatexStyles.addStyles(diffPane.getDocument());
-    scrollDiffPane = new JScrollPane(diffPane);
-    scrollDiffPane.getVerticalScrollBar().setUnitIncrement(30);
+    diff = new SCEDiff(textPane, text, diffPane);
+    JScrollPane scrollDiff = new SCEDiff.SCEDiffScrollPane(diff);
+    diff.setScrollPane(scrollPane);
 
-    diff = new SCEDiff(scrollPane, textPane, text, scrollDiffPane, diffPane);
-
-    add(diff, BorderLayout.CENTER);
+    add(scrollDiff, BorderLayout.CENTER);
   }
 
   /**
