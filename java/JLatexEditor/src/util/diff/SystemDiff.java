@@ -26,6 +26,7 @@ public class SystemDiff {
 
       Process process = Runtime.getRuntime().exec(new String[]{
         "diff",
+        "-w",
         file1.getCanonicalPath(),
         file2.getCanonicalPath()
       });
@@ -64,7 +65,7 @@ public class SystemDiff {
 
         modifications.add(new Modification(
                 type == 'a' ? Modification.TYPE_ADD : (type == 'd' ? Modification.TYPE_REMOVE : Modification.TYPE_CHANGED),
-                sourceStart, sourceLength, targetStart, targetLength));
+                sourceStart-1, sourceLength, targetStart-1, targetLength));
       }
       reader.close();
     } catch (IOException e) {

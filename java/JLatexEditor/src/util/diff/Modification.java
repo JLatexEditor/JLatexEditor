@@ -4,9 +4,9 @@ package util.diff;
  * Diff modifications.
  */
 public class Modification {
-  public static int TYPE_ADD     = 0;
-  public static int TYPE_REMOVE  = 1;
-  public static int TYPE_CHANGED = 2;
+  public static final int TYPE_ADD     = 0;
+  public static final int TYPE_REMOVE  = 1;
+  public static final int TYPE_CHANGED = 2;
 
   private int type;
   private int sourceStartIndex;

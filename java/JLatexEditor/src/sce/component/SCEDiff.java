@@ -18,6 +18,9 @@ import java.util.List;
  */
 public class SCEDiff extends JSplitPane implements AdjustmentListener {
   private static final int WIDTH = 50;
+  public static Color COLOR_ADD = new Color(189, 238, 192);
+  public static Color COLOR_REMOVE = new Color(191, 190, 239);
+  public static Color COLOR_CHANGE = new Color(237, 191, 188);
 
   private String text;
   private SCEPane pane;
@@ -28,6 +31,7 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
   /**
    * Forwards and backwards correspondence of the lines.
    */
+  private List<Modification> modifications = null;
   private double[] linesMapPaneDiff;
   private double[] linesMapDiffPane;
 
@@ -62,7 +66,7 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
     int paneRows = paneDocument.getRowsCount();
     int diffRows = diffDocument.getRowsCount();
 
-    List<Modification> modifications = new SystemDiff().diff(diffDocument.getText(), paneDocument.getText());
+    modifications = new SystemDiff().diff(diffDocument.getText(), paneDocument.getText());
 
     // create a mapping for line correspondence
     int diffLine = 0;
@@ -182,13 +186,46 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
         updateDiff();
       }
 
+      if(modifications == null) return;
+
       int left = 0;
       int right = getWidth();
 
       int paneOffsetY = pane.getVisibleRect().y;
       int paneFirstRow = pane.viewToModel(0,paneOffsetY).getRow();
       int diffOffsetY = diff.getVisibleRect().y;
+      int diffFirstRow = diff.viewToModel(0,diffOffsetY).getRow();
       int lineHeight = pane.getLineHeight();
+      int visibleRows = pane.getVisibleRowsCount() + 1;
+
+      int[] xpoints = new int[] {left, right, right, left};
+      int[] ypoints = new int[4];
+      for(Modification modification : modifications) {
+        int sourceStart = modification.getSourceStartIndex();
+        int sourceLength = modification.getSourceLength();
+        int targetStart = modification.getTargetStartIndex();
+        int targetLength = modification.getTargetLength();
+
+        if(sourceStart + sourceLength < diffFirstRow && targetStart + targetLength < paneFirstRow) continue;
+        if(sourceStart > diffFirstRow + visibleRows && targetStart > paneFirstRow + visibleRows) continue;
+        int paneYStart = pane.modelToView(targetStart, 0).y - paneOffsetY;
+        int paneYEnd = pane.modelToView(targetStart + targetLength, 0).y - paneOffsetY;
+        int diffYStart = pane.modelToView(sourceStart, 0).y - diffOffsetY;
+        int diffYEnd = pane.modelToView(sourceStart + sourceLength, 0).y - diffOffsetY;
+        ypoints[0] = paneYStart;
+        ypoints[1] = diffYStart;
+        ypoints[2] = diffYEnd;
+        ypoints[3] = paneYEnd;
+
+        switch (modification.getType()) {
+          case Modification.TYPE_ADD : g.setColor(COLOR_ADD); break;
+          case Modification.TYPE_REMOVE : g.setColor(COLOR_REMOVE); break;
+          case Modification.TYPE_CHANGED : g.setColor(COLOR_CHANGE); break;
+        }
+        g.fillPolygon(xpoints, ypoints, 4);
+      }
+
+      /*
       for(int rowNr = 0; rowNr < pane.getVisibleRowsCount() + 1; rowNr++) {
         int paneRow = paneFirstRow + rowNr;
         if(paneRow >= linesMapPaneDiff.length) break;
@@ -197,6 +234,7 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
         int diffY = diff.modelToView(diffRow, 0).y + (int) (lineHeight * (linesMapPaneDiff[paneRow] - diffRow));
         g.drawLine(left, paneY - paneOffsetY, right, diffY - diffOffsetY);
       }
+      */
     }
   }
 }
