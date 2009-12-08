@@ -113,6 +113,8 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
     super.paint(g);
   }
 
+  private boolean paneScrollBarAdjusting = false;
+  private boolean diffScrollBarAdjusting = false;
   public void adjustmentValueChanged(AdjustmentEvent e) {
     JScrollBar scrollBar = (JScrollBar) e.getSource();
     if(scrollBar.getName().equals("paneH")) {
@@ -121,7 +123,7 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
     if(scrollBar.getName().equals("diffH")) {
       scrollPane.getHorizontalScrollBar().setValue(e.getValue());
     }
-    if(scrollBar.getName().equals("paneV") && !e.getValueIsAdjusting()) {
+    if(scrollBar.getName().equals("paneV") && !paneScrollBarAdjusting) {
       if(linesMapPaneDiff == null) return;
       
       int paneY = pane.getVisibleRect().y + pane.getVisibleRect().height/2;
@@ -132,12 +134,12 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
       int diffY = diff.modelToView(diffRow, 0).y + (int) ((paneRowFraction) * diff.getLineHeight());
 
       JScrollBar bar = scrollDiff.getVerticalScrollBar();
-      bar.setValueIsAdjusting(true);
+      diffScrollBarAdjusting = true;
       bar.setValue(diffY - diff.getVisibleRect().height/2);
-      bar.setValueIsAdjusting(false);
+      diffScrollBarAdjusting = false;
       repaint();
     }
-    if(scrollBar.getName().equals("diffV") && !e.getValueIsAdjusting()) {
+    if(scrollBar.getName().equals("diffV") && !diffScrollBarAdjusting) {
       if(linesMapDiffPane == null) return;
 
       int diffY = diff.getVisibleRect().y + diff.getVisibleRect().height/2;
@@ -148,9 +150,9 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
       int paneY = diff.modelToView(paneRow, 0).y + (int) ((diffRowFraction) * diff.getLineHeight());
 
       JScrollBar bar = scrollPane.getVerticalScrollBar();
-      bar.setValueIsAdjusting(true);
+      paneScrollBarAdjusting = true;
       bar.setValue(paneY - pane.getVisibleRect().height/2);
-      bar.setValueIsAdjusting(false);
+      paneScrollBarAdjusting = false;
       repaint();
     }
   }
