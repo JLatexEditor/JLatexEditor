@@ -1,6 +1,7 @@
 package sce.component;
 
 import util.diff.Diff;
+import util.diff.TokenList;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
@@ -50,17 +51,18 @@ public class SCEDiff extends JSplitPane implements AdjustmentListener {
     SCEDocument paneDocument = pane.getDocument();
     SCEDocument diffDocument = diff.getDocument();
 
-    String paneRows[] = getRows(paneDocument);
-    String diffRows[] = getRows(diffDocument);
+    TokenList[] paneRows = getRows(paneDocument);
+    TokenList[] diffRows = getRows(diffDocument);
 
+    
   }
 
-  private String[] getRows(SCEDocument document) {
+  private TokenList[] getRows(SCEDocument document) {
     SCEDocumentRow[] sceRows = document.getRows();
 
-    String rows[] = new String[sceRows.length];
+    TokenList rows[] = new TokenList[sceRows.length];
     for(int row = 0; row < rows.length; row++) {
-      rows[row] = sceRows[row].toString();
+      rows[row] = new TokenList(sceRows[row].toString(), true);
     }
     return rows;
   }

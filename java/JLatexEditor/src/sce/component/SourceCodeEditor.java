@@ -104,6 +104,7 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel{
   public void diffView(String text) {
     remove(scrollPane);
 
+    scrollPane.setLayout(new ScrollPaneLayoutLeft());
     diffPane = new SCEPane();
     LatexStyles.addStyles(diffPane.getDocument());
     scrollDiffPane = new JScrollPane(diffPane);

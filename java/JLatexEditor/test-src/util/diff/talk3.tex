@@ -1,0 +1,2310 @@
+\documentclass[10pt,handout]{beamer}
+
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{comment}
+%\usepackage{proof}
+\usepackage{graphicx}
+%\usepackage{rotate}
+
+\mode<presentation>
+{
+  \usetheme{Warsaw}  %% \usetheme{default} 
+  \setbeamercovered{transparent}
+  \usecolortheme{seahorse}
+  \usecolortheme{rose} %% \usecolortheme{crane} % (oranje)
+  \setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[triangle]
+\setbeamertemplate{sections/subsections in toc}[sections numbered]
+\setbeamercolor{math text}{fg=darkgreen}
+}
+
+
+\input{wsg.def}
+
+
+%------------------------------------------------------------------------
+
+
+%%\usepackage[german]{babel}
+% oder was auch immer
+
+\usepackage[latin1]{inputenc}
+% oder was auch immer
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+% Oder was auch immer. Zu beachten ist, das Font und Encoding passen
+% müssen. Falls T1 nicht funktioniert, kann man versuchen, die Zeile
+% mit fontenc zu löschen.
+
+
+
+\title[Watching Streams Grow]{\scalebox{0.99}%
+         {\hspace*{-1.5pt}Watching \hspace*{-1.5pt}Streams \hspace*{-1.5pt}Grow: 
+          \hspace*{-1.5pt}The \hspace*{-1.5pt}Pebbleflow \hspace*{-1.5pt}Method}}
+
+\author[Endrullis, Grabmayer, Hendriks, Isihara, Klop]{
+        %% [\magenta{Fanta~5}]
+    %% %{\magenta{Fanta~5:}}\\
+  J\"{o}rg Endrullis         %\inst{1}
+  \and {Clemens Grabmayer}     %\inst{2}
+  \and Dimitri Hendriks      \\%\inst{1}\\
+  \and Ariya Isihara         %\inst{1}
+  \and Jan Willem Klop       %\inst{1}\\
+}
+
+\institute{
+  Universiteit Utrecht, 
+  Vrije Universiteit
+  %%                               \\[2ex]
+  %% {\chocolate{\large NWO-Bricks Project Infinity}}  %{{ $\boldsymbol{\infty}$}}
+           }
+  
+%% \institute{
+%%   Department of Philosophy, \emph{Universiteit Utrecht}\\[0.5ex]
+%%   Department of Computer Science, \emph{Vrije Universiteit}\\[0.5ex]
+%%   Department of Computer Science, \emph{Radboud Universiteit}   
+%%            }
+
+
+\date{
+  {NWO Projects \chocolate{Infinity}
+                and \chocolate{ProvCyc}}\\[2ex]
+  \forestgreen{TF-lunch}, \emph{UU}\\ 
+      6 November 2007}
+
+
+\subject{Informatik}
+% Dies wird lediglich in den PDF Informationskatalog einfügt. Kann gut
+% weggelassen werden.
+
+
+% Falls eine Logodatei namens "university-logo-filename.xxx" vorhanden
+% ist, wobei xxx ein von latex bzw. pdflatex lesbares Graphikformat
+% ist, so kann man wie folgt ein Logo einfügen:
+
+% \pgfdeclareimage[height=0.5cm]{university-logo}{university-logo-filename}
+% \logo{\pgfuseimage{university-logo}}
+
+
+%% % Folgendes sollte gelöscht werden, wenn man nicht am Anfang jedes
+%% % Unterabschnitts die Gliederung nochmal sehen möchte.
+   \AtBeginSection[]
+   {
+   \begin{frame}<beamer>
+     \frametitle{Overview}
+     \tableofcontents[currentsection] %[...,currentsubsection]
+   \end{frame}
+    }
+
+
+% Falls Aufzählungen immer schrittweise gezeigt werden sollen, kann
+% folgendes Kommando benutzt werden:
+
+%\beamerdefaultoverlayspecification{<+->}
+
+
+%----------------------------------------------------------------------------------
+
+
+
+
+\begin{comment}
+  %
+  %abstract
+  %
+  We describe an algorithm for deciding productivity of a large and
+  natural class of recursive stream definitions.
+  A stream definition is called  `productive' if  
+  it can be evaluated continuously
+  in such a way that a uniquely determined stream is obtained as the limit.
+  Whereas productivity is undecidable for stream definitions in general,
+  we show that it can be decided for `pure' stream definitions.
+  For every pure stream definition the process of its evaluation
+  can be modelled by the dataflow of abstract stream elements,
+  called `pebbles', in a finite `pebbleflow net(work)'.
+  And the production of a pebbleflow net
+  associated with a pure stream definition, that is,
+  the amount of pebbles the net is able to produce at its output port,
+  can be calculated by reducing nets to trivial nets.
+  %
+\end{comment}
+
+%----------------------------------------------------------------
+
+\begin{document}
+
+%\renewcommand{\pause}{}
+
+\begin{frame}
+	\titlepage
+\end{frame}
+
+\begin{frame}
+  \frametitle{Outline}
+  \tableofcontents[pausesections]
+\end{frame}
+
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+\section{Introduction}
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+
+
+%------------------------------------------------------------------------
+\subsection{Productivity}
+%------------------------------------------------------------------------
+
+%% \begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%   \frametitle{Productivity}
+%% 
+%%   \begin{itemize}[<+->]
+%%   \item
+%%     %Under which conditions can a finite expression
+%%     %be said to represent an infinite object?
+%%     When does a \emph{finite expression}
+%%     represent an \emph{infinite object}?
+%%   \item
+%%     When do we accept an infinite object 
+%%     defined in terms of itself?
+%%   \item
+%%     Answer: if its definition is \emph{productive}:\\
+%%     if it reduces to a \emph{constructor normal form}.
+%%     %it can generate leading constructors to an arbitrary depth
+%%   %\item
+%%     %Includes \emph{lazy} objects: not necessarily well-founded 
+%%     %trees built out of constructors.
+%%   \item
+%%     A productive \emph{process} continuously turns input into output.
+%%   \item
+%%     \emph{Undecidable}, in general.
+%%   \item
+%%     Examples: processes, \emph{streams}, 
+%%     infinite proofs, operating systems, \ldots.
+%%   \end{itemize}
+%% 
+%% \end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+ 
+%------------------------------------------------------------------------
+%\subsection{Problem}  
+%------------------------------------------------------------------------
+
+\begin{frame}
+  \frametitle{The Problem} 
+
+  \begin{itemize}%[<+->]
+  \item
+    When do we accept an infinite 
+    object defined in terms of itself?
+  \item
+    When does a finite set of equations
+    \emph{constructively} define
+    a \emph{unique} infinite object?
+  \item
+    When is a recursive program \emph{productive}?  
+  \vspace{2ex}
+  \item
+    If it evaluates to a unique infinite \emph{constructor normal form}
+  \end{itemize}
+
+  %\uncover<5->{
+  \begin{example}
+  \vspace{-2ex}
+  \begin{align*}
+    %\uncover<5->{
+    \strcon{zeros} 
+    &= \strcns{\datsymb{0}}{\strcon{zeros}}
+    \\
+    %}
+    %\uncover<6->{
+    \strcon{zeros} 
+    &\red
+    \strcns{\datsymb{0}}{\strcon{zeros}}
+    \red
+    \strcns{\datsymb{0}}{\strcns{\datsymb{0}}{\strcon{zeros}}}
+    \red
+    \cdots
+    \red
+    \strcns{\datsymb{0}}{\strcns{\datsymb{0}}{\strcns{\datsymb{0}}{\ldots}}}
+    %} 
+  \end{align*}
+  \end{example}
+  %}
+
+  \begin{itemize}%[<+->]
+  \item
+    Other examples: %coinductive natural numbers,
+    infinite trees, processes, coinductive proofs, %\emph{streams}, 
+    \ldots
+  \item
+    In general, productivity is (highly) \emph{undecidable}
+    ($\Pi^0_3$-complete).
+    %
+  \end{itemize}
+
+\end{frame}  
+
+
+
+%------------------------------------------------------------------------
+%\subsection{Streams}
+%------------------------------------------------------------------------
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Streams}
+
+  \begin{itemize}%[<+->]
+  \item
+    The set $\str{A}$ of \emph{streams} (over set $A$)
+    is defined by:
+    \[
+      \str{A} \defdby \{ \astr \where \astr \funin {\nat\to A} \}
+    \]
+    \vspace*{-1.5ex}
+  \item
+    $\str{A}$ is the greatest fixed point of: 
+    \[\lambda{X}.\,A\times X\]
+    %\[
+    %  \str{A} \defdby A\times\str{A}
+    %\]
+    \vspace*{-1.5ex}
+  \item
+    `$\sstrcns$'\ is the \emph{stream constructor} symbol:
+    \;\(\strcns{\datsymb{a}}{\astr}\)\;
+    denotes the result of prepending 
+    \;$\datsymb{a}\in A$\; to \;$\astr\in\str{A}$
+  \item
+    A recursive stream specification 
+    \[
+      \astrcon = \ldots\, {\astrcon} \,\ldots
+    \]
+    is \emph{productive} if the process of continually evaluating $\astrcon$ 
+    \\
+    results in an infinite constructor normal form:
+    \[
+      \astrcon
+      \infred
+      \strcns{\datsymb{a_0}}{\strcns{\datsymb{a_1}}{\strcns{\datsymb{a_2}}{\ldots}}}
+    \]
+  \end{itemize}
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%------------------------------------------------------------------------
+%\subsection{Examples}
+%------------------------------------------------------------------------
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Examples}
+\begin{example}
+  \begin{align*}
+    \uncover<1>{
+    \strread{\strcns{x}{\astr}} 
+      &= \strcns{x}{\strread{\astr}} 
+      & \\}
+    \uncover<2>{
+    \strfread{\strcns{x}{\strcns{y}{\astr}}}
+      &= \strcns{x}{\strcns{y}{\strfread{\astr}}} 
+      & \\}
+    \uncover<1>{
+    \strcon{fives} 
+      &= \strcns{\datsymb{5}}{\strread{\strcon{fives}}} 
+      & & \text{productive} \\}
+    \uncover<2>{
+    \strcon{fives'} 
+      &= \strcns{\datsymb{5}}{\strfread{\strcon{fives'}}} 
+      & & \text{not productive} \\}
+    \uncover<3>{ 
+    \strzipb{\strcns{x}{\astr}}{\strcns{y}{\bstr}} 
+      &= \strcns{x}{\strcns{y}{\strzipb{\astr}{\bstr}}}
+      & \\}
+    \uncover<4>{
+    \strzipa{\strcns{x}{\astr}}{\bstr} 
+      &= \strcns{x}{\strzipa{\bstr}{\astr}} 
+      & \\}
+    \uncover<3>{
+    \strcon{sevens} 
+      &= \strcns{\datsymb{7}}{\strzipb{\strcon{sevens}}{\strtl{\strcon{sevens}}}}
+      & & \text{not productive} \\} 
+    \uncover<4>{
+    \strcon{sevens'} 
+      &= \strcns{\datsymb{7}}{\strzipa{\strcon{sevens'}}{\strtl{\strcon{sevens'}}}}
+      & & \text{productive} }
+  \end{align*}
+\end{example}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+\section{Recursive Stream Specifications}
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+
+
+%------------------------------------------------------------------------
+\subsection{Motivating Example}
+%------------------------------------------------------------------------
+
+
+
+
+%------------------------------------------------------------------------
+%\subsection{Weakly guarded SFSs and Pure SCSs (Example)}
+%------------------------------------------------------------------------
+
+%------------------------------------------------------------------------
+\subsection{Weakly Guarded Stream Function Specifications}
+%------------------------------------------------------------------------
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Weakly Guarded Stream Function Specifications}
+
+\begin{example}
+  %
+  \vspace*{2.5ex}
+  %
+\begin{center}
+\vspace*{-0.5ex}
+\scalebox{0.93}{
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|c|l|}
+  \hline
+  $\strtl{\strcns{x}{\astr}} \red \astr$ & \\[-0.0ex]
+  $\strev{\strcns{x}{\astr}} \red \strcns{x}{\strod{\astr}}$ & \\[-0.0ex]
+  $\strod{\strcns{x}{\astr}} \red \strev{\astr} $ 
+  & SFS-layer\\[-0.0ex]
+  $\strzip{\strcns{x}{\astr}}{\bstr} \red \strcns{x}{\strzip{\bstr}{\astr}}$
+  & \\[-0.0ex]
+  $ \stradd{ \strcns{x}{\astr} }{ \strcns{y}{\bstr} }
+         \red   \strcns{\strad{x}{y}}
+                           { \stradd{\astr}{\bstr} } $ & \\[-0.0ex]
+  \hline
+  $ \strad{x}{0} \red   x  $ \qquad\qquad
+  $ \strad{x}{\strsucc{y}}   \red   \strsucc{\strad{x}{y}} $
+  & data-layer \\
+  \hline
+\end{tabular}
+               }
+\end{center}
+  %
+  \mbox{}\\[0.5ex]
+  %
+\end{example}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Weakly Guarded Stream Function Specifications}
+
+\vspace*{-0.5ex}
+%
+\begin{example}[Continued] \label{ex:def:rsfds}
+  %
+  %% Consider again the SFS~$\atrs$ for 
+  %% $\sstrev$, $\sstrod$, $\sstrzip$, $\sstrinv$, $\sstrtl$.
+  %
+  In an SFS we have `production cycles' like:
+  %
+  \begin{gather*}
+    %
+    \strev{\strcns{x}{\strcns{y}{\astr}}} 
+        \red
+      \strcns{x}{\strod{\strcns{y}{\astr}}}
+        \red 
+      \strcns{\chocolate{x}}{\strev{\astr}} 
+                                                                   \\
+    %\uncover<2->{
+    \strod{\strcns{x}{\strcns{y}{\astr}}}
+        \red
+      \strev{\strcns{y}{\astr}}
+        \red 
+      \strcns{\chocolate{y}}{\strod{\astr}}
+    %             }
+                                                                   \\
+    %\uncover<2->{
+    \strzip{\strcns{x}{\astr}}{\strcns{y}{\bstr}} 
+        \red 
+      \strcns{x}{\strzip{\strcns{y}{\bstr}}{\astr}}
+        \red
+      \strcns{\chocolate{x}}{\strcns{\chocolate{y}}{\strzip{\astr}{\bstr}}}
+    %             }
+      %
+  \end{gather*}                                              %\pause
+  %
+  We say that $\sstrev$, $\sstrod$, $\sstrzip$, and $\sstrinv$
+  are \chocolate{weakly guarded}.\\[1.5ex]
+
+  $\sstrtl$ is \emph{collapsing} in $\atrs$:
+  %
+  \begin{equation*}
+    %
+    \strtl{\strcns{x}{\astr}} \red \astr \; .
+    %
+  \end{equation*}
+  %
+\end{example}
+
+
+\vspace*{0.5ex}
+%
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Weakly Guarded Stream Function Specifications}
+
+
+\begin{definition}  
+  %
+  A TRS~%
+  %
+  $\atrs = \pair{\Sd\uplus\Ssf\uplus\{\sstrcns\}}{R_d\uplus R_{\mit{sf}}}$\\
+  is a 
+  \magenta{weakly guarded stream function specification (SFS)}
+  if
+  %
+  \begin{enumerate}
+    %
+    \item $ \pair{\Sd}{R_d}$ is a sub-TRS,
+        the \emph{data layer of $\atrs$}.%\pause
+        %
+    \item Each rule in $R_{\mit{sf}}$, the \emph{SFS-layer of $\atrs$},
+      is of one of two forms:
+      %
+      \begin{align*}
+        &
+        \hspace*{-3ex}
+        \funap{\astrfun}{
+          (\strcns{\dm{x_{1,1}}}{\strcns{\ldots}{\strcns{\dm{x_{1,n_1}}}{\astr_1}}}),
+          \ldots,
+          (\strcns{\dm{x_{r,1}}}{\strcns{\ldots}{\strcns{\dm{x_{r_s,n_{r_s}}}}{\astr_{r_s}}}}),
+          \vec{y}
+                             } 
+                               \\
+        & \hspace*{-2ex}
+        \red
+        \strcns{\chocolate{t_{1}(\vec{x},\vec{y})}}{\strcns{\ldots}{\strcns{\chocolate{t_{m_{\hspace*{1pt}\astrfun}}(\vec{x},\vec{y})}}{
+           \sigma_l }}} \; ,
+                               \\
+        &\hspace*{-2ex}
+        \red 
+        \strcns{\chocolate{t_{1}(\vec{x},\vec{y})}}{\strcns{\ldots}{\strcns{\chocolate{t_{m_{\hspace*{1pt}\astrfun}}(\vec{x},\vec{y})}}{
+         \funap{\bstrfun}{\astr_{\funap{\pi_{\astrfun}}{1}},\ldots,\astr_{\funap{\pi_{\astrfun}}{r'_s}},
+          t'_1(\vec{x},\vec{y}), \ldots, t'_{r'_d}(\vec{x},\vec{y})
+                  }}}}  \; ,
+        % 
+      \end{align*}
+      % 
+      where
+      $\pi_{\astrfun} \funin {\{1,\ldots,r'_s\} \to \{1,\ldots,r_s\}}$ 
+      is injective
+      in case $\astrfun\leadsto\bstrfun$.%\pause
+   %%    % 
+   %%    \begin{equation*}
+   %%      %
+   %%      \funap{\astrfun}{
+   %%        (\strcns{t_{1,1}(\vec{x})}{\strcns{\ldots}{\strcns{t_{1,n_1}(\vec{x})}{\astr_1}}}),
+   %%        \ldots,
+   %%        (\strcns{t_{r,1}(\vec{x})}{\strcns{\ldots}{\strcns{t_{r,n_{r}}(\vec{x})}{\astr_{r}}}})
+   %%                 }
+  %%       \;\red\;   \btrm(\vec{x},\vec{\astr}) \; .
+  %%       %
+  %%     \end{equation*} 
+  %%     %
+      %
+    \item \emph{Weakly guarded}:
+      On every dependency cycle 
+      $\astrfun \leadsto \bstrfun \leadsto \cdots \leadsto \astrfun$ 
+      there is at least one \chocolate{guard}.
+      
+    %
+  \end{enumerate}
+  %
+  %% (Signature parts $\asig_d\,$ for \emph{data symbols},
+  %%  $\Ssf$ for \emph{stream function symbols};
+  %%  rules $R_d$ for data symbols,
+  %%  in $R_{\mit{sf}}$ for stream function symbols.)%\pause
+  %
+\end{definition}
+
+%------------------------------------------------------------------------
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%------------------------------------------------------------------------
+\subsection{Pure Stream Constant Specifications}
+%------------------------------------------------------------------------
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Pure Stream Constant Specifications}
+
+\begin{example}
+  %
+  \vspace*{2.5ex}
+  %
+\begin{center}
+\scalebox{1.1}{
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{|c|l|}
+  \hline
+  $\morse \red \strcns{\datsymb{0}}{\strzip{\strinv{\morse}}{\strtl{\morse}}}$ 
+  & SCS-layer\\
+  \hline
+  $\strtl{\strcns{x}{\astr}} \red \astr$ & \\[-0.0ex]
+  $\strzip{\strcns{x}{\astr}}{\bstr} \red \strcns{x}{\strzip{\bstr}{\astr}}$ 
+  & SFS-layer \\[-0.0ex]
+  $\strinv{\strcns{x}{\astr}} \red \strcns{\funap{\datsymb{i}}{x}}{\strinv{\astr}}$ & \\
+  \hline
+  $\funap{\datsymb{i}}{\datsymb{0}} \red \datsymb{1} \quad\quad \funap{\datsymb{i}}{\datsymb{1}} \red \datsymb{0}$
+  & data-layer \\
+  \hline
+\end{tabular}
+               }
+\end{center}
+  %
+  \mbox{}\\[0.5ex]
+  %
+\end{example}
+ 
+\begin{flushleft}
+  \scalebox{1.1}{This is a \emph{productive} pSCS,
+                 obtaining the \emph{Thue-Morse sequence}:}\\[1.5ex]
+  \hspace*{\fill}
+  \scalebox{1.1}{
+  $
+  \morse \infred \strcns{0}{\strcns{1}{\strcns{1}\strcns{0}{
+                 \strcns{1}{\strcns{0}{\strcns{0}\strcns{1}{
+                 \strcns{1}{\strcns{0}{\strcns{0}\strcns{1}{
+                 \strcns{0}{\strcns{1}{\strcns{1}\strcns{0}{
+                   \ldots}}}}}}}}}}}}
+  $
+                  }
+\end{flushleft}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Pure Stream Constant Specifications}
+
+
+\begin{example}
+  %
+  \vspace*{2.5ex}
+  %
+\begin{center}
+\scalebox{1.1}{
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|c|l|}
+  \hline
+  $\joerg 
+      = \strcns{\datsymb{0}}{\strcns{\datsymb{1}}{\strev{\joerg}}}$
+  & SCS-layer\\
+  \hline
+  $\strev{\strcns{x}{\astr}} \red \strcns{x}{\strod{\astr}}$ & \\[-0.0ex]
+  $\strod{\strcns{x}{\astr}} \red \strev{\astr} $ 
+  & SFS-layer\\[-0.0ex]
+  \hline
+  \phantom{
+    $\funap{\datsymb{i}}{\datsymb{0}} \red \datsymb{1}\quad\quad \funap{\datsymb{i}}{\datsymb{1}} \red \datsymb{0}$
+          }
+  & data-layer \\
+  \hline
+\end{tabular}
+               }
+\end{center}
+  %
+  \mbox{}\\[0.5ex]
+  %
+\end{example}
+
+\vspace*{1ex}
+%
+\begin{flushleft}
+  \scalebox{1.25}{This pSCS is \emph{not productive}: \mbox{}
+  $
+  \joerg \infred \strcns{0}{\strcns{1}{\strcns{0}\strcns{0}{
+                                           \sstrev^{\omega}}}}
+  $
+                  }
+\end{flushleft}
+ 
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{$\joerg %\red \strcns{0}{\strcns{1}{\strev{\strcJ}}}
+                      \infred 
+                       \strcns{0}{\strcns{1}{\strcns{0}\strcns{0}{
+                                  \sstrev^{\omega}}}}$}
+  \vspace*{-3.75ex}
+  %
+  \begin{align*}
+    %
+    %\uncover<1->{
+    \strcJ  
+      & \red 
+        \strcns{0}{\strcns{1}{\strev{\strcJ}}}  
+    %             }
+        %
+                                                                  \\[0.2ex]
+        %
+    %\uncover<2->{
+    \strev{\strcJ} 
+      & \red
+        \strev{\strcns{0}{\strcns{1}{\strev{\strcJ}}}}
+                                                                    \\[-0.35ex]
+      & \red
+        \strcns{0}{\strod{\strcns{1}{\strev{\strcJ}}}}
+                                                                    \\[-0.35ex]
+      & \red
+        \strcns{0}{\strev{\strev{\strcJ}}} 
+    %             }
+        %
+                                                                  \\[0.2ex]
+        %
+    %\uncover<3->{
+    \strevsq{\strcJ} \equiv
+    \strev{\strev{\strcJ}}
+      & \mred 
+        \strev{ \strcns{0}{\strev{\strev{\strcJ}}} }
+                                                                    \\[-0.35ex]
+      & \red
+        \strcns{0}{\strod{\strevsq{\strcJ}}} 
+    %             }
+        %
+                                                                  \\[0.2ex]
+        %
+    %\uncover<4->{
+    \strod{\strevsq{\strcJ}} 
+      & \mred 
+        \strod{\strcns{0}{\strod{\strevsq{\strcJ}}}}
+                                                                    \\[-0.35ex]
+      & \red
+        \strev{\strod{\strevsq{\strcJ}}} 
+    %             }
+        %
+                                                                  \\[0.2ex]
+        %
+    %\uncover<5->{
+    \strod{\strevsq{\strcJ}}
+      & \mred
+        \strev{\strod{\strevsq{\strcJ}}}
+                                                                    \\[-0.35ex]
+      & \mred
+        \strevsq{\strod{\strevsq{\strcJ}}}
+                                                                    \\[-0.35ex]
+      & \mred \ldots
+        \mred \strevn{\strod{\strevsq{\strcJ}}} 
+        \mred \ldots
+                                                                    \\[-0.35ex]
+      & \infred 
+        \sstrevom 
+    %             }
+        %
+  \end{align*}
+
+  \vspace*{-2ex}
+  %\uncover<6->{
+  Hence: $\strcJ \infred 
+                     \strcns{0}{\strcns{1}{\strcns{0}\strcns{0}{
+                                           \sstrev^{\omega}}}}$.
+  %            } 
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+     
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Pure Stream Constant Specifications}
+
+\begin{example}
+  %
+  \vspace*{1.75ex}
+  %
+\begin{center}
+\vspace*{-0.5ex}
+\scalebox{1}{
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|c|l|}
+  \hline
+  $ \dimitri' \red \strcns{0}{\strcns{1}{\strcns{1}{
+                  \strzip{\stradd{\strtl{\dimitri'}}{\strtl{\strtl{\dimitri'}}}}
+                         {\strcon{E}} }}} $
+  & SCS-layer\\
+  $ \strcon{E} \red \strev{\strtl{\dimitri'}} $ & \\
+  \hline
+  $\strtl{\strcns{x}{\astr}} \red \astr$ & \\[-0.0ex]
+  $\strev{\strcns{x}{\astr}} \red \strcns{x}{\strod{\astr}}$ & \\[-0.0ex]
+  $\strod{\strcns{x}{\astr}} \red \strev{\astr} $ 
+  & SFS-layer\\[-0.0ex]
+  $ \stradd{ \strcns{x}{\astr} }{ \strcns{y}{\bstr} }
+         \red   \strcns{\strad{x}{y}}
+                           { \stradd{\astr}{\bstr} } $ & \\[-0.0ex]
+  $\strzip{\strcns{x}{\astr}}{\bstr} \red \strcns{x}{\strzip{\bstr}{\astr}}$
+  & \\[-0.0ex]
+  \hline
+  $ \strad{x}{0} \red   x  $ \qquad\qquad
+  $ \strad{x}{\strsucc{y}}   \red   \strsucc{\strad{x}{y}} $
+  & data-layer \\
+  \hline
+\end{tabular}
+               }
+\end{center}
+  %
+  %\mbox{}\\[-1.5ex]
+  %
+\end{example}
+ 
+\begin{flushleft}
+  \scalebox{1}{This pSCS is \emph{productive}, we obtain:}\\[1ex]
+  \hspace*{\fill}
+  \scalebox{1}{
+  $
+  \dimitri' \infred 
+      \strcns{0}{\strcns{1}{\strcns{1}\strcns{2}{\strcns{1}{
+                 \strcns{3}{\strcns{2}\strcns{3}{\strcns{3}{
+                 \strcns{4}{\strcns{3}\strcns{5}{\strcns{4}{
+                 \strcns{5}{\strcns{5}\strcns{6}{\strcns{5}{
+                 \strcns{7}{\strcns{6}\strcns{7}{\strcns{7}{\ldots}
+                 }}}}}}}}}}}}}}}
+  $
+                  }
+\end{flushleft}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Pure Stream Constant Specifications}
+
+\begin{definition}
+  %
+  A TRS 
+  $\atrs = \pair{\Sd\uplus\Ssf\uplus\Ssc\uplus\{\sstrcns\}}{\Rd\uplus \Rsf\uplus\Rsc}$ 
+  is a \magenta{pure recursive stream specification (SCS)} 
+  %% (for each of the symbols in $\asig_{\mit{sc}}$)
+  if:
+  %
+  \begin{enumerate}
+    %
+    \item  $\trssub{T}{0} \defdby \pair{\Sd\uplus\Ssf\uplus\{\sstrcns\}}{\Rd\uplus\Rsf}$  
+      is a weakly guarded SFS.%\pause
+      %% (for each of the symbols in $\Ssf$).
+      %
+    \item $ \Ssc = \{ \rootsc,\ldots,\strcon{M_n} \} $
+      set of \emph{stream constant symbols},\\
+      where $\rootsc$ is called \emph{the root of $\atrs$};\\
+      %
+      $ \Rsc = \{ \rho_{\strcon{M_i}} \where i\in\{0,1,\ldots,n\} \} $,
+      where $\rho_{\strcon{M_i}}$ 
+      the \emph{defining rule for $\strcon{M_i}$}:
+      %
+      \begin{align*}
+        %
+        \strcon{M_i} &\red \cxtap{C_i}{\strcon{M_0},\ldots,\chocolate{\strcon{M_n}}} 
+        &
+        \text{($C_i$ an $n$-ary stream context in $\trssub{T}{0}$).}
+        %
+      \end{align*}
+      %
+      %where $C_i$ an $n$-ary stream context in $\trssub{T}{0}$.
+      %
+  \end{enumerate}
+  %
+  \vspace*{-2ex}
+  We call $\Rd$, $\Rsf$, and $\Rsc$ the
+  \emph{data-}, \emph{\SFS-}, and \emph{\SCS-layer of $\atrs$}, resp..%
+  %\pause{}
+  %
+\end{definition}
+
+  
+  %% \vspace*{1ex}
+  %% Note: A pure \SCS\ is `orthogonal' 
+  %% w.r.t.\ the rules in the SFS- and SCS-layers
+  %% (no redex-pattern overlaps).
+  %
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Production of a Term. Productivity of an SCS.}
+
+
+  Let $\conat \defdby \nat\cup\{\infty\}$ the
+  \emph{coinductive natural numbers}. 
+
+
+\begin{definition}
+  %
+  Let $\atrs = \pair{\asig}{R}$ a pure \SCS. 
+  %
+  \begin{itemize}
+    %
+    \item The \magenta{production} $\chocolate{\terprd{\atrs}{\darkcyan{t}}}$
+      of a stream term $\darkcyan{t}  \in \ter{\asig}$: % is 
+       %% the supremum of the number of data elements $\darkcyan{t}$ 
+       %% can `produce':
+      %
+      \begin{equation*}
+        %
+        \chocolate{\terprd{\atrs}{\darkcyan{t} }}
+          \defdby \supremum{\{\chocolate{n} \in \nat \mid  
+          \darkcyan{t} \mred \lstcns{\adattrm_1}{\lstcns{\ldots}{\lstcns{\adattrm_{\chocolate{n}}}{t'}}}\}} 
+          \in\conat \; .
+           %
+      \end{equation*}
+      %
+      \vspace*{-1ex}
+      %
+    \item $\atrs$ is called \magenta{productive} if
+      $\terprd{\atrs}{\rootsc} = \infty$.
+      %
+  \end{itemize}
+  %
+\end{definition}\pause{}
+
+
+\vspace*{1ex}
+%
+\begin{proposition}
+  %
+  A pure \SCS~$\atrs$ is productive if and only if\/
+  $ \rootsc \infred 
+           \lstcns{\adattrm_1}{\lstcns{\adattrm_2}
+                              {\lstcns{\adattrm_3}
+                              {\lstcns{\adattrm_4}{\ldots}}}} $.
+  %
+\end{proposition}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+\section{Modelling with Nets}
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+
+
+%------------------------------------------------------------------------
+\subsection{Pebbleflow Nets}
+%------------------------------------------------------------------------
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Modelling SCSs with Pebbleflow Nets}
+
+  \begin{itemize}%[<+->]
+    \item 
+      Kahn (1974): Networks are devices 
+      for computing least fixed points of systems of equations.
+  \end{itemize}
+
+\chocolate{Pebbleflow Nets}:
+  \begin{itemize}%[<+->]
+    \item
+      Stream elements %(+ constructors) 
+      are abstracted 
+      from in favour of `pebbles':
+      $\trnsl{\strcns{\adattrm}{\astrtrm}} = \netpeb{\trnsl{\astrtrm}}$.
+      %
+    \item
+      An SCS is modelled by a pebbleflow net:\\
+      Evaluation of an SCS is modelled by
+      the flow of pebbles in a net.
+      %
+    \item
+     A stream definition is productive if and only if 
+     the net associated to it
+     generates an infinite chain of pebbles.
+    \item 
+      Elements are: \emph{fans}, \emph{meets}, \emph{boxes} and \emph{gates},
+        \emph{sources}, \emph{wires}. 
+      %
+  \end{itemize}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frametitle{Fan}
+
+  \begin{center}
+  \fbox{\scalebox{.8}{\input{\figpath/fan.pstex_t}}}
+  \\
+  \mbox{}\\
+  \begin{itemize}  
+    \item %A \emph{fan} 
+    \emph{duplicates} an incoming pebble along its output ports
+    \item
+    explicit \emph{sharing} device
+    \item
+    enables construction of \emph{cyclic nets}
+    \item
+    used to implement \emph{recursion}, in particular \emph{feedback}
+  \end{itemize}
+  \end{center}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frametitle{Recursion/Feedback}
+
+  \begin{center}
+  \fbox{\scalebox{.7}{\input{\figpath/recfan.pstex_t}}}
+  \\
+  \mbox{}\\
+  $\netrec{\anam}{\netpeb{\anet(\avar)}}
+   \red \netpeb{\netrec{\anam}{\anet(\netpeb{\avar})}}$
+  \end{center}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frametitle{Meet}
+
+  \begin{center}
+  %
+  \fbox{\scalebox{.8}{\input{\figpath/meet.pstex_t}}}
+  \\
+  \mbox{}\\
+  \mbox{}\\
+  $\trmmeet{\trmpeb{\iatrm{1}}}{\trmpeb{\iatrm{2}}} 
+   \red \trmpeb{\trmmeet{\iatrm{1}}{\iatrm{2}}}$
+   %
+  \end{center}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frametitle{Box}
+
+  \begin{center}
+    %
+    \newcommand{\ah}{\iosqcns{\ioout}{\aiosq}}
+    \fbox{\scalebox{.85}{\input{\figpath/box1.pstex_t}}} 
+    %
+    \hspace*{6em}
+    %
+    \renewcommand{\ah}{\iosqcns{\ioin}{\aiosq}}
+    \fbox{\scalebox{.85}{\input{\figpath/box2.pstex_t}}} 
+    \\
+    \mbox{}\\
+    \mbox{}\\
+    %
+    $\trmbox{\iosqcns{\ioout}{\aiosq}}{\atrm} \red \trmpeb{\trmbox{\aiosq}{\atrm}}$
+    %
+    \hspace*{4.75em}
+    %
+    $\trmbox{\iosqcns{\ioin}{\aiosq}}{\trmpeb{\atrm}} \red \trmbox{\aiosq}{\atrm}$
+    %
+  \end{center}
+
+
+  \begin{itemize}
+    \item
+      $\ioout$ : a ready state for an output pebble
+    \item
+      $\ioin$ : a requirement for an input pebble
+    \item
+      $\aiosq$ : an infinite sequence over $\io$
+  \end{itemize}
+
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{\ioseqs}
+
+\begin{itemize}
+  \item
+    %boxes contain \emph{\ioseqs}:
+    %infinite sequences over $\io$
+    %that 
+    \emph{\ioseqs} contain \emph{infinitely many $\ioout$'s}:
+  %\item
+    \[
+      \iostr 
+      \defdby 
+      \{ 
+         \aiosq\in\str{\io} 
+         \where 
+         \myall{n}{\myex{m\ge n}{\,\strnth{\aiosq}{m} = \ioout}} 
+      \}
+    \]
+  \vspace*{-2.5ex}
+  \item
+    $\aiosq\in\iosq$ is \emph{rational}
+    if there exist $\alst,\clst \in \iolst$ such that 
+    $\aiosq = \alst \lstcyc{\clst} = \alst\clst\clst\clst\ldots$
+    ($\clst$ non-empty) 
+  \vspace{.75ex}
+  \item
+    \ioseqs\ model \emph{quantitative behaviour} of
+    stream functions
+  \end{itemize}
+
+%% 
+%% \begin{definition}\label{def:iosq}
+%%   The set \chocolate{$\iostr$} of \magenta{\ioseqs}
+%%   is the set of 
+%%   infinite sequences over the alphabet~$\io$
+%%   that contain an infinite number of~$\ioout$'s:
+%%   %
+%%   \begin{align*}
+%%     \chocolate{\iostr} 
+%%     &\defdby 
+%%     \{ 
+%%       \aiosq\in\str{\io} 
+%%       \where \forall{n}{\exists{m}{ \;
+%%                          \funap{\aiosq}{n+m} = \ioout}} 
+%%     \}
+%%   \end{align*}
+%% 
+%%   An \ioseq~$\aiosq\in\iosq$ is called \magenta{rational}
+%%   if there exist lists $\alst,\clst \in \iolst$ such that
+%%   $\aiosq = \alst \lstcyc{\clst}$, 
+%%   %% %
+%%   %% \begin{itemize}
+%%   %%   %
+%%   %%   \item $\clst$ is not the empty list, and
+%%   %%     %
+%%   %%   \item $\lstcyc{\clst}$ denotes the infinite sequence
+%%   %%     $\clst\clst\clst\ldots$.
+%%   %%     %
+%%   %% \end{itemize}
+%%   %
+%%   where $\clst$ is not empty.\\
+%%   % and denotes the infinite sequence
+%%   % $\clst\clst\clst\ldots$.
+%%   The pair $\pair{\alst}{\clst}$
+%%   is called a \emph{rational representation} of $\aiosq$.\\
+%%   %%
+%%   %% $\chocolate{\iosqrat}\subseteq\chocolate{\iosq}$
+%%   %% we denote the set of \magenta{rational \ioseqs}.
+%%   %
+%%   And we define: 
+%%   %
+%%   \begin{align*}
+%%     %
+%%     \chocolate{\iosqrat}
+%%       \defdby
+%%      \{ 
+%%        \aiosq\in\chocolate{\iosq}
+%%      \where
+%%        \text{$\aiosq$ is rational}
+%%      \} \; . 
+%%      %
+%%   \end{align*}
+%%   %
+%% \end{definition}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frametitle{Gates}
+
+  \begin{center}
+  %
+  \fbox{\scalebox{0.8}{\input{\figpath/gate.pstex_t}}}
+  \\
+  \mbox{}\\
+  \mbox{}\\
+  A gate for modelling $\arfs$-ary stream functions.
+  \\
+  \mbox{}\\
+  \mbox{}\\
+  $\funap{\strmmeet}{\trmbox{\aiosq_1}{\cxthol_1}, 
+                     \ldots, \trmbox{\aiosq_{\arfs}}{\cxthol_{\arfs}}}$
+  %
+  \end{center}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Source}
+
+  \begin{center}
+  \newcommand{\ah}{\conatsuc{k}}
+  \fbox{\scalebox{.8}{\input{\figpath/source.pstex_t}}}
+  \\
+  \mbox{}\\
+  $\netsrc{\conatsuc{k}} \red \netpeb{\netsrc{k}}$
+  \end{center}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Term Representations of Nets}
+
+  \begin{definition}
+    %
+    Let $\nam$ be a set of variables.\\[0.5ex]
+  
+    The set $\trm$ of \magenta{terms for pebbleflow nets}
+    is generated by: 
+    \[
+      %\trm \ni 
+      \atrm
+      \BNFis
+      \trmsrc{k}
+      \BNFor
+      \avar
+      \BNFor
+      \trmpeb{\atrm}
+      \BNFor
+      \trmbox{\aiosq}{\atrm}
+      \BNFor
+      \trmrec{\anam}{\atrm}
+      \BNFor
+      \trmmeet{\atrm}{\atrm}
+    \]
+    where $\anam\in\nam$, $\aiosq\in\iosq$,
+    and $k \in \conat \defdby \nat \cup \{\conattop\}$.
+    %
+  \end{definition}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%------------------------------------------------------------------------
+\subsection{A Rewrite System for Pebbleflow. Ariya's Tool.}
+%------------------------------------------------------------------------
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Pebbleflow}
+
+\setcounter{equation}{0}
+\renewcommand{\theequation}{$\pebrul${\arabic{equation}}}
+%
+\begin{definition}
+  %
+  The \emph{pebbleflow rewrite relation \chocolate{$\spebred$}}
+  is defined as:
+  %
+  \begin{align*}
+    %
+    \trmmeet{\trmpeb{\atrm_1}}{\trmpeb{\atrm_2}}
+    &\red \trmpeb{\trmmeet{\atrm_1}{\atrm_2}} 
+      %% \label{def:pebred:rule:meet}
+    \\
+    \trmrec{\anam}{\trmpeb{\atrm(\avar)}}
+    &\red 
+    \trmpeb{\trmrec{\anam}{\atrm(\trmpeb{\trmvar{\anam}})}}
+      %% \label{def:pebred:rule:feedback}
+    \\
+    \trmbox{(\iosqcns{\ioout}{\aiosq})}{\atrm}
+    &\red \trmpeb{\trmbox{\aiosq}{\atrm}} 
+      %% \label{def:pebred:rule:boxP}
+    \\
+    \trmbox{(\iosqcns{\ioin}{\aiosq})}{\trmpeb{\atrm}}
+    &\red \trmbox{\aiosq}{\atrm}
+      %% \label{def:pebred:rule:boxM}
+    \\
+    \trmsrc{\conatsuc{{k}}}
+    &\red
+    \trmpeb{\trmsrc{{k}}}
+      %% \label{def:pebred:rule:source}
+  \end{align*}
+  %
+\end{definition}
+
+
+%\chocolate{$\spebred$} is an orthogonal CRS, and hence:
+\vspace*{0.75ex}
+%
+\begin{theorem}
+  %
+  The rewrite relation \chocolate{$\spebred$} is confluent.
+  %
+\end{theorem}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Pebbleflow Tool: Watching Streams Grow}
+
+  \vspace*{0.5ex}
+  %
+  \begin{itemize}
+    %
+    \item  \emph{Net visualization tool} (Java applet) 
+      by \href{http://www.few.vu.nl/~ariya/}{Ariya Isihara}\\[0.75ex]
+      %
+      click\hspace*{1pt}\&\hspace*{1pt}play:
+      \href{http://infinity.few.vu.nl/productivity}%
+           {\emph{\tt http://infinity.few.vu.nl/productivity}} 
+      %
+  \end{itemize}
+
+
+    %\vspace*{0.5ex}
+    %
+    \begin{align*}
+      %
+      \morse 
+      &= \strcns{\datsymb{0}}{\strzip{\strinv{\morse}}{\strtl{\morse}}}
+      \\
+      \href{http://infinity.few.vu.nl/productivity/pf/index.php?load=nets/morse.net.gz}{\trnsl{\morse}}
+           %\urlprefix/pf/morse_alternative.html
+      &= 
+      \netrec{\anam}{\netpeb{\netmeet
+        {\netbox{\ios{}{-++}}{\netbox{\ios{}{-+}}{\netvar{\anam}}}}
+        {\netbox{\ios{}{+-+}}{\netbox{\ios{-}{-+}}{\netvar{\anam}}}}
+      }}
+      \\[2.5ex]
+      %
+      \joerg 
+      &= \strcns{\datsymb{0}}{\strcns{\datsymb{1}}{\strev{\joerg}}}
+      \\
+      \href{http://infinity.few.vu.nl/productivity/pf/index.php?load=nets/morse.net.gz}{\trnsl{\joerg}}
+        &= 
+        \netrec{\anam}{\netpeb{\netpeb{
+          \netbox{\ios{}{-+-}}{\netvar{\anam}}}
+        }}
+      \\[2.5ex]
+      %
+      \dimitri 
+        &= \strcns{\datsymb{0}}{\strcns{\datsymb{1}}{\strcns{\datsymb{0}}{
+                      \strzip{\stradd{\strtl{\dimitri}}{\strtl{\strtl{\dimitri}}}}
+                             {\strev{\strtl{\dimitri}}} }}}
+      \\
+      \href{http://infinity.few.vu.nl/productivity/pf/index.php?load=nets/D.net.gz}{\trnsl{\dimitri}}
+        &= 
+        \trmrec{D}{
+          \trmpeb{\trmpeb{\trmpeb{
+            \bfunap{\trnsl{\sstrzip}}{
+              \bfunap{\trnsl{\sstradd}}{\funap{\trnsl{\sstrtl}}{D}}{\funap{\trnsl{\sstrtl}}{\funap{\trnsl{\sstrtl}}{D}}}}{
+              \funap{\trnsl{\sstrev}}{\funap{\trnsl{\sstrtl}}{D}}
+            }
+          }}}}
+      %
+    \end{align*}
+    
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Production of a Net}
+
+\renewcommand{\strmbhv}{\chocolate{\pi}}
+%
+\begin{definition}
+  %
+  The \emph{production} $\chocolate{\netprd{\darkcyan{\atrm}}}$ 
+  of a net $\darkcyan{\atrm}\in\trm$:
+   % is the supremum of the number of pebbles the net can `produce':
+  \[
+    \chocolate{\netbhv{\darkcyan{\atrm}}} 
+      \defdby 
+    \supremum{\{ n\in\nat \mid 
+                 \darkcyan{\atrm} 
+                 \mathrel{\chocolate{\mpebred}} \trmpebn{n}{\atrm'}\}}\:\text{.}
+  \]
+  %
+\end{definition}
+%
+\renewcommand{\strmbhv}{{\pi}}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%------------------------------------------------------------------------
+\subsection{Translating Pure Stream Specifications}
+%------------------------------------------------------------------------
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Translation of Unary Stream Functions into I/O-Seq's}
+
+
+\begin{example}
+
+  \begin{align*}
+    \strtl{\strcns{x}{\astr}} &= \astr \\
+    \strev{\strcns{x}{\astr}} &= \strcns{x}{\strod{\astr}} \\
+    \strod{\strcns{x}{\astr}} &= \strev{\astr} \\
+      \strdup{\strcns{x}{\astr}} 
+      &= \strcns{x}{\strcns{x}{\strdup{\astr}}}
+  \end{align*}
+
+  \vspace*{-4.5ex}
+  %
+  \begin{align*}
+    \trnsli{\sstrtl}{1}
+    & = \iosqcns{\ioin}{\iaiosq{\msf{id}}}
+    &
+    \trnsli{\sstrtl}{1}
+    & = \iosqcns{\ioin}{\iosqcyc{\iosqcns{\ioin}{\iosqcns{\ioout}{\nix}}}}
+    \\
+    \trnsli{\sstrev}{1}
+    & = \iosqcns{\ioin}{\iosqcns{\ioout}{\trnsli{\sstrod}{1}}}
+    &
+    \trnsli{\sstrev}{1}
+    & = \iosqcyc{\iosqcns{\ioin}{\iosqcns{\ioout}{\iosqcns{\ioin}{\nix}}}}
+    \\
+    \trnsli{\sstrod}{1}
+    & = \iosqcns{\ioin}{\trnsli{\sstrev}{1}}
+    &
+    \trnsli{\sstrod}{1}
+    & = \iosqcyc{\iosqcns{\ioin}{\iosqcns{\ioin}{\iosqcns{\ioout}{\nix}}}}
+    \\ 
+    \trnsli{\sstrdup}{1}
+    & = \iosqcns{\ioin}{\iosqcns{\ioout}{\iosqcns{\ioout}\trnsli{\sstrdup}{1}}}
+    &
+    \trnsli{\sstrdup}{1}
+    & = \iosqcyc{\iosqcns{\ioin}{\iosqcns{\ioout}{\iosqcns{\ioout}{\nix}}}}
+  \end{align*}
+
+\end{example}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Translation of Stream Functions into Gates}
+
+ \begin{example}
+  %The definition of $\sstrzip$ :
+  \[
+    \strzip{\strcns{x}{\astr}}{\bstr}
+    = \strcns{x}{\strzip{\bstr}{\astr}}
+  \]
+  %giving rise to the dependency cycle:
+  %\[
+  %  \strzip{\strcns{x}{\astr}}{\strcns{y}{\bstr}}
+  %  \red
+  %  \strcns{x}{\strzip{\strcns{y}{\bstr}}{\astr}}
+  %  \red
+  %  \strcns{x}{\strcns{y}{\strzip{\astr}{\bstr}}}
+  %\]
+  %is translated as follows:
+  %\[
+  %  \bfunap{\trnsl{\sstrzip}}{\ianet{1}}{\ianet{2}}
+  %  = 
+  %  \netmeet
+  %    {\netbox{\trnsli{\sstrzip}{1}}{\ianet{1}}}
+  %    {\netbox{\trnsli{\sstrzip}{2}}{\ianet{1}}}
+  %\]
+  %where:
+  %\vspace{-2ex}
+  \[
+   \trnsl{\sstrzip}
+   = \netmeetn{2}{
+       \netbox{\trnsli{\sstrzip}{1}}{\cxthol_1},
+       \netbox{\trnsli{\sstrzip}{2}}{\cxthol_2}
+     }\:,
+  \]
+  where:
+  \begin{align*}
+    \trnsli{\sstrzip}{1}
+    &= \iosqcns{\ioin}{\iosqcns{\ioout}{\trnsli{\sstrzip}{2}}}
+    &
+    \trnsli{\sstrzip}{1}
+    &= \iosqcyc{\iosqcns{\ioin}{\iosqcns{\ioout}{\iosqcns{\ioout}{\nix}}}}
+    \\
+    \trnsli{\sstrzip}{2}
+    &= \iosqcns{\ioout}{\trnsli{\sstrzip}{1}}
+    &
+    \trnsli{\sstrzip}{2}
+    &= \iosqcyc{\iosqcns{\ioout}{\iosqcns{\ioin}{\iosqcns{\ioout}{\nix}}}}
+  \end{align*}
+
+
+
+
+
+\end{example}
+  
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Translation of Stream Constants into Nets}
+
+\vspace*{-0.5ex}
+%
+\begin{example}
+  %
+  \newcommand{\fusctl}{$\trnsli{\sstrtl}{1}$}
+  \newcommand{\fusczp}{$\trnsl{\sstrzip}$}
+  \newcommand{\fusczpa}{$\trnsli{\sstrzip}{1}$}
+  \newcommand{\fusczpb}{$\trnsli{\sstrzip}{2}$}
+  \newcommand{\fuscad}{$\trnsl{\sstradd}$}
+  \newcommand{\fuscada}{$\trnsli{\sstradd}{1}$}
+  \newcommand{\fuscadb}{$\trnsli{\sstradd}{2}$}
+  \newcommand{\fuscev}{$\trnsli{\sstrev}{1}$}
+  %
+  \begin{center}
+    %
+    \vspace*{-2.5ex}
+    \[
+    \dimitri \red \strcns{0}{\strcns{1}{\strcns{0}{
+                    \strzip{\stradd{\strtl{\dimitri}}{\strtl{\strtl{\dimitri}}}}
+                           {\strev{\strtl{\dimitri}}} }}} 
+    \] 
+  %
+  \fbox{\scalebox{.5}{\input{\figpath/fusc.pstex_t}}}
+  %
+  \[
+  \href{http://infinity.few.vu.nl/productivity/pf/index.php?load=nets/D.net.gz}%
+    {
+    \trnsl{\dimitri}
+    }
+    =
+    \trmrec{D}{
+      \trmpeb{\trmpeb{\trmpeb{
+        \bfunap{\trnsl{\sstrzip}}{
+          \bfunap{\trnsl{\sstradd}}{\funap{\trnsl{\sstrtl}}{D}}{\funap{\trnsl{\sstrtl}}{\funap{\trnsl{\sstrtl}}{D}}}}{
+          \funap{\trnsl{\sstrev}}{\funap{\trnsl{\sstrtl}}{D}}
+        }
+      }}}
+               }\vspace*{-2ex}
+\]
+  \end{center}
+  %
+\end{example}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Translation of Stream Constants into Nets}
+
+\begin{definition}\label{def:trnsl:nets}
+  %
+  Let $\atrs = \pair{\Sd \uplus \Ssf \uplus \Ssc \uplus \{\sstrcns\}}{\Rd \uplus \Rsf \uplus \Rsc}$
+  be a pure \SCS.\\
+  For each $\astrcon\in\Ssc$ with rule 
+  $\rho_{\msfm} \equiv {\astrcon \red \mit{rhs}_{\msfm}}$
+  the translation $\trnsl{\astrcon} \defdby \trnsli{\astrcon}{\setemp}$ of $\astrcon$ 
+  into a rational pebbleflow net is recursively def.\ by:
+  %
+  \begin{align*}
+    \trnsli{\astrcon}{\alst} 
+    &=
+      \begin{cases}
+      \trmrec{M}{\trnsli{\mit{rhs}_{\msfm}}{\setunion{\alst}{\{\astrcon\}}}} 
+      &\text{if $\astrcon\not\in\alst$}
+      \\
+      M 
+      &\text{if $\astrcon\in\alst$}
+      \end{cases}
+    \\
+    \trnsli{\strcns{t}{u}}{\alst} 
+    &= \trmpeb{\trnsli{u}{\alst}}
+    \\
+    \trnsli{
+      \funap{\astrfun}{u_1,\ldots,u_{\arfs},t_1,\ldots,t_{\arfd}}}{
+      \alst
+    } 
+    &=
+    \funap{
+      \trnsl{\astrfun}}{
+      \trnsli{u_1}{\alst},\ldots,\trnsli{u_{\arfs}}{\alst}
+    }
+  \end{align*}
+  %
+  where $\alst$ denotes a set of stream constant symbols.
+  %
+\end{definition}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%------------------------------------------------------------------------
+\subsection{Preservation of Production}
+%------------------------------------------------------------------------
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frametitle{Translation is Production Preserving}
+
+\begin{theorem}
+  %
+  Let $ \atrs $ be a pure \SCS.
+  Then it holds: $\netprd{\trnsl{\rootsc}} = \terprd{\atrs}{\rootsc}$.
+  %
+\end{theorem}\pause{}
+
+\begin{proof}[General Idea]
+  %
+  \begin{itemize}
+    %
+    \item Going back and forth between rewrite sequences
+      %
+      \begin{center}
+        $
+        \trnsl{\rootsc} \mpebred \netpebn{n}{\anet}
+        $
+      \end{center}
+      %
+      on the pebbleflow net translation of $\rootsc$
+      that produce $n$ pebbles, 
+      and rewrite sequences 
+      \begin{center}
+        $
+        \rootsc \mred_{\atrs} 
+           \strcns{t_1}{\strcns{\ldots}{\strcns{t_n}{u}}}
+        $
+      \end{center}
+      %
+      in $\atrs$ that produce a prefix of $n$
+      stream constructor.\pause{}
+      %
+    \item For this purpose establish a 
+      \emph{bisimulation-like correspondence}
+      between a $\mu$-term representations of the
+      \SCS\ and the corresponding pebbleflow net
+      using \emph{tracker symbols}.  
+      %
+  \end{itemize}
+  \renewcommand{\qed}{}
+  %
+\end{proof}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frametitle{Preservation of Production (Idea)}
+
+  
+  \begin{flushleft}
+    %
+    \parbox[c]{100pt}{
+      \scalebox{0.4}{
+        \input{\figpathlocal/J_pfprod_1.pdf_t}
+                      }
+                       }
+     %
+     \hspace*{14ex}
+     %
+     \parbox[c]{100pt}{
+       \scalebox{0.4}{
+       \input{\figpathlocal/J_tprod_1.pdf_t}
+                      }
+                       }
+      %
+  \end{flushleft}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frametitle{Preservation of Production (Idea)}
+
+  
+  \begin{flushleft}
+    %
+    \parbox[c]{100pt}{
+      \scalebox{0.4}{
+        \input{\figpathlocal/J_pfprod_15.pdf_t}
+                      }
+                       }
+     %
+     \hspace*{14ex}
+     %
+     \parbox[c]{100pt}{
+       \scalebox{0.35}{
+       \input{\figpathlocal/J_tprod_15.pdf_t}
+                      }
+                       }
+      %
+  \end{flushleft}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frametitle{Preservation of Production (Idea)}
+
+  
+  \begin{flushleft}
+    %
+    \parbox[c]{100pt}{
+      \scalebox{0.4}{
+        \input{\figpathlocal/J_pfprod_2.pdf_t}
+                      }
+                       }
+     %
+     \hspace*{14ex}
+     %
+     \parbox[c]{100pt}{
+       \scalebox{0.35}{
+       \input{\figpathlocal/J_tprod_2.pdf_t}
+                      }
+                       }
+      %
+  \end{flushleft}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frametitle{Preservation of Production (Idea)}
+
+  \begin{flushleft}
+    %
+    \parbox[c]{100pt}{
+      \scalebox{0.4}{
+        \input{\figpathlocal/J_pfprod_3.pdf_t}
+                      }
+                       }
+     %
+     \hspace*{12ex}
+     %
+     \parbox[c]{100pt}{
+       \scalebox{0.325}{
+       \input{\figpathlocal/J_tprod_3.pdf_t}
+                      }
+                       }
+      %
+  \end{flushleft}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frametitle{Preservation of Production (Idea)}
+  
+  \begin{flushleft}
+    %
+    \parbox[c]{100pt}{
+      \scalebox{0.4}{
+        \input{\figpathlocal/J_pfprod_4.pdf_t}
+                      }
+                       }
+     %
+     \hspace*{12ex}
+     %
+     \parbox[c]{100pt}{
+       \scalebox{0.325}{
+       \input{\figpathlocal/J_tprod_4.pdf_t}
+                      }
+                       }
+      %
+  \end{flushleft}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+\section{Deciding Productivity}
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+
+
+%------------------------------------------------------------------------
+\subsection{Composition and Fixed Point}
+%------------------------------------------------------------------------
+
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Production Function}
+
+\renewcommand{\ssiosqbhv}{\chocolate{\beta}}
+    %
+    \newcommand{\bsgn}{$\iosqbhv{\aiosq}{n}$}
+    \newcommand{\exBa}{\iosqcns{\ioout}{\iosqcns{\ioout}{\nix}}}
+    \newcommand{\exBc}{\iosqcyc{\iosqcns{\ioin}{\iosqcns{\ioout}{\iosqcns{\ioin}{\iosqcns{\ioout}{\iosqcns{\ioin}{\nix}}}}}}}
+    \newcommand{\exB}{\exBa \exBc}
+    \newcommand{\aha}{\Big{\}}\darkcyan{n}}
+    \newcommand{\ahb}{\chocolate{\beta}_{\sigma}(\darkcyan{n})}
+    %
+    %
+    \begin{center}%{lr}
+      %
+      \fbox{\scalebox{0.8}{\input{\figpath/genbox.pstex_t}}}
+      %
+      \hspace{6em}
+      %
+      \fbox{\scalebox{0.8}{\input{\figpath/zz.pstex_t}}}
+      %
+    \end{center}
+    %
+    \vspace*{0.25ex}
+    %
+    \begin{flushleft}
+      %
+      \vspace*{-1ex}
+      $\trmbox{\aiosq}{\trmpebn{\darkcyan{n}}{\atrm}} 
+        \red \trmpebn{\chocolate{\beta}_{\aiosq}(\darkcyan{n})}{\trmbox{\aiosq'}{\atrm}}$
+      %
+      \hspace*{2.2em}
+      %
+      \parbox[t]{127.5pt}{\centering
+        Graph of the\\[0.2ex] 
+          \magenta{production function} $\siosqbhv{\aiosq}$\\[0.2ex]
+        for $\aiosq = \exB$.}
+      %
+    \end{flushleft}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Box Composition}
+
+  \begin{equation*}
+   \raisebox{-4ex}{\scalebox{0.75}{\input{\figpath/comp_fct.pstex_t}}}
+   \hspace{2em}
+   \begin{aligned}[c]
+    \iosqcmp{(\iosqcns{\ioout}{\iaiosq{1}})}{\iaiosq{2}}
+    &= \iosqcns{\ioout}{(\iosqcmp{\iaiosq{1}}{\iaiosq{2}})}
+    \\     
+    \iosqcmp{(\iosqcns{\ioin}{\iaiosq{1}})}{(\iosqcns{\ioout}{\iaiosq{2}})}
+    &= \iosqcmp{\iaiosq{1}}{\iaiosq{2}}
+    \\
+    \iosqcmp{(\iosqcns{\ioin}{\iaiosq{1}})}{(\iosqcns{\ioin}{\iaiosq{2}})} 
+    &= \iosqcns{\ioin}{(\iosqcmp{(\iosqcns{\ioin}{\iaiosq{1}})}{\iaiosq{2}})}
+  \end{aligned}
+  \end{equation*}
+
+\vspace*{1.5ex}
+%
+\begin{proposition}
+  %
+\begin{itemize}%[<+->]
+  \item $\siosqbhv{\iosqcmp{\iaiosq{1}}{\iaiosq{2}}} 
+    = \siosqbhv{\iaiosq{1}} \circ \siosqbhv{\iaiosq{2}}$
+  \item associative
+  \item preserves rationality %
+  %$\iosqcmp{\iaiosq{1}}{\iaiosq{2}}\in\iosqrat$ 
+  %whenever $\iaiosq{1},\iaiosq{2}\in\iosqrat$.
+  \item 
+    rat.~rep.\ of $\iosqcmp{\iaiosq{1}}{\iaiosq{2}}$
+    can be computed
+    from rat.~rep.'s of $\iaiosq{1}$ and $\iaiosq{2}$
+\end{itemize}
+  %
+\end{proposition}
+
+
+%% \vspace*{-0.5ex}
+%% \renewcommand{\siosqcmp}{\chocolate{\boldsymbol{\cdot}}}
+%% %
+%% \begin{definition}\label{def:iosqcmp}\normalfont
+%%   \emph{Composition} 
+%%    $ \siosqcmp : \iosq\times\iosq \to \iosq $,
+%%    $ \pair{\aiosq}{\biosq} \mapsto \iosqcmp{\aiosq}{\biosq} $  
+%%   \emph{of \ioseqs}\\
+%%   is corecursively defined by:  
+%%   % 
+%%   \begin{align*}
+%%     \iosqcmp{(\iosqcns{\ioout}{\aiosq})}{\biosq}
+%%     &= \iosqcns{\ioout}{(\iosqcmp{\aiosq}{\biosq})}
+%%     \\     
+%%     \iosqcmp{(\iosqcns{\ioin}{\aiosq})}{(\iosqcns{\ioout}{\biosq})}
+%%     &= \iosqcmp{\aiosq}{\biosq}
+%%     \\
+%%     \iosqcmp{(\iosqcns{\ioin}{\aiosq})}{(\iosqcns{\ioin}{\biosq})} 
+%%     &= \iosqcns{\ioin}{(\iosqcmp{(\iosqcns{\ioin}{\aiosq})}{\biosq})}
+%%   \end{align*}
+%%   %
+%% \end{definition}
+%% 
+%% \pause
+%% 
+%% \vspace*{-0.5ex}
+%% %
+%% \begin{lemma}
+%% \begin{itemize}[<+->]
+%%     %
+%%   \item $\siosqbhv{\iosqcmp{\aiosq}{\biosq}} = \siosqbhv{\aiosq} \circ \siosqbhv{\biosq}$.
+%%     %
+%%   \item Composition is associative.
+%%     %
+%%   \item Composition preserves rationality: $\iosqcmp{\aiosq}{\biosq} \in\iosqrat$ if $\aiosq,\biosq\in\iosqrat$.
+%%     %
+%%   \item On rational representations of rational \ioseqs,
+%%     composition can be computed effectively.
+%%     %% A rational representation of the composition of sequences
+%%     %% with rational representations can be computed in finite time.
+%%     %
+%% \end{itemize}
+%% \end{lemma}
+%% 
+%% \renewcommand{\siosqcmp}{{\cdot}}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Least Fixed Point of Box Composition}
+
+
+  \vspace*{-0.5ex}
+  %
+  \renewcommand{\siosqfix}{\chocolate{\msf{fix}}}
+    %
+    \newcommand{\bsgn}{$\iosqbhv{\aiosq}{n}$}
+    \newcommand{\exBa}{\iosqcns{\ioout}{\iosqcns{\ioout}{\nix}}}
+    \newcommand{\exBc}{\iosqcyc{\iosqcns{\ioin}{\iosqcns{\ioout}{\iosqcns{\ioin}{\iosqcns{\ioout}{\iosqcns{\ioin}{\nix}}}}}}}
+    \newcommand{\exB}{\exBa \exBc}
+  \begin{center}
+    %\scalebox{0.65}
+    \fbox{\hspace{.5em}\input{\figpath/zz.pstex_t}\hspace{-.5em}}
+    \\
+    \mbox{}\\
+    Graph of the production function $\siosqbhv{\aiosq}$
+    for $\aiosq = \exB$ \\
+    with least fixed point $\iosqfix{\aiosq} = 6$ 
+    as indicated.
+  \end{center}\pause{}
+
+\vspace*{-0.75ex}
+%
+\begin{lemma}
+  %
+  \begin{itemize}
+    %
+    \item Given a rational representation $\pair{\alst}{\clst}$ 
+      of $\aiosq\in\iosqrat$,
+      its least fixed point\/ $\iosqfix{\aiosq}$
+      can be computed in finite time.
+      %
+  \end{itemize}
+  %
+\end{lemma}
+  %
+  \renewcommand{\siosqfix}{\msf{fix}}
+
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%------------------------------------------------------------------------
+\subsection{Net Reduction}
+%------------------------------------------------------------------------
+ 
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{From Nets to Sources}
+
+\renewcommand{\scominm}{\chocolate{\msf{min}}}
+\renewcommand{\ssiosqbhv}{\chocolate{\beta}}
+\renewcommand{\siosqfix}{\chocolate{\msf{fix}}}
+  %
+  \vspace*{-0.5ex}
+  %
+\begin{definition}\label{def:coltrs}\normalfont
+  %
+\setcounter{equation}{0} 
+\renewcommand{\theequation}{$\colrul${\arabic{equation}}}
+  %
+  \emph{Net reduction relation \magenta{$\scolred$}
+        on closed pebbleflow nets}:
+  %
+  \vspace*{-0.5ex}
+  %
+  \begin{align*}
+    \trmpeb{\atrm}
+    &\red
+    \trmbox{(\iosqcns{\ioout}{\iosqcyc{\iosqcns{\ioin}{\iosqcns{\ioout}{\nix}}}})}{\atrm}
+    &
+    %% \label{coltrs:peb}
+    \\[-0.1ex]
+    \trmbox{\aiosq}{\trmbox{\biosq}{\atrm}}
+    &\red
+      %% \trmbox{(\chocolate{\iosqcmp{\black{\aiosq}}{\black{\biosq}}})}{\atrm}
+    \trmbox{\aiosq\mathrel{\chocolate{\boldsymbol{\cdot}}}\biosq}{\atrm}
+    &
+    %% \label{coltrs:boxbox}
+    \\[-0.1ex]
+    \trmbox{\aiosq}{\trmmeet{\atrm_1}{\atrm_2}}
+    &\red
+    \trmmeet{\trmbox{\aiosq}{\atrm_1}}{\trmbox{\aiosq}{\atrm_2}}
+    &
+    %% \label{coltrs:boxmeet}
+    \\[-0.1ex]
+    \trmrec{\anam}{\trmmeet{\atrm_1}{\atrm_2}}
+    &\red
+    \trmmeet{\trmrec{\anam}{\atrm_1}}{\trmrec{\anam}{\atrm_2}}
+    &
+    %% \label{coltrs:recmeet}
+    \\[-0.1ex]
+    \trmrec{\anam}{\atrm}
+    &\red
+    \atrm
+    &\text{if $\anam\not\in\trmfv{\atrm}$}
+    %% \label{coltrs:recrm}
+    \\[-0.1ex]
+    \trmrec{\anam}{\trmbox{\aiosq}{\anam}}
+    &\red
+    \trmsrc{ {{\iosqfix{{\aiosq}}}}}
+    &
+    %% \label{coltrs:recbox}
+    \\[-0.1ex]
+    \trmmeet{\trmsrc{ {k_1}}}{\trmsrc{ {k_2}}}
+    &\red
+    \trmsrc{ {\cominm{k_1}{k_2}}}
+    &
+    %% \label{coltrs:meetsrc}
+    \\[-0.1ex]
+    \trmbox{\aiosq}{\trmsrc{ {k}}}
+    &\red
+    \trmsrc{ {\iosqbhv{\aiosq}{k}}}
+    &
+    %% \label{coltrs:boxsrc}
+    \\[-0.1ex]
+    \trmrec{\anam}{\trmvar{\anam}}
+    &\red
+    \trmsrc{\conatzer}
+    &
+    %% \label{coltrs:recvar}
+    %
+  \end{align*}
+  %
+  \vspace*{-0.5ex}%
+  %
+  for all $\aiosq, \biosq \in \iosq$ and $k,k_1, k_2 \in \conat$.
+  %
+\end{definition}
+%
+\renewcommand{\ssiosqbhv}{\beta}
+\renewcommand{\scominm}{\msf{min}}
+\renewcommand{\siosqfix}{\msf{fix}}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ 
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Properties of Net Reduction}
+
+\begin{theorem}
+  \begin{itemize}%[<+->]
+    %
+    \item \darkcyan{$\colred$} is production preserving:
+      \[
+        \atrm \mathrel{\darkcyan{\colred}} \atrm' 
+        \;\;\;\Longrightarrow\;\;\;
+        \netprd{\atrm} = \netprd{\atrm'} \; .
+      \]
+      %
+      \vspace*{-1ex}
+      % 
+    \item \darkcyan{$\scolred$} is confluent and terminating. 
+      %
+    \item Every closed net normalises to a source, 
+      its unique\\ \darkcyan{$\scolred$}-normal form.
+      %
+  \item For every rational net $\atrm$, the \darkcyan{$\scolred$}-normal form
+      of $\atrm$ can be computed effectively. 
+    %% 
+    %% There is an algorithm that, 
+    %% given $\atrm\in\trmrat$ and rational representations 
+    %% of all sequences $\aiosq\in\iosqrat$,
+    %% computes the $\scolred$-normal form of $\atrm$.
+    %
+  \end{itemize}
+\end{theorem}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%------------------------------------------------------------------------
+\subsection{Main Result. Examples. J\"{o}rg's Tool.}
+%------------------------------------------------------------------------
+ 
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Deciding Productivity for pure SCS{s}}
+
+\begin{theorem}
+  Productivity for pure SCSs is decidable.%\pause{}
+\end{theorem}
+
+
+\begin{proof}
+  %
+  A decision algorithm for productivity of an SCS~$\atrs$:
+  %
+  \begin{enumerate}[<+->]
+    %
+    \item  Translate $\rootsc$ to the rational net $\trnsl{\rootsc}$.
+      %
+    \item Reduce $\trnsl{\rootsc}$ to a source $\trmsrc{\darkcyan{n}}$.\\
+      % 
+      (Note that $\terbhv{\atrs}{\rootsc} 
+               = \trmbhv{\trnsl{\rootsc}} = \darkcyan{n}$.)
+      %
+    \item If $\darkcyan{n} = \darkcyan{\boldsymbol{\conattop}}$, 
+      then output: ``\alert{$\atrs$ is productive}'';\\
+      else, $\darkcyan{n}\in\nat$, 
+      output: ``\alert{$\atrs$ is not productive}, 
+      it only produces\\ \hspace*{\fill}
+      $\darkcyan{n}$ data-elements for $\rootsc$''.
+      %
+  \end{enumerate}
+  %
+\end{proof}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%------------------------------------------------------------------------
+%\subsection{Examples, and our Tools}
+%------------------------------------------------------------------------
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Net Reduction Tool: Computing Net Production}
+
+  \vspace*{0.5ex}
+  %
+  \begin{itemize}
+    %
+    \item  \emph{Translation and reduction tool} (Haskell-based)
+      by J\"{o}rg Endrullis.\\[0.5ex]
+      %
+      Use it at:
+      \href{http://infinity.few.vu.nl/productivity}
+           {\emph{\tt http://infinity.few.vu.nl/productivity}} 
+      %
+  \end{itemize}
+
+    
+  %\vspace*{-0.5ex}
+  %
+  \begin{align*}
+    %
+    \href{http://infinity.few.vu.nl/productivity/\#thuemorse_alternative}{\morse} 
+      &= \strcns{\datsymb{0}}{\strzip{\strinv{\morse}}{\strtl{\morse}}}
+    \\
+    \href{http://infinity.few.vu.nl/productivity/\#thuemorse_alternative}{\terprd{\atrs}{\morse}}
+      &= \netprd{\trnsl{\morse}} 
+       = \boldsymbol{\conattop}
+    \\[2.5ex]
+    %
+    \href{http://infinity.few.vu.nl/productivity/\#J}{\joerg} 
+      &= \strcns{\datsymb{0}}{\strcns{\datsymb{1}}{\strev{\joerg}}}
+    \\
+    \href{http://infinity.few.vu.nl/productivity/\#J}{\terprd{\atrs}{\joerg}}
+      & = \netprd{\trnsl{\joerg}}
+        = 4
+    \\[2.5ex]
+    %
+    \href{http://infinity.few.vu.nl/productivity/\#D}{\dimitri} 
+      &= \strcns{\datsymb{0}}{\strcns{\datsymb{1}}{\strcns{\datsymb{0}}{
+                    \strzip{\stradd{\strtl{\dimitri}}{\strtl{\strtl{\dimitri}}}}
+                           {\strev{\strtl{\dimitri}}} }}}
+    \\
+    \href{http://infinity.few.vu.nl/productivity/\#D}{\terprd{\atrs}{\dimitri}}
+      &= \netprd{\trnsl{\dimitri}}
+       = \boldsymbol{\conattop}
+      %
+  \end{align*}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%-----------------------------------------------------------------------
+%-----------------------------------------------------------------------
+\section{Summary and Extensions}
+%-----------------------------------------------------------------------
+%-----------------------------------------------------------------------
+
+%------------------------------------------------------------------------
+%\subsection{Conclusion and Ongoing Research}
+%------------------------------------------------------------------------
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Summary and Extensions}
+
+
+\begin{itemize}%[<+->]
+
+  \item
+  \chocolate{Previous Approaches}: 
+  \emph{sufficient conditions} for productivity,\\
+  not automatable or only for a limited subclass
+
+  \item
+  \chocolate{Our Contribution}:
+  \emph{decision algorithm} for a rich class of SCSs,\\
+     only SFS part is restricted
+
+  \item
+  \chocolate{Recent Results}:
+    %
+    \begin{itemize}
+      %
+      \item We increase the applicability of the pebbleflow method
+        by translating to nets that bound the production of 
+        SCS{s} from below and above.
+      \item
+        We obtain, for some classes of SCSs, \emph{computable sufficient
+        conditions} for productivity, and for non-productivity. 
+        %
+      \item For a class of SFSs with \emph{pattern matching on data}
+        we give a computable, data-obliviously optimal,
+        sufficient condition for productivity.
+        %
+   \end{itemize}
+   %
+\end{itemize}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Application to Larger Classes}
+
+
+  \begin{center}
+    %
+    \scalebox{.7}{\includegraphics{../../fossacs/submitted/figs/pstricks/bones}}
+    %
+  \end{center}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{{\bf PM} SCS}
+
+
+\begin{example}
+  %
+  \vspace*{2.5ex}
+  %
+\begin{center}
+\scalebox{1.1}{
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|c|l|}
+  \hline
+  $\rootsc \red 
+      \strcns{\datsymb{0}}{\strcns{\datsymb{1}}{\funap{\strfun{f}}{\rootsc}}}$
+  & SCS-layer\\
+  \hline
+  $\funap{\strfun{f}}{\strcns{\datsymb{0}}{\strcns{x}{\astr}}} \red
+     \strcns{\datsymb{1}}{\strcns{\datsymb{0}}{\strcns{x}{\funap{\strfun{f}}{\astr}}}} $ 
+  & \\[-0.0ex]
+  $\funap{\strfun{f}}{\strcns{1}{\astr}} \red
+     \strcns{\datsymb{0}}{\funap{\strfun{f}}{\astr}} $ 
+  & SFS-layer\\[-0.0ex]
+  \hline
+  \phantom{
+    $\funap{\datsymb{i}}{\datsymb{0}} \red \datsymb{1}\quad\quad \funap{\datsymb{i}}{\datsymb{1}} \red \datsymb{0}$
+          }
+  & data-layer \\
+  \hline
+\end{tabular}
+               }
+\end{center}
+  %
+  \mbox{}\\[0.5ex]
+  %
+\end{example}
+
+\vspace*{1ex}
+%
+\begin{flushleft}
+  \scalebox{1.25}{This {\bf PM} SCS is \emph{productive}}.
+\end{flushleft}
+ 
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Our Papers and Tools.}
+
+  \vspace*{0.5ex}
+  %
+  Please visit \href{http://infinity.few.vu.nl/productivity}%
+         {\emph{\tt http://infinity.few.vu.nl/productivity}}\\
+  to find: 
+  %
+  \vspace*{1.5ex}
+  %
+  \begin{itemize}
+    %
+    \item \emph{Productivity of Stream Definitions},
+      Proceedings of FCT~2007, LNCS~4637, pages~274--287, 2007;
+      %
+      \vspace*{0.75ex}
+      %
+    \item \emph{Productivity of Stream Definitions},
+      Technical Report;
+      %
+      \vspace*{0.75ex}
+      %
+    \item \emph{Sufficiently productive? Or not productive enough?},
+      submitted;
+      %
+      \vspace*{0.75ex}
+      %
+    \item and to access and use our tools. 
+      %
+  \end{itemize}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{}
+
+   \vspace*{\fill}
+   %
+   \hspace{\fill}%
+   \scalebox{1.6}{\forestgreen{\bf Thanks for your attention!}}%
+   \hspace*{\fill}\mbox{}
+   %
+   \label{lastslide}
+   %
+   \vspace*{\fill}
+
+ %% \only<7>{
+ %% \begin{center}
+ %% \large{Thank you!}
+ %% \end{center}
+ %% }
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{document}
+%    \item 
+ %     Better understanding of \emph{related work} 
+ %     (Telford--Turner, Hughes--Pareto--Sabry, Abel, Buchholz, \ldots).
+%    \item
+%      What is the \emph{exact class} of recursive stream programs 
+%      that we can decide productivity of?

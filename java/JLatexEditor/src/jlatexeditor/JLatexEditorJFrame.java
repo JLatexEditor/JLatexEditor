@@ -189,7 +189,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     JMenuItem diffMenuItem = new JMenuItem("Diff");
     diffMenuItem.setActionCommand("diff");
 	  diffMenuItem.setMnemonic('D');
-    diffMenuItem.setAccelerator(KeyStroke.getKeyStroke("control D"));
+    diffMenuItem.setAccelerator(KeyStroke.getKeyStroke("alt D"));
     diffMenuItem.addActionListener(this);
     editMenu.add(diffMenuItem);
 

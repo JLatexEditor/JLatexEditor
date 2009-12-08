@@ -1,0 +1,2159 @@
+\documentclass[10pt,handout]{beamer}
+
+\input{packages}
+\input{dosp.def}
+
+
+\mode<presentation>
+{
+  \usetheme{Berlin}  %% \usetheme{default} 
+  \setbeamercovered{transparent}
+  \usecolortheme{seahorse}
+  \usecolortheme{rose} %% \usecolortheme{crane} % (oranje)
+  \setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[triangle]
+\setbeamertemplate{sections/subsections in toc}[sections numbered]
+%\setbeamercolor{math text}{fg=black}
+}
+
+%------------------------------------------------------------------------
+
+
+%%\usepackage[german]{babel}
+% oder was auch immer
+
+\usepackage[latin1]{inputenc}
+% oder was auch immer
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+% Oder was auch immer. Zu beachten ist, das Font und Encoding passen
+% müssen. Falls T1 nicht funktioniert, kann man versuchen, die Zeile
+% mit fontenc zu löschen.
+
+
+\title{Data-Oblivious Stream Productivity}
+
+%\title[Watching Streams Grow]{\scalebox{0.99}%
+%         {\hspace*{-1.5pt}Watching \hspace*{-1.5pt}Streams \hspace*{-1.5pt}Grow: 
+%          \hspace*{-1.5pt}The \hspace*{-1.5pt}Pebbleflow \hspace*{-1.5pt}Method}}
+
+\author[Endrullis, Grabmayer, Hendriks]{
+  J\"{o}rg Endrullis         %\inst{1}
+  \and {Clemens Grabmayer}   %\inst{2}
+  \and Dimitri Hendriks      \\%\inst{1}
+}
+
+%% \institute{
+%%   Universiteit Utrecht, 
+%%   Vrije Universiteit
+%%                               \\[2ex]
+%% {\chocolate{\large NWO-Bricks Project Infinity}}  %{{ $\boldsymbol{\infty}$}}
+%%           }
+  
+%% \institute{
+%%   Department of Philosophy, \emph{Universiteit Utrecht}\\[0.5ex]
+%%   Department of Computer Science, \emph{Vrije Universiteit}\\[0.5ex]
+%%   Department of Computer Science, \emph{Radboud Universiteit}   
+%%            }
+
+\institute[PAM, CWI, May 7, 2008]{Vrije Universiteit~--~Universiteit Utrecht~--~Vrije Universiteit}
+
+\date{
+  {NWO Projects \chocolate{Infinity}
+                and \chocolate{ProvCyc}}\\[2ex]
+  \forestgreen{PAM}, \emph{CWI}\\[1ex] 
+      May 7, 2008}
+
+
+\subject{Informatik}
+% Dies wird lediglich in den PDF Informationskatalog einfügt. Kann gut
+% weggelassen werden.
+
+
+% Falls eine Logodatei namens "university-logo-filename.xxx" vorhanden
+% ist, wobei xxx ein von latex bzw. pdflatex lesbares Graphikformat
+% ist, so kann man wie folgt ein Logo einfügen:
+
+% \pgfdeclareimage[height=0.5cm]{university-logo}{university-logo-filename}
+% \logo{\pgfuseimage{university-logo}}
+
+
+%% % Folgendes sollte gelöscht werden, wenn man nicht am Anfang jedes
+%% % Unterabschnitts die Gliederung nochmal sehen möchte.
+   \AtBeginSection[]
+   {
+   \begin{frame}<beamer>
+     \frametitle{Overview}
+     \tableofcontents[currentsection] %[...,currentsubsection]
+   \end{frame}
+    }
+
+
+% Falls Aufzählungen immer schrittweise gezeigt werden sollen, kann
+% folgendes Kommando benutzt werden:
+
+%\beamerdefaultoverlayspecification{<+->}
+
+
+%----------------------------------------------------------------------------------
+
+
+\begin{comment}
+  %
+  % abstract
+  %
+  I will be reporting on joint work with Joerg Endrullis and Dimitri 
+  Hendriks: we explore the boundaries of an approach we developed in an
+  earlier collaboration with Ariya Isihara and Jan Willem Klop.
+
+  We are interested in finite specifications of infinite streams of data
+  that are based on orthogonal rewrite rules. A stream specification is 
+  called `productive' if it can be evaluated continually with a unique 
+  data stream being obtained as the limit. Whereas productivity is 
+  undecidable in general, for restricted formats computable sufficient
+  conditions can be found, and in some cases even decidability can be
+  established.
+
+  The usual analysis of the productivity problem, which we also adopt, 
+  disregards the identity of data, thus leading to approaches that we call
+  "data-oblivious". We found a method that is provably optimal among all 
+  such data-oblivious approaches. This means that in order to improve on 
+  our algorithm one has to proceed in a data-aware fashion.
+
+  For more information about our work on productivity of stream 
+  definitions, please visit http://infinity.few.vu.nl/productivity/ .
+  %
+\end{comment}
+
+%----------------------------------------------------------------
+
+\begin{document}
+
+%\renewcommand{\pause}{}
+
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\titlepage
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\setcounter{tocdepth}{1}
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Outline}
+
+\tableofcontents%[pausesections]
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+\section{Introduction}
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+
+%------------------------------------------------------------------------
+\subsection{Productivity. Previous Approaches.}
+%------------------------------------------------------------------------
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Productivity}
+
+\begin{itemize}
+  %
+  \item `Productivity' first used by \emph{Dijkstra (1980)}.
+    %
+    \vspace*{0.5ex}
+    %
+  \item Slogan: 
+    {\em For programming with infinite structures, productivity is what
+      termination is for programming with finite structures.}
+      %
+    \vspace*{0.5ex}
+    %
+  \item Productivity captures the notion of \emph{unlimited progress},
+    of `working' programs, producing defined values indefinitely. 
+    %
+\end{itemize}
+
+
+\vspace*{0.5ex}
+%
+Related questions:
+%
+\begin{itemize}
+  %
+  \item When do we accept an infinite 
+    object defined in terms of itself?
+    %
+    \vspace*{0.5ex}
+    %
+  \item When does a finite set of equations
+    \emph{constructively} define a \emph{unique} infinite object?
+    %
+\end{itemize}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Productivity of Stream Specifications}
+
+\begin{itemize}
+  %
+  \item $\str{A} \defdby \{ \astr \where \astr \funin {\nat\to A} \}$
+    the set $\str{A}$ of \emph{streams over $A$}
+    %
+  \item `$\sstrcns$'\ is the \emph{stream constructor} symbol:
+    \;\(\strcns{\datsymb{a}}{\astr}\)\;
+    denotes the result of prepending 
+    \;$\datsymb{a}\in A$\; to \;$\astr\in\str{A}$
+    %
+  \item  A recursive stream specification 
+    \[
+      \astrcon = \ldots\, {\astrcon} \,\ldots
+    \]
+    is \emph{productive} if the process of continually evaluating $\astrcon$ 
+    
+    results in an infinite \emph{constructor normal form}:
+    \[
+      \astrcon
+      \infred
+      \strcns{\datsymb{a_0}}{\strcns{\datsymb{a_1}}{\strcns{\datsymb{a_2}}{\ldots}}}
+    \]
+  % \item A stream definition is \emph{productive}
+  %  if it can be evaluated continually with a uniquely
+  %  determined stream is obtained as the limit.
+    %
+  \item Productivity is \emph{undecidable} in general
+    (in fact \emph{$\Pi^0_2$-complete}). 
+    %
+  \item But for \forestgreen{restricted formats} 
+    \emph{computable sufficient conditions}\\
+    or \emph{decidability} can be obtained.
+    %
+\end{itemize}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Examples}
+
+\begin{example}
+  \begin{align*}
+    \uncover<1,5>{
+    \strread{\strcns{x}{\astr}}
+               }
+      &
+    \uncover<1,5>{
+      = \strcns{x}{\strread{\astr}}
+                } 
+      & \\
+    \uncover<2,5>{
+    \strfread{\strcns{x}{\strcns{y}{\astr}}}
+                }
+      &
+    \uncover<2,5>{
+      = \strcns{x}{\strcns{y}{\strfread{\astr}}}
+               } 
+      & \\
+    \uncover<1,5>{
+    \strcon{fives}
+                } 
+      &
+    \uncover<1,5>{= \strcns{\datf{5}}{\strread{\strcon{fives}}}} 
+      & & 
+    \uncover<1,5>{\text{productive}} \\
+    \uncover<2,5>{
+    \strcon{fives'} 
+                }
+      & \uncover<2,5>{= \strcns{\datf{5}}{\strfread{\strcon{fives'}}}} 
+      & & \uncover<2,5>{\text{not productive}} \\
+    \uncover<3,5>{ 
+    \strzipb{\strcns{x}{\astr}}{\strcns{y}{\bstr}}
+                } 
+      & \uncover<3,5>{= \strcns{x}{\strcns{y}{\strzipb{\astr}{\bstr}}}}
+      & \\
+    \uncover<4,5>{
+    \strzipa{\strcns{x}{\astr}}{\bstr}
+               } 
+      & \uncover<4,5>{= \strcns{x}{\strzipa{\bstr}{\astr}}} 
+      & \\
+    \uncover<3,5>{
+    \strcon{sevens} 
+                }
+      & \uncover<3,5>{
+        = \strcns{\datf{7}}{\strzipb{\strcon{sevens}}{\strtl{\strcon{sevens}}}}
+                    }
+      & & \uncover<3,5>{\text{not productive}} \\ 
+    \uncover<4,5>{
+    \strcon{sevens'} 
+                }
+      &\uncover<4,5>{=
+       \strcns{\datf{7}}{\strzipa{\strcon{sevens'}}{\strtl{\strcon{sevens'}}}}
+                   }
+      & & \uncover<4,5>{\text{productive}} 
+  \end{align*}
+\end{example}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Productivity Recognition: Previous Approaches}
+
+
+\begin{itemize}
+  %
+  \item \emph{Wadge (1981)}: `cyclic sum test'
+    (\forestgreen{limited, computable criterion}).
+    %
+  \item \emph{Sijtsma (1989)}: mathematical theory of productivity
+    based on `production moduli' 
+    (\forestgreen{mathem., not directly computable criteria}).\pause{}
+    %
+  \item \emph{Coquand (1994)}: `guardedness' as a syntactic criterion
+    for productivity 
+    (\forestgreen{automatable}, but \forestgreen{restrictive criterion}).
+    %
+  \item \emph{Telford and Turner (1997)}: extend the notion of
+    guardedness by a method in the flavour of Wadge.
+    %
+  \item \emph{Hughes, Pareto, and Sabry (1996)}: introduce a type system
+    for proving productivity (\forestgreen{automatable criterion}).\pause{}
+    %
+  \item \emph{Buchholz (2004)}: type system for proving productivity,
+    two forms:
+    %
+    \vspace*{-1.5ex}
+    %
+    \begin{itemize}
+      %
+      \item using unrestricted production moduli 
+        (\forestgreen{general, not automatable});
+        %
+      \item a decidable subsystem with limited moduli
+        (\forestgreen{automable criterion}, 
+         handles all examples of Telford \&Turner).\pause{}
+        %
+    \end{itemize}
+    %
+\end{itemize}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Our First Paper: Productivity Decision}
+
+\emph{Productivity of Stream Definitions}
+(Endrullis, Grabmayer, Hendriks, Isihara, Klop), FCT'07:
+
+\vspace*{0.5ex}
+%
+\begin{itemize}
+  %
+  \item A \chocolate{decision algorithm for productivity}
+    on the large and natural class of \emph{pure stream spec's}.
+    %
+    \vspace*{0.85ex}
+    %
+  \item `Large class': The stream functions allowed 
+    in pure stream spec's contain all \emph{automatic sequences}
+    (Allouche, Shallit). 
+    %
+    \vspace*{0.85ex}
+    %
+  \item Idea behind the decision algorithm:
+    %
+    \begin{itemize}
+        %
+        \vspace*{0.25ex}
+        %
+      \item The process of evaluation of a pure stream spec can
+        be modelled by dataflow of \emph{pebbles} in a finite
+        \emph{pebbleflow net}.
+        %
+        \vspace*{0.25ex}
+        %
+      \item The production of a pebbleflow net associated with
+        a pure stream spec (amount of pebbles the net can produce
+        at its output port) can be calculated by reducing nets
+        to trivial nets.
+        %
+    \end{itemize}
+    %
+\end{itemize}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%------------------------------------------------------------------------
+\subsection{First Paper. New Results.}
+%------------------------------------------------------------------------
+
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Main New Results: Productivity Recognition/Decision}
+
+\begin{itemize}
+  %
+  \item All previous approaches use a `quantitative' analysis that
+    abstracts away from concrete values of stream elements.\\
+    We formalise this by \emph{data-oblivious rewriting}. 
+    %
+  \item We introduce the notion of \emph{data-oblivious productivity}.
+    %
+  \item We identify two syntactical classes of stream spec's:
+    \emph{flat} and (general) \emph{pure} spec's.
+    % 
+  \item For \emph{flat} stream spec's we obtain a 
+    \emph{decision method for data-oblivious productivity},
+    yielding a
+    \chocolate{computable, data-obliviously optimal criterion
+    for productivity}. 
+    %
+  \item For \emph{pure} stream spec's we obtain
+    a \chocolate{decision method for productivity}. 
+    %
+\end{itemize}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Map of Stream Specifications}  
+
+    
+\begin{center}
+  %
+  \scalebox{1.15}{ 
+    \includegraphics{figs/pstricks/pnp}
+              }
+  %
+\end{center}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+\section{Stream Specifications}
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+
+%------------------------------------------------------------------------
+\subsection{Motivating Examples}
+%------------------------------------------------------------------------
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Stream Specification}
+
+\begin{example}
+  %
+  \vspace*{0.5ex}
+  %
+\begin{center}
+\scalebox{1}{
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{r@{\hspace*{1.5ex}}cr}
+  \hline
+  &
+  $\morse \red \strcns{\datsymb{0}}{\strzip{\strinv{\morse}}{\strtl{\morse}}}$ 
+  & {\it stream layer}\\
+  \hline
+  &
+  $\strtl{\strcns{x}{\astr}} \red \astr$ & \\[-0.0ex]
+  &
+  $\strzip{\strcns{x}{\astr}}{\bstr} \red \strcns{x}{\strzip{\bstr}{\astr}}$ 
+  & {\it function layer} \\[-0.0ex]
+  &
+  $\strinv{\strcns{x}{\astr}} \red \strcns{\funap{\datsymb{i}}{x}}{\strinv{\astr}}$ & \\
+  \hline
+  &
+  $\funap{\datsymb{i}}{\datsymb{0}} \red \datsymb{1} \quad\quad \funap{\datsymb{i}}{\datsymb{1}} \red \datsymb{0}$
+  & {\it data layer} \\
+  \hline
+\end{tabular}
+               }
+\end{center}
+  %
+  \mbox{}\\[-0.5ex]
+  %
+\end{example}
+ 
+\vspace*{-1.5ex}
+%
+\begin{flushleft}
+  \scalebox{1}{This is a \emph{productive} stream definition
+                 obtaining the \emph{Thue-Morse sequence}:}\\[1.5ex]
+  \hspace*{\fill}
+  \scalebox{1}{
+  $
+  \morse \infred \strcns{0}{\strcns{1}{\strcns{1}\strcns{0}{
+                 \strcns{1}{\strcns{0}{\strcns{0}\strcns{1}{
+                 \strcns{1}{\strcns{0}{\strcns{0}\strcns{1}{
+                 \strcns{0}{\strcns{1}{\strcns{1}\strcns{0}{
+                   \ldots}}}}}}}}}}}}
+  $
+                  }
+\end{flushleft}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{comment}
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Stream Specifications}
+
+\begin{example}
+  %
+  \vspace*{2.5ex}
+  %
+\begin{center}
+\scalebox{1}{
+\renewcommand{\arraystretch}{1}
+\begin{tabular}{cr}
+  \hline
+  $\morse \red \strcns{\datsymb{0}}{\strzip{\strinv{\morse}}{\strtl{\morse}}}$ 
+  & {\it stream layer}\\
+  \hline
+  $\strtl{\strcns{x}{\astr}} \red \astr$ & \\[-0.0ex]
+  $\strzip{\strcns{x}{\astr}}{\bstr} \red \strcns{x}{\strzip{\bstr}{\astr}}$ 
+  & {\it function layer} \\[-0.0ex]
+  $\strinv{\strcns{x}{\astr}} \red \strcns{\funap{\datsymb{i}}{x}}{\strinv{\astr}}$ & \\
+  \hline
+  $\funap{\datsymb{i}}{\datsymb{0}} \red \datsymb{1} \quad\quad \funap{\datsymb{i}}{\datsymb{1}} \red \datsymb{0}$
+  & {\it data layer} \\
+  \hline
+\end{tabular}
+               }
+\end{center}
+  %
+  \mbox{}\\[0.5ex]
+  %
+\end{example}
+ 
+\begin{flushleft}
+  \scalebox{1}{This is a \emph{productive} stream spec
+               for the \emph{Thue-Morse sequence}:}\\[1.5ex]
+  \hspace*{\fill}
+  \scalebox{1}{
+  $
+  \morse \infred \strcns{0}{\strcns{1}{\strcns{1}\strcns{0}{
+                 \strcns{1}{\strcns{0}{\strcns{0}\strcns{1}{
+                 \strcns{1}{\strcns{0}{\strcns{0}\strcns{1}{
+                 \strcns{0}{\strcns{1}{\strcns{1}\strcns{0}{
+                   \ldots}}}}}}}}}}}}
+  $
+                  }
+\end{flushleft}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{comment}
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Stream Specification}
+
+
+\begin{example}
+  %
+  \vspace*{1ex}
+  %
+\begin{center}
+\scalebox{1}{
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{r@{\hspace{1.5ex}}cr}
+  \hline
+  &
+  $\joerg 
+      = \strcns{\datsymb{0}}{\strcns{\datsymb{1}}{\strev{\joerg}}}$
+  & {\it stream layer}\\
+  \hline
+  &
+  $\strev{\strcns{x}{\astr}} \red \strcns{x}{\strod{\astr}}$ & \\[-0.0ex]
+  &
+  $\strod{\strcns{x}{\astr}} \red \strev{\astr} $ 
+  & {\it function layer}\\[-0.0ex]
+  \hline
+  &
+  \phantom{
+    $\funap{\datsymb{i}}{\datsymb{0}} \red \datsymb{1}\quad\quad \funap{\datsymb{i}}{\datsymb{1}} \red \datsymb{0}$
+          }
+  & {\it data layer}\\
+  \hline
+\end{tabular}
+               }
+\end{center}
+  %
+  \mbox{}\\[-0.5ex]
+  %
+\end{example}
+
+\vspace*{1ex}
+%
+\begin{flushleft}
+  \scalebox{1}{This stream definition is \emph{not productive}: \mbox{}
+  $
+  \joerg \infred \strcns{\datf{0}}{\strcns{\datf{1}}{\strcns{\datf{0}}\strcns{\datf{0}}{
+                                           \sstrev^{\omega}}}}
+  $
+                  }
+\end{flushleft}
+ 
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{$\joerg %\red \strcns{\datf{0}}{\strcns{\datf{1}}{\strev{\joerg}}}
+                      \infred 
+                       \strcns{\datf{0}}{\strcns{\datf{1}}{\strcns{\datf{0}}\strcns{\datf{0}}{
+                                  \sstrev^{\omega}}}}$}
+  \vspace*{-3.75ex}
+  %
+  \begin{align*}
+    %
+    %\uncover<1->{
+    \joerg  
+      & \red 
+        \strcns{\datf{0}}{\strcns{\datf{1}}{\strev{\joerg}}}  
+    %             }
+        %
+                                                                  \\[0.2ex]
+        %
+    %\uncover<2->{
+    \strev{\joerg} 
+      & \red
+        \strev{\strcns{\datf{0}}{\strcns{\datf{1}}{\strev{\joerg}}}}
+                                                                    \\[-0.35ex]
+      & \red
+        \strcns{\datf{0}}{\strod{\strcns{\datf{1}}{\strev{\joerg}}}}
+                                                                    \\[-0.35ex]
+      & \red
+        \strcns{\datf{0}}{\strev{\strev{\joerg}}} 
+    %             }
+        %
+                                                                  \\[0.2ex]
+        %
+    %\uncover<3->{
+    \strevsq{\joerg} \equiv
+    \strev{\strev{\joerg}}
+      & \mred 
+        \strev{ \strcns{\datf{0}}{\strev{\strev{\joerg}}} }
+                                                                    \\[-0.35ex]
+      & \red
+        \strcns{\datf{0}}{\strod{\strevsq{\joerg}}} 
+    %             }
+        %
+                                                                  \\[0.2ex]
+        %
+    %\uncover<4->{
+    \strod{\strevsq{\joerg}} 
+      & \mred 
+        \strod{\strcns{\datf{0}}{\strod{\strevsq{\joerg}}}}
+                                                                    \\[-0.35ex]
+      & \red
+        \strev{\strod{\strevsq{\joerg}}} 
+    %             }
+        %
+                                                                  \\[0.2ex]
+        %
+    %\uncover<5->{
+    \strod{\strevsq{\joerg}}
+      & \mred
+        \strev{\strod{\strevsq{\joerg}}}
+                                                                    \\[-0.35ex]
+      & \mred
+        \strevsq{\strod{\strevsq{\joerg}}}
+                                                                    \\[-0.35ex]
+      & \mred \ldots
+        \mred \strevn{\strod{\strevsq{\joerg}}} 
+        \mred \ldots
+                                                                    \\[-0.35ex]
+      & \infred 
+        \sstrevom 
+    %             }
+        %
+  \end{align*}
+
+  \vspace*{-2ex}
+  %\uncover<6->{
+  Hence: $\joerg \infred 
+                     \strcns{\datf{0}}{\strcns{\datf{1}}{\strcns{\datf{0}}\strcns{\datf{0}}{
+                                           \sstrev^{\omega}}}}$.
+  %            } 
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+     
+
+%------------------------------------------------------------------------
+\subsection{Definitions and Classes}
+%------------------------------------------------------------------------
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Stream TRS}
+
+A \magenta{stream TRS} is a
+%
+\begin{itemize}
+  %
+  \item finite $\{\sortS,\sortD\}$-sorted,
+     \forestgreen{orthogonal}, \forestgreen{constructor TRS} $\pair{\asig}{R}$, with
+     %
+  \item signature partition $\asig = \Ss \uplus \Sd$ into 
+    \emph{stream symbols} and\\ \emph{data symbols}.
+     %
+\end{itemize}
+
+\vspace*{2ex}
+%
+For the definition of stream spec's we also assume:
+%
+\begin{itemize}
+  %  
+  \item stream signature partition
+    $\Ss = \{\sstrcns\} \uplus \Ssc \uplus \Ssf$,
+    where 
+    %
+    \begin{itemize}
+        %
+        \vspace*{0.5ex}
+        %
+      \item $\text{`$\sstrcns$'}$ the \emph{stream constructor symbol},
+        %with arity $(\sortD,\sortS) \to \sortS$,
+        %
+        \vspace*{0.5ex}
+        %
+      \item $\Ssc$ a set of \emph{stream constant symbols}
+        having only data arguments;
+        %
+        \vspace*{0.5ex}
+        %
+      \item $\Ssf$ a set of \emph{stream function symbols} 
+        with usually at least one stream argument.
+        %
+    \end{itemize}
+    %
+\end{itemize}
+
+%% 
+%% We assume, w.l.o.g., that for all $f \in \Ssf$
+%% its stream arguments are in front;
+%% that is,
+%% $\arity{f} \in \sortS^{\arityS{f}}\sortD^{\arityD{f}} \to \{\sortS,\sortD\}$,
+%% where $\arityS{f}$ and $\arityD{f} \in \nat$ 
+%% are called the \emph{stream arity} and the \emph{data arity} of $f$, respectively.
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Stream Specification}  
+
+
+\vspace*{-0.65ex}
+%
+\begin{definition}
+  %}
+  Let $\atrs = \pair{\asig}{R}$ a stream TRS
+  with part's $\asig = \Ssc \uplus \Ssf \uplus \{\sstrcns\} \uplus \Sd$
+  and $R = \Rsc \uplus \Rsf \uplus \Rd$.
+  $\atrs$ is a \magenta{stream specification} if:
+  %
+  \vspace*{-0.5ex}
+  %
+  \begin{center}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{crc}
+    \cline{1-2}
+    $\Rsc$ & {\em stream layer}\\
+    \cline{1-2}
+    $\Rsf$ & {\em function layer} & \multirow{2}{*}{$\Bigg\}$ \parbox{3.2cm}{\emph{stream function\\specification}}}\\
+    \cline{1-2}
+    $\Rd$ & {\em data layer}\\
+    \cline{1-2}
+  \end{tabular}
+  \end{center}
+  %
+  \vspace*{-1.5ex}
+  %
+  \begin{itemize}
+    \item\label{def:scs:1}
+      The \emph{data-layer} $\atrs_{\mit{d}} = \pair{\Sd}{\Rd}$ is a terminating $\sortD$-sorted TRS.
+    \item %Each layer may use symbols defined in a lower layer, but not vice-versa.
+          The underlying \emph{stream function specification}\\
+          $\atrs_{\mit{fun}} = \pair{\Ssf \uplus \{\sstrcns\} \uplus \Sd}{\Rsf \uplus \Rd}$
+          is a TRS.
+    \item 
+      $\atrs$ is exhaustive for the defined symbols in $\asig$.
+    \item
+      $\Ssc$, a set of constant symbols, contains $\rootsc$, 
+      the \emph{root of $\atrs$}.\\
+      $\Rsc$ is the set of \emph{defining rules} $\rhom$: 
+      $\astrcon\to\astrtrm$ for every $\astrcon\in\Ssc$.
+      %
+  \end{itemize}
+  %
+\end{definition}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Stream Specification (Layered setup)}
+  
+\begin{remark}
+  %
+  \begin{itemize}
+    %
+    \item every layer may use symbols from a lower layer,
+      not vice versa
+      %    
+    \item \chocolate{isolated data-layer}:
+      %
+      \begin{itemize}
+        %
+        %\item prevents the use of stream symbols by data-rules
+          %
+        \item data-layer symbols are \emph{stream independent},
+          excluding stream-dependent functions like:
+          %
+          \begin{equation*}
+            %
+            \strhd{\strcns{x}{\astr}} \red x 
+            %
+          \end{equation*}
+          %
+        \item by exhaustivity for $\Sd$ and strong normalization
+          of $\atrs_{\mit{d}}$,\\
+          closed data terms rewrite to constructor normal forms
+          %
+      \end{itemize}
+      %
+  \end{itemize}    
+  %
+\end{remark} 
+      
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Stream Specification (layered setup)}
+  
+\begin{remark}
+  %
+  \begin{itemize}
+    %
+    \item \chocolate{stream layer}: 
+      %
+      \begin{itemize}
+        %
+        \item only sortedness restrictions are imposed on how
+          the rules in the stream layer make use of the symbols
+          in the other layers. 
+          %      
+      \end{itemize} 
+      %
+    \item \chocolate{separate function layer}:
+      %
+      \begin{itemize}
+        %
+        \item we are interested in \forestgreen{managable} stream functions
+           that define \emph{well-defined streams} or 
+           finite \emph{stream prefixes}.
+           
+           The rule
+           %
+           \begin{align*}
+             %
+             \funap{\strff{f}}{\astr}
+               & \red
+             \strcns{\datf{0}}{\strcns{
+               \strhd{\strtl{\funap{\strff{f}}{\astr}}}
+                                       }{\funap{\strff{f}}{\astr}}}
+               & & \text{(\alert{excluded!})}                        
+               %
+           \end{align*}
+           %
+           defines an operation on streams that produces
+           an output stream with undefined odd elements.
+           %
+      \end{itemize}
+      %
+  \end{itemize}    
+  %
+\end{remark} 
+      
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Production of a term. Productivity of a stream spec.}
+
+
+  Let $\conat \defdby \nat\cup\{\infty\}$ the
+  \emph{coinductive natural numbers}. 
+
+\begin{definition}
+  %
+  Let $\atrs = \pair{\asig}{R}$ a stream definition.  
+  %
+  \begin{itemize}
+    %
+    \item The \magenta{production} $\chocolate{\terprd{\atrs}{\darkcyan{t}}}$
+      of a stream term $\darkcyan{t}  \in \ter{\asig}$: % is 
+       %% the supremum of the number of data elements $\darkcyan{t}$ 
+       %% can `produce':
+      %
+      \begin{equation*}
+        %
+        \chocolate{\terprd{\atrs}{\darkcyan{t} }}
+          \defdby \supremum{\{\chocolate{n} \in \nat \mid  
+          \darkcyan{t} \mred \lstcns{\adattrm_1}{\lstcns{\ldots}{\lstcns{\adattrm_{\chocolate{n}}}{t'}}}\}} 
+          \in\conat \; .
+           %
+      \end{equation*}
+      %
+      \vspace*{-1ex}
+      %
+    \item $\atrs$ is called \magenta{productive} if
+      $\terprd{\atrs}{\rootsc} = \infty$.
+      %
+  \end{itemize}
+  %
+\end{definition}\pause{}
+
+
+\vspace*{1ex}
+%
+\begin{proposition}
+  %
+  A stream definition~$\atrs$ is productive if and only if%\\
+  %\hspace*{\fill}
+  %$ 
+  \[
+  \rootsc \infred 
+           \lstcns{\adattrm_1}{\lstcns{\adattrm_2}
+                              {\lstcns{\adattrm_3}
+                              {\lstcns{\adattrm_4}{\ldots}}}}
+  \]
+  %$.
+  %
+\end{proposition}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Stream Specifications (Properties I)}
+
+A stream spec $\atrs$ is called
+%
+\begin{itemize}
+  %
+  \item \magenta{flat}: 
+    all rules in the function layer $\Rsf$ of $\atrs$ are \emph{flat}:
+    no nested occurrences of stream function symbols on the right-hand side.
+    \\[1ex]
+    Excludes a rule: \hspace*{1ex}
+     $ \funap{\strff{e}}{\strcns{x}{\astr}}
+         \red
+       \strcns{x}{\funap{\strff{e}}{\funap{\strff{e}}{\astr}}} $.
+       % 
+    \vspace*{2ex}
+    %  
+  \item \magenta{pure}:
+    $\atrs$ is \emph{flat}, and for every symbol $\strff{f}\in\Ssf$
+    the defining rules\\ of $\strff{f}$ in $\Rsf$ have the same
+    consumption/production behaviour:\\
+    they coincide (mod.\ renaming
+    of variables) if all outermost data-subterms are replaced by $\pebble$.  
+    \\[1ex]
+    This excludes defining rules: \hspace*{1ex}
+     \parbox[t]{115pt}{
+     $ \strfunap{f}{ \strcns{\datf{0}}{\strcns{x}{\astr}} } 
+         \red 
+       \strcns{x}{\strcns{x}{\strfunap{f}{\strcns{\datf{0}}{\astr}}}} $\\
+     $ \strfunap{f}{\strcns{\datf{1}}{\strcns{x}{\astr}}} 
+         \red \strcns{x}{\strfunap{f}{\strcns{\datf{0}}{\astr}}} \; . $
+       }
+       % 
+\end{itemize}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Stream Specification (flat, non-pure)}  
+
+
+\begin{example}
+  %
+  % "a" -> "abc", "b" -> "ac", "c" -> "b"
+  %
+\begin{center}
+  \renewcommand{\arraystretch}{1.3}
+  %
+  \scalebox{1}{
+  %
+  \begin{tabular}{r@{\hspace{1.5ex}}r@{\extracolsep{1ex}}c@{\extracolsep{1ex}}lr}
+    \hline
+    \multicolumn{4}{c}{
+    $\strcf{Q} \red \strcns{\datf{a}}{\strcf{R}}$} & \multirow{2}{*}{\it{stream layer}}\\%[0.5ex]
+    \multicolumn{4}{c}{
+    $\strcf{R} \red \strcns{\datf{b}}{\strcns{\datf{c}}{\funap{\strff{f}}{\strcf{R}}}}$}
+    \\
+    \hline
+    &$\funap{\strff{f}}{\strcns{\datf{a}}{\astr}}$ 
+    &$\red$& $\strcns{\datf{a}}{\strcns{\datf{b}}{\strcns{\datf{c}}{\funap{\strff{f}}{\astr}}}}$
+    \\%[0.5ex]
+    &$\funap{\strff{f}}{\strcns{\datf{b}}{\astr}}$ 
+    &$\red$& $\strcns{\datf{a}}{\strcns{\datf{c}}{\funap{\strff{f}}{\astr}}}$ & \it{function layer}\\%[0.5ex]
+    &$\funap{\strff{f}}{\strcns{\datf{c}}{\astr}}$ 
+    &$\red$& $\strcns{\datf{b}}{\funap{\strff{f}}{\astr}}$\\
+    \hline
+    & & & 
+    & \it{data layer} \\
+    \hline
+  \end{tabular}
+  %
+  }
+  %
+\end{center}
+  %
+\end{example}
+
+\vspace*{-1.5ex}
+%
+\begin{flushleft}
+  \scalebox{1}{\ldots\ is \emph{productive} and specifies
+               the \emph{ternary Thue-Morse sequence}:}\\[1.5ex]
+  \hspace*{\fill}
+  \scalebox{1}{
+  $
+  \strcf{Q}
+  \infred
+  \strcns{\datf{a}}{\strcns{\datf{b}}{\strcns{\datf{c}}{
+  \strcns{\datf{a}}{\strcns{\datf{c}}{\strcns{\datf{b}}{
+  \strcns{\datf{a}}{\strcns{\datf{b}}{\strcns{\datf{c}}{
+  \strcns{\datf{b}}{\strcns{\datf{a}}{\strcns{\datf{c}}{
+  \ldots}}}}}}}}}}}}
+  $%
+                  }
+  \hspace*{\fill}\mbox{}
+  %
+\end{flushleft}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Stream Specification (flat, pure)}  
+
+\begin{example}
+%
+%\vspace*{1.5ex}
+%
+\begin{center}
+  %
+\scalebox{1}{
+  %
+  \begin{tabular}{r@{\hspace{1.5ex}}r@{\extracolsep{1ex}}c@{\extracolsep{1ex}}lr}
+    %
+    \hline
+    \multicolumn{4}{c}{\rule{0pt}{2ex}
+    $\strcf{Q} \red \funap{\strff{diff}}{\strcf{M}}$}
+    &\multirow{2}{*}{\it{stream layer} }
+    \\[0ex]
+    \multicolumn{4}{c}{
+    $\strcf{M} \red \strcns{\datf{0}}{\strzip{\strinv{\strcf{M}}}{\strtl{\strcf{M}}}}$
+    }
+    \\
+    \hline
+    & \rule{0pt}{2ex} $\strzip{\strcns{x}{\astr}}{\bstr}$ 
+    &$\red$& $\strcns{x}{\strzip{\bstr}{\astr}}$ \\[-0ex]
+    & $\strinv{\strcns{x}{\astr}}$ 
+    &$\red$& $\strcns{\inv{x}}{\strinv{\astr}}$
+    &\multirow{2}{*}{\it{function layer}}
+    \\[0ex]
+    & $\strtl{\strcns{x}{\astr}}$ &$\red$& $\astr$ 
+    \\[0ex]
+    % 00 -> a , 01 -> b , 10 -> c, 11 -> a
+    &$\strdiff{\strcns{x}{\strcns{y}{\astr}}}$ 
+    &$\red$& $\strcns{\abc{x}{y}}{\strdiff{\strcns{y}{\astr}}}$
+    \\[0ex]
+    \hline
+    & \rule{0pt}{2ex}
+      $\inv{\datf{0}} \red \datf{1}$ & &$\inv{\datf{1}} \red \datf{0}$ \\[0ex]
+    & $\abc{\datf{0}}{\datf{0}} \red \datf{b}$ & &$\abc{\datf{0}}{\datf{1}} \red \datf{a}$ 
+    & \it{data layer}
+    \\[0ex]
+    & $\abc{\datf{1}}{\datf{0}} \red \datf{c}$ & &$\abc{\datf{1}}{\datf{1}} \red \datf{b}$ \\
+    \hline
+  \end{tabular}
+  %
+  }
+  %
+\end{center}
+  %
+  %\vspace*{0.75ex}
+  %
+\end{example}
+
+\vspace*{-2.5ex}
+%
+\begin{flushleft}
+  \scalebox{1}{\ldots\ is \emph{productive} and also specifies
+               the \emph{ternary Thue-Morse sequence}.}
+  %
+\end{flushleft}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Stream Specification (flat, non-pure)}
+  
+\newcommand{\myvspace}{\rule{0pt}{2.2ex}}  
+  %  
+\begin{example}[Hamming numbers]% SFS for hamming
+  %  
+\begin{center}  
+  %
+\scalebox{0.8}{$ 
+  \renewcommand{\arraystretch}{1.25} 
+  %
+\begin{array}{cr}
+  \hline
+    \myvspace%
+     \strcf{H} 
+    \to 
+    \strcns{\trmrep{\datf{1}}}{
+      \strmerge{
+        \strtimes{\strcf{H}}{\trmrep{\datf{2}}}}{
+        \strmerge{
+          \strtimes{\strcf{H}}{\trmrep{\datf{3}}}}{
+          \strtimes{\strcf{H}}{\trmrep{\datf{5}}}
+        }
+      }
+    }
+  & 
+  \hspace{-2.5ex}
+  \text{{\it stream layer}}
+  \\[.5ex]
+  \hline%
+  %
+  \begin{array}{rcr}
+  \myvspace%  
+  \strtimes{\strcns{x}{\astr}}{y} &\to& \strcns{\nummult{x}{y}}{\strtimes{\astr}{y}}
+  \\
+  \strmerge{\strcns{x}{\astr}}{\strcns{y}{\bstr}} &\to& \aux{\astr}{\bstr}{x}{y}{\compare{x}{y}}
+  \\
+  \aux{\astr}{\bstr}{x}{y}{\ltsymb} &\to& \strcns{x}{\strmerge{\astr}{\strcns{y}{\bstr}}}
+  \\
+  \aux{\astr}{\bstr}{x}{y}{\eqsymb} &\to& \strcns{x}{\strmerge{\astr}{\bstr}}
+  \\
+  \aux{\astr}{\bstr}{x}{y}{\gtsymb} &\to& \strcns{y}{\strmerge{\strcns{x}{\astr}}{\bstr}}
+  \end{array}
+  &
+  \hspace{-2.5ex}
+  \text{{\it function layer}}
+  \\[6ex]
+  \hline%
+  %
+  \begin{array}{rclcrcl}
+  \myvspace%  
+  \compare{\numzer}{\numzer} &\to& \eqsymb
+  &\hspace{1em}&
+  \numadd{\numzer}{y} &\to& y
+  \\
+  \compare{\numzer}{\numsuc{y}} &\to& \ltsymb
+  &&
+  \numadd{\numsuc{x}}{y} &\to& \numsuc{\numadd{x}{y}}
+  \\
+  \compare{\numsuc{x}}{\numzer} &\to& \gtsymb
+  &&
+  \nummult{\numzer}{y} &\to& \numzer
+  \\
+  \compare{\numsuc{x}}{\numsuc{y}} &\to& \compare{x}{y}
+  &&
+  \nummult{\numsuc{x}}{y} &\to& \numadd{y}{\nummult{x}{y}}
+  \\
+  \end{array}
+  & 
+  \hspace{-2.5ex}
+  \text{{\it data layer}}
+  \\[5ex]
+  \hline%
+\end{array}
+  $
+  }
+  %
+\end{center} 
+  %
+\end{example} 
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Stream Specifications (Properties II)}
+
+A stream spec $\atrs$ is called
+%
+\begin{itemize}
+  %
+  \item \magenta{friendly-nesting}:
+    all rules in the function layer $\Rsf$ are \emph{flat},
+    or contained in a subset $\tilde{R}\subset\Rsf$ of 
+    \emph{friendly-nesting} rules:\\
+    every $\rho\in\tilde{R}$
+    %
+    \begin{itemize}
+      %
+      \item consumes in each stream argument at most one element,
+      \item produces at least one, and
+      \item all defining rules of stream functions occurring on the
+        right-hand side of $\rho$ are again in $\tilde{R}$.
+        %
+    \end{itemize}
+    %
+\end{itemize}
+
+
+
+%
+\begin{example}
+%
+\begin{center}
+  $
+  \bfunap{\strff{f}}{\strcns{x}{\astr}}{\bstr}
+     \red 
+      \strcns{x}{\strcns{x}{\funap{\strff{g}}{\bfunap{\strff{f}}{\astr}{\strcns{x}{\bstr}}}}}
+  $
+  \\[0.5ex]
+  $
+  \funap{\strff{g}}{\strcns{x}{\astr}}
+     \red
+      \strcns{x}{\funap{\strff{g}}{\strcns{x}{\bfunap{\strff{f}}{\astr}{\astr}}}}
+  $
+\end{center}
+%
+\end{example}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Stream Specification (friendly-nesting)}
+  
+\newcommand{\myvspace}{\rule{0pt}{2.2ex}}  
+\renewcommand{\arraystretch}{1.25}
+  %  
+  
+\begin{example}
+  %
+  \vspace*{-0.5ex}
+  %
+\begin{center}  
+  %
+\scalebox{.93}{$  
+  %
+  \begin{array}{cr} 
+    %
+    \hline
+    %
+    \begin{array}{c}
+      %
+      \nats \red \strcns{\datf{0}}{\convprod{\ones}{\ones}}
+      \\
+      \ones \red \strcns{\numsuc{\datf{0}}}{\ones}
+      %
+    \end{array}
+    %
+    & \text{{\it stream layer}}
+    \\
+    %
+    \hline%
+    %
+    \begin{array}{c}
+      %
+      \bfunap{\strff{\boldsymbol{\times}}}%
+        {\strcns{x}{\astr}}{\strcns{y}{\bstr}}
+       \red   \strcns{\nummult{x}{y}}%
+                       {\stradd{ \strtimes{\bstr}{x} }%
+                               { \bfunap{\strff{\boldsymbol{\times}}}%
+                                        {\astr}{\strcns{y}{\bstr}} } }
+                                                                       \\
+      \strtimes{\strcns{x}{\astr}}{y}%
+        \red  \strcns{\nummult{x}{y}}{\strtimes{\astr}{y}}
+                                                                       \\
+      \stradd{\strcns{x}{\astr}}{\strcns{y}{\bstr}}%
+        \red   \strcns{\numadd{x}{y}}%
+                        {\stradd{\astr}{\bstr}}
+      %
+    \end{array}
+    %
+    & \text{{\it function layer}}
+    \\%[3.5ex]
+    %
+    \hline%
+    %
+    \begin{array}{cc}
+      %
+      \numadd{x}{\datf{0}} \red   x    
+      & 
+      \numadd{x}{\numsuc{y}}   \red   \numsuc{\numadd{x}{y}} 
+      \\
+      \nummult{x}{\datf{0}} \red   \datf{0}  
+      & 
+      \nummult{x}{\numsuc{y}}   \red   
+          \numadd{ \nummult{x}{y} }{x}
+      %
+    \end{array}
+    %
+    & \text{{\it data layer}} 
+    \\
+    \hline
+    %
+  \end{array}
+  %
+  $}
+  %
+  \vspace*{-1.5ex}
+  %
+\end{center}
+  %
+\end{example}
+
+$\sconvprod$ defines the \emph{convolution product} stream operation
+$ \pair{\astr}{\bstr} \mapsto \astr\times\bstr $:
+%
+\begin{align*}
+  %
+  \strnth{({\astr}\times{\bstr})}{i} 
+    & = \sum_{j=0}^i \strnth{\astr}{j}\cdot\strnth{\bstr}{i-j} 
+  & & \text{(for all $i\in\nat$)}
+  %
+\end{align*}
+
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Map of Stream Specifications}  
+
+    
+\begin{center}
+  %
+  \scalebox{1.15}{ 
+    \includegraphics{figs/pstricks/pnp}
+              }
+  %
+\end{center}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+\section{Data-Oblivious Analysis}
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+
+
+%------------------------------------------------------------------------
+\subsection{Intuition}
+%------------------------------------------------------------------------
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Data-Oblivious Analysis}
+
+\begin{center}
+  %
+\scalebox{1}{
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{r@{\hspace{1.5ex}}cr}
+  \hline
+  &
+  $\strcf{T} \red \funap{\strff{f}}{\strcns{\datf{0}}{\strcns{\datf{1}}{\strcf{T}}}}$
+  & {\it stream layer}
+  \\
+  \hline
+  $(\rho_{\astrfunsub\datf{0}}):$\hspace*{2ex}
+  &
+  $\strfunap{f}{ \strcns{\datf{0}}{\strcns{x}{\astr}} } 
+   \red \strcns{\datf{0}}{\strcns{\datf{1}}{\strfunap{f}{\astr}}}$
+  \\
+  $(\rho_{\astrfunsub\datf{1}}):$\hspace*{2ex} 
+  &
+  $\strfunap{f}{\strcns{\datf{1}}{\strcns{x}{\astr}}} 
+   \red \strcns{x}{\strfunap{f}{\astr}}$
+  & {\it function layer}
+  \\
+  \hline
+  & & {\it data layer}\\
+  \hline
+\end{tabular}
+  %
+  }
+  %
+\end{center}
+
+
+This specification is \emph{productive}:
+%
+\begin{equation*}
+  %
+  \strcf{T} 
+    \mred \strcns{\datf{0}}{\strcns{\datf{1}}{\funap{\strff{f}}{\strcf{T}}}}
+    \mred \strcns{\datf{0}}{\strcns{\datf{1}}{\strcns{\datf{0}}{\strcns{\datf{1}}{\funap{\strff{f}}{\funap{\strff{f}}{\strcf{T}}}}}}}
+    \mred \ldots 
+    \infred \strcns{\datf{0}}{\strcns{\datf{1}}{\strcns{\datf{0}}{\strcns{\datf{1}}{\ldots}}}} \; ,
+    %
+\end{equation*}
+%
+but, disregarding the identity of data, the rewrite sequence:
+%
+\begin{equation*}
+  %
+  \strcf{T}
+    \red \funap{\strff{f}}{\strcns{\trspeb}{\strcns{\trspeb}{\strcf{T}}}}
+    \red^{\rho_{\astrfunsub\datf{1}}}
+    \strcns{\trspeb}{\funap{\strff{f}}{\strcf{T}}}
+    \mred 
+    \ldots
+    \infred \strcns{\trspeb}{\funap{\strff{f}}{\strcns{\trspeb}{\funap{\strff{f}}{\strcns{\trspeb}{\funap{\strff{f}}{\ldots}}}}}} \; .
+    %
+\end{equation*}
+%
+is possible.
+Hence the specification is 
+\alert{not} \emph{data-obliviously productive}.
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+What is a data-oblivious analysis of productivity?
+\begin{itemize}
+  \item `quantitative reasoning'
+  \item knowledge about concrete values of data elements is ignored
+  \item abstract from the concrete data values
+\end{itemize}
+
+\begin{example}
+\vspace{-3ex}
+\begin{align*}
+  %
+  \strfunap{f}{ \strcns{\datf{0}}{\strcns{x}{\astr}} } 
+  &\red \strcns{x}{\strcns{x}{\strfunap{f}{\strcns{\datf{0}}{\astr}}}} 
+  & 
+  \strfunap{f}{ \strcns{\pebble}{\strcns{\pebble}{\astr}} } 
+  &\red \strcns{\pebble}{\strcns{\pebble}{\strfunap{f}{\strcns{\pebble}{\astr}}}}  \\
+  \strfunap{f}{\strcns{\datf{1}}{\strcns{x}{\astr}}} 
+  &\red \strcns{x}{\strfunap{f}{\strcns{\datf{0}}{\astr}}}
+  &
+  \strfunap{f}{\strcns{\pebble}{\strcns{\pebble}{\astr}}} 
+  &\red \strcns{\pebble}{\strfunap{f}{\strcns{\pebble}{\astr}}}
+  %
+\end{align*}
+Taking into account that $\datf{0}$ is supplied to the recursive call:
+\begin{itemize}
+  \item $n \mapsto \cosubtr{2n}{3}$ is the tight lower bound on the production relation
+\end{itemize}
+However, a data-oblivious analysis ignores this information:
+\begin{itemize}
+  \item $n \mapsto \cosubtr{n}{1}$ is the data-oblivious lower bound
+\end{itemize}
+\end{example}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We formalise data-oblivious term rewriting as \emph{two-player game}:
+\begin{itemize}
+  \item \emph{rewrite player} $\mathcal{R}$ performs the usual term rewriting
+  \item \emph{data-exchange player} $\sdg$ arbitrarily exchanges data elements
+\end{itemize}
+
+\begin{example}[
+  $\strfunap{f}{ \strcns{\datf{0}}{\strcns{x}{\astr}} }
+   \red \strcns{x}{\strcns{x}{\strfunap{f}{\strcns{\datf{0}}{\astr}}}},\;
+   \strfunap{f}{\strcns{\datf{1}}{\strcns{x}{\astr}}} 
+   \red \strcns{x}{\strfunap{f}{\strcns{\datf{0}}{\astr}}}$
+]
+Data-oblivious rewriting of the term \emph{$\strfunap{f}{\strcns{\datf{0}}{\strcns{\datf{1}}{\strcns{\datf{0}}{\astr}}}}$}:
+\vspace{-1ex}
+\begin{center}
+\scalebox{.7}{\includegraphics{figs/pstricks/do_example1}}
+\end{center}
+\vspace{-1ex}
+\end{example}
+\begin{definition}[data-oblivious lower (upper) bound on the production]
+\ldots of a term $s$ is the infimum (supremum) of the production of $s$\\
+with respect to all possible strategies for the data-exchange player $\sdg$.
+\end{definition}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+It is sufficient to use `data-value-invariant` strategies for $\sdg$:
+\begin{itemize}
+  \item for $\sdg$ we can abstract from the data elements in favour of $\trspeb$
+\end{itemize}
+\begin{definition}[The data abstraction $\databstr{s}$ of a term $s$]
+   \ldots{} is obtained from $s$ by replacing all data terms in $s$ with $\trspeb$.
+\end{definition}
+\begin{example}
+\vspace{-1.5ex}
+\begin{center}
+\scalebox{.7}{\includegraphics{figs/pstricks/do_example1a}}
+\end{center}
+\vspace{-1.5ex}
+\end{example}
+\begin{definition}[The data-guess function $\sdg$]
+  \ldots instantiates all $\trspeb$ by closed data terms in constructor normal form.
+\end{definition}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%------------------------------------------------------------------------
+\subsection{Definition and Properties}
+%------------------------------------------------------------------------
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{definition}
+  The \emph{data-oblivious production range} of a term $s \in \ter{\asig}_{\sortS}$ is:
+  \begin{align*}
+  \doRng{\atrs}{\astrtrm} \defdby  \{ \terprd{\sdg}{\databstr{\astrtrm}} \mid{}
+     &\sdg \text{ a data-guess function on } \atrs \} \;.
+  \end{align*}
+  The \emph{data-oblivious lower} and \emph{upper bound on the production of $s$:}
+  \begin{align*}
+  \doLow{\atrs}{\astrtrm} &\defdby \inf(\doRng{\atrs}{\astrtrm})\\
+  \doUp{\atrs}{\astrtrm} &\defdby \sup(\doRng{\atrs}{\astrtrm})
+  \end{align*}
+
+\end{definition}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{definition}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  An stream specification~$\atrs$ is called
+  \begin{itemize}
+    \item \emph{data-obliviously productive} if $\doLow{\atrs}{\rootsc} = \infty$
+    \item \emph{data-obliviously non-productive} if $\doUp{\atrs}{\rootsc} < \infty$
+  \end{itemize}
+\end{definition}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Data-Oblivious Productivity versus Productivity}
+  
+\begin{proposition}
+  %
+  Let\/ $\atrs = \pair{\asig}{R}$ be a stream specification.
+  %
+  \begin{itemize}
+    %
+    \item For all stream terms $s \in \ter{\asig}_{\sortS}$,
+      we have
+      %
+      \begin{equation*}
+        %
+        \doLow{\atrs}{s} \le \terprd{\atrs}{s} \le \doUp{\atrs}{s} \; .
+        %
+      \end{equation*}
+      %
+  \end{itemize}
+  %
+  Hence:
+  %
+  \begin{itemize}
+    %
+    \item data-oblivious productivity implies productivity;
+      %
+    \item data-oblivious non-productivity implies non-productivity.
+    %
+  \end{itemize}
+  %
+\end{proposition}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
+
+
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+\section[Production Calculus]{The Production Calculus}
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Periodically Increasing Functions}
+
+\begin{definition}
+  %
+  Let $f  \funin \nat \to \conat$.
+
+  $f$ is \emph{eventually periodic} if 
+  $ \langle f(0), f(1), f(2), ...\rangle$ is eventually periodic.
+
+  $f$ is \emph{periodically increasing} if it is non-decreasing,
+  and its derivative $f' : \nat\to\conat$  with $f'(n) = f(n+1) - f(n)$
+  is eventually periodic.
+  %
+\end{definition}
+
+\begin{itemize}
+  %
+  \item \emph{Representation}:  
+    pairs $\pair{\alpha}{\beta}\in\emph{\boldsymbol{\sqpair}}$
+    with $\alpha\in\{\ioin,\ioout\}^*$, $\beta\in\{\ioin,\ioout\}^+$
+    where $\ioout$ stands for output, $\ioin$ for input.
+    %
+  \item \emph{production function} $\siosqprd{\pair{\alpha}{\beta}}$
+    for $\pair{\alpha}{\beta}\in\sqpair$:
+    if $ s = \alpha\beta\beta\beta\ldots $ % $ \in\{\ioin,ioout\}^{\omega} $, 
+    then
+    \[
+      \iosqprd{\pair{\alpha}{\beta}}{n} \defdby
+        \begin{cases}
+          %
+          \text{number of ``$\ioout$'' from left 
+               until the $(n+1)$-th ``$\ioin$'' in $l$}
+            \\
+          \conattop \hspace*{2ex} 
+                    \text{\ldots\ if there are less than $n+1$ symbols in $l$}
+            %
+        \end{cases}
+    \]
+    %
+  \item Abbreviation: $\alpha\iosqcyc{\beta}$ for $\pair{\alpha}{\beta}$.\\
+    Example: identity function is represented by $\iosqcyc{\ioin\ioout}$. 
+    %
+\end{itemize}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Production Terms}
+
+\vspace*{-0.45ex}
+%
+\begin{definition}
+  %
+  For $\nam$ a set of recursion variables,
+  the set $\net$ of \emph{production terms} is generated by:
+  \[
+    \anet
+    \BNFis
+    \netsrc{k}
+    \BNFor
+    \netvar{\avar}
+    \BNFor
+    \netbox{\aiosq}{\anet}
+    \BNFor
+    \netrec{\anam}{\anet}
+    \BNFor
+    \netmeet{\anet}{\anet}
+  \]
+  where $\anam\in\nam$, $\aiosq\in\sqpair$,
+  and $\netsrc{k}$ is a \emph{numeral} for $k\in\conat$.
+  %
+  %% For $\anet_1,\ldots,\anet_n\in\net$ and $n\in\nat$, 
+  %% we use $\netmeetn{n}{\anet_1,\ldots,\anet_n}$
+  %% as shorthand for the production term
+  %% $\netmeet{\anet_1}{\netmeet{\anet_2}{\ldots,\netmeet{\anet_{n-1}}{\anet_n}}}$.
+
+  \vspace*{0.5ex}
+  %
+  The \emph{production} $\chocolate{\netbhv{\black{\anet}}} \in \conat$
+  of a closed production term $\anet \in \net$ is defined by 
+  induction on the term structure,
+  interpreting:
+  \begin{itemize}
+    %
+    \item $\snetrec$ as the least fixed point operator,
+    \item $\aiosq$ as $\siosqprd{\aiosq}$, 
+    \item $\netsrc{k}$ as $k$, and 
+    \item $\snetmeet$ as $\min$.
+    %
+  \end{itemize}
+  %
+  \emph{$r$-ary Gates}:  production term contexts 
+    $\netmeetn{r}{\netbox{\iaiosq{1}}{\porti{1}},\ldots,\netbox{\iaiosq{r}}{\porti{r}}}$.
+  %
+\end{definition}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Reduction $\scolred$}
+
+\begin{definition}
+  The \emph{reduction relation 
+  $\scolred$ on production terms}
+  is defined as the compatible closure of: 
+  %
+  \begin{align*}
+    %
+    \netbox{\iaiosq{1}}{\netbox{\iaiosq{2}}{\anet}}
+    & \red \netbox{\iosqcmp{\iaiosq{1}}{\iaiosq{2}}}{\anet}
+    \pagebreak[0]\\
+    \netbox{\aiosq}{\netmeet{\ianet{1}}{\ianet{2}}}
+    & \red \netmeet{\netbox{\aiosq}{\ianet{1}}}{\netbox{\aiosq}{\ianet{2}}}
+    \pagebreak[0]\\
+    \netrec{\anam}{\netmeet{\ianet{1}}{\ianet{2}}}
+    & \red \netmeet{\netrec{\anam}{\ianet{1}}}{\netrec{\anam}{\ianet{2}}}
+    \pagebreak[0]\\
+    \netrec{\anam}{\anet}
+    & \red \anet
+    \qquad \text{if $\anam\not\in\netfv{\anet}$}
+    \pagebreak[0]\\
+    \netrec{\anam}{\netbox{\aiosq}{\anam}}
+    & \red \netsrc{\iosqfix{\aiosq}}
+    \pagebreak[0]\\
+    \netrec{\anam}{\netvar{\anam}}
+    & \red \netsrc{0}
+    \pagebreak[0]\\
+    \netbox{\aiosq}{\netsrc{k}}
+    &\red
+    \netsrc{\iosqprd{\aiosq}{k}}
+    \pagebreak[0]\\
+    \netmeet{\netsrc{k_1}}{\netsrc{k_2}}
+    & \red \netsrc{\comin{k_1,k_2}}  
+    %
+  \end{align*}
+  %
+\end{definition}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Reduction $\scolred$}
+
+Properties of $\scolred$:
+%
+\begin{itemize}
+  %
+  \item production preserving;
+    %
+  \item confluent and terminating;
+    %
+  \item normal forms are numerals.
+  %
+\end{itemize}
+
+\vspace*{2ex}
+%
+\begin{theorem}
+  %
+  For all $\anet\in\net$:
+  \[ \netprd{\anet}=k \; ,\]
+  where $\netsrc{k}$ is the uniquely determined
+  $\scolred$-normal form of $\anet$.
+  %
+\end{theorem}
+
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
+
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+\section[Translation]{Translation into Production Terms}
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Translation into Production Terms}
+
+
+%\begin{itemize}
+  %
+  %\item
+    We use a translation 
+    that maps every \forestgreen{flat} stream spec $\atrs$
+    with root $\rootsc$ to a \emph{production term} $\trnsl{\rootsc}$
+    such that
+    %
+    \begin{equation*}
+      %
+      \doLow{\atrs}{\rootsc} = \netbhv{\trnsl{\rootsc}} \; .
+      %
+    \end{equation*}
+    %
+%\end{itemize}
+
+
+\begin{itemize}
+  %
+  \item \emph{function layer translation}:
+    Obtain a family $\{\trnsl{\astrfun} \}_{\astrfun\in\Ssf}$
+    of gates such that, for every $\strff{f}\in\Ssf$, the gate $\fgate$
+    represents the data-oblivious lower bound of $\strff{f}$ in $\atrs$.
+
+    \vspace*{0.5ex}
+    %
+    (Involves solving an originally infinite `\ioterm\ specification'.)
+    %
+    % (Involves solving, for each argument place in $\strff{f}$
+    %  an originally infinite `\ioterm\ specification' which
+    %  specifies the data-oblivious lower bound in that argument place.)
+    %
+    \vspace*{1ex}
+    %
+  \item \emph{stream layer translation}:
+    Using the family $\strff{f}\in\Ssf$ of gates, obtain 
+    a production term $\trnslF{\rootsc}{\afam}$ such that
+    $ \netbhv{\trnslF{\rootsc}{\afam}} = \doLow{\atrs}{\rootsc} $. 
+
+    \vspace*{0.5ex}
+    %
+    (Involves expanding the stream layer rules step by step and
+     a finite loop-checking procedure.)
+    %
+\end{itemize}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
+
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+\section[Deciding D-O Productivity]{Deciding Data-Oblivious Productivity}
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Algorithm \algdecidedoprod:
+              Deciding Data-Oblivious Productivity}
+  
+  \begin{enumerate}
+    %
+    \item Take as input:
+      a \emph{flat} stream specification~$\atrs = \pair{\asig}{R}$.
+      %
+      \vspace*{1.25ex}
+      %
+    \item  Compute the translation of stream function symbols $\astrfun$\\ 
+      into gates $\trnsl{\astrfun}$, yielding a family 
+      $\afam \defdby \{\trnsl{\astrfun} \}_{\astrfun\in\Ssf}$ of gates. 
+      %
+      \vspace*{1.25ex}
+      %
+    \item  Construct the production term $\trnslF{\rootsc}{\afam}$ of the root $\rootsc$ of $\atrs$
+    with respect to the family of gates $\afam$.
+      %
+      \vspace*{1.25ex}
+      %
+    \item Compute the production $\netsrc{k}$ of $\trnslF{\rootsc}{\afam}$ 
+      using the reduction rel.~$\scolred$.
+      %
+      \vspace*{1.25ex}
+      %
+    \item  Give the following output:\\
+      \hspace*{1ex}
+      If $k=\conattop$: 
+        ``$\atrs$ \texttt{is data-obliviously productive}'';\\
+      \hspace*{1ex}
+      else 
+        $k\in\nat$: ``$\atrs$ \texttt{is not data-obliviously productive}''.
+      %
+  \end{enumerate}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
+
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Deciding D-O Productivity. Recognising Productivity.}  
+
+
+\begin{theorem} 
+  %
+  Data-oblivious productivity of \emph{flat} stream specifications 
+  is decidable.
+
+  I.p.,  the algorithm\/~$\algdecidedoprodem$ 
+  decides data-oblivious productivity of flat stream specifications. 
+  %
+\end{theorem}
+
+\vspace*{0.75ex}
+%
+Since data-oblivious productivity implies productivity,
+we get a 
+\chocolate{computable, data-obliviously optimal criterion for productivity}:
+%
+\vspace*{0.75ex}
+%
+\begin{corollary}
+  %
+  A \emph{flat} stream specification $\atrs$ \chocolate{is productive} 
+  if the algorithm $\algdecidedoprodem$ recognizes $\atrs$
+  as data-obliviously productive.
+  %
+\end{corollary}
+
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Recognising and Deciding Productivity.}  
+
+
+For \emph{pure} stream spec's productivity coincides with 
+data-oblivious productivity. Hence $\algdecidedoprod$ gives rise
+to a \chocolate{decision algorithm}. 
+
+\begin{theorem}
+  %
+  Productivity is decidable for \emph{pure} stream spec's. 
+  %
+\end{theorem}
+
+\vspace*{2.5ex}
+%
+Furthermore, a variant of $\algdecidedoprod$ can be used 
+as a:
+\begin{itemize}
+  %
+  \item \chocolate{computable criterion of productivity} for
+    \emph{friendly-nesting} stream~spec's.
+    %
+\end{itemize}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Map of Stream Specifications}  
+
+\begin{center}
+  %
+  \scalebox{1.15}{ 
+    \includegraphics{figs/pstricks/pnp}
+              }
+  %
+\end{center}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+\section[Conclusion]{Conclusion}
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+
+
+%------------------------------------------------------------------------
+\subsection{Summary. Further Plans.}
+%------------------------------------------------------------------------
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Summary}
+
+
+\begin{itemize}%[<+->]
+    %
+  \item
+  \chocolate{Previous Approaches}: 
+  \emph{sufficient conditions} for productivity,\\
+  not automatable or only for a limited subclass
+    %
+  \item
+  \chocolate{FCT'07-Paper}:
+  \emph{decision algorithm} for productivity of \darkmagenta{pure} stream 
+     spec's
+     %
+  \item
+  \chocolate{New Results}:
+    %
+    \begin{enumerate}
+      %
+      \vspace*{0.75ex}
+        %
+      \item\label{item:summary:flat}
+        a \emph{computable, data-obliviously optimal,
+        sufficient condition} for productivity
+        of \darkmagenta{flat} stream spec's;
+        %
+        \vspace*{0.5ex}
+        %
+      \item\label{item:summary:pure}
+        a \emph{decision method} for productivity on 
+        \darkmagenta{pure} stream spec's
+        with \darkmagenta{duplication/additional supply}
+        in stream arg's (extension of FCT);
+        %
+        \vspace*{0.5ex}
+        %
+      \item\label{item:summary:friendly} 
+        an extension of~\ref{item:summary:flat}
+        to stream spec's with \darkmagenta{friendly nesting},
+        disregarding data-oblivious optimality;
+        %
+        \vspace*{0.5ex}
+        %
+      \item a tool automating~\ref{item:summary:flat}, \ref{item:summary:pure} 
+        and~\ref{item:summary:friendly} available at:
+        \href{http://localhost/productivity/}%
+         {\emph{\tt http://infinity.few.vu.nl/productivity}}.
+         %
+   \end{enumerate}
+   %
+\end{itemize}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Present and Future Work}
+
+  \begin{itemize}
+    %
+    \item A precise \emph{complexity analysis} of our algorithms.
+      %
+      \vspace*{0.75ex}
+      %
+    \item \emph{Data-aware methods} for recognising productivity.
+      %
+      \vspace*{0.75ex}
+      %
+    \item A \emph{refined pebbleflow semantics} that accounts for the
+      delay of evaluation of stream elements as made possible
+      by lazy evaluation strategies.
+      Think of Sijtsma's example:
+      $
+  \strcf{S} \to \strcns{\datf{0}}{\strcns{\strhd{\strtln{2}{\strcf{S}}}}{\strcf{S}}}
+      $.
+      \vspace*{0.75ex}
+      %
+    \item A theory of \emph{reducibility between streams}.
+      %
+      \vspace*{0.75ex}
+      %
+    \item Can our results be used to obtained general results clarifying
+      under which conditions \emph{term graph rewriting} can be viewed
+      as a \emph{semantics for infinitary rewriting}?
+      %
+  \end{itemize}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
+
+
+%------------------------------------------------------------------------
+\subsection{Tools}
+%------------------------------------------------------------------------
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{Our Papers and Tools.}
+
+  \vspace*{0.5ex}
+  %
+  Please visit \href{http://localhost/productivity/}%
+         {\emph{\tt http://infinity.few.vu.nl/productivity}}\\
+  to find: 
+  %
+  \vspace*{1.5ex}
+  %
+  \begin{itemize}
+    %
+    \item 
+      Endrullis, Grabmayer, Hendriks, Isihara, Klop:\\
+      \emph{Productivity of Stream Definitions},
+      Proceedings of FCT~2007, LNCS~4637, pages~274--287, 2007;
+      %
+      \vspace*{0.75ex}
+      %
+    \item  
+      Endrullis, Grabmayer, Hendriks, Isihara, Klop:\\
+      \emph{Productivity of Stream Definitions},
+      journal submission;
+      %
+      \vspace*{0.75ex}
+      %
+    \item Endrullis, Grabmayer, Hendriks:\\
+      \emph{Data-Oblivious Stream Productivity},
+      extended abstract;
+      %
+      \vspace*{0.75ex}
+      %
+    \item access to our tools:
+      %
+      \begin{itemize}
+        %
+        \item Endrullis: tool implementing the\\ 
+          \hspace*{3ex}  
+          \chocolate{decision algorithm
+                     for data-oblivious productivity};
+          %
+        \item Isihara: \chocolate{pebbleflow visualization} tool.
+
+        %
+      \end{itemize} 
+      %
+  \end{itemize}
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \frametitle{}
+
+   \vspace*{\fill}
+   %
+   \hspace{\fill}%
+   \scalebox{1.6}{\forestgreen{\bf Thanks for your attention!}}%
+   \hspace*{\fill}\mbox{}
+   %
+   \label{lastslide}
+   %
+   \vspace*{\fill}
+
+ %% \only<7>{
+ %% \begin{center}
+ %% \large{Thank you!}
+ %% \end{center}
+ %% }
+
+\end{frame}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{document}
