@@ -136,6 +136,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     characterWidth = fm.charWidth(' ');
   }
 
+  boolean o = false;
   /**
    * Paint the component.
    *

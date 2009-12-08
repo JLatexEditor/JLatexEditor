@@ -38,15 +38,13 @@ public class SCEDiff extends JSplitPane {
   private double[] line2Diff;
 
   public SCEDiff(SCEPane pane, String text, SCEPane diff) {
-    super(JSplitPane.HORIZONTAL_SPLIT, new JViewport(), new JViewport());
+    super(JSplitPane.HORIZONTAL_SPLIT, new SCEDiffViewport(pane), new SCEDiffViewport(diff));
     setDoubleBuffered(false);
     paneViewport = (JViewport) getLeftComponent();
     diffViewport = (JViewport) getRightComponent();
     this.text = text;
     this.pane = pane;
     this.diff = diff;
-    paneViewport.setView(pane);
-    diffViewport.setView(diff);
 
     diff.setText(text);
     diff.getCaret().moveTo(0, 0);
@@ -152,9 +150,6 @@ public class SCEDiff extends JSplitPane {
     return rows;
   }
 
-  public void update(Graphics g) {
-  }
-
   public void paint(Graphics g) {
     super.paint(g);
   }
@@ -257,6 +252,37 @@ public class SCEDiff extends JSplitPane {
 
     public Point getViewPosition() {
       return viewPosition;
+    }
+
+    public Rectangle getViewRect() {
+      Dimension size = getViewSize();
+      return new Rectangle(viewPosition.x, viewPosition.y, size.width, size.height);
+    }
+
+    public void paint(Graphics g) {
+      super.paint(g);
+    }
+  }
+
+  private static class SCEDiffViewport extends JViewport {
+    private SCEDiffViewport(Component view) {
+      setView(view);
+      setLayout(new ViewportLayout() {
+        public void layoutContainer(Container parent) {
+          JViewport vp = (JViewport)parent;
+          if(!getViewSize().equals(vp.getSize())) setViewSize(vp.getSize());
+          if(getViewPosition().x < 0) setViewPosition(new Point(0,0));
+        }
+      });
+    }
+
+    public void setView(Component view) {
+      super.setView(view);
+      setViewPosition(new Point(-1,-1));
+    }
+
+    public void paint(Graphics g) {
+      super.paint(g);
     }
   }
 }
