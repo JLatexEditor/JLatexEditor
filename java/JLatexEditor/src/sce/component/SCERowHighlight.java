@@ -11,6 +11,7 @@ public class SCERowHighlight{
   // the row and color of the row highlight
   private SCEDocumentPosition position;
   private Color color;
+  private boolean top;
 
   /**
    * Creates a row highlight.
@@ -19,9 +20,10 @@ public class SCERowHighlight{
    * @param row the row
    * @param color the color
    */
-  public SCERowHighlight(SCEPane pane, int row, Color color){
+  public SCERowHighlight(SCEPane pane, int row, Color color, boolean top){
     position = pane.getDocument().createDocumentPosition(row, 0);
     this.color = color;
+    this.top = top;
   }
 
   /**
@@ -51,6 +53,10 @@ public class SCERowHighlight{
   public void paint(Graphics2D g2D, SCEPane pane){
     g2D.setColor(getColor());
     Point highlightPos = pane.modelToView(position.getRow(), 0);
-    g2D.fillRect(0, highlightPos.y, pane.getWidth(), pane.getLineHeight());
+    if(top) {
+      g2D.fillRect(0, highlightPos.y-1, pane.getWidth(), 3);
+    } else {
+      g2D.fillRect(0, highlightPos.y, pane.getWidth(), pane.getLineHeight());
+    }
   }
 }

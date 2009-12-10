@@ -127,13 +127,16 @@ public class SCEDiff extends JSplitPane {
       int sourceStart = modification.getSourceStartIndex();
       int sourceEnd = sourceStart + modification.getSourceLength();
       for(int line = sourceStart; line < sourceEnd; line++) {
-        diff.addRowHighlight(new SCERowHighlight(diff, line, color));
+        diff.addRowHighlight(new SCERowHighlight(diff, line, color, false));
       }
+      if(sourceEnd == sourceStart) diff.addRowHighlight(new SCERowHighlight(diff, sourceStart, color, true));
+
       int targetStart = modification.getTargetStartIndex();
       int targetEnd = targetStart + modification.getTargetLength();
       for(int line = targetStart; line < targetEnd; line++) {
-        pane.addRowHighlight(new SCERowHighlight(pane, line, color));
+        pane.addRowHighlight(new SCERowHighlight(pane, line, color, false));
       }
+      if(targetEnd == targetStart) pane.addRowHighlight(new SCERowHighlight(pane, targetStart, color, true));
     }
   }
 
@@ -222,6 +225,8 @@ public class SCEDiff extends JSplitPane {
         int paneYEnd = pane.modelToView(targetStart + targetLength, 0).y - paneOffsetY;
         int diffYStart = pane.modelToView(sourceStart, 0).y - diffOffsetY;
         int diffYEnd = pane.modelToView(sourceStart + sourceLength, 0).y - diffOffsetY;
+        if(targetLength == 0) { paneYStart--; paneYEnd += 2; }
+        if(sourceLength == 0) { diffYStart--; diffYEnd += 2; }
         ypoints[0] = paneYStart;
         ypoints[1] = diffYStart;
         ypoints[2] = diffYEnd;

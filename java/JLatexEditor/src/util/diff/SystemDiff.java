@@ -62,10 +62,12 @@ public class SystemDiff {
           targetStart = Integer.parseInt(targetLines);
           targetLength = type == 'd' ? 0 : 1;
         }
+        if(type != 'a') sourceStart--;
+        if(type != 'd') targetStart--;
 
         modifications.add(new Modification(
                 type == 'a' ? Modification.TYPE_ADD : (type == 'd' ? Modification.TYPE_REMOVE : Modification.TYPE_CHANGED),
-                sourceStart-1, sourceLength, targetStart-1, targetLength));
+                sourceStart, sourceLength, targetStart, targetLength));
       }
       reader.close();
     } catch (IOException e) {
