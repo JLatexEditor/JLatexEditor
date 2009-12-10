@@ -534,6 +534,11 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     repaint();
   }
 
+  public void removeAllRowHighlights(){
+    rowHighlights.clear();
+    repaint();
+  }
+
   /**
    * Adds a text highlight.
    *

@@ -87,7 +87,7 @@ public class SCEDiff extends JSplitPane {
     preferredLines = 0;
     line2Diff = new double[paneRows + diffRows];
     line2Pane = new double[paneRows + diffRows];
-    for (Modification modification : modifications) {
+    for(Modification modification : modifications) {
       while (diffLine < modification.getSourceStartIndex() && paneLine < modification.getTargetStartIndex()) {
         line2Diff[preferredLines] = diffLine;
         line2Pane[preferredLines] = paneLine;
@@ -114,6 +114,26 @@ public class SCEDiff extends JSplitPane {
       paneLine++;
       diffLine++;
       preferredLines++;
+    }
+
+    pane.removeAllRowHighlights();
+    diff.removeAllRowHighlights();
+    for(Modification modification : modifications) {
+      Color color = null;
+      if(modification.getType() == Modification.TYPE_ADD) color = COLOR_ADD;
+      if(modification.getType() == Modification.TYPE_REMOVE) color = COLOR_REMOVE;
+      if(modification.getType() == Modification.TYPE_CHANGED) color = COLOR_CHANGE;
+      
+      int sourceStart = modification.getSourceStartIndex();
+      int sourceEnd = sourceStart + modification.getSourceLength();
+      for(int line = sourceStart; line < sourceEnd; line++) {
+        diff.addRowHighlight(new SCERowHighlight(diff, line, color));
+      }
+      int targetStart = modification.getTargetStartIndex();
+      int targetEnd = targetStart + modification.getTargetLength();
+      for(int line = targetStart; line < targetEnd; line++) {
+        pane.addRowHighlight(new SCERowHighlight(pane, line, color));
+      }
     }
   }
 
