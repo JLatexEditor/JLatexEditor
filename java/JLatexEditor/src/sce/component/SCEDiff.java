@@ -138,16 +138,22 @@ public class SCEDiff extends JSplitPane {
   }
 
   public void setLocation(int x, int y) {
-    int lineHeight = pane.getLineHeight();
     int visibleHeight = scrollPane.getVisibleRect().height;
-    y = y - visibleHeight/2;
+    int lineHeight = pane.getLineHeight();
+    int halfLines = visibleHeight/2/lineHeight;
+
+    int lineOffset = halfLines;
+    while(line2Pane[lineOffset] < halfLines && line2Diff[lineOffset] < halfLines) lineOffset++;
+    int yCorrection = lineHeight * (int) Math.max(line2Pane[lineOffset], line2Diff[lineOffset]);
+
+    y = y - lineOffset*lineHeight;
     int line = -y/lineHeight;
     double lineFraction = (-y - line * lineHeight) / (double) lineHeight;
 
     double paneLine = (1 - lineFraction) * line2Pane[line] + lineFraction * line2Pane[line + 1];
     double diffLine = (1 - lineFraction) * line2Diff[line] + lineFraction * line2Diff[line + 1];
-    paneViewport.setViewPosition(new Point(pane.getX(), (int) (paneLine * lineHeight) - visibleHeight/2));
-    diffViewport.setViewPosition(new Point(diff.getX(), (int) (diffLine * lineHeight) - visibleHeight/2));
+    paneViewport.setViewPosition(new Point(pane.getX(), (int) (paneLine * lineHeight) - yCorrection));
+    diffViewport.setViewPosition(new Point(diff.getX(), (int) (diffLine * lineHeight) - yCorrection));
 
     repaint();
   }
