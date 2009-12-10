@@ -51,6 +51,6 @@ public class SCERowHighlight{
   public void paint(Graphics2D g2D, SCEPane pane){
     g2D.setColor(getColor());
     Point highlightPos = pane.modelToView(position.getRow(), 0);
-    g2D.fillRect(pane.getMargin(SCEPane.MARGIN_LEFT), highlightPos.y, pane.getWidth(), pane.getLineHeight());
+    g2D.fillRect(0, highlightPos.y, pane.getWidth(), pane.getLineHeight());
   }
 }
