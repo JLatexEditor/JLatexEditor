@@ -196,9 +196,9 @@ public class SCEDiff extends JSplitPane {
       int left = 0;
       int right = getWidth();
 
-      int paneOffsetY = pane.getVisibleRect().y;
+      int paneOffsetY = -pane.getY();
       int paneFirstRow = pane.viewToModel(0, paneOffsetY).getRow();
-      int diffOffsetY = diff.getVisibleRect().y;
+      int diffOffsetY = -diff.getY();
       int diffFirstRow = diff.viewToModel(0, diffOffsetY).getRow();
       int visibleRows = pane.getVisibleRowsCount() + 1;
 

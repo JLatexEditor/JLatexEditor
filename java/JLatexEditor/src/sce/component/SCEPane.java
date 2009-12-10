@@ -163,11 +163,14 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 
     // draw row highlights
 	  for (SCERowHighlight rowHighlight : rowHighlights) {
+      int row = rowHighlight.getPosition().getRow();
+      if(row < startRow || row > endRow) continue;
 		  rowHighlight.paint(g2D, this);
 	  }
 
     // draw text highlights
 	  for (SCETextHighlight textHighlight : textHighlights) {
+      if(textHighlight.getEndPosition().getRow() < startRow || textHighlight.getStartPosition().getRow() > endRow) continue;
 			textHighlight.paint(g2D, this);
 	  }
 
