@@ -38,6 +38,28 @@ public class AboutDialog extends JFrame {
 			credits.setText(I18n.getString("about_dialog.text", version, System.getProperty("java.version"), vmString));
 		}
 
+		/*
+		Color creditsFg = new Color(0xf49514);
+		Color creditsShadow = Color.BLACK;
+		float creditsShadowAlpha = 0.30f;
+		*/
+
+		/*
+		Color creditsFg = Color.WHITE;
+		Color creditsShadow = Color.BLACK;
+		float creditsShadowAlpha = 0.30f;
+		*/
+
+		/*
+		Color creditsFg = Color.BLACK;
+		Color creditsShadow = Color.WHITE;
+		float creditsShadowAlpha = 0.20f;
+		*/
+
+		Color creditsFg = Color.WHITE;
+		Color creditsShadow = Color.BLACK;
+		float creditsShadowAlpha = 0.30f;
+
     ImageIcon icon = new ImageIcon(getClass().getResource("/logo.png"));
     Image iconImage = icon.getImage();
     BufferedImage image = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -47,16 +69,16 @@ public class AboutDialog extends JFrame {
     int x = (image.getWidth() - credits.getWidth())/2;
     int y = (image.getHeight() - credits.getHeight())/2;
     g.translate(x,y);
-    credits.setForeground(Color.WHITE);
-    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.15f));
-    for(int dx = -2; dx <= 2; dx++) {
-      for(int dy = -2; dy <= 2; dy++) {
+    credits.setForeground(creditsShadow);
+    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, creditsShadowAlpha));
+    for(int dx = 0; dx <= 2; dx++) {
+      for(int dy = 0; dy <= 2; dy++) {
         g.translate(dx,dy);
         credits.paint(g);
         g.translate(-dx,-dy);
       }
     }
-    credits.setForeground(Color.BLACK);
+    credits.setForeground(creditsFg);
     g.setComposite(AlphaComposite.SrcAtop);
     credits.paint(g);
 
