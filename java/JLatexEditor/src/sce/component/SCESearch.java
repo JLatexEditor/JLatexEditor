@@ -17,6 +17,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener {
   private JTextField input = new JTextField();
   private ImageButton buttonNext;
   private ImageButton buttonPrevious;
+  private JCheckBox caseSensitive = new JCheckBox("Case sensitive", false);
   private ImageButton buttonClose;
 
   // search results
@@ -24,30 +25,36 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener {
 
   public SCESearch(SourceCodeEditor editor) {
     this.editor = editor;
+    setBackground(new Color(233, 244, 255));
 
     buttonNext = new ImageButton(
-            new ImageIcon(getClass().getResource("icons/buttons/arrow_down.png")),
-            new ImageIcon(getClass().getResource("icons/buttons/arrow_down_highlight.png")),
-            new ImageIcon(getClass().getResource("icons/buttons/arrow_down_press.png")));
+            new ImageIcon(getClass().getResource("/images/buttons/arrow_down.png")),
+            new ImageIcon(getClass().getResource("/images/buttons/arrow_down_highlight.png")),
+            new ImageIcon(getClass().getResource("/images/buttons/arrow_down_press.png")));
 
     buttonPrevious = new ImageButton(
-            new ImageIcon(getClass().getResource("icons/buttons/arrow_up.png")),
-            new ImageIcon(getClass().getResource("icons/buttons/arrow_up_highlight.png")),
-            new ImageIcon(getClass().getResource("icons/buttons/arrow_up_press.png")));
+            new ImageIcon(getClass().getResource("/images/buttons/arrow_up.png")),
+            new ImageIcon(getClass().getResource("/images/buttons/arrow_up_highlight.png")),
+            new ImageIcon(getClass().getResource("/images/buttons/arrow_up_press.png")));
 
     buttonClose = new ImageButton(
-            new ImageIcon(getClass().getResource("icons/buttons/arrow_down.png")),
-            new ImageIcon(getClass().getResource("icons/buttons/arrow_down_highlight.png")),
-            new ImageIcon(getClass().getResource("icons/buttons/arrow_down_press.png")));
+            new ImageIcon(getClass().getResource("/images/buttons/close.png")),
+            new ImageIcon(getClass().getResource("/images/buttons/close_highlight.png")),
+            new ImageIcon(getClass().getResource("/images/buttons/close_press.png")));
 
-    setLayout(new FlowLayout(FlowLayout.LEFT, 15, 5));
+    setLayout(new FlowLayout(FlowLayout.LEFT, 10, 5));
     input.setColumns(30);
     add(input);
     input.addKeyListener(this);
+    editor.getTextPane().addKeyListener(this);
     add(buttonNext);
     buttonNext.addActionListener(this);
     add(buttonPrevious);
     buttonPrevious.addActionListener(this);
+    caseSensitive.setOpaque(false);
+    add(caseSensitive);
+    caseSensitive.addActionListener(this);
+    buttonClose.addActionListener(this);
     add(buttonClose);
     buttonClose.addActionListener(this);
 
@@ -66,24 +73,12 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener {
     pane.removeAllTextHighlights();
   }
 
-  public void actionPerformed(ActionEvent e) {
-    if(e.getSource() == buttonClose) {
-      setVisible(false);
-      clearHighlights();
-    }
+  public void close() {
+    setVisible(false);
+    clearHighlights();
   }
 
-  public void keyTyped(KeyEvent e) {
-  }
-
-  public void keyPressed(KeyEvent e) {
-	  if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
-		  setVisible(false);
-		  e.consume();
-	  }
-  }
-
-  public void keyReleased(KeyEvent e) {
+  private void update() {
     clearHighlights();
     SCEMarkerBar markerBar = editor.getMarkerBar();
     SCEPane pane = editor.getTextPane();
@@ -91,6 +86,8 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener {
     input.setBackground(Color.WHITE);
 
     String search = input.getText();
+    if(!caseSensitive.isSelected()) search = search.toLowerCase();
+    
     int length = search.length();
     if(length != 0) {
       SCEDocument document = editor.getTextPane().getDocument();
@@ -118,6 +115,28 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener {
       return;
     }
     if(length > 0) input.setBackground(new Color(255, 204, 204));
+  }
+  
+  public void actionPerformed(ActionEvent e) {
+    if(e.getSource() == buttonClose) {
+      close();
+    } else {
+      update();
+    }
+  }
+
+  public void keyTyped(KeyEvent e) {
+  }
+
+  public void keyPressed(KeyEvent e) {
+	  if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+		  close();
+		  e.consume();
+	  }
+  }
+
+  public void keyReleased(KeyEvent e) {
+    update();
   }
 
   public static class Position {

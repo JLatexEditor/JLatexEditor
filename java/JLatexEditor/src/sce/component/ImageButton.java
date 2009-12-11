@@ -1,40 +1,71 @@
 package sce.component;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 /**
  * Image button
  */
-public class ImageButton extends JButton implements MouseListener {
-  private Icon icon;
-  private Icon over;
-  private Icon press;
+public class ImageButton extends JPanel implements MouseListener {
+  private ImageIcon icon;
+  private ImageIcon over;
+  private ImageIcon press;
 
-  public ImageButton(Icon icon, Icon over, Icon press) {
-    super(icon);
+  private ImageIcon current;
+
+  private ArrayList<ActionListener> listeners = new ArrayList<ActionListener>();
+  private String actionCommand = "clicked";
+
+  public ImageButton(ImageIcon icon, ImageIcon over, ImageIcon press) {
     this.icon = icon;
     this.over = over;
     this.press = press;
+    current = icon;
+
+    setOpaque(false);
+    addMouseListener(this);
+  }
+
+  public void paint(Graphics g) {
+    g.drawImage(current.getImage(), 0, 0, null);
+  }
+
+  public Dimension getPreferredSize() {
+    return new Dimension(current.getIconWidth(), current.getIconHeight());
+  }
+
+  public void addActionListener(ActionListener listener) {
+    listeners.add(listener);
   }
 
   public void mouseClicked(MouseEvent e) {
+    for(ActionListener listener : listeners) {
+      listener.actionPerformed(new ActionEvent(this, 0, actionCommand));
+    }
   }
 
   public void mousePressed(MouseEvent e) {
-    setIcon(press);
+    current = press;
+    repaint();
   }
 
   public void mouseReleased(MouseEvent e) {
-    setIcon(icon);
+    current = icon;
+    repaint();
   }
 
   public void mouseEntered(MouseEvent e) {
-    setIcon(over);
+    current = over;
+    repaint();
   }
 
   public void mouseExited(MouseEvent e) {
-    setIcon(icon);
+    current = icon;
+    repaint();
   }
 }
