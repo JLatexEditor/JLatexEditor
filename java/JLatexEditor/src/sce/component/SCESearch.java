@@ -15,16 +15,31 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener {
   private SourceCodeEditor editor;
 
   private JTextField input = new JTextField();
-  private JButton buttonNext = new JButton("Next");
-  private JButton buttonPrevious = new JButton("Previous");
-  private JButton buttonClose = new JButton("Close");
+  private ImageButton buttonNext;
+  private ImageButton buttonPrevious;
+  private ImageButton buttonClose;
 
   // search results
   private ArrayList<Position> positions = new ArrayList<Position>();
 
   public SCESearch(SourceCodeEditor editor) {
     this.editor = editor;
-    
+
+    buttonNext = new ImageButton(
+            new ImageIcon(getClass().getResource("icons/buttons/arrow_down.png")),
+            new ImageIcon(getClass().getResource("icons/buttons/arrow_down_highlight.png")),
+            new ImageIcon(getClass().getResource("icons/buttons/arrow_down_press.png")));
+
+    buttonPrevious = new ImageButton(
+            new ImageIcon(getClass().getResource("icons/buttons/arrow_up.png")),
+            new ImageIcon(getClass().getResource("icons/buttons/arrow_up_highlight.png")),
+            new ImageIcon(getClass().getResource("icons/buttons/arrow_up_press.png")));
+
+    buttonClose = new ImageButton(
+            new ImageIcon(getClass().getResource("icons/buttons/arrow_down.png")),
+            new ImageIcon(getClass().getResource("icons/buttons/arrow_down_highlight.png")),
+            new ImageIcon(getClass().getResource("icons/buttons/arrow_down_press.png")));
+
     setLayout(new FlowLayout(FlowLayout.LEFT, 15, 5));
     input.setColumns(30);
     add(input);
