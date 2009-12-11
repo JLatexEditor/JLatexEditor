@@ -155,13 +155,29 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel{
    * @param editable true, if the TextPane should be editable
    */
   public void setEditable(boolean editable){
-    textPane.setEditable(editable);
+    textPane.getDocument().setEditable(editable);
   }
 
   public void moveTo(int row, int column) {
     Point pos = textPane.modelToView(row, column);
     scrollPane.scrollRectToVisible(new Rectangle(pos.x-150, pos.y - 300, 300, pos.y - pos.y + 300));
     textPane.getCaret().moveTo(row, column);
+  }
+
+  private boolean hasDiffFocus() {
+    return diff != null && diff.getDiffPane() != null && diff.getDiffPane().hasFocus();
+  }
+
+  public void copy() {
+    if(hasDiffFocus()) { diff.getDiffPane().copy(); } else { textPane.copy(); }
+  }
+
+  public void cut() {
+    if(hasDiffFocus()) { diff.getDiffPane().cut(); } else { textPane.cut(); }
+  }
+
+  public void paste() {
+    if(hasDiffFocus()) { diff.getDiffPane().paste(); } else { textPane.paste(); }
   }
 
   /**

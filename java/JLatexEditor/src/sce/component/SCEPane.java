@@ -72,9 +72,6 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   private ArrayList<SCERowHighlight> rowHighlights = new ArrayList<SCERowHighlight>();
   private ArrayList<SCETextHighlight> textHighlights = new ArrayList<SCETextHighlight>();
 
-  // is this text pane editable?
-  private boolean editable = true;
-
   // get focus back if lost
   private boolean focusBack = false;
 
@@ -382,24 +379,6 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    */
   public String getText(){
     return document.getText();
-  }
-
-  /**
-   * Sets if this pane should be editable.
-   *
-   * @param editable true, if editable
-   */
-  public void setEditable(boolean editable){
-    this.editable = editable;
-  }
-
-  /**
-   * Returns if the text pane is editable.
-   *
-   * @return true, if editable
-   */
-  public boolean isEditable(){
-    return editable;
   }
 
 	/**

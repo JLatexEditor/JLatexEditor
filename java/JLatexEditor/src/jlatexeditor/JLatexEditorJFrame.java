@@ -563,17 +563,17 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
     // cut
     if(action.equals("cut")){
-      getEditor(tabbedPane.getSelectedIndex()).getTextPane().cut();
+      getEditor(tabbedPane.getSelectedIndex()).cut();
     } else
 
     // copy
     if(action.equals("copy")){
-      getEditor(tabbedPane.getSelectedIndex()).getTextPane().copy();
+      getEditor(tabbedPane.getSelectedIndex()).copy();
     } else
 
     // paste
     if(action.equals("paste")){
-      getEditor(tabbedPane.getSelectedIndex()).getTextPane().paste();
+      getEditor(tabbedPane.getSelectedIndex()).paste();
     } else
 
     // diff

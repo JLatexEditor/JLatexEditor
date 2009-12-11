@@ -14,7 +14,7 @@ import java.util.List;
  * Diff component.
  */
 public class SCEDiff extends JSplitPane {
-  private static final int WIDTH = 50;
+  private static final int WIDTH = 70;
 
   public static Color COLOR_ADD = new Color(189, 238, 192);
   public static Color COLOR_REMOVE = new Color(191, 190, 239);
@@ -50,7 +50,7 @@ public class SCEDiff extends JSplitPane {
     diff.getCaret().moveTo(0, 0);
     diff.getUndoManager().clear();
     diff.getDocument().setModified(false);
-    diff.setEditable(false);
+    diff.getDocument().setEditable(false);
     setDividerLocation(.5);
     
     setUI(new SCEDiffUI());
@@ -161,6 +161,10 @@ public class SCEDiff extends JSplitPane {
     repaint();
   }
 
+  public SCEPane getDiffPane() {
+    return diff;
+  }
+
   public void setLocation(Point p) {
     setLocation(p.x, p.y);
   }
@@ -211,8 +215,8 @@ public class SCEDiff extends JSplitPane {
       int diffFirstRow = diff.viewToModel(0, diffOffsetY).getRow();
       int visibleRows = pane.getVisibleRowsCount() + 1;
 
-      int[] xpoints = new int[]{left, right, right, left};
-      int[] ypoints = new int[4];
+      int[] xpoints = new int[]{left, left + 15, right - 15, right, right, right - 15, left + 15, left};
+      int[] ypoints = new int[8];
       for (Modification modification : modifications) {
         int sourceStart = modification.getSourceStartIndex();
         int sourceLength = modification.getSourceLength();
@@ -228,9 +232,13 @@ public class SCEDiff extends JSplitPane {
         if(targetLength == 0) { paneYStart--; paneYEnd += 2; }
         if(sourceLength == 0) { diffYStart--; diffYEnd += 2; }
         ypoints[0] = paneYStart;
-        ypoints[1] = diffYStart;
-        ypoints[2] = diffYEnd;
-        ypoints[3] = paneYEnd;
+        ypoints[1] = paneYStart;
+        ypoints[2] = diffYStart;
+        ypoints[3] = diffYStart;
+        ypoints[4] = diffYEnd;
+        ypoints[5] = diffYEnd;
+        ypoints[6] = paneYEnd;
+        ypoints[7] = paneYEnd;
 
         switch (modification.getType()) {
           case Modification.TYPE_ADD:
@@ -243,7 +251,7 @@ public class SCEDiff extends JSplitPane {
             g.setColor(COLOR_CHANGE);
             break;
         }
-        g.fillPolygon(xpoints, ypoints, 4);
+        g.fillPolygon(xpoints, ypoints, 8);
       }
 
       /*

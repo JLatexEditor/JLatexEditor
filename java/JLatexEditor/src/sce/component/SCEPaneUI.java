@@ -2,14 +2,10 @@ package sce.component;
 
 import sce.codehelper.CodeHelper;
 import sce.codehelper.CodeHelperPane;
-import sce.codehelper.SCEPopup;
 import sce.quickhelp.QuickHelp;
 import sce.quickhelp.QuickHelpPane;
 
 import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
 import java.awt.event.*;
 
 /**
@@ -66,6 +62,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
   public void removeSelection(){
     SCEDocumentPosition start = document.getSelectionStart();
     SCEDocumentPosition end = document.getSelectionEnd();
+    if(start == null || end == null) return;
 
     document.remove(start.getRow(), start.getColumn(), end.getRow(), end.getColumn());
     caret.removeSelectionMark();

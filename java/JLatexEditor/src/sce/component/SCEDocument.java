@@ -34,6 +34,9 @@ public class SCEDocument{
   private SCEDocumentPosition editRangeStart = null;
   private SCEDocumentPosition editRangeEnd = null;
 
+  // editable?
+  private boolean editable = true;
+
   // document listeners
   private ArrayList<SCEDocumentListener> documentListeners = new ArrayList<SCEDocumentListener>();
 	// modification state listeners
@@ -417,6 +420,7 @@ public class SCEDocument{
    * @param eventID the event to tell the listeners (-1 if not to tell)
    */
   public synchronized void insert(String text, int row_nr, int column_nr, int eventID){
+    if(!editable) return;
     if(row_nr >= rowsCount) return;
 
     // remember row and column
@@ -561,6 +565,8 @@ public class SCEDocument{
    * @param eventID the event to tell the listeners (-1 if not to tell)
    */
   public void remove(int startRow, int startColumn, int endRow, int endColumn, int eventID){
+    if(!editable) return;
+
     // error handling = do nothing
     if(startRow < 0 || startColumn < 0) return;
     if(startRow > endRow || (startRow == endRow && startColumn > endColumn)) return;
@@ -683,6 +689,24 @@ public class SCEDocument{
       newRows[row_nr].row_nr = row_nr;
     }
     rows = newRows;
+  }
+
+  /**
+   * Sets if this document should be editable.
+   *
+   * @param editable true, if editable
+   */
+  public void setEditable(boolean editable){
+    this.editable = editable;
+  }
+
+  /**
+   * Returns if the text document is editable.
+   *
+   * @return true, if editable
+   */
+  public boolean isEditable(){
+    return editable;
   }
 
   public boolean isModified() {
