@@ -16,12 +16,14 @@ import java.util.regex.Pattern;
  */
 public final class Aspell {
 	private static final Matcher masterDictMatcher = Pattern.compile("/([^/\\.]+)\\.multi").matcher("");
+	private static Aspell instance = null;
 
 	private PrintStream aspellIn;
 	private BufferedReader aspellOut;
 	private BufferedReader aspellErr;
-	private static Aspell instance = null;
 	private InputStream out;
+	/** Words in the personal dictionary. */
+	private HashSet<String> personalWords = new HashSet<String>();
 
 	public static void main(String[] args) throws IOException {
 		// print all available dictionaries
@@ -94,6 +96,9 @@ public final class Aspell {
 
 		// read version line
 		aspellOut.readLine();
+
+		personalWords.clear();
+		personalWords.addAll(Arrays.asList(getPersonalWordList()));
 	}
 
 	/**
@@ -135,6 +140,8 @@ public final class Aspell {
 		aspellIn.println("*" + word);
 		aspellIn.println("#");
 		aspellIn.flush();
+
+		personalWords.add(word);
 	}
 
 	public synchronized void removeFromPersonalDict(String word) throws IOException {
@@ -158,6 +165,8 @@ public final class Aspell {
 		String masterLang = getMasterLang();
 		shutdown();
 		startAspell(masterLang, masterLang);
+
+		personalWords.remove(word);
 	}
 
 	/**
@@ -205,11 +214,9 @@ public final class Aspell {
 
 	public String[] getPersonalWordList() throws IOException {
 		String listString = call("$$pp");
-		listString = listString.substring(listString.indexOf(':')).trim();
+		listString = listString.substring(listString.indexOf(':')+1).trim();
 		return listString.split(", ");
 	}
-
-
 
 	public String[] getSessionWordList() throws IOException {
 		String listString = call("$$ps");
@@ -226,6 +233,10 @@ public final class Aspell {
 
 	private void flushOut() throws IOException {
 		while (out.available() > 0) aspellOut.readLine();
+	}
+
+	public HashSet<String> getPersonalWords() {
+		return personalWords;
 	}
 
 	/**

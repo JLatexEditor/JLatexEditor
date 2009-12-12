@@ -609,6 +609,20 @@ public class SCEDocument{
     }
   }
 
+	/**
+	 * Replaces the text between the given positions with the new text.
+	 *
+	 * @param startRow the start row
+	 * @param startColumn the start column
+	 * @param endRow the end row
+	 * @param endColumn the end column (behind the last character to remove)
+	 * @param text new text
+	 */
+	public void replace (int startRow, int startColumn, int endRow, int endColumn, String text) {
+		remove(startRow, startColumn, endRow, endColumn);
+		insert(text, startRow, startColumn);
+	}
+
   /**
    * Sets the row propertie modiefied to true.
    *
