@@ -96,6 +96,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener {
       SCEDocument document = editor.getTextPane().getDocument();
       for(int row = 0; row < document.getRowsCount(); row++) {
         String rowText = document.getRow(row);
+        if(!caseSensitive.isSelected()) rowText = rowText.toLowerCase();
         int column = -1;
         while((column = rowText.indexOf(search, column+1)) != -1) {
           if(caret.getRow() == row && caret.getColumn() == column) moveCaret = false;
