@@ -168,6 +168,20 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     findMenuItem.addActionListener(this);
     editMenu.add(findMenuItem);
 
+    JMenuItem findNextMenuItem = new JMenuItem("Find Next");
+    findNextMenuItem.setActionCommand("find next");
+	  findNextMenuItem.setMnemonic('N');
+    findNextMenuItem.setAccelerator(KeyStroke.getKeyStroke("F3"));
+    findNextMenuItem.addActionListener(this);
+    editMenu.add(findNextMenuItem);
+
+    JMenuItem findPreviousMenuItem = new JMenuItem("Find Previous");
+    findPreviousMenuItem.setActionCommand("find previous");
+	  findPreviousMenuItem.setMnemonic('P');
+    findPreviousMenuItem.setAccelerator(KeyStroke.getKeyStroke("shift F3"));
+    findPreviousMenuItem.addActionListener(this);
+    editMenu.add(findPreviousMenuItem);
+
     JMenuItem cutMenuItem = new JMenuItem("Cut");
     cutMenuItem.setActionCommand("cut");
     cutMenuItem.setAccelerator(KeyStroke.getKeyStroke("control X"));
@@ -559,6 +573,14 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // find
     if(action.equals("find")){
       getEditor(tabbedPane.getSelectedIndex()).search();
+    } else
+    // find next
+    if(action.equals("find next")){
+      getEditor(tabbedPane.getSelectedIndex()).getSearch().next();
+    } else
+    // find previous
+    if(action.equals("find previous")){
+      getEditor(tabbedPane.getSelectedIndex()).getSearch().previous();
     } else
 
     // cut

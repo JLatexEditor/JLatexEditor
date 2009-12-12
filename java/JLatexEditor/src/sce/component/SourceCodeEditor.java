@@ -129,6 +129,13 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel{
   }
 
   /**
+   * Search.
+   */
+  public SCESearch getSearch() {
+    return search;
+  }
+
+  /**
    * Returns the marker bar.
    */
   public SCEMarkerBar getMarkerBar() {
