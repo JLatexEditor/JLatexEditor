@@ -99,7 +99,7 @@ public class SpellCheckSuggester implements CodeAssistant, SCEPopup.ItemHandler 
 
 	public void perform(Object item) {
 		if (item instanceof Action) {
-			aspell.addToDict(misspelledWord.word);
+			aspell.addToPersonalDict(misspelledWord.word);
 			// add and remove for reparsing
 			document.remove(misspelledWord.row, misspelledWord.startColumn, misspelledWord.row, misspelledWord.endColumn);
 			document.insert(misspelledWord.word, misspelledWord.row, misspelledWord.startColumn);

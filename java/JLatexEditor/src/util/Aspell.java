@@ -1,12 +1,10 @@
 package util;
 
+import java.io.*;
 import java.util.*;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Java API for the command line tool aspell.
@@ -17,10 +15,13 @@ import java.io.PrintStream;
  * @author Stefan Endrullis
  */
 public final class Aspell {
+	private static final Matcher masterDictMatcher = Pattern.compile("/([^/\\.]+)\\.multi").matcher("");
+
 	private PrintStream aspellIn;
 	private BufferedReader aspellOut;
 	private BufferedReader aspellErr;
 	private static Aspell instance = null;
+	private InputStream out;
 
 	public static void main(String[] args) throws IOException {
 		// print all available dictionaries
@@ -46,7 +47,17 @@ public final class Aspell {
 	 * @throws IOException if aspell could not be started
 	 */
 	public Aspell() throws IOException {
-		this ("en", "en_GB");
+		this ("en_GB");
+	}
+
+	/**
+	 * Creates the aspell wrapper that runs aspell in background.
+	 *
+	 * @param lang language, e.g. "en" or "en_GB"
+	 * @throws IOException if aspell could not be started
+	 */
+	public Aspell(String lang) throws IOException {
+		startAspell(lang, lang);
 	}
 
 	/**
@@ -57,6 +68,10 @@ public final class Aspell {
 	 * @throws IOException if aspell could not be started
 	 */
 	public Aspell(String lang, String langTag) throws IOException {
+		startAspell(lang, langTag);
+	}
+
+	private void startAspell(String lang, String langTag) throws IOException {
 		String[] aspellCommand = new String[]{
 			"aspell",
 			"-a",
@@ -73,8 +88,12 @@ public final class Aspell {
 		} catch (IllegalThreadStateException ignored) {}
 
 		aspellIn  = new PrintStream(new BufferedOutputStream(aspellProcess.getOutputStream()), true);
-		aspellOut = new BufferedReader(new InputStreamReader(aspellProcess.getInputStream()));
+		out = aspellProcess.getInputStream();
+		aspellOut = new BufferedReader(new InputStreamReader(out));
 		aspellErr = new BufferedReader(new InputStreamReader(aspellProcess.getErrorStream()));
+
+		// read version line
+		aspellOut.readLine();
 	}
 
 	/**
@@ -85,19 +104,22 @@ public final class Aspell {
 	 * @throws IOException thrown if execution of aspell failed
 	 */
 	public synchronized Result check(String word) throws IOException {
+		flushOut();
 		aspellIn.println(word);
-		aspellOut.readLine();
+		aspellIn.flush();
 
     String line = aspellOut.readLine();
-    if(line.equals("")) line = aspellOut.readLine();
 
 		if (line.equals("*")) {
+			aspellOut.readLine();
 			return new Result();
 		} else
 		if (line.startsWith("#")) {
+			aspellOut.readLine();
 			return new Result(new ArrayList<String>(0));
 		} else
 		if (line.startsWith("&")) {
+			aspellOut.readLine();
 			return new Result(Arrays.asList(line.split(": ")[1].split(", ")));
 		} else {
 			throw new RuntimeException("unknown aspell answer: " + line);
@@ -109,9 +131,33 @@ public final class Aspell {
 	 *
 	 * @param word word to add
 	 */
-	public synchronized void addToDict(String word) {
+	public synchronized void addToPersonalDict(String word) {
 		aspellIn.println("*" + word);
 		aspellIn.println("#");
+		aspellIn.flush();
+	}
+
+	public synchronized void removeFromPersonalDict(String word) throws IOException {
+		// remove word from personal dict
+		File homeDir = new File(System.getProperty("user.home"));
+		String personalDictName = getOption("personal");
+		File personalDict = new File(homeDir, personalDictName);
+		File newPersonalDict = new File(homeDir, personalDictName + "_new");
+		BufferedReader r = new BufferedReader(new FileReader(personalDict));
+		PrintStream w = new PrintStream(new FileOutputStream(newPersonalDict));
+
+		String line;
+		while ((line = r.readLine()) != null) {
+			if (!line.equals(word)) {
+				w.println(line);
+			}
+		}
+
+		newPersonalDict.renameTo(personalDict);
+
+		String masterLang = getMasterLang();
+		shutdown();
+		startAspell(masterLang, masterLang);
 	}
 
 	/**
@@ -137,6 +183,7 @@ public final class Aspell {
 	 */
 	public synchronized void setOption(String option, String value) {
 		aspellIn.println("$$cs " + option + "," + value);
+		aspellIn.flush();
 	}
 
 	public void   setLang(String lang) { setOption("lang", lang);	}
@@ -145,8 +192,15 @@ public final class Aspell {
 	public void   setLanguageTag(String languageTag) { setOption("language-tag", languageTag); }
 	public String getLanguageTag() throws IOException { return getOption("language-tag"); }
 
+	public String getMasterLang() throws IOException {
+		masterDictMatcher.reset(getOption("master"));
+		masterDictMatcher.find();
+		return masterDictMatcher.group(1);
+	}
+
 	public void addReplacement(String misspelling, String correction) {
 		aspellIn.println("$$ra " + misspelling + "," + correction);
+		aspellIn.flush();
 	}
 
 	public String[] getPersonalWordList() throws IOException {
@@ -155,6 +209,8 @@ public final class Aspell {
 		return listString.split(", ");
 	}
 
+
+
 	public String[] getSessionWordList() throws IOException {
 		String listString = call("$$ps");
 		listString = listString.substring(listString.indexOf(':')).trim();
@@ -162,8 +218,14 @@ public final class Aspell {
 	}
 
 	private String call(String input) throws IOException {
+		flushOut();
 		aspellIn.println(input);
+		aspellIn.flush();
 		return aspellOut.readLine();
+	}
+
+	private void flushOut() throws IOException {
+		while (out.available() > 0) aspellOut.readLine();
 	}
 
 	/**
