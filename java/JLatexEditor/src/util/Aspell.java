@@ -220,7 +220,7 @@ public final class Aspell {
 
 	public String[] getSessionWordList() throws IOException {
 		String listString = call("$$ps");
-		listString = listString.substring(listString.indexOf(':')).trim();
+		listString = listString.substring(listString.indexOf(':')+1).trim();
 		return listString.split(", ");
 	}
 
