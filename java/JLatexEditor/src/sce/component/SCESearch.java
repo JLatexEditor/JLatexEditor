@@ -136,7 +136,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener {
   }
 
   public void keyReleased(KeyEvent e) {
-    update();
+    if(e.getSource() == input) update();
   }
 
   public static class Position {
