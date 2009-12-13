@@ -110,6 +110,10 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel{
     add(diff.getScrollPane(), BorderLayout.CENTER);
   }
 
+  public SCEDiff getDiffView() {
+    return diff;
+  }
+
   /**
    * Returns the sce.component.SCEPane.
    * @return the text pane

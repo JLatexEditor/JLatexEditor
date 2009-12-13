@@ -344,15 +344,32 @@ public class SCEDiff extends JSplitPane {
     }
 
     public void scrollRectToVisible(Rectangle rectangle) {
+      JScrollBar vbar = scrollPane.getVerticalScrollBar();
+      JScrollBar hbar = scrollPane.getHorizontalScrollBar();
+
+      JViewport currentViewport = diffView.getDiffPane().hasFocus() ? diffViewport : paneViewport;
       SCEPane currentPane = diffView.getDiffPane().hasFocus() ? diffView.getDiffPane() : diffView.getTextPane();
 
-      int lineHeight = currentPane.getLineHeight();
-      Rectangle visible = currentPane.getVisibleRect();
+      double[] lineMap = diffView.getDiffPane().hasFocus() ? line2Diff : line2Pane;
+
+      Rectangle visible = currentViewport.getVisibleRect(); //currentPane.getVisibleRect();
       if(visible.getY() <= rectangle.getY() && visible.getY() + visible.getHeight() >= rectangle.getY() + rectangle.getHeight()) {
         return;
       }
 
       boolean up = rectangle.getY() < visible.getY();
+      int lineHeight = currentPane.getLineHeight();
+      int line = -(location.y - (int) visible.getHeight()/2) / lineHeight;
+
+      int nline = line;
+      if(up) {
+        int distance = (int) (visible.getY() - rectangle.getY());
+        while((lineMap[line] - lineMap[nline]) * lineHeight < distance) nline--;
+      } else {
+        int distance = (int) (rectangle.getY() + rectangle.getHeight() - visible.getY() - visible.getHeight());
+        while((lineMap[nline] - lineMap[line]) * lineHeight < distance) nline++;
+      }
+      vbar.setValue(vbar.getValue() + (nline - line) * lineHeight);
     }
   }
 }
