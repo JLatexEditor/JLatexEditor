@@ -11,6 +11,7 @@ import util.StreamUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 
 public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel{
@@ -90,6 +91,10 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel{
     textPane.getCaret().moveTo(0,0);
     textPane.getUndoManager().clear();
     textPane.getDocument().setModified(false);
+  }
+
+  public File getFile() {
+    return new File(resource.toString());
   }
 
   public void reload() throws IOException {

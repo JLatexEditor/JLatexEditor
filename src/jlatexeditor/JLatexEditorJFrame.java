@@ -10,6 +10,7 @@ import jlatexeditor.codehelper.JumpTo;
 import jlatexeditor.codehelper.SpellCheckSuggester;
 import jlatexeditor.errorhighlighting.LatexCompiler;
 import jlatexeditor.gui.AboutDialog;
+import jlatexeditor.gui.LocalHistory;
 import sce.component.*;
 import jlatexeditor.errorhighlighting.LatexErrorHighlighting;
 import jlatexeditor.quickhelp.LatexQuickHelp;
@@ -288,6 +289,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     toolsTab = new JTabbedPane();
     errorView = new ErrorView(this);
     toolsTab.addTab("Compile", errorView);
+    toolsTab.addTab("Local History", new LocalHistory(this));
 
     // tabs for the files
     tabbedPane = new JTabbedPane();
@@ -360,6 +362,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
   public SourceCodeEditor getEditor(int tab) {
     return (SourceCodeEditor) tabbedPane.getComponentAt(tab);
+  }
+
+  public SourceCodeEditor getActiveEditor() {
+    return getEditor(tabbedPane.getSelectedIndex());
   }
 
 	private SourceCodeEditor addTab(AbstractResource resource) throws IOException {
@@ -470,10 +476,11 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     String text = editor.getTextPane().getText();
     try{
       boolean history = true;
-      File history_dir = new File(file.getParent(), ".jle/history");
-      File file_backup = new File(history_dir, file.getName());
-      File file_revisions = new File(history_dir, file.getName() + ".rev");
+      File history_dir = LocalHistory.getHistoryDir(file);
       if(!history_dir.exists()) history = history_dir.mkdirs();
+
+      File file_backup = LocalHistory.getBackupFile(file);
+      File file_revisions = LocalHistory.getRevisionsFile(file);
 
       PrintWriter writer = new PrintWriter(new FileOutputStream(file));
       writer.write(text);
@@ -491,7 +498,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
           BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
           String line;
-          diff_writer.println("revision: " + Calendar.getInstance().getTime());
+          diff_writer.println(LocalHistory.REVISION + Calendar.getInstance().getTime());
           while((line = reader.readLine()) != null) diff_writer.println(line);
 
           diff_writer.close();
