@@ -127,6 +127,8 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   public void addNotify(){
     super.addNotify();
 
+    if(ui != null) return;
+    
     // create the UI
     ui = new SCEPaneUI(this);
 	  ui.setCodeHelper(codeHelper);
