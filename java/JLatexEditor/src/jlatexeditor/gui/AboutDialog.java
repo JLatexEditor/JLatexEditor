@@ -60,7 +60,7 @@ public class AboutDialog extends JFrame {
 		Color creditsShadow = Color.BLACK;
 		float creditsShadowAlpha = 0.30f;
 
-    ImageIcon icon = new ImageIcon(getClass().getResource("/logo.png"));
+    ImageIcon icon = new ImageIcon(getClass().getResource("/images/logo.png"));
     Image iconImage = icon.getImage();
     BufferedImage image = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
     Graphics2D g = image.createGraphics();
