@@ -43,7 +43,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
   private JMenuBar menuBar = null;
   private JTabbedPane tabbedPane = null;
-  private JSplitPane textErrorSplit = null;
+  private JSplitPane textToolsSplit = null;
+  private JTabbedPane toolsTab = null;
   private ErrorView errorView = null;
 
   // command line arguments
@@ -284,7 +285,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  helpMenu.add(aboutCommitItem);
 	  
     // error messages
+    toolsTab = new JTabbedPane();
     errorView = new ErrorView(this);
+    toolsTab.addTab("Compile", errorView);
 
     // tabs for the files
     tabbedPane = new JTabbedPane();
@@ -292,11 +295,11 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		  addTab(new UntitledDoc());
 	  } catch (IOException ignored) {}
 
-	  textErrorSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, tabbedPane, errorView);
-    textErrorSplit.setOneTouchExpandable(true);
-    textErrorSplit.setResizeWeight(.85);
+	  textToolsSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, tabbedPane, toolsTab);
+    textToolsSplit.setOneTouchExpandable(true);
+    textToolsSplit.setResizeWeight(.85);
 
-    getContentPane().add(textErrorSplit, BorderLayout.CENTER);
+    getContentPane().add(textToolsSplit, BorderLayout.CENTER);
     getContentPane().validate();
 
     errorHighlighting.attach(getEditor(0), errorView);
