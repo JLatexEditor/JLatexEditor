@@ -26,6 +26,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.Calendar;
 import java.util.HashMap;
 
 public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener, KeyListener {
@@ -457,15 +458,48 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		  file = fileDoc.getFile();
 		}
 
+    /*
     File backup = new File(file.getAbsolutePath() + "~");
     if(backup.exists()) backup.delete();
     file.renameTo(backup);
+    */
 
     String text = editor.getTextPane().getText();
     try{
+      boolean history = true;
+      File history_dir = new File(file.getParent(), ".jle/history");
+      File file_backup = new File(history_dir, file.getName());
+      File file_revisions = new File(history_dir, file.getName() + ".rev");
+      if(!history_dir.exists()) history = history_dir.mkdirs();
+
       PrintWriter writer = new PrintWriter(new FileOutputStream(file));
       writer.write(text);
       writer.close();
+
+      if(history) {
+        if(file_backup.exists()) {
+          PrintWriter diff_writer = new PrintWriter(new FileOutputStream(file_revisions, true));
+
+          Process process = Runtime.getRuntime().exec(new String[]{
+            "diff",
+            file.getCanonicalPath(),
+            file_backup.getCanonicalPath()
+          });
+          BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+          String line;
+          diff_writer.println("revision: " + Calendar.getInstance().getTime());
+          while((line = reader.readLine()) != null) diff_writer.println(line);
+
+          diff_writer.close();
+          reader.close();
+          process.destroy();
+        }
+
+        PrintWriter history_writer = new PrintWriter(new FileOutputStream(file_backup));
+        history_writer.write(text);
+        history_writer.close();
+      }
 
       lastModified.put(file, file.lastModified());
       editor.getTextPane().getDocument().setModified(false);
