@@ -19,20 +19,22 @@ public class SCEFontWindow extends JFrame implements ListSelectionListener, Acti
   private String fontName;
   private String prevFontName;
   private JList sizeList;
-  private int fontSize = 12;
+  private int fontSize;
+  private int prevFontSize;
 
   private ActionListener actionListener;
 
   public static void main(String[] args){
-    JFrame frame = new SCEFontWindow("Monospaced", null);
+    JFrame frame = new SCEFontWindow("Monospaced", 12, null);
     frame.setVisible(true);
   }
 
 
-  public SCEFontWindow(String fontName, ActionListener actionListener) {
+  public SCEFontWindow(String fontName, int fontSize, ActionListener actionListener) {
     super("Font Configuration");
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     this.fontName = this.prevFontName = fontName;
+    this.fontSize = this.prevFontSize = fontSize;
     this.actionListener = actionListener;
 
     Container cp = getContentPane();
@@ -134,11 +136,16 @@ public class SCEFontWindow extends JFrame implements ListSelectionListener, Acti
       actionListener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "font window"));
   }
 
+
   public void actionPerformed(ActionEvent e) {
     if(e.getActionCommand().equals("okFont")){
       dispose();
     } else
     if (e.getActionCommand().equals("cancelFont")) {
+      fontName = prevFontName;
+      fontSize = prevFontSize;
+      if(actionListener != null)
+        actionListener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "font window cancel"));
       dispose();
     }
   }

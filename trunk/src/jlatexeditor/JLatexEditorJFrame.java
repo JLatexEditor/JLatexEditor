@@ -645,14 +645,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     }
 */
 	  if(action.equals("font")){
-		  SCEFontWindow fontDialog = new SCEFontWindow(GProperties.getEditorFont().getFontName(), this);
+		  SCEFontWindow fontDialog = new SCEFontWindow(GProperties.getEditorFont().getFontName(), GProperties.getEditorFont().getSize(), this);
 		  fontDialog.setVisible(true);
 	  } else
-    if(action.equals("font window")){
+    if(action.equals("font window") || action.equals("font window cancel")){
       SCEFontWindow fontDialog = (SCEFontWindow) e.getSource();
       changeFont(fontDialog.getFontName(), fontDialog.getFontSize());
     } else
-
     if(action.equals("update")){
 		  checkForUpdates(false);
 	  } else
