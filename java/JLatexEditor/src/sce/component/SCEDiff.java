@@ -10,6 +10,7 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.List;
 
 /**
@@ -30,6 +31,8 @@ public class SCEDiff extends JSplitPane {
   private SCEPane diff;
   private JViewport diffViewport;
   private JScrollPane scrollPane;
+
+	private KeyListener paneKeyListener, diffKeyListener;
 
   private int preferredLines = 0;
   private Dimension preferredSize = new Dimension();
@@ -67,31 +70,31 @@ public class SCEDiff extends JSplitPane {
     setDividerLocation(.5);
     setResizeWeight(.5);
 
-	  pane.addKeyListener(new KeyAdapter() {
+	  pane.addKeyListener(paneKeyListener = new KeyAdapter() {
 		  @Override
 		  public void keyPressed(KeyEvent e) {
 			  if (e.getModifiers() == KeyEvent.ALT_MASK) {
 				  if (e.getKeyCode() == KeyEvent.VK_UP) {
-					  jumpTargetToPreviousModification();
+					  jumpToPreviousTargetModification();
 					  e.consume();
 				  }
 				  if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-					  jumpTargetToNextModification();
+					  jumpToNextTargetModification();
 					  e.consume();
 				  }
 			  }
 		  }
 	  });
-	  diff.addKeyListener(new KeyAdapter() {
+	  diff.addKeyListener(diffKeyListener = new KeyAdapter() {
 		  @Override
 		  public void keyPressed(KeyEvent e) {
 			  if (e.getModifiers() == KeyEvent.ALT_MASK) {
 				  if (e.getKeyCode() == KeyEvent.VK_UP) {
-					  jumpSourceToPreviousModification();
+					  jumpToPreviousSourceModification();
 					  e.consume();
 				  }
 				  if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-					  jumpSourceToNextModification();
+					  jumpToNextSourceModification();
 					  e.consume();
 				  }
 			  }
@@ -99,7 +102,7 @@ public class SCEDiff extends JSplitPane {
 	  });
   }
 
-	public void jumpTargetToPreviousModification() {
+	public void jumpToPreviousTargetModification() {
 		SCECaret caret = pane.getCaret();
 		int currRow = caret.getRow();
 
@@ -113,7 +116,7 @@ public class SCEDiff extends JSplitPane {
 		}
 	}
 
-	public void jumpTargetToNextModification() {
+	public void jumpToNextTargetModification() {
 		SCECaret caret = pane.getCaret();
 		int currRow = caret.getRow();
 
@@ -125,7 +128,7 @@ public class SCEDiff extends JSplitPane {
 		}
 	}
 
-	public void jumpSourceToPreviousModification() {
+	public void jumpToPreviousSourceModification() {
 		SCECaret caret = diff.getCaret();
 		int currRow = caret.getRow();
 
@@ -139,7 +142,7 @@ public class SCEDiff extends JSplitPane {
 		}
 	}
 
-	public void jumpSourceToNextModification() {
+	public void jumpToNextSourceModification() {
 		SCECaret caret = diff.getCaret();
 		int currRow = caret.getRow();
 
@@ -297,7 +300,7 @@ public class SCEDiff extends JSplitPane {
     super.paint(g);
   }
 
-  private class SCEDiffUI extends BasicSplitPaneUI {
+	private class SCEDiffUI extends BasicSplitPaneUI {
     public BasicSplitPaneDivider createDefaultDivider() {
       return new SCEDiffDivider(this);
     }
@@ -376,6 +379,15 @@ public class SCEDiff extends JSplitPane {
       */
     }
   }
+
+	/**
+	 * Closes the diff.
+	 * // TODO needs to be called. :)
+	 */
+	public void close() {
+		pane.removeKeyListener(paneKeyListener);
+		diff.removeKeyListener(diffKeyListener);
+	}
 
   public static class SCEDiffScrollPane extends JScrollPane {
     public SCEDiffScrollPane(SCEDiff view) {
