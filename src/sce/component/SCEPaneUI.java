@@ -50,9 +50,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     pane.setFocusTraversalKeysEnabled(false);
 
     // MouseListener
-    pane.removeMouseListener(this);
     pane.addMouseListener(this);
-    pane.addMouseMotionListener(this);
     pane.addMouseMotionListener(this);
   }
 
