@@ -68,6 +68,7 @@ public class SCEFontWindow extends JFrame implements ListSelectionListener, Acti
     for(String key : GProperties.TEXT_ANTIALIAS_KEYS) {
       aaModel.addElement(key);
     }
+    aaList.addActionListener(this);
     
 
     JLabel fontLabel = new JLabel("Font");
