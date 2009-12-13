@@ -8,6 +8,8 @@ import javax.swing.*;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -16,7 +18,7 @@ import java.util.List;
 /**
  * Diff component.
  */
-public class SCEDiff extends JSplitPane {
+public class SCEDiff extends JSplitPane implements ComponentListener {
   private static final int WIDTH = 70;
 
   public static Color COLOR_ADD = new Color(189, 238, 192);
@@ -36,6 +38,7 @@ public class SCEDiff extends JSplitPane {
 
   private int preferredLines = 0;
   private Dimension preferredSize = new Dimension();
+  private double preferredWidthFactor = 1;
 
   /**
    * Correspondence of the lines.
@@ -60,6 +63,7 @@ public class SCEDiff extends JSplitPane {
     setRightComponent(diffViewport);
 
     setScrollPane(new SCEDiff.SCEDiffScrollPane(this));
+    scrollPane.addComponentListener(this);
 
     setUI(new SCEDiffUI());
 
@@ -67,8 +71,6 @@ public class SCEDiff extends JSplitPane {
     diff.getUndoManager().clear();
     diff.getDocument().setModified(false);
     diff.getDocument().setEditable(false);
-    setDividerLocation(.5);
-    setResizeWeight(.5);
 
 	  pane.addKeyListener(paneKeyListener = new KeyAdapter() {
 		  @Override
@@ -156,7 +158,10 @@ public class SCEDiff extends JSplitPane {
 
   public void setScrollPane(JScrollPane scrollPane) {
     this.scrollPane = scrollPane;
+    updateLayout();
+  }
 
+  public void updateLayout() {
     setDividerLocation((scrollPane.getVisibleRect().width - WIDTH) / 2);
     setDividerSize(WIDTH);
 
@@ -166,7 +171,8 @@ public class SCEDiff extends JSplitPane {
     double overLeft = Math.max(1, pane.getPreferredSize().width - visibleWidthLeft) / (double) visibleWidthLeft;
     double overRight = Math.max(1, diff.getPreferredSize().width - visibleWidthRight) / (double) visibleWidthRight;
 
-    preferredSize.width = (int) (visibleRect.width * (1 + Math.max(0, Math.max(overLeft, overRight))));
+    preferredWidthFactor = 1 + Math.max(0, Math.max(overLeft, overRight));
+    preferredSize.width = (int) (visibleRect.width * preferredWidthFactor);
     preferredSize.height = preferredLines * pane.getLineHeight() + 30;
   }
 
@@ -260,8 +266,12 @@ public class SCEDiff extends JSplitPane {
 
     double paneLine = (1 - lineFraction) * line2Pane[line] + lineFraction * line2Pane[line + 1];
     double diffLine = (1 - lineFraction) * line2Diff[line] + lineFraction * line2Diff[line + 1];
-    paneViewport.setViewPosition(new Point(pane.getX(), (int) (paneLine * lineHeight) - yCorrection));
-    diffViewport.setViewPosition(new Point(diff.getX(), (int) (diffLine * lineHeight) - yCorrection));
+    int rx = (int) (x / preferredWidthFactor);
+    paneViewport.setViewPosition(new Point(-rx, (int) (paneLine * lineHeight) - yCorrection));
+    diffViewport.setViewPosition(new Point(-rx, (int) (diffLine * lineHeight) - yCorrection));
+
+    pane.setSize(paneViewport.getWidth() - rx, pane.getHeight());
+    diff.setSize(diffViewport.getWidth() - rx, diff.getHeight());
 
     repaint();
   }
@@ -298,6 +308,20 @@ public class SCEDiff extends JSplitPane {
 
   public void paint(Graphics g) {
     super.paint(g);
+  }
+
+  public void componentResized(ComponentEvent e) {
+    updateLayout();
+  }
+
+  public void componentMoved(ComponentEvent e) {
+  }
+
+  public void componentShown(ComponentEvent e) {
+    updateLayout();
+  }
+
+  public void componentHidden(ComponentEvent e) {
   }
 
 	private class SCEDiffUI extends BasicSplitPaneUI {
@@ -450,23 +474,32 @@ public class SCEDiff extends JSplitPane {
       double[] lineMap = diffView.getDiffPane().hasFocus() ? line2Diff : line2Pane;
 
       Rectangle visible = currentViewport.getVisibleRect(); //currentPane.getVisibleRect();
-      if(visible.getY() <= rectangle.getY() && visible.getY() + visible.getHeight() >= rectangle.getY() + rectangle.getHeight()) {
-        return;
+      if(visible.getY() > rectangle.getY() || visible.getY() + visible.getHeight() < rectangle.getY() + rectangle.getHeight()) {
+        boolean up = rectangle.getY() < visible.getY();
+        int lineHeight = currentPane.getLineHeight();
+        int line = -(location.y - (int) visible.getHeight()/2) / lineHeight;
+
+        int nline = line;
+        if(up) {
+          int distance = (int) (visible.getY() - rectangle.getY());
+          while(line >= 0 && (lineMap[line] - lineMap[nline]) * lineHeight < distance) nline--;
+        } else {
+          int distance = (int) (rectangle.getY() + rectangle.getHeight() - visible.getY() - visible.getHeight());
+          while(line < lineMap.length && (lineMap[nline] - lineMap[line]) * lineHeight < distance) nline++;
+        }
+        vbar.setValue(vbar.getValue() + (nline - line) * lineHeight);
       }
 
-      boolean up = rectangle.getY() < visible.getY();
-      int lineHeight = currentPane.getLineHeight();
-      int line = -(location.y - (int) visible.getHeight()/2) / lineHeight;
-
-      int nline = line;
-      if(up) {
-        int distance = (int) (visible.getY() - rectangle.getY());
-        while((lineMap[line] - lineMap[nline]) * lineHeight < distance) nline--;
-      } else {
-        int distance = (int) (rectangle.getY() + rectangle.getHeight() - visible.getY() - visible.getHeight());
-        while((lineMap[nline] - lineMap[line]) * lineHeight < distance) nline++;
+      if(visible.getX() > rectangle.getX() || visible.getX() + visible.getWidth() < rectangle.getX() + rectangle.getWidth()) {
+        boolean left = rectangle.getX() < visible.getX();
+        int distance;
+        if(left) {
+          distance = (int) (rectangle.getX() - visible.getX());
+        } else {
+          distance = (int) (rectangle.getX() + rectangle.getWidth() - visible.getX() - visible.getWidth());
+        }
+        hbar.setValue(vbar.getValue() + (int) (distance*preferredWidthFactor));
       }
-      vbar.setValue(vbar.getValue() + (nline - line) * lineHeight);
     }
   }
 }

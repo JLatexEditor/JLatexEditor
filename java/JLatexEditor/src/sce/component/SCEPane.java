@@ -113,6 +113,14 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     addFocusListener(this);
   }
 
+  public void setSize(int width, int height) {
+    super.setSize(Math.max(preferredSize.width, width), Math.max(preferredSize.height, height));
+  }
+
+  public void setSize(Dimension size) {
+    setSize(size.width, size.height);
+  }
+
   /**
    * If this pane is added to a container.
    */

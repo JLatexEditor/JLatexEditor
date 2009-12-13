@@ -11,8 +11,6 @@ import util.StreamUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel{
@@ -108,6 +106,7 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel{
     diff = new SCEDiff(textPane, text, diffPane);
 
     add(diff.getScrollPane(), BorderLayout.CENTER);
+    diff.updateLayout();
   }
 
   public SCEDiff getDiffView() {
