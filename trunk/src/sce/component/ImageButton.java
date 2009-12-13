@@ -43,8 +43,12 @@ public class ImageButton extends JPanel implements MouseListener {
     listeners.add(listener);
   }
 
+  public void removeActionListener(ActionListener listener) {
+    listeners.remove(listener);
+  }
+
   public void mouseClicked(MouseEvent e) {
-    for(ActionListener listener : listeners) {
+    for(ActionListener listener : (ArrayList<ActionListener>) listeners.clone()) {
       listener.actionPerformed(new ActionEvent(this, 0, actionCommand));
     }
   }
