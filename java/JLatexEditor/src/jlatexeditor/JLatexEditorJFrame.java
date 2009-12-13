@@ -261,38 +261,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  fontMenuItem.setActionCommand("font");
     fontMenuItem.setMnemonic('F');
     fontMenuItem.addActionListener(this);
-    settingsMenu.add(fontMenuItem);
-
-/*    for(String fontName : GProperties.getMonospaceFonts()) {
-      JMenuItem entry = new JMenuItem(fontName);
-      entry.setActionCommand("Font: " + fontName);
-      entry.addActionListener(this);
-      entry.addMouseMotionListener(this);
-      fontMenu.add(entry);
-    }
-
-    JMenu fontSizeMenu = new JMenu("Font Size");
-	  fontSizeMenu.setMnemonic('S');
-    settingsMenu.add(fontSizeMenu);
-
-    for(int size = 6; size <= 48; size++) {
-      JMenuItem entry = new JMenuItem(size + "");
-      entry.setActionCommand("FontSize: " + size);
-      entry.addActionListener(this);
-      fontSizeMenu.add(entry);
-    }
-
-    JMenu textAntialiasingMenu = new JMenu("Font Antialiasign");
-	  textAntialiasingMenu.setMnemonic('A');
-    settingsMenu.add(textAntialiasingMenu);
-
-    for(String key : GProperties.TEXT_ANTIALIAS_KEYS) {
-      JMenuItem entry = new JMenuItem(key);
-      entry.setActionCommand("TextAntialias: " + key);
-      entry.addActionListener(this);
-      textAntialiasingMenu.add(entry);
-    }
-*/    
+    settingsMenu.add(fontMenuItem);  
 
 	  JMenu helpMenu = new JMenu("Help");
 	  helpMenu.setMnemonic('H');
@@ -632,9 +601,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     }
 */
 	  if(action.equals("font")){
-		  SCEFontWindow fontDialog = new SCEFontWindow(GProperties.getEditorFont().getFontName());
+		  SCEFontWindow fontDialog = new SCEFontWindow(GProperties.getEditorFont().getFontName(), this);
 		  fontDialog.setVisible(true);
 	  } else
+    if(action.equals("font window")){
+      SCEFontWindow fontDialog = (SCEFontWindow) e.getSource();
+      changeFont(fontDialog.getFontName(), fontDialog.getFontSize());
+    } else
 
     if(action.equals("update")){
 		  checkForUpdates(false);
@@ -697,7 +670,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     }
   }
 
-	private void checkForUpdates(boolean startup) {
+
+
+  private void checkForUpdates(boolean startup) {
 		// check for new version
 		if (updater.isNewVersionAvailable()) {
 			// ask user if (s)he wants to update
@@ -809,7 +784,18 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	public void keyReleased(KeyEvent e) {
 	}
 
-	private class TabLabel extends JPanel implements MouseListener, SCEModificationStateListener {
+  public void changeFont(String fontName, int fontSize) {
+    GProperties.setEditorFont(new Font(fontName, Font.PLAIN, fontSize));
+
+    SourceCodeEditor editor = getEditor(tabbedPane.getSelectedIndex());
+    SCEPane pane = editor.getTextPane();
+    pane.setFont(GProperties.getEditorFont());
+    LatexStyles.load();
+    LatexStyles.addStyles(pane.getDocument());
+    editor.repaint();
+  }
+
+  private class TabLabel extends JPanel implements MouseListener, SCEModificationStateListener {
     private AbstractResource resource;
     private JLabel label;
     private JLabel closeIcon;

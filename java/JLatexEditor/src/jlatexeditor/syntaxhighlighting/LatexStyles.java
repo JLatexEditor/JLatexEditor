@@ -40,12 +40,13 @@ public class LatexStyles{
 
   private static Map<String,Byte> name2Id = new HashMap<String, Byte>();
 
+  private static String styleFile = "data/styles/user.xml";
+
   static {
-    init();
-    load("data/styles/user.xml");
+    load();
   }
 
-  private static void init() {
+  public static void init() {
     name2Id.put("text", TEXT);
     name2Id.put("command", COMMAND);
     name2Id.put("comment", COMMENT);
@@ -80,7 +81,12 @@ public class LatexStyles{
     return style != null ? style : COMMAND;
   }
 
+  public static void load() {
+    load(styleFile);
+  }
+
   public static void load(String filename) {
+    styleFile = filename;
     init();
 
     XMLParser xmlParser = new XMLParser();

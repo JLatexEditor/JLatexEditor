@@ -1,6 +1,8 @@
 package sce.component;
 
 import jlatexeditor.GProperties;
+import jlatexeditor.JLatexEditorJFrame;
+import jlatexeditor.syntaxhighlighting.LatexStyles;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
@@ -16,17 +18,22 @@ public class SCEFontWindow extends JFrame implements ListSelectionListener, Acti
   private JList fontList;
   private String fontName;
   private String prevFontName;
+  private JList sizeList;
+  private int fontSize = 12;
+
+  private ActionListener actionListener;
 
   public static void main(String[] args){
-    JFrame frame = new SCEFontWindow("Monospaced");
+    JFrame frame = new SCEFontWindow("Monospaced", null);
     frame.setVisible(true);
   }
 
 
-  public SCEFontWindow(String fontName) {
+  public SCEFontWindow(String fontName, ActionListener actionListener) {
     super("Font Configuration");
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     this.fontName = this.prevFontName = fontName;
+    this.actionListener = actionListener;
 
     Container cp = getContentPane();
     GridBagLayout layout = new GridBagLayout();
@@ -44,13 +51,14 @@ public class SCEFontWindow extends JFrame implements ListSelectionListener, Acti
     fontScroller.setAlignmentX(LEFT_ALIGNMENT);
 
     DefaultListModel sizeModel = new DefaultListModel();
-    JList sizeList = new JList(sizeModel);
+    sizeList = new JList(sizeModel);
     sizeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     sizeList.setLayoutOrientation(JList.VERTICAL);
     sizeList.setVisibleRowCount(-1);
     for(int size = 6; size <= 48; size++) {
       sizeModel.addElement(size + "");
     }
+    sizeList.getSelectionModel().addListSelectionListener(this);
 
     JScrollPane sizeScroller = new JScrollPane(sizeList);
     sizeScroller.setAlignmentX(LEFT_ALIGNMENT);
@@ -60,6 +68,7 @@ public class SCEFontWindow extends JFrame implements ListSelectionListener, Acti
     for(String key : GProperties.TEXT_ANTIALIAS_KEYS) {
       aaModel.addElement(key);
     }
+    
 
     JLabel fontLabel = new JLabel("Font");
     fontLabel.setLabelFor(fontList);
@@ -114,10 +123,14 @@ public class SCEFontWindow extends JFrame implements ListSelectionListener, Acti
   }
 
   public void valueChanged(ListSelectionEvent e) {
-    if(e.getSource() == fontList) {
+    if(e.getSource() == fontList.getSelectionModel()) {
       fontName = fontList.getSelectedValue().toString();
-      //actionListener.actionEvent(..);
     }
+    if(e.getSource() == sizeList.getSelectionModel()) {
+      fontSize = Integer.parseInt(sizeList.getSelectedValue().toString());
+    }
+    if(actionListener != null) 
+      actionListener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "font window"));
   }
 
   public void actionPerformed(ActionEvent e) {
@@ -127,6 +140,14 @@ public class SCEFontWindow extends JFrame implements ListSelectionListener, Acti
     if (e.getActionCommand().equals("cancelFont")) {
       dispose();
     }
+  }
+
+  public String getFontName(){
+   return this.fontName;
+  }
+
+  public int getFontSize (){
+    return this.fontSize;
   }
   
 }
