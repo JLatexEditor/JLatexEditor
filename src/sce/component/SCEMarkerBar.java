@@ -30,6 +30,9 @@ public class SCEMarkerBar extends JPanel implements SCEDocumentListener, MouseMo
 
   private JPanel toolTipComponent = new JPanel();
 
+  private ImageButton buttonClose;
+
+
   public SCEMarkerBar(SourceCodeEditor editor) {
     this.editor = editor;
     SCEDocument document = editor.getTextPane().getDocument();
@@ -40,11 +43,21 @@ public class SCEMarkerBar extends JPanel implements SCEDocumentListener, MouseMo
 
     document.addSCEDocumentListener(this);
 
-    setPreferredSize(new Dimension(13,600));
+    setPreferredSize(new Dimension(15,600));
     addMouseMotionListener(this);
     addMouseListener(this);
 
     createInputMap();
+
+    setLayout(null);
+    buttonClose = new ImageButton(
+            new ImageIcon(getClass().getResource("/images/buttons/close_mini.png")),
+            new ImageIcon(getClass().getResource("/images/buttons/close_mini_highlight.png")),
+            new ImageIcon(getClass().getResource("/images/buttons/close_mini_press.png")));
+    add(buttonClose);
+    buttonClose.setSize(buttonClose.getPreferredSize());
+    buttonClose.setLocation(0,0);
+    buttonClose.setVisible(false);
   }
 
   private void createInputMap() {
@@ -66,6 +79,10 @@ public class SCEMarkerBar extends JPanel implements SCEDocumentListener, MouseMo
   public void clear(int type) {
     markers.get(type).clear();
     repaint();
+  }
+
+  public ImageButton getButtonClose() {
+    return buttonClose;
   }
 
   public void addMarker(Marker marker) {

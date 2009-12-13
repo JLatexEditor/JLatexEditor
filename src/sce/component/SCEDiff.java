@@ -8,17 +8,13 @@ import javax.swing.*;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.util.List;
 
 /**
  * Diff component.
  */
-public class SCEDiff extends JSplitPane implements ComponentListener {
+public class SCEDiff extends JSplitPane implements ComponentListener, ActionListener {
   private static final int WIDTH = 70;
 
   public static Color COLOR_ADD = new Color(189, 238, 192);
@@ -47,7 +43,9 @@ public class SCEDiff extends JSplitPane implements ComponentListener {
   private double[] line2Pane;
   private double[] line2Diff;
 
-  public SCEDiff(final SCEPane pane, String text, SCEPane diff) {
+  private ImageButton buttonClose;
+
+  public SCEDiff(final SCEPane pane, String text, SCEPane diff, SourceCodeEditor editor) {
     super(JSplitPane.HORIZONTAL_SPLIT);
     setDoubleBuffered(false);
     this.text = text;
@@ -102,6 +100,10 @@ public class SCEDiff extends JSplitPane implements ComponentListener {
 			  }
 		  }
 	  });
+
+    buttonClose = editor.getMarkerBar().getButtonClose();
+    buttonClose.addActionListener(this);
+    buttonClose.setVisible(true);
   }
 
 	public void jumpToPreviousTargetModification() {
@@ -324,7 +326,11 @@ public class SCEDiff extends JSplitPane implements ComponentListener {
   public void componentHidden(ComponentEvent e) {
   }
 
-	private class SCEDiffUI extends BasicSplitPaneUI {
+  public void actionPerformed(ActionEvent e) {
+    close();
+  }
+
+  private class SCEDiffUI extends BasicSplitPaneUI {
     public BasicSplitPaneDivider createDefaultDivider() {
       return new SCEDiffDivider(this);
     }
@@ -406,11 +412,12 @@ public class SCEDiff extends JSplitPane implements ComponentListener {
 
 	/**
 	 * Closes the diff.
-	 * // TODO needs to be called. :)
 	 */
 	public void close() {
 		pane.removeKeyListener(paneKeyListener);
 		diff.removeKeyListener(diffKeyListener);
+    buttonClose.removeActionListener(this);
+    buttonClose.setVisible(false);
 	}
 
   public static class SCEDiffScrollPane extends JScrollPane {

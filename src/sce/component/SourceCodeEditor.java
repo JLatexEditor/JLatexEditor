@@ -103,7 +103,7 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel{
 
     diffPane = new SCEPane();
     LatexStyles.addStyles(diffPane.getDocument());
-    diff = new SCEDiff(textPane, text, diffPane);
+    diff = new SCEDiff(textPane, text, diffPane, this);
 
     add(diff.getScrollPane(), BorderLayout.CENTER);
     diff.updateLayout();
