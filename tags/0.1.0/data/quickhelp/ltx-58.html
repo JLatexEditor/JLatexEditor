@@ -1,0 +1,139 @@
+<html>
+
+<head>
+
+<title>Help On LaTeX tabbing</title>
+
+<link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
+
+</head>
+
+<body>
+
+
+
+
+
+<h2>tabbing</h2>
+
+
+
+<pre>
+
+ \begin{tabbing}
+
+ text \= more text \= still more text \= last text \\
+
+ second row \&gt;  \&gt; more \\
+
+ ....
+
+ ....
+
+ \end{tabbing}
+
+</pre>
+
+
+
+<p>The tabbing environment  provides a way to align text in
+
+columns.   It works  by setting  tab stops  and tabbing  to them
+
+much the way you do with an ordinary typewriter.</p>
+
+
+
+<p>The <a href="ltx-68.html">tabular</a> environment also aligns
+
+text in columns, but there are several important differences.</p>
+
+
+
+<ul>  
+
+  <li>The tabular environment can be used in any
+
+    <a href="ltx-130.html">mode</a> whereas the tabbing
+
+    environment can be used only in paragraph
+
+    <a href="ltx-130.html">mode</a> and it starts a new paragraph.</li>
+
+
+
+  <li>The tabular environment generates a box, which LaTeX
+
+    treats as one (albeit very large) letter; it cannot be split
+
+    across pages.  A long tabbing environment can be split across pages.</li>
+
+
+
+  <li>The width of columns in a tabular environment is
+
+    determined automatically by LaTeX; in the tabbing
+
+    environment this is done by setting tab stops.</li>
+
+</ul>
+
+
+
+<h3>Tabbing commands</h3>
+
+
+
+<ul>
+
+  <li><tt><a href="ltx-187.html">\=</a></tt> (set tab)</li>
+
+  <li><tt><a href="ltx-188.html">\&gt;</a></tt> (advance to next tab stop)</li>
+
+  <li><tt><a href="ltx-189.html">\&lt;</a></tt></li>
+
+  <li><tt><a href="ltx-190.html">\+</a></tt> (indent; move margin right)</li>
+
+  <li><tt><a href="ltx-182.html">\-</a></tt> (unindent; move margin left)</li>
+
+  <li><tt><a href="ltx-191.html">\'</a></tt></li>
+
+  <li><tt><a href="ltx-192.html">\`</a></tt></li>
+
+  <li><tt><a href="ltx-181.html">\\</a></tt> (end of line; newline)
+
+  <li><tt><a href="ltx-251.html">\kill</a></tt>
+
+    (ignore preceding text; use only for spacing)</li>
+
+</ul>
+
+
+
+<p>The <a href="ltx-241.html"><tt>\hspace</a></tt> command is useful for
+
+controlling horizontal space in the tabbing environment.</p>
+
+
+
+<p>Note that the commands <tt>\=</tt>, <tt>\'</tt>, and
+
+<tt>\`</tt> normally produce <a href="ltx-401.html">accents</a>
+
+over the subsequent letter.  These commands are redefined in the
+
+tabbing environment; in this environment it is possible to get
+
+the accents by using <tt>\a=</tt>, <tt>\a'</tt>, and
+
+<tt>\a`</tt>, respectively.</p>
+
+
+
+<hr noshade="noshade" size="1">
+
+
+
+<p>
+
+</body></html>

@@ -1,0 +1,185 @@
+<html>
+
+<head>
+
+<title>Help On LaTeX Special Characters</title>
+
+<link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
+
+</head>
+
+<body>
+
+
+
+
+
+<h2>Special Characters</h2>
+
+
+
+<p>The following characters play a special role in LaTeX and are
+
+called special printing characters, or simply special characters.</p>
+
+
+
+<pre>
+
+     # $ % & ~ _ ^ <tt>\</tt> { }
+
+</pre>
+
+
+
+<p>Whenever  you put one of these special characters  into your
+
+file, you are doing something special, as described below.</p>
+
+
+
+<p>If you simply want the character to be printed just as any
+
+other letter, include a <tt>\</tt> in front of the
+
+character. For example, <tt>\$</tt> will produce $ in your output.</p>
+
+
+
+<p>Exceptions to this rule: </p>
+
+
+
+<ul>
+
+  <li><tt>\</tt> itself because <tt><a href="ltx-181.html">\\</a></tt>
+
+    has  its  own special meaning.  Use  <tt>$\backslash$</tt>.</li>
+
+  <li><tt>~</tt> and <tt>^</tt> because <tt>\~</tt> and <tt>\^</tt> produce
+
+   <a href="ltx-401.html">accents</a>. Use 
+
+   <tt><a href="ltx-342.html">\verb</a></tt> or the
+
+   <a href="ltx-79.html">verbatim environment</a>.</li>
+
+</ul> 
+
+
+
+<h3>#</h3>
+
+
+
+<p>The number (pound) sign is used to define use of arguments,
+
+for example, in the <tt><a href="ltx-18.html">\newcommand</a></tt>
+
+command.</p>
+
+
+
+<h3>$</h3>
+
+
+
+<p>The dollar sign is used to delineate
+
+<a href="ltx-115.html#math">math</a> and
+
+<a href="ltx-421.html">displaymath</a> Enviroments.</p>
+
+
+
+<h3>%</h3>
+
+
+
+<p>The percent sign is used to insert
+
+<a href="ltx-434.html">Comments</a> in the input file, and
+
+to allow line breaks without generating a space.</p>
+
+
+
+<h3>&amp;</h3>
+
+
+
+<p>The ampersand is used to separate items in the
+
+<a href="ltx-202.html">array</a> and
+
+<a href="ltx-68.html">tabular</a> Enviroments.</p>
+
+
+
+<h3>~</h3>
+
+
+
+<p>The tilde generates a <a href="ltx-143.html">nonbreaking
+
+space</a> To create a tilde in the output, use
+
+<tt><a href="ltx-342.html">\verb</a></tt> or the
+
+<a href="ltx-79.html">verbatim environment</a> (or cheat by
+
+using <tt>\~{}</tt>, i.e., placing a
+
+<a href="ltx-401.html">tilde accent</a> over a "blank"
+
+letter).</p>
+
+
+
+<h3>_</h3>
+
+
+
+<p>The underscore is used to create
+
+<a href="ltx-179.html">subscripts</a>.</p>
+
+
+
+<h3>^</h3>
+
+
+
+<p>The carat (circumflex) symbol generates
+
+<a href="ltx-180.html">superscripts</a>. To create a carat in
+
+the output use <tt><a href="ltx-342.html">\verb</a></tt> or the
+
+<a href="ltx-79.html">verbatim environment</a>.</p>
+
+
+
+<h3>\ , { , and }</h3>
+
+
+
+<p>The backslash and braces are used in
+
+<a href="ltx-17.html">command</a> definitions, for enclosing
+
+command arguments, and for delimiting scopes of
+
+<a href="declarations.html">declarations</a>.</p>
+
+
+
+<hr noshade="noshade" size="1">
+
+
+
+<p>
+
+See also <a href="input.html">Input to LaTeX</a><br>
+
+</body></html>
