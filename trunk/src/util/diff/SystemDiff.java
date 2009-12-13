@@ -8,8 +8,8 @@ import java.util.List;
  * Interface for the gnu diff util.
  */
 public class SystemDiff {
-  public List<Modification> diff(String text1, String text2) {
-    ArrayList<Modification> modifications = new ArrayList<Modification>();
+  public static List<Modification> diff(String text1, String text2) {
+    ArrayList<String> lines = new ArrayList<String>();
     try {
       File file1 = File.createTempFile("diff", ".tex");
       file1.deleteOnExit();
@@ -30,49 +30,57 @@ public class SystemDiff {
         file1.getCanonicalPath(),
         file2.getCanonicalPath()
       });
+
       BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
       String line;
-      while((line = reader.readLine()) != null) {
-        if(line.startsWith("<") || line.startsWith(">") || line.startsWith("---")) continue;
-
-        int typePos = Math.max(line.indexOf('a'), Math.max(line.indexOf('d'), line.indexOf('c')));
-        char type = line.charAt(typePos);
-        String sourceLines = line.substring(0, typePos);
-        String targetLines = line.substring(typePos+1);
-
-        int sourceStart;
-        int sourceLength;
-        int sourceComma = sourceLines.indexOf(',');
-        if(sourceComma != -1) {
-          sourceStart = Integer.parseInt(sourceLines.substring(0, sourceComma));
-          sourceLength = Integer.parseInt(sourceLines.substring(sourceComma+1)) - sourceStart + 1;
-        } else {
-          sourceStart = Integer.parseInt(sourceLines);
-          sourceLength = type == 'a' ? 0 : 1;
-        }
-
-        int targetStart;
-        int targetLength;
-        int targetComma = targetLines.indexOf(',');
-        if(targetComma != -1) {
-          targetStart = Integer.parseInt(targetLines.substring(0, targetComma));
-          targetLength = Integer.parseInt(targetLines.substring(targetComma+1)) - targetStart + 1;
-        } else {
-          targetStart = Integer.parseInt(targetLines);
-          targetLength = type == 'd' ? 0 : 1;
-        }
-        if(type != 'a') sourceStart--;
-        if(type != 'd') targetStart--;
-
-        modifications.add(new Modification(
-                type == 'a' ? Modification.TYPE_ADD : (type == 'd' ? Modification.TYPE_REMOVE : Modification.TYPE_CHANGED),
-                sourceStart, sourceLength, targetStart, targetLength));
-      }
+      while((line = reader.readLine()) != null) lines.add(line);
       reader.close();
     } catch (IOException e) {
       e.printStackTrace();
     }
+    return parse(lines);
+  }
+
+  public static List<Modification> parse(List<String> lines) {
+    ArrayList<Modification> modifications = new ArrayList<Modification>();
+
+    for(String line : lines) {
+      if(line.startsWith("<") || line.startsWith(">") || line.startsWith("---")) continue;
+
+      int typePos = Math.max(line.indexOf('a'), Math.max(line.indexOf('d'), line.indexOf('c')));
+      char type = line.charAt(typePos);
+      String sourceLines = line.substring(0, typePos);
+      String targetLines = line.substring(typePos+1);
+
+      int sourceStart;
+      int sourceLength;
+      int sourceComma = sourceLines.indexOf(',');
+      if(sourceComma != -1) {
+        sourceStart = Integer.parseInt(sourceLines.substring(0, sourceComma));
+        sourceLength = Integer.parseInt(sourceLines.substring(sourceComma+1)) - sourceStart + 1;
+      } else {
+        sourceStart = Integer.parseInt(sourceLines);
+        sourceLength = type == 'a' ? 0 : 1;
+      }
+
+      int targetStart;
+      int targetLength;
+      int targetComma = targetLines.indexOf(',');
+      if(targetComma != -1) {
+        targetStart = Integer.parseInt(targetLines.substring(0, targetComma));
+        targetLength = Integer.parseInt(targetLines.substring(targetComma+1)) - targetStart + 1;
+      } else {
+        targetStart = Integer.parseInt(targetLines);
+        targetLength = type == 'd' ? 0 : 1;
+      }
+      if(type != 'a') sourceStart--;
+      if(type != 'd') targetStart--;
+
+      modifications.add(new Modification(
+              type == 'a' ? Modification.TYPE_ADD : (type == 'd' ? Modification.TYPE_REMOVE : Modification.TYPE_CHANGED),
+              sourceStart, sourceLength, targetStart, targetLength));
+    }
+
     return modifications;
   }
 }
