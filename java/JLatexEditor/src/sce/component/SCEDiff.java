@@ -20,6 +20,8 @@ public class SCEDiff extends JSplitPane {
   public static Color COLOR_REMOVE = new Color(191, 190, 239);
   public static Color COLOR_CHANGE = new Color(237, 191, 188);
 
+  private Point location = new Point();
+
   private String text;
   private SCEPane pane;
   private JViewport paneViewport;
@@ -38,22 +40,30 @@ public class SCEDiff extends JSplitPane {
   private double[] line2Diff;
 
   public SCEDiff(SCEPane pane, String text, SCEPane diff) {
-    super(JSplitPane.HORIZONTAL_SPLIT, new SCEDiffViewport(pane), new SCEDiffViewport(diff));
+    super(JSplitPane.HORIZONTAL_SPLIT);
     setDoubleBuffered(false);
-    paneViewport = (JViewport) getLeftComponent();
-    diffViewport = (JViewport) getRightComponent();
     this.text = text;
     this.pane = pane;
     this.diff = diff;
 
     diff.setText(text);
+    updateDiff();
+
+    paneViewport = new SCEDiffViewport(pane, this);
+    diffViewport = new SCEDiffViewport(diff, this);
+    setLeftComponent(paneViewport);
+    setRightComponent(diffViewport);
+
+    setScrollPane(new SCEDiff.SCEDiffScrollPane(this));
+
+    setUI(new SCEDiffUI());
+
     diff.getCaret().moveTo(0, 0);
     diff.getUndoManager().clear();
     diff.getDocument().setModified(false);
     diff.getDocument().setEditable(false);
     setDividerLocation(.5);
-    
-    setUI(new SCEDiffUI());
+    setResizeWeight(.5);
   }
 
   public void setScrollPane(JScrollPane scrollPane) {
@@ -70,6 +80,10 @@ public class SCEDiff extends JSplitPane {
 
     preferredSize.width = (int) (visibleRect.width * (1 + Math.max(0, Math.max(overLeft, overRight))));
     preferredSize.height = preferredLines * pane.getLineHeight() + 30;
+  }
+
+  public JScrollPane getScrollPane() {
+    return scrollPane;
   }
 
   public void updateDiff() {
@@ -141,6 +155,9 @@ public class SCEDiff extends JSplitPane {
   }
 
   public void setLocation(int x, int y) {
+    location.x = x;
+    location.y = y;
+
     int visibleHeight = scrollPane.getVisibleRect().height;
     int lineHeight = pane.getLineHeight();
     int halfLines = visibleHeight/2/lineHeight;
@@ -150,7 +167,7 @@ public class SCEDiff extends JSplitPane {
     int yCorrection = lineHeight * (int) Math.max(line2Pane[lineOffset], line2Diff[lineOffset]);
 
     y = y - lineOffset*lineHeight;
-    int line = -y/lineHeight;
+    int line = Math.max(0, -y/lineHeight);
     double lineFraction = (-y - line * lineHeight) / (double) lineHeight;
 
     double paneLine = (1 - lineFraction) * line2Pane[line] + lineFraction * line2Pane[line + 1];
@@ -159,6 +176,14 @@ public class SCEDiff extends JSplitPane {
     diffViewport.setViewPosition(new Point(diff.getX(), (int) (diffLine * lineHeight) - yCorrection));
 
     repaint();
+  }
+
+  public Point getLocation(Point rv) {
+    return location;
+  }
+
+  public SCEPane getTextPane() {
+    return pane;
   }
 
   public SCEPane getDiffPane() {
@@ -270,7 +295,6 @@ public class SCEDiff extends JSplitPane {
   public static class SCEDiffScrollPane extends JScrollPane {
     public SCEDiffScrollPane(SCEDiff view) {
       super(view);
-      view.updateDiff();
       setViewport(new SCEDiffViewPort());
       setViewportView(view);
 
@@ -299,9 +323,12 @@ public class SCEDiff extends JSplitPane {
     }
   }
 
-  private static class SCEDiffViewport extends JViewport {
-    private SCEDiffViewport(Component view) {
+  private class SCEDiffViewport extends JViewport {
+    private SCEDiff diffView;
+
+    private SCEDiffViewport(Component view, SCEDiff diffView) {
       setView(view);
+      this.diffView = diffView;
       setLayout(new ViewportLayout() {
         public void layoutContainer(Container parent) {
           JViewport vp = (JViewport)parent;
@@ -314,6 +341,18 @@ public class SCEDiff extends JSplitPane {
     public void setView(Component view) {
       super.setView(view);
       setViewPosition(new Point(-1,-1));
+    }
+
+    public void scrollRectToVisible(Rectangle rectangle) {
+      SCEPane currentPane = diffView.getDiffPane().hasFocus() ? diffView.getDiffPane() : diffView.getTextPane();
+
+      int lineHeight = currentPane.getLineHeight();
+      Rectangle visible = currentPane.getVisibleRect();
+      if(visible.getY() <= rectangle.getY() && visible.getY() + visible.getHeight() >= rectangle.getY() + rectangle.getHeight()) {
+        return;
+      }
+
+      boolean up = rectangle.getY() < visible.getY();
     }
   }
 }
