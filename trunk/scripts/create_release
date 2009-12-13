@@ -1,6 +1,10 @@
 #!/bin/bash
 
-prefix=$1
+version=$1
+prefix=JLatexEditor-$1
+
+# tag this release
+svn copy . https://endrullis.de/svn/JLatexEditor/tags/$version -m "released version $version"
 
 cd dist/
 
