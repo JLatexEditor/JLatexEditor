@@ -8,6 +8,8 @@ import javax.swing.*;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 /**
@@ -39,7 +41,7 @@ public class SCEDiff extends JSplitPane {
   private double[] line2Pane;
   private double[] line2Diff;
 
-  public SCEDiff(SCEPane pane, String text, SCEPane diff) {
+  public SCEDiff(final SCEPane pane, String text, SCEPane diff) {
     super(JSplitPane.HORIZONTAL_SPLIT);
     setDoubleBuffered(false);
     this.text = text;
@@ -64,7 +66,90 @@ public class SCEDiff extends JSplitPane {
     diff.getDocument().setEditable(false);
     setDividerLocation(.5);
     setResizeWeight(.5);
+
+	  pane.addKeyListener(new KeyAdapter() {
+		  @Override
+		  public void keyPressed(KeyEvent e) {
+			  if (e.getModifiers() == KeyEvent.ALT_MASK) {
+				  if (e.getKeyCode() == KeyEvent.VK_UP) {
+					  jumpTargetToPreviousModification();
+					  e.consume();
+				  }
+				  if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+					  jumpTargetToNextModification();
+					  e.consume();
+				  }
+			  }
+		  }
+	  });
+	  diff.addKeyListener(new KeyAdapter() {
+		  @Override
+		  public void keyPressed(KeyEvent e) {
+			  if (e.getModifiers() == KeyEvent.ALT_MASK) {
+				  if (e.getKeyCode() == KeyEvent.VK_UP) {
+					  jumpSourceToPreviousModification();
+					  e.consume();
+				  }
+				  if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+					  jumpSourceToNextModification();
+					  e.consume();
+				  }
+			  }
+		  }
+	  });
   }
+
+	public void jumpTargetToPreviousModification() {
+		SCECaret caret = pane.getCaret();
+		int currRow = caret.getRow();
+
+		for (int modi = 0; modi < modifications.size(); modi++) {
+			if (modifications.get(modi).getTargetStartIndex() >= currRow) {
+				if (modi > 0) {
+					pane.getCaret().moveTo(modifications.get(modi-1).getTargetStartIndex(), 0);
+				}
+				break;
+			}
+		}
+	}
+
+	public void jumpTargetToNextModification() {
+		SCECaret caret = pane.getCaret();
+		int currRow = caret.getRow();
+
+		for (Modification modification : modifications) {
+			if (modification.getTargetStartIndex() > currRow) {
+				pane.getCaret().moveTo(modification.getTargetStartIndex(), 0);
+				break;
+			}
+		}
+	}
+
+	public void jumpSourceToPreviousModification() {
+		SCECaret caret = diff.getCaret();
+		int currRow = caret.getRow();
+
+		for (int modi = 0; modi < modifications.size(); modi++) {
+			if (modifications.get(modi).getSourceStartIndex() >= currRow) {
+				if (modi > 0) {
+					diff.getCaret().moveTo(modifications.get(modi-1).getSourceStartIndex(), 0);
+				}
+				break;
+			}
+		}
+	}
+
+	public void jumpSourceToNextModification() {
+		SCECaret caret = diff.getCaret();
+		int currRow = caret.getRow();
+
+		for (Modification modification : modifications) {
+			if (modification.getSourceStartIndex() > currRow) {
+				diff.getCaret().moveTo(modification.getSourceStartIndex(), 0);
+				break;
+			}
+		}
+	}
 
   public void setScrollPane(JScrollPane scrollPane) {
     this.scrollPane = scrollPane;
