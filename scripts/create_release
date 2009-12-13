@@ -1,0 +1,20 @@
+#!/bin/bash
+
+prefix=$1
+
+cd dist/
+
+# pack
+zip -r $prefix.zip JLatexEditor
+tar -czf $prefix.tar.gz JLatexEditor
+
+mv $prefix.* releases/
+
+# create symbolic links (last.*)
+cd releases
+for ext in zip tar.gz; do
+	[ -e JLatexEditor-latest.$ext ] && rm JLatexEditor-latest.$ext
+	ln -s $prefix.$ext JLatexEditor-latest.$ext
+done
+
+cd ../..
