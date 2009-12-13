@@ -98,7 +98,7 @@
 		<mkdir dir="${releases}"/>
 
 		<exec executable="scripts/create_release">
-			<arg value="JLatexEditor-${jle.version}.${build.number}"/>
+			<arg value="${jle.version}.${build.number}"/>
 		</exec>
 	</target>
 
