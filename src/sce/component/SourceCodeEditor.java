@@ -26,7 +26,6 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel{
 
   // diff
   private SCEDiff diff = null;
-  private SCEPane diffPane = null;
 
   public SourceCodeEditor(Rs resource){
     this.resource = resource;
@@ -103,14 +102,21 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel{
     textPane.getDocument().setModified(false);
   }
 
+  public boolean isDiffView() {
+    return diff != null && diff.isVisible();
+  }
+
   public void diffView(String text) {
-    remove(scrollPane);
+    if(!isDiffView()) {
+      remove(scrollPane);
 
-    diffPane = new SCEPane();
-    LatexStyles.addStyles(diffPane.getDocument());
-    diff = new SCEDiff(textPane, text, diffPane, this);
-
-    add(diff.getScrollPane(), BorderLayout.CENTER);
+      diff = new SCEDiff(textPane, text, new SCEPane(), this);
+      LatexStyles.addStyles(diff.getDiffPane().getDocument());
+      add(diff.getScrollPane(), BorderLayout.CENTER);
+    } else {
+      diff.getDiffPane().setText(text);
+      diff.updateDiff();
+    }
     diff.updateLayout();
   }
 
@@ -135,6 +141,14 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel{
   }
 
   /**
+	 * Sets the text of the SourceCodePane.
+	 * @param text text of the SourceCodePane
+	 */
+	public void setText(String text) {
+		textPane.setText(text);
+	}
+
+  /**
    * Search.
    */
   public SCESearch getSearch() {
@@ -154,14 +168,6 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel{
   public void setMarkerBar(SCEMarkerBar markerBar) {
     this.markerBar = markerBar;
   }
-
-  /**
-	 * Sets the text of the SourceCodePane.
-	 * @param text text of the SourceCodePane
-	 */
-	public void setText(String text) {
-		textPane.setText(text);
-	}
 
 	/**
    * Enable/ disable editing within the SourceCodePane.

@@ -88,11 +88,10 @@ public class LocalHistory extends JPanel implements ComponentListener, ListSelec
         }
         reader.close();
 
-        model.add(0, new HistoryEntry(revisionNr, revision, new ArrayList<Modification>()));
+        model.add(0, new HistoryEntry(revisionNr, revision, new ArrayList<Modification<String>>()));
       }
     } catch (IOException e) {
       e.printStackTrace();
-      return;
     }
   }
 
@@ -110,18 +109,25 @@ public class LocalHistory extends JPanel implements ComponentListener, ListSelec
   }
 
   public void valueChanged(ListSelectionEvent e) {
-    HistoryEntry entry = (HistoryEntry) model.get(list.getSelectedIndex());
+    List<String> document = (ArrayList<String>) backup.clone();
+    for(int changeNr = 0; changeNr <= list.getSelectedIndex(); changeNr++) {
+      HistoryEntry historyEntry = (HistoryEntry) model.getElementAt(changeNr);
+      document = Modification.apply(document, historyEntry.getDiff());
+    }
 
-    ArrayList<String> document = (ArrayList<String>) backup.clone();
-    //model.get
+    StringBuilder stringBuilder = new StringBuilder();
+    for(String line : document) {
+      stringBuilder.append(line).append('\n');
+    }
+    latexEditor.getActiveEditor().diffView(stringBuilder.toString());
   }
 
   private static class HistoryEntry {
     private int revisionNr;
     private String revision;
-    private List<Modification> diff;
+    private List<Modification<String>> diff;
 
-    private HistoryEntry(int revisionNr, String revision, List<Modification> diff) {
+    private HistoryEntry(int revisionNr, String revision, List<Modification<String>> diff) {
       this.revisionNr = revisionNr;
       this.revision = revision;
       this.diff = diff;
@@ -131,7 +137,7 @@ public class LocalHistory extends JPanel implements ComponentListener, ListSelec
       return revision;
     }
 
-    public List<Modification> getDiff() {
+    public List<Modification<String>> getDiff() {
       return diff;
     }
 

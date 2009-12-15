@@ -8,7 +8,7 @@ import java.util.List;
  * Interface for the gnu diff util.
  */
 public class SystemDiff {
-  public static List<Modification> diff(String text1, String text2) {
+  public static List<Modification<String>> diff(String text1, String text2) {
     ArrayList<String> lines = new ArrayList<String>();
     try {
       File file1 = File.createTempFile("diff", ".tex");
@@ -41,8 +41,8 @@ public class SystemDiff {
     return parse(lines);
   }
 
-  public static List<Modification> parse(List<String> lines) {
-    ArrayList<Modification> modifications = new ArrayList<Modification>();
+  public static List<Modification<String>> parse(List<String> lines) {
+    ArrayList<Modification<String>> modifications = new ArrayList<Modification<String>>();
 
     ArrayList<String> sourceLines = new ArrayList<String>();
     ArrayList<String> targetLines = new ArrayList<String>();
