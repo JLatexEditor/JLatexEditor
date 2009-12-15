@@ -44,41 +44,65 @@ public class SystemDiff {
   public static List<Modification> parse(List<String> lines) {
     ArrayList<Modification> modifications = new ArrayList<Modification>();
 
-    for(String line : lines) {
-      if(line.startsWith("<") || line.startsWith(">") || line.startsWith("---")) continue;
+    ArrayList<String> sourceLines = new ArrayList<String>();
+    ArrayList<String> targetLines = new ArrayList<String>();
+    for(int lineNr = 0; lineNr < lines.size(); lineNr++) {
+      String line = lines.get(lineNr);
 
       int typePos = Math.max(line.indexOf('a'), Math.max(line.indexOf('d'), line.indexOf('c')));
       char type = line.charAt(typePos);
-      String sourceLines = line.substring(0, typePos);
-      String targetLines = line.substring(typePos+1);
+      String sourceRange = line.substring(0, typePos);
+      String targetRange = line.substring(typePos+1);
 
       int sourceStart;
       int sourceLength;
-      int sourceComma = sourceLines.indexOf(',');
+      int sourceComma = sourceRange.indexOf(',');
       if(sourceComma != -1) {
-        sourceStart = Integer.parseInt(sourceLines.substring(0, sourceComma));
-        sourceLength = Integer.parseInt(sourceLines.substring(sourceComma+1)) - sourceStart + 1;
+        sourceStart = Integer.parseInt(sourceRange.substring(0, sourceComma));
+        sourceLength = Integer.parseInt(sourceRange.substring(sourceComma+1)) - sourceStart + 1;
       } else {
-        sourceStart = Integer.parseInt(sourceLines);
+        sourceStart = Integer.parseInt(sourceRange);
         sourceLength = type == 'a' ? 0 : 1;
       }
 
       int targetStart;
       int targetLength;
-      int targetComma = targetLines.indexOf(',');
+      int targetComma = targetRange.indexOf(',');
       if(targetComma != -1) {
-        targetStart = Integer.parseInt(targetLines.substring(0, targetComma));
-        targetLength = Integer.parseInt(targetLines.substring(targetComma+1)) - targetStart + 1;
+        targetStart = Integer.parseInt(targetRange.substring(0, targetComma));
+        targetLength = Integer.parseInt(targetRange.substring(targetComma+1)) - targetStart + 1;
       } else {
-        targetStart = Integer.parseInt(targetLines);
+        targetStart = Integer.parseInt(targetRange);
         targetLength = type == 'd' ? 0 : 1;
       }
       if(type != 'a') sourceStart--;
       if(type != 'd') targetStart--;
 
-      modifications.add(new Modification(
+      // parse < ... --- > ...
+      boolean inSource = type != 'a';
+      lineNr++;
+      for(; lineNr < lines.size(); lineNr++) {
+        line = lines.get(lineNr);
+        if(line.startsWith("<") || line.startsWith(">")) {
+          if(inSource) sourceLines.add(line.substring(2)); else targetLines.add(line.substring(2));
+          continue;
+        }
+        if(line.startsWith("---")) {
+          inSource = false;
+          continue;
+        }
+        lineNr--;
+        break;
+      }
+
+      // diff gives faulty output?
+      if(sourceLength != sourceLines.size() || targetLength != targetLines.size()) {
+        throw new RuntimeException("SystemDiff: I don't understand the diff output.");
+      }
+
+      modifications.add(new Modification<String>(
               type == 'a' ? Modification.TYPE_ADD : (type == 'd' ? Modification.TYPE_REMOVE : Modification.TYPE_CHANGED),
-              sourceStart, sourceLength, targetStart, targetLength));
+              sourceStart, sourceLines, targetStart, targetLines));
     }
 
     return modifications;

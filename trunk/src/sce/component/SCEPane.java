@@ -143,6 +143,11 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     characterWidth = fm.charWidth(' ');
   }
 
+
+  public void update(Graphics g) {
+    //super.update(g);
+  }
+
   boolean o = false;
   /**
    * Paint the component.
@@ -150,9 +155,11 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    * @param g the graphics to paint on
    */
   public void paint(Graphics g){
-    Graphics2D g2D = (Graphics2D) g;
-    super.paint(g2D);
+    Rectangle r = g.getClipBounds();
+    g.clearRect(r.x, r.y, r.width, r.height);
+    //super.paint(g); // does not work for java version "1.6.0_06"
 
+    Graphics2D g2D = (Graphics2D) g;
     g2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, GProperties.getTextAntialiasign());
     
     // clip bounds

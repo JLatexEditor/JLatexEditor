@@ -9,6 +9,7 @@ package util;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class StreamUtils{
   /** Size of the temporary buffer for reading. */
@@ -40,7 +41,25 @@ public class StreamUtils{
     return new String(data);
   }
 
-	/**
+  /**
+   * Reads the contents of the file.
+   *
+   * @param filename the filename
+   * @return the content of the file
+   */
+  public static ArrayList<String> readLines(String filename) throws IOException {
+    InputStream inputStream = getInputStream(filename);
+
+    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+    ArrayList<String> lines = new ArrayList<String>();
+    String line;
+    while((line = reader.readLine()) != null) lines.add(line);
+
+    return lines;
+  }
+
+
+  /**
 	 * Opens an InputStream for the given resource name.
 	 */
 	public static InputStream getInputStream(String fileName) throws FileNotFoundException {
