@@ -4,8 +4,11 @@ import jlatexeditor.JLatexEditorJFrame;
 import sce.component.SourceCodeEditor;
 import util.diff.Modification;
 import util.diff.SystemDiff;
+import util.StreamUtils;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -16,7 +19,7 @@ import java.util.List;
 /**
  * Local history.
  */
-public class LocalHistory extends JPanel implements ComponentListener {
+public class LocalHistory extends JPanel implements ComponentListener, ListSelectionListener {
   public static final String REVISION = "revision: ";
 
   private JLatexEditorJFrame latexEditor;
@@ -24,7 +27,7 @@ public class LocalHistory extends JPanel implements ComponentListener {
   private JList list;
   private DefaultListModel model;
 
-  private String backup = null;
+  private ArrayList<String> backup = null;
 
   public LocalHistory(JLatexEditorJFrame latexEditor) {
     this.latexEditor = latexEditor;
@@ -34,6 +37,8 @@ public class LocalHistory extends JPanel implements ComponentListener {
     model = new DefaultListModel();
     list = new JList(model);
     add(list, BorderLayout.CENTER);
+    list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    list.addListSelectionListener(this);
 
     addComponentListener(this);
   }
@@ -61,12 +66,10 @@ public class LocalHistory extends JPanel implements ComponentListener {
 
     try {
       if(!file_backup.exists()) return;
-      backup = SourceCodeEditor.readFile(file_backup.getCanonicalPath());
-
-      model.add(0, new HistoryEntry(1, "a", new ArrayList<Modification>()));
+      backup = StreamUtils.readLines(file_backup.getCanonicalPath());
 
       if(file_revisions.exists()) {
-        int revisionNr = 2;
+        int revisionNr = 1;
         String revision = null;
         ArrayList<String> diff = new ArrayList<String>();
 
@@ -85,7 +88,7 @@ public class LocalHistory extends JPanel implements ComponentListener {
         }
         reader.close();
 
-
+        model.add(0, new HistoryEntry(revisionNr, revision, new ArrayList<Modification>()));
       }
     } catch (IOException e) {
       e.printStackTrace();
@@ -104,6 +107,13 @@ public class LocalHistory extends JPanel implements ComponentListener {
   }
 
   public void componentHidden(ComponentEvent e) {
+  }
+
+  public void valueChanged(ListSelectionEvent e) {
+    HistoryEntry entry = (HistoryEntry) model.get(list.getSelectedIndex());
+
+    ArrayList<String> document = (ArrayList<String>) backup.clone();
+    //model.get
   }
 
   private static class HistoryEntry {

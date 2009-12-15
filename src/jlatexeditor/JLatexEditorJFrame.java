@@ -467,12 +467,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		  file = fileDoc.getFile();
 		}
 
-    /*
-    File backup = new File(file.getAbsolutePath() + "~");
-    if(backup.exists()) backup.delete();
-    file.renameTo(backup);
-    */
-
     String text = editor.getTextPane().getText();
     try{
       boolean history = true;
@@ -487,9 +481,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       writer.close();
 
       if(history) {
-        if(file_backup.exists()) {
-          PrintWriter diff_writer = new PrintWriter(new FileOutputStream(file_revisions, true));
+        PrintWriter diff_writer = new PrintWriter(new FileOutputStream(file_revisions, true));
 
+        if(file_backup.exists()) {
           Process process = Runtime.getRuntime().exec(new String[]{
             "diff",
             file.getCanonicalPath(),
@@ -498,13 +492,14 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
           BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
           String line;
-          diff_writer.println(LocalHistory.REVISION + Calendar.getInstance().getTime());
           while((line = reader.readLine()) != null) diff_writer.println(line);
 
-          diff_writer.close();
           reader.close();
           process.destroy();
         }
+
+        diff_writer.println(LocalHistory.REVISION + Calendar.getInstance().getTime());
+        diff_writer.close();
 
         PrintWriter history_writer = new PrintWriter(new FileOutputStream(file_backup));
         history_writer.write(text);

@@ -5,12 +5,16 @@ import sce.component.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import java.awt.*;
+import java.awt.event.KeyListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 /**
  * Highlighting brackets.
  */
-public class BracketHighlighting implements SCECaretListener {
+public class BracketHighlighting implements KeyListener, MouseListener {
   private SourceCodeEditor editor;
 
   private static final Color colors[] = new Color[]{
@@ -26,10 +30,14 @@ public class BracketHighlighting implements SCECaretListener {
 
   public BracketHighlighting(SourceCodeEditor editor) {
     this.editor = editor;
-    editor.getTextPane().getCaret().addSCECaretListener(this);
+    editor.getTextPane().addKeyListener(this);
   }
 
-  public void caretMoved(int row, int column, int lastRow, int lastColumn) {
+  public void update() {
+    SCECaret caret = editor.getTextPane().getCaret();
+    int row = caret.getRow();
+    int column = caret.getColumn();
+
     SCEPane pane = editor.getTextPane();
     for(SCETextHighlight highlight : highlights) pane.removeTextHighlight(highlight);
     highlights.clear();
@@ -46,7 +54,7 @@ public class BracketHighlighting implements SCECaretListener {
       int level = 0;
       for(int srow = row; srow >= Math.max(0, row-40); srow--) {
         line = document.getRow(srow);
-        int startColumn = srow == row ? column-1 : line.length()-1; 
+        int startColumn = srow == row ? column-1 : line.length()-1;
         for(int scolumn = startColumn ; scolumn >= 0; scolumn--) {
           char c = line.charAt(scolumn);
           if(c == open) {
@@ -108,5 +116,32 @@ public class BracketHighlighting implements SCECaretListener {
     }
 
     for(SCETextHighlight highlight : highlights) pane.addTextHighlight(highlight);
+  }
+
+  public void keyTyped(KeyEvent e) {
+  }
+
+  public void keyPressed(KeyEvent e) {
+  }
+
+  public void keyReleased(KeyEvent e) {
+    update();
+  }
+
+  public void mouseClicked(MouseEvent e) {
+  }
+
+  public void mousePressed(MouseEvent e) {
+    update();
+  }
+
+  public void mouseReleased(MouseEvent e) {
+    update();
+  }
+
+  public void mouseEntered(MouseEvent e) {
+  }
+
+  public void mouseExited(MouseEvent e) {
   }
 }

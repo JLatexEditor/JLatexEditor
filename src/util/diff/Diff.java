@@ -2,6 +2,7 @@ package util.diff;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 
 /**
  * Diff.
@@ -13,7 +14,7 @@ public class Diff {
 
   private ArrayList<Cost> garbage = new ArrayList<Cost>();
 
-  public <T extends Metric> int costs(T[] list1, T[] list2) {
+  public <T extends Metric<T>> int costs(T[] list1, T[] list2) {
     int costs = 0;
 
     int length1 = list1.length;
@@ -50,17 +51,17 @@ public class Diff {
     return costs;
   }
 
-  public <T extends Metric> List<Modification> diff(T[] list1, T[] list2) {
+  public <T extends Metric<T>> List<Modification<T>> diff(T[] list1, T[] list2) {
     int length1 = list1.length;
     int length2 = list2.length;
 
-    ArrayList<Modification> modifications = new ArrayList<Modification>();
+    ArrayList<Modification<T>> modifications = new ArrayList<Modification<T>>();
     if (length1 == 0) {
-      modifications.add(new Modification(Modification.TYPE_ADD, 0, 0, 0, length2));
+      modifications.add(new Modification<T>(Modification.TYPE_ADD, 0, list1, 0, list2));
       return modifications;
     }
     if (length2 == 0) {
-      modifications.add(new Modification(Modification.TYPE_REMOVE, 0, length1, 0, 0));
+      modifications.add(new Modification<T>(Modification.TYPE_REMOVE, 0, list1, 0, list2));
       return modifications;
     }
 
@@ -124,15 +125,15 @@ public class Diff {
       }
 
       if(cost.getType() == Cost.TYPE_ADD) {
-        modifications.add(new Modification(Modification.TYPE_ADD, index1, 0, index2, count));
+        modifications.add(new Modification<T>(Modification.TYPE_ADD, index1, Arrays.copyOfRange(list1, index1, 0), index2, Arrays.copyOfRange(list2, index2, count)));
         index2 += count;
       } else
       if(cost.getType() == Cost.TYPE_REMOVE) {
-        modifications.add(new Modification(Modification.TYPE_REMOVE, index1, count, index2, 0));
+        modifications.add(new Modification<T>(Modification.TYPE_REMOVE, index1, Arrays.copyOfRange(list1, index1, count), index2, Arrays.copyOfRange(list2, index2, 0)));
         index1 += count;
       } else
       if(cost.getType() == Cost.TYPE_CHANGE) {
-        modifications.add(new Modification(Modification.TYPE_CHANGED, index1, count, index2, count));
+        modifications.add(new Modification<T>(Modification.TYPE_CHANGED, index1, Arrays.copyOfRange(list1, index1, count), index2, Arrays.copyOfRange(list2, index2, count)));
         index1 += count;
         index2 += count;
       }
