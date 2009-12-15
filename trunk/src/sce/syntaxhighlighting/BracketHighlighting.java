@@ -10,11 +10,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Highlighting brackets.
  */
-public class BracketHighlighting implements KeyListener, MouseListener {
+public class BracketHighlighting implements SCECaretListener, MouseListener {
   private SourceCodeEditor editor;
 
   private static final Color colors[] = new Color[]{
@@ -28,12 +30,34 @@ public class BracketHighlighting implements KeyListener, MouseListener {
 
   private ArrayList<SCETextHighlight> highlights = new ArrayList<SCETextHighlight>();
 
+  private long last = System.nanoTime();
+  private Timer timer = new Timer(true);
+  private TimerTask task = null;
+
   public BracketHighlighting(SourceCodeEditor editor) {
     this.editor = editor;
-    editor.getTextPane().addKeyListener(this);
+    editor.getTextPane().getCaret().addSCECaretListener(this);
   }
 
   public void update() {
+    if(last < System.nanoTime() - 100000000) {
+      execute();
+    } else {
+      if(task != null) {
+        task.cancel();
+        timer.purge();
+      }
+      task = new TimerTask() {
+        public void run() {
+          execute();
+        }
+      };
+      timer.schedule(task, 500);
+    }
+    last = System.nanoTime();
+  }
+
+  private void execute() {
     SCECaret caret = editor.getTextPane().getCaret();
     int row = caret.getRow();
     int column = caret.getColumn();
@@ -118,16 +142,6 @@ public class BracketHighlighting implements KeyListener, MouseListener {
     for(SCETextHighlight highlight : highlights) pane.addTextHighlight(highlight);
   }
 
-  public void keyTyped(KeyEvent e) {
-  }
-
-  public void keyPressed(KeyEvent e) {
-  }
-
-  public void keyReleased(KeyEvent e) {
-    update();
-  }
-
   public void mouseClicked(MouseEvent e) {
   }
 
@@ -143,5 +157,9 @@ public class BracketHighlighting implements KeyListener, MouseListener {
   }
 
   public void mouseExited(MouseEvent e) {
+  }
+
+  public void caretMoved(int row, int column, int lastRow, int lastColumn) {
+    update();
   }
 }
