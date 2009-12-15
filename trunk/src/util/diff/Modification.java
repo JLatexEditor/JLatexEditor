@@ -60,15 +60,23 @@ public class Modification<T> {
   }
 
   /**
-   * Applies the modification to the document.
+   * Applies the list of modifications to the document.
+   *
    * @param document
+   * @param modifications sorted, non-overlapping modifications
    * @return modified document
    */
-  public List<T> apply(List<T> document) {
-    ArrayList<T> modified = new ArrayList<T>(document.size() - getSourceLength() + getTargetLength());
-    modified.addAll(document.subList(0, sourceStartIndex));
-    modified.addAll(targetLines);
-    modified.addAll(document.subList(sourceStartIndex + getSourceLength(), document.size()));
+  public static <T> List<T> apply(List<T> document, List<Modification<T>> modifications) {
+    ArrayList<T> modified = new ArrayList<T>(document.size());
+
+    int index = 0;
+    for(Modification<T> modification : modifications) {
+      modified.addAll(document.subList(index, modification.getSourceStartIndex()));
+      modified.addAll(modification.getTargetLines());
+      index = modification.getSourceStartIndex() + modification.getSourceLength();
+    }
+    modified.addAll(document.subList(index, document.size()));
+
     return modified;
   }
 

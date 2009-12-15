@@ -39,7 +39,7 @@ public class SCEDiff extends JSplitPane implements ComponentListener, ActionList
   /**
    * Correspondence of the lines.
    */
-  private List<Modification> modifications = null;
+  private List<Modification<String>> modifications = null;
   private double[] line2Pane;
   private double[] line2Diff;
 
@@ -189,7 +189,7 @@ public class SCEDiff extends JSplitPane implements ComponentListener, ActionList
     int paneRows = paneDocument.getRowsCount();
     int diffRows = diffDocument.getRowsCount();
 
-    modifications = new SystemDiff().diff(diffDocument.getText(), paneDocument.getText());
+    modifications = SystemDiff.diff(diffDocument.getText(), paneDocument.getText());
 
     // create a mapping for line correspondence
     int diffLine = 0;

@@ -138,7 +138,10 @@ public class SCEDocument{
    */
   public void setText(String text){
     clear();
+    boolean editable_ = editable;
+    editable = true;
     insert(text, 0, 0);
+    editable = editable_;
   }
 
   /**
