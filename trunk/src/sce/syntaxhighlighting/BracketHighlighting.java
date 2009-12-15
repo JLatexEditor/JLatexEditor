@@ -2,13 +2,7 @@ package sce.syntaxhighlighting;
 
 import sce.component.*;
 
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
 import java.awt.*;
-import java.awt.event.KeyListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -16,7 +10,7 @@ import java.util.TimerTask;
 /**
  * Highlighting brackets.
  */
-public class BracketHighlighting implements SCECaretListener, MouseListener {
+public class BracketHighlighting implements SCECaretListener {
   private SourceCodeEditor editor;
 
   private static final Color colors[] = new Color[]{
@@ -140,23 +134,6 @@ public class BracketHighlighting implements SCECaretListener, MouseListener {
     }
 
     for(SCETextHighlight highlight : highlights) pane.addTextHighlight(highlight);
-  }
-
-  public void mouseClicked(MouseEvent e) {
-  }
-
-  public void mousePressed(MouseEvent e) {
-    update();
-  }
-
-  public void mouseReleased(MouseEvent e) {
-    update();
-  }
-
-  public void mouseEntered(MouseEvent e) {
-  }
-
-  public void mouseExited(MouseEvent e) {
   }
 
   public void caretMoved(int row, int column, int lastRow, int lastColumn) {
