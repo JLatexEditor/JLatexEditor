@@ -11,10 +11,12 @@ import util.StreamUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 
-public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel{
+public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implements ActionListener {
   /** The resource that has been opened in this editor. */
 	private Rs resource = null;
 
@@ -113,11 +115,31 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel{
       diff = new SCEDiff(textPane, text, new SCEPane(), this);
       LatexStyles.addStyles(diff.getDiffPane().getDocument());
       add(diff.getScrollPane(), BorderLayout.CENTER);
+
+      ImageButton buttonClose = markerBar.getButtonClose();
+      buttonClose.addActionListener(this);
+      buttonClose.setVisible(true);
     } else {
       diff.getDiffPane().setText(text);
       diff.updateDiff();
     }
     diff.updateLayout();
+  }
+
+  public void closeDiffView() {
+    if(!isDiffView()) return;
+
+    ImageButton buttonClose = markerBar.getButtonClose();
+    buttonClose.removeActionListener(this);
+    buttonClose.setVisible(false);
+
+    remove(diff.getScrollPane());
+
+    diff.close();
+    diff = null;
+
+    scrollPane.setViewportView(textPane);
+    add(scrollPane, BorderLayout.CENTER);
   }
 
   public SCEDiff getDiffView() {
@@ -207,5 +229,9 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel{
     search.setVisible(true);
     validate();
     search.focus();
+  }
+
+  public void actionPerformed(ActionEvent e) {
+    closeDiffView();
   }
 }

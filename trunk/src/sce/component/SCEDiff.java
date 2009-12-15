@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Diff component.
  */
-public class SCEDiff extends JSplitPane implements ComponentListener, ActionListener {
+public class SCEDiff extends JSplitPane implements ComponentListener {
   private static final int WIDTH = 70;
 
   public static Color COLOR_ADD = new Color(189, 238, 192);
@@ -42,8 +42,6 @@ public class SCEDiff extends JSplitPane implements ComponentListener, ActionList
   private List<Modification<String>> modifications = null;
   private double[] line2Pane;
   private double[] line2Diff;
-
-  private ImageButton buttonClose;
 
   public SCEDiff(final SCEPane pane, String text, SCEPane diff, SourceCodeEditor editor) {
     super(JSplitPane.HORIZONTAL_SPLIT);
@@ -100,10 +98,6 @@ public class SCEDiff extends JSplitPane implements ComponentListener, ActionList
 			  }
 		  }
 	  });
-
-    buttonClose = editor.getMarkerBar().getButtonClose();
-    buttonClose.addActionListener(this);
-    buttonClose.setVisible(true);
   }
 
 	public void jumpToPreviousTargetModification() {
@@ -416,9 +410,12 @@ public class SCEDiff extends JSplitPane implements ComponentListener, ActionList
 	public void close() {
 		pane.removeKeyListener(paneKeyListener);
 		diff.removeKeyListener(diffKeyListener);
-    buttonClose.removeActionListener(this);
-    buttonClose.setVisible(false);
-	}
+
+    paneViewport.setView(null);
+    diffViewport.setView(null);
+    setLeftComponent(null);
+    setRightComponent(null);
+  }
 
   public static class SCEDiffScrollPane extends JScrollPane {
     public SCEDiffScrollPane(SCEDiff view) {
