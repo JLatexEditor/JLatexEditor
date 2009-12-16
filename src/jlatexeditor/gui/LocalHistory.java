@@ -114,12 +114,13 @@ public class LocalHistory extends JPanel implements ComponentListener, ListSelec
       HistoryEntry historyEntry = (HistoryEntry) model.getElementAt(changeNr);
       document = Modification.apply(document, historyEntry.getDiff());
     }
+    HistoryEntry historyEntry = (HistoryEntry) model.getElementAt(list.getSelectedIndex());
 
     StringBuilder stringBuilder = new StringBuilder();
     for(String line : document) {
       stringBuilder.append(line).append('\n');
     }
-    latexEditor.getActiveEditor().diffView(stringBuilder.toString());
+    latexEditor.getActiveEditor().diffView(historyEntry.toString(), stringBuilder.toString());
   }
 
   private static class HistoryEntry {
