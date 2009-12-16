@@ -59,7 +59,7 @@ public class SCEDiff extends JSplitPane implements ComponentListener {
     setRightComponent(diffViewport);
 
     setScrollPane(new SCEDiff.SCEDiffScrollPane(this));
-    scrollPane.addComponentListener(this);
+    addComponentListener(this);
 
     setUI(new SCEDiffUI());
 
@@ -410,6 +410,7 @@ public class SCEDiff extends JSplitPane implements ComponentListener {
 	public void close() {
 		pane.removeKeyListener(paneKeyListener);
 		diff.removeKeyListener(diffKeyListener);
+    removeComponentListener(this);
 
     paneViewport.setView(null);
     diffViewport.setView(null);
