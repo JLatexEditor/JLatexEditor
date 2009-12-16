@@ -108,13 +108,13 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
     return diff != null && diff.isVisible();
   }
 
-  public void diffView(String text) {
+  public void diffView(String title, String text) {
     if(!isDiffView()) {
       remove(scrollPane);
 
-      diff = new SCEDiff(textPane, text, new SCEPane(), this);
+      diff = new SCEDiff(getResource().getName(), textPane, title, text);
       LatexStyles.addStyles(diff.getDiffPane().getDocument());
-      add(diff.getScrollPane(), BorderLayout.CENTER);
+      add(diff, BorderLayout.CENTER);
 
       ImageButton buttonClose = markerBar.getButtonClose();
       buttonClose.addActionListener(this);
@@ -133,7 +133,7 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
     buttonClose.removeActionListener(this);
     buttonClose.setVisible(false);
 
-    remove(diff.getScrollPane());
+    remove(diff);
 
     diff.close();
     diff = null;

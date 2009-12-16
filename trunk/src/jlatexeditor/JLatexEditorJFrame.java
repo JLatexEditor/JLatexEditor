@@ -613,7 +613,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
       try {
         String text = SourceCodeEditor.readFile(openDialog.getSelectedFile().getCanonicalPath());
-        getEditor(tabbedPane.getSelectedIndex()).diffView(text);
+        getEditor(tabbedPane.getSelectedIndex()).diffView(openDialog.getSelectedFile().getCanonicalPath(), text);
       } catch (IOException e1) {
         e1.printStackTrace();
       }

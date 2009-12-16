@@ -103,6 +103,8 @@ public class SystemDiff {
       modifications.add(new Modification<String>(
               type == 'a' ? Modification.TYPE_ADD : (type == 'd' ? Modification.TYPE_REMOVE : Modification.TYPE_CHANGED),
               sourceStart, sourceLines, targetStart, targetLines));
+      sourceLines = new ArrayList<String>();
+      targetLines = new ArrayList<String>();
     }
 
     return modifications;

@@ -9,12 +9,14 @@ import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 
 /**
  * Diff component.
  */
-public class SCEDiff extends JSplitPane implements ComponentListener {
+public class SCEDiff extends JPanel implements ComponentListener {
   private static final int WIDTH = 70;
 
   public static Color COLOR_ADD = new Color(189, 238, 192);
@@ -23,12 +25,17 @@ public class SCEDiff extends JSplitPane implements ComponentListener {
 
   private Point location = new Point();
 
-  private String text;
-  private SCEPane pane;
-  private JViewport paneViewport;
-  private SCEPane diff;
-  private JViewport diffViewport;
+  private DiffHeader header;
+
+  private JSplitPane splitPane;
   private JScrollPane scrollPane;
+
+  private String leftTitle;
+  private SCEPane left;
+  private JViewport leftViewport;
+  private String rightTitle;
+  private SCEPane right;
+  private JViewport rightViewport;
 
 	private KeyListener paneKeyListener, diffKeyListener;
 
@@ -43,32 +50,38 @@ public class SCEDiff extends JSplitPane implements ComponentListener {
   private double[] line2Pane;
   private double[] line2Diff;
 
-  public SCEDiff(final SCEPane pane, String text, SCEPane diff, SourceCodeEditor editor) {
-    super(JSplitPane.HORIZONTAL_SPLIT);
+  public SCEDiff(String leftTitle, final SCEPane left, String rightTitle, String rightText) {
+    setLayout(new BorderLayout());
     setDoubleBuffered(false);
-    this.text = text;
-    this.pane = pane;
-    this.diff = diff;
+    this.leftTitle = leftTitle;
+    this.left = left;
+    this.rightTitle = rightTitle;
+    this.right = new SCEPane();
 
-    diff.setText(text);
+    right.setText(rightText);
     updateDiff();
 
-    paneViewport = new SCEDiffViewport(pane, this);
-    diffViewport = new SCEDiffViewport(diff, this);
-    setLeftComponent(paneViewport);
-    setRightComponent(diffViewport);
+    leftViewport = new SCEDiffViewport(left, this);
+    rightViewport = new SCEDiffViewport(right, this);
 
-    setScrollPane(new SCEDiff.SCEDiffScrollPane(this));
+    splitPane = new SCEDiffSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftViewport, rightViewport);
+    scrollPane = new SCEDiff.SCEDiffScrollPane(splitPane);
+    add(scrollPane, BorderLayout.CENTER);
+    updateLayout();
     addComponentListener(this);
 
-    setUI(new SCEDiffUI());
+    header = new DiffHeader();
+    splitPane.addPropertyChangeListener(header);
+    add(header, BorderLayout.NORTH);
 
-    diff.getCaret().moveTo(0, 0);
-    diff.getUndoManager().clear();
-    diff.getDocument().setModified(false);
-    diff.getDocument().setEditable(false);
+    splitPane.setUI(new SCEDiffUI());
 
-	  pane.addKeyListener(paneKeyListener = new KeyAdapter() {
+    right.getCaret().moveTo(0, 0);
+    right.getUndoManager().clear();
+    right.getDocument().setModified(false);
+    right.getDocument().setEditable(false);
+
+	  left.addKeyListener(paneKeyListener = new KeyAdapter() {
 		  @Override
 		  public void keyPressed(KeyEvent e) {
 			  if (e.getModifiers() == KeyEvent.ALT_MASK) {
@@ -83,7 +96,7 @@ public class SCEDiff extends JSplitPane implements ComponentListener {
 			  }
 		  }
 	  });
-	  diff.addKeyListener(diffKeyListener = new KeyAdapter() {
+	  right.addKeyListener(diffKeyListener = new KeyAdapter() {
 		  @Override
 		  public void keyPressed(KeyEvent e) {
 			  if (e.getModifiers() == KeyEvent.ALT_MASK) {
@@ -101,13 +114,13 @@ public class SCEDiff extends JSplitPane implements ComponentListener {
   }
 
 	public void jumpToPreviousTargetModification() {
-		SCECaret caret = pane.getCaret();
+		SCECaret caret = left.getCaret();
 		int currRow = caret.getRow();
 
 		for (int modi = 0; modi < modifications.size(); modi++) {
 			if (modifications.get(modi).getTargetStartIndex() >= currRow) {
 				if (modi > 0) {
-					pane.getCaret().moveTo(modifications.get(modi-1).getTargetStartIndex(), 0);
+					left.getCaret().moveTo(modifications.get(modi-1).getTargetStartIndex(), 0);
 				}
 				break;
 			}
@@ -115,25 +128,25 @@ public class SCEDiff extends JSplitPane implements ComponentListener {
 	}
 
 	public void jumpToNextTargetModification() {
-		SCECaret caret = pane.getCaret();
+		SCECaret caret = left.getCaret();
 		int currRow = caret.getRow();
 
 		for (Modification modification : modifications) {
 			if (modification.getTargetStartIndex() > currRow) {
-				pane.getCaret().moveTo(modification.getTargetStartIndex(), 0);
+				left.getCaret().moveTo(modification.getTargetStartIndex(), 0);
 				break;
 			}
 		}
 	}
 
 	public void jumpToPreviousSourceModification() {
-		SCECaret caret = diff.getCaret();
+		SCECaret caret = right.getCaret();
 		int currRow = caret.getRow();
 
 		for (int modi = 0; modi < modifications.size(); modi++) {
 			if (modifications.get(modi).getSourceStartIndex() >= currRow) {
 				if (modi > 0) {
-					diff.getCaret().moveTo(modifications.get(modi-1).getSourceStartIndex(), 0);
+					right.getCaret().moveTo(modifications.get(modi-1).getSourceStartIndex(), 0);
 				}
 				break;
 			}
@@ -141,44 +154,35 @@ public class SCEDiff extends JSplitPane implements ComponentListener {
 	}
 
 	public void jumpToNextSourceModification() {
-		SCECaret caret = diff.getCaret();
+		SCECaret caret = right.getCaret();
 		int currRow = caret.getRow();
 
 		for (Modification modification : modifications) {
 			if (modification.getSourceStartIndex() > currRow) {
-				diff.getCaret().moveTo(modification.getSourceStartIndex(), 0);
+				right.getCaret().moveTo(modification.getSourceStartIndex(), 0);
 				break;
 			}
 		}
 	}
 
-  public void setScrollPane(JScrollPane scrollPane) {
-    this.scrollPane = scrollPane;
-    updateLayout();
-  }
-
   public void updateLayout() {
-    setDividerLocation((scrollPane.getVisibleRect().width - WIDTH) / 2);
-    setDividerSize(WIDTH);
+    splitPane.setDividerLocation((scrollPane.getVisibleRect().width - WIDTH) / 2);
+    splitPane.setDividerSize(WIDTH);
 
     Rectangle visibleRect = scrollPane.getVisibleRect();
-    int visibleWidthLeft = getDividerLocation();
+    int visibleWidthLeft = splitPane.getDividerLocation();
     int visibleWidthRight = visibleRect.width - visibleWidthLeft - WIDTH;
-    double overLeft = Math.max(1, pane.getPreferredSize().width - visibleWidthLeft) / (double) visibleWidthLeft;
-    double overRight = Math.max(1, diff.getPreferredSize().width - visibleWidthRight) / (double) visibleWidthRight;
+    double overLeft = Math.max(1, left.getPreferredSize().width - visibleWidthLeft) / (double) visibleWidthLeft;
+    double overRight = Math.max(1, right.getPreferredSize().width - visibleWidthRight) / (double) visibleWidthRight;
 
     preferredWidthFactor = 1 + Math.max(0, Math.max(overLeft, overRight));
     preferredSize.width = (int) (visibleRect.width * preferredWidthFactor);
-    preferredSize.height = preferredLines * pane.getLineHeight() + 30;
-  }
-
-  public JScrollPane getScrollPane() {
-    return scrollPane;
+    preferredSize.height = preferredLines * left.getLineHeight() + 30;
   }
 
   public void updateDiff() {
-    SCEDocument paneDocument = pane.getDocument();
-    SCEDocument diffDocument = diff.getDocument();
+    SCEDocument paneDocument = left.getDocument();
+    SCEDocument diffDocument = right.getDocument();
 
     int paneRows = paneDocument.getRowsCount();
     int diffRows = diffDocument.getRowsCount();
@@ -220,8 +224,8 @@ public class SCEDiff extends JSplitPane implements ComponentListener {
       preferredLines++;
     }
 
-    pane.removeAllRowHighlights();
-    diff.removeAllRowHighlights();
+    left.removeAllRowHighlights();
+    right.removeAllRowHighlights();
     for(Modification modification : modifications) {
       Color color = null;
       if(modification.getType() == Modification.TYPE_ADD) color = COLOR_ADD;
@@ -231,65 +235,25 @@ public class SCEDiff extends JSplitPane implements ComponentListener {
       int sourceStart = modification.getSourceStartIndex();
       int sourceEnd = sourceStart + modification.getSourceLength();
       for(int line = sourceStart; line < sourceEnd; line++) {
-        diff.addRowHighlight(new SCERowHighlight(diff, line, color, false));
+        right.addRowHighlight(new SCERowHighlight(right, line, color, false));
       }
-      if(sourceEnd == sourceStart) diff.addRowHighlight(new SCERowHighlight(diff, sourceStart, color, true));
+      if(sourceEnd == sourceStart) right.addRowHighlight(new SCERowHighlight(right, sourceStart, color, true));
 
       int targetStart = modification.getTargetStartIndex();
       int targetEnd = targetStart + modification.getTargetLength();
       for(int line = targetStart; line < targetEnd; line++) {
-        pane.addRowHighlight(new SCERowHighlight(pane, line, color, false));
+        left.addRowHighlight(new SCERowHighlight(left, line, color, false));
       }
-      if(targetEnd == targetStart) pane.addRowHighlight(new SCERowHighlight(pane, targetStart, color, true));
+      if(targetEnd == targetStart) left.addRowHighlight(new SCERowHighlight(left, targetStart, color, true));
     }
   }
 
-  public void setLocation(int x, int y) {
-    location.x = x;
-    location.y = y;
-
-    int visibleHeight = scrollPane.getVisibleRect().height;
-    int lineHeight = pane.getLineHeight();
-    int halfLines = visibleHeight/2/lineHeight;
-
-    int lineOffset = halfLines;
-    while(line2Pane[lineOffset] < halfLines && line2Diff[lineOffset] < halfLines) lineOffset++;
-    int yCorrection = lineHeight * (int) Math.max(line2Pane[lineOffset], line2Diff[lineOffset]);
-
-    y = y - lineOffset*lineHeight;
-    int line = Math.max(0, -y/lineHeight);
-    double lineFraction = (-y - line * lineHeight) / (double) lineHeight;
-
-    double paneLine = (1 - lineFraction) * line2Pane[line] + lineFraction * line2Pane[line + 1];
-    double diffLine = (1 - lineFraction) * line2Diff[line] + lineFraction * line2Diff[line + 1];
-    int rx = (int) (x / preferredWidthFactor);
-    paneViewport.setViewPosition(new Point(-rx, (int) (paneLine * lineHeight) - yCorrection));
-    diffViewport.setViewPosition(new Point(-rx, (int) (diffLine * lineHeight) - yCorrection));
-
-    pane.setSize(paneViewport.getWidth() - rx, pane.getHeight());
-    diff.setSize(diffViewport.getWidth() - rx, diff.getHeight());
-
-    repaint();
-  }
-
-  public Point getLocation(Point rv) {
-    return location;
-  }
-
   public SCEPane getTextPane() {
-    return pane;
+    return left;
   }
 
   public SCEPane getDiffPane() {
-    return diff;
-  }
-
-  public void setLocation(Point p) {
-    setLocation(p.x, p.y);
-  }
-
-  public Dimension getPreferredSize() {
-    return preferredSize;
+    return right;
   }
 
   private TokenList[] getRows(SCEDocument document) {
@@ -346,11 +310,11 @@ public class SCEDiff extends JSplitPane implements ComponentListener {
       int left = 0;
       int right = getWidth();
 
-      int paneOffsetY = -pane.getY();
-      int paneFirstRow = pane.viewToModel(0, paneOffsetY).getRow();
-      int diffOffsetY = -diff.getY();
-      int diffFirstRow = diff.viewToModel(0, diffOffsetY).getRow();
-      int visibleRows = pane.getVisibleRowsCount() + 1;
+      int paneOffsetY = -SCEDiff.this.left.getY();
+      int paneFirstRow = SCEDiff.this.left.viewToModel(0, paneOffsetY).getRow();
+      int diffOffsetY = -SCEDiff.this.right.getY();
+      int diffFirstRow = SCEDiff.this.right.viewToModel(0, diffOffsetY).getRow();
+      int visibleRows = SCEDiff.this.left.getVisibleRowsCount() + 1;
 
       int[] xpoints = new int[]{left, left + 15, right - 15, right, right, right - 15, left + 15, left};
       int[] ypoints = new int[8];
@@ -362,10 +326,10 @@ public class SCEDiff extends JSplitPane implements ComponentListener {
 
         if (sourceStart + sourceLength < diffFirstRow && targetStart + targetLength < paneFirstRow) continue;
         if (sourceStart > diffFirstRow + visibleRows && targetStart > paneFirstRow + visibleRows) continue;
-        int paneYStart = pane.modelToView(targetStart, 0).y - paneOffsetY;
-        int paneYEnd = pane.modelToView(targetStart + targetLength, 0).y - paneOffsetY;
-        int diffYStart = pane.modelToView(sourceStart, 0).y - diffOffsetY;
-        int diffYEnd = pane.modelToView(sourceStart + sourceLength, 0).y - diffOffsetY;
+        int paneYStart = SCEDiff.this.left.modelToView(targetStart, 0).y - paneOffsetY;
+        int paneYEnd = SCEDiff.this.left.modelToView(targetStart + targetLength, 0).y - paneOffsetY;
+        int diffYStart = SCEDiff.this.left.modelToView(sourceStart, 0).y - diffOffsetY;
+        int diffYEnd = SCEDiff.this.left.modelToView(sourceStart + sourceLength, 0).y - diffOffsetY;
         if(targetLength == 0) { paneYStart--; paneYEnd += 2; }
         if(sourceLength == 0) { diffYStart--; diffYEnd += 2; }
         ypoints[0] = paneYStart;
@@ -408,27 +372,73 @@ public class SCEDiff extends JSplitPane implements ComponentListener {
 	 * Closes the diff.
 	 */
 	public void close() {
-		pane.removeKeyListener(paneKeyListener);
-		diff.removeKeyListener(diffKeyListener);
+		left.removeKeyListener(paneKeyListener);
+		right.removeKeyListener(diffKeyListener);
     removeComponentListener(this);
 
-    paneViewport.setView(null);
-    diffViewport.setView(null);
-    setLeftComponent(null);
-    setRightComponent(null);
+    leftViewport.setView(null);
+    rightViewport.setView(null);
+    splitPane.setLeftComponent(null);
+    splitPane.setRightComponent(null);
+  }
+
+  private class SCEDiffSplitPane extends JSplitPane {
+    public SCEDiffSplitPane(int newOrientation, Component newLeftComponent, Component newRightComponent) {
+      super(newOrientation, newLeftComponent, newRightComponent);
+    }
+
+    public void setLocation(int x, int y) {
+      location.x = x;
+      location.y = y;
+
+      int visibleHeight = scrollPane.getVisibleRect().height;
+      int lineHeight = left.getLineHeight();
+      int halfLines = visibleHeight/2/lineHeight;
+
+      int lineOffset = halfLines;
+      while(line2Pane[lineOffset] < halfLines && line2Diff[lineOffset] < halfLines) lineOffset++;
+      int yCorrection = lineHeight * (int) Math.max(line2Pane[lineOffset], line2Diff[lineOffset]);
+
+      y = y - lineOffset*lineHeight;
+      int line = Math.max(0, -y/lineHeight);
+      double lineFraction = (-y - line * lineHeight) / (double) lineHeight;
+
+      double paneLine = (1 - lineFraction) * line2Pane[line] + lineFraction * line2Pane[line + 1];
+      double diffLine = (1 - lineFraction) * line2Diff[line] + lineFraction * line2Diff[line + 1];
+      int rx = (int) (x / preferredWidthFactor);
+      leftViewport.setViewPosition(new Point(-rx, (int) (paneLine * lineHeight) - yCorrection));
+      rightViewport.setViewPosition(new Point(-rx, (int) (diffLine * lineHeight) - yCorrection));
+
+      left.setSize(leftViewport.getWidth() - rx, left.getHeight());
+      right.setSize(rightViewport.getWidth() - rx, right.getHeight());
+
+      repaint();
+    }
+
+    public Point getLocation(Point rv) {
+      return location;
+    }
+
+    public void setLocation(Point p) {
+      setLocation(p.x, p.y);
+    }
+
+    public Dimension getPreferredSize() {
+      return preferredSize;
+    }
   }
 
   public static class SCEDiffScrollPane extends JScrollPane {
-    public SCEDiffScrollPane(SCEDiff view) {
+    public SCEDiffScrollPane(JComponent view) {
       super(view);
-      setViewport(new SCEDiffViewPort());
+      setViewport(new SCEDiffScrollPaneViewport());
       setViewportView(view);
 
       getVerticalScrollBar().setUnitIncrement(30);
     }
   }
 
-  public static class SCEDiffViewPort extends JViewport {
+  public static class SCEDiffScrollPaneViewport extends JViewport {
     private Point viewPosition = new Point();
 
     public void setViewPosition(Point p) {
@@ -473,7 +483,7 @@ public class SCEDiff extends JSplitPane implements ComponentListener {
       JScrollBar vbar = scrollPane.getVerticalScrollBar();
       JScrollBar hbar = scrollPane.getHorizontalScrollBar();
 
-      JViewport currentViewport = diffView.getDiffPane().hasFocus() ? diffViewport : paneViewport;
+      JViewport currentViewport = diffView.getDiffPane().hasFocus() ? rightViewport : leftViewport;
       SCEPane currentPane = diffView.getDiffPane().hasFocus() ? diffView.getDiffPane() : diffView.getTextPane();
 
       double[] lineMap = diffView.getDiffPane().hasFocus() ? line2Diff : line2Pane;
@@ -505,6 +515,23 @@ public class SCEDiff extends JSplitPane implements ComponentListener {
         }
         hbar.setValue(vbar.getValue() + (int) (distance*preferredWidthFactor));
       }
+    }
+  }
+
+  private class DiffHeader extends JPanel implements PropertyChangeListener {
+    public void paint(Graphics g) {
+      super.paint(g);
+
+      g.drawString(leftTitle, 5,15);
+      g.drawString(rightTitle, splitPane.getDividerLocation() + WIDTH + 5,15);
+    }
+
+    public Dimension getPreferredSize() {
+      return new Dimension(1800, 19);
+    }
+
+    public void propertyChange(PropertyChangeEvent evt) {
+      repaint();
     }
   }
 }
