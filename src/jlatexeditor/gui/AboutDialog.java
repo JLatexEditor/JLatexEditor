@@ -42,23 +42,27 @@ public class AboutDialog extends JFrame {
 		Color creditsFg = new Color(0xf49514);
 		Color creditsShadow = Color.BLACK;
 		float creditsShadowAlpha = 0.30f;
+		int shadowStart = 1;
 		*/
 
 		/*
 		Color creditsFg = Color.WHITE;
 		Color creditsShadow = Color.BLACK;
 		float creditsShadowAlpha = 0.30f;
+		int shadowStart = 1;
 		*/
 
 		/*
 		Color creditsFg = Color.BLACK;
 		Color creditsShadow = Color.WHITE;
 		float creditsShadowAlpha = 0.20f;
+		int shadowStart = 0;
 		*/
 
 		Color creditsFg = Color.WHITE;
 		Color creditsShadow = Color.BLACK;
 		float creditsShadowAlpha = 0.30f;
+		int shadowStart = 1;
 
     ImageIcon icon = new ImageIcon(getClass().getResource("/images/logo.png"));
     Image iconImage = icon.getImage();
@@ -71,8 +75,8 @@ public class AboutDialog extends JFrame {
     g.translate(x,y);
     credits.setForeground(creditsShadow);
     g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, creditsShadowAlpha));
-    for(int dx = 0; dx <= 2; dx++) {
-      for(int dy = 0; dy <= 2; dy++) {
+    for(int dx = shadowStart; dx <= 2; dx++) {
+      for(int dy = shadowStart; dy <= 2; dy++) {
         g.translate(dx,dy);
         credits.paint(g);
         g.translate(-dx,-dy);
