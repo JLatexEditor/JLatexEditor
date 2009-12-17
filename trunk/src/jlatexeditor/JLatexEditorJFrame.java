@@ -203,6 +203,24 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     pasteMenuItem.addActionListener(this);
     editMenu.add(pasteMenuItem);
 
+	  editMenu.addSeparator();
+
+	  JMenuItem commentMenuItem = new JMenuItem("Comment");
+	  commentMenuItem.setActionCommand("comment");
+	  commentMenuItem.setMnemonic('o');
+	  commentMenuItem.setAccelerator(KeyStroke.getKeyStroke("control D"));
+	  commentMenuItem.addActionListener(this);
+	  editMenu.add(commentMenuItem);
+
+	  JMenuItem uncommentMenuItem = new JMenuItem("Uncomment");
+	  uncommentMenuItem.setActionCommand("uncomment");
+	  uncommentMenuItem.setMnemonic('u');
+	  uncommentMenuItem.setAccelerator(KeyStroke.getKeyStroke("control shift D"));
+	  uncommentMenuItem.addActionListener(this);
+	  editMenu.add(uncommentMenuItem);
+
+	  editMenu.addSeparator();
+
     JMenuItem diffMenuItem = new JMenuItem("Diff");
     diffMenuItem.setActionCommand("diff");
 	  diffMenuItem.setMnemonic('D');
@@ -605,6 +623,15 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     if(action.equals("paste")){
       getEditor(tabbedPane.getSelectedIndex()).paste();
     } else
+
+		// comment
+		if(action.equals("comment")){
+			getEditor(tabbedPane.getSelectedIndex()).comment();
+		} else
+		// uncomment
+		if(action.equals("uncomment")){
+			getEditor(tabbedPane.getSelectedIndex()).uncomment();
+		} else
 
     // diff
     if(action.equals("diff")){
