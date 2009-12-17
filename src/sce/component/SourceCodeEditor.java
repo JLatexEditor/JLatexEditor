@@ -209,17 +209,28 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
     return diff != null && diff.getDiffPane() != null && diff.getDiffPane().hasFocus();
   }
 
+	public SCEPane getFocusedPane() {
+		return hasDiffFocus() ? diff.getDiffPane() : textPane;
+	}
+
   public void copy() {
-    if(hasDiffFocus()) { diff.getDiffPane().copy(); } else { textPane.copy(); }
+	  getFocusedPane().copy();
   }
 
   public void cut() {
-    if(hasDiffFocus()) { diff.getDiffPane().cut(); } else { textPane.cut(); }
+	  getFocusedPane().cut();
   }
 
   public void paste() {
-    if(hasDiffFocus()) { diff.getDiffPane().paste(); } else { textPane.paste(); }
+	  getFocusedPane().paste();
   }
+
+	public void comment() {
+	  getFocusedPane().comment();
+	}
+	public void uncomment() {
+		getFocusedPane().uncomment();
+	}
 
   /**
    * Show search field.

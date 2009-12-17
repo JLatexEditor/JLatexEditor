@@ -283,6 +283,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     Transferable content = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
     try{
       String string = (String) content.getTransferData(DataFlavor.stringFlavor);
+	    string = string.replaceAll("\t", "  ");
       if(document.hasSelection()) ui.removeSelection();
       document.insert(string, caret.getRow(), caret.getColumn());
     } catch(Exception ignored){
@@ -306,6 +307,65 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     ui.removeSelection();
   }
 
+	/**
+	 * Comment the selected lines.
+	 */
+	public void comment() {
+		if(!document.hasSelection()){
+			document.insert("% ", caret.getRow(), caret.getColumn());
+		} else {
+			SCEDocumentPosition startSel = document.getSelectionStart();
+			SCEDocumentPosition endSel = document.getSelectionEnd();
+
+		  int startRow = startSel.getRow();
+		  int endRow = endSel.getRow() - (endSel.getColumn() == 0 ? 1 : 0);
+		  for(int row = startRow; row <= endRow; row++){
+				document.insert("% ", row, 0);
+		  }
+
+			int endCol = endSel.getColumn();
+			endCol = endCol == 0 ? endCol : endCol+2;
+			endSel = new SCEDocumentPosition(endSel.getRow(), endCol);
+			caret.moveTo(endSel.getRow(), endCol);
+			document.setSelectionRange(startSel, endSel);
+		}
+	}
+
+	/**
+	 * Uncomment the selected lines.
+	 */
+	public void uncomment() {
+		if(!document.hasSelection()){
+			int row = caret.getRow();
+			int col = caret.getColumn();
+			removeComment(caret.getRow());
+			caret.moveTo(row, Math.max(col-2, 0));
+			caret.removeSelectionMark();
+			repaint();
+		} else {
+			SCEDocumentPosition startSel = document.getSelectionStart();
+			SCEDocumentPosition endSel = document.getSelectionEnd();
+
+		  int startRow = startSel.getRow();
+		  int endRow = endSel.getRow() - (endSel.getColumn() == 0 ? 1 : 0);
+		  for(int row = startRow; row <= endRow; row++){
+				removeComment(row);
+		  }
+
+			int endCol = endSel.getColumn();
+			endCol = Math.max(endCol, 0);
+			endSel = new SCEDocumentPosition(endSel.getRow(), endCol);
+			caret.moveTo(endSel.getRow(), endCol);
+			document.setSelectionRange(startSel, endSel);
+		}
+	}
+
+	private void removeComment(int row) {
+		String rowString = document.getRow(row);
+		if(rowString.startsWith("% ")){
+		  document.remove(row, 0, row, 2);
+		}
+	}
 
   /**
 	 * Returns the popup for code assistants.
