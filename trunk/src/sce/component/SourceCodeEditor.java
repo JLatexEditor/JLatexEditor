@@ -225,11 +225,11 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
 	  getFocusedPane().paste();
   }
 
-	public void comment() {
-	  getFocusedPane().comment();
+	public void lineComment(String commentPrefix) {
+	  getFocusedPane().lineComment(commentPrefix);
 	}
-	public void uncomment() {
-		getFocusedPane().uncomment();
+	public void lineUncomment(String commentPrefix) {
+		getFocusedPane().lineUncomment(commentPrefix);
 	}
 
   /**
