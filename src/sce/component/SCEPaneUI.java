@@ -202,11 +202,34 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
       e.consume();
     }
     if(e.getKeyCode() == KeyEvent.VK_HOME){
-      caret.moveTo(caret.getRow(), 0);
+	    if (caret.getColumn() != 0) {
+		    caret.moveTo(caret.getRow(), 0);
+	    } else {
+		    // move caret to the first non-space character
+		    char[] chars = document.getRow(caret.getRow()).toCharArray();
+		    for (int i=0; i<chars.length; i++) {
+			    if (chars[i] != ' ' && chars[i] != '\t') {
+				    caret.moveTo(caret.getRow(), i);
+				    break;
+			    }
+		    }
+	    }
       e.consume();
     }
     if(e.getKeyCode() == KeyEvent.VK_END){
-      caret.moveTo(caret.getRow(), document.getRowLength(caret.getRow()));
+	    int rowLength = document.getRowLength(caret.getRow());
+	    if (caret.getColumn() != rowLength) {
+		    caret.moveTo(caret.getRow(), rowLength);
+	    } else {
+		    // move caret to first non-space character
+		    char[] chars = document.getRow(caret.getRow()).toCharArray();
+		    for (int i=rowLength; i>0; i--) {
+			    if (chars[i-1] != ' ' && chars[i] != '\t') {
+				    caret.moveTo(caret.getRow(), i);
+				    break;
+			    }
+		    }
+	    }
       e.consume();
     }
 

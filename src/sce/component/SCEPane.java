@@ -13,7 +13,6 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.FocusListener;
 import java.awt.event.FocusEvent;
-import java.awt.event.KeyEvent;
 import java.text.AttributedString;
 import java.util.ArrayList;
 
@@ -294,14 +293,23 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    * Copy text to clipboard.
    */
   public void copy() {
-    StringSelection s = new StringSelection(document.getSelectedText());
+	  ensureSelection();
+	  StringSelection s = new StringSelection(document.getSelectedText());
     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(s, null);
   }
 
-  /**
+	private void ensureSelection() {
+		if (document.getSelectedText() == null) {
+			document.setSelectionRange(new SCEDocumentPosition(caret.getRow(), 0), new SCEDocumentPosition(caret.getRow() + 1, 0));
+			repaint();
+		}
+	}
+
+	/**
    * Cut text to clipboard.
    */
   public void cut() {
+		ensureSelection();
     StringSelection s = new StringSelection(document.getSelectedText());
     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(s, null);
     ui.removeSelection();
@@ -309,10 +317,16 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 
 	/**
 	 * Comment the selected lines.
+	 * 
+	 * @param commentPrefix prefix used to mark a line as lineComment
 	 */
-	public void comment() {
-		if(!document.hasSelection()){
-			document.insert("% ", caret.getRow(), caret.getColumn());
+	public void lineComment(String commentPrefix) {
+		if (!document.hasSelection()) {
+			int row = caret.getRow();
+			int col = caret.getColumn();
+			document.insert(commentPrefix, caret.getRow(), 0);
+			caret.moveTo(row, col+commentPrefix.length());
+			caret.removeSelectionMark();
 		} else {
 			SCEDocumentPosition startSel = document.getSelectionStart();
 			SCEDocumentPosition endSel = document.getSelectionEnd();
@@ -333,13 +347,16 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 
 	/**
 	 * Uncomment the selected lines.
+	 *
+	 * @param commentPrefix prefix used to mark a line as lineComment
 	 */
-	public void uncomment() {
-		if(!document.hasSelection()){
+	public void lineUncomment(String commentPrefix) {
+		if (!document.hasSelection()) {
 			int row = caret.getRow();
 			int col = caret.getColumn();
-			removeComment(caret.getRow());
-			caret.moveTo(row, Math.max(col-2, 0));
+			if (removeComment(commentPrefix, caret.getRow())) {
+				caret.moveTo(row, Math.max(col-commentPrefix.length(), 0));
+			}
 			caret.removeSelectionMark();
 			repaint();
 		} else {
@@ -348,23 +365,30 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 
 		  int startRow = startSel.getRow();
 		  int endRow = endSel.getRow() - (endSel.getColumn() == 0 ? 1 : 0);
+			boolean moveCaret = false;
 		  for(int row = startRow; row <= endRow; row++){
-				removeComment(row);
+			  if (removeComment(commentPrefix, row) && row == caret.getRow()) {
+				  moveCaret = true;
+			  }
 		  }
 
 			int endCol = endSel.getColumn();
 			endCol = Math.max(endCol, 0);
 			endSel = new SCEDocumentPosition(endSel.getRow(), endCol);
-			caret.moveTo(endSel.getRow(), endCol);
+			if (moveCaret) {
+				caret.moveTo(endSel.getRow(), endCol);
+			}
 			document.setSelectionRange(startSel, endSel);
 		}
 	}
 
-	private void removeComment(int row) {
+	private boolean removeComment(String commentPrefix, int row) {
 		String rowString = document.getRow(row);
-		if(rowString.startsWith("% ")){
-		  document.remove(row, 0, row, 2);
+		if(rowString.startsWith(commentPrefix)){
+		  document.remove(row, 0, row, commentPrefix.length());
+			return true;
 		}
+		return false;
 	}
 
   /**

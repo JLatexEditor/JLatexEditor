@@ -624,13 +624,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       getEditor(tabbedPane.getSelectedIndex()).paste();
     } else
 
-		// comment
+		// lineComment
 		if(action.equals("comment")){
-			getEditor(tabbedPane.getSelectedIndex()).comment();
+			getEditor(tabbedPane.getSelectedIndex()).lineComment("% ");
 		} else
-		// uncomment
+		// lineUncomment
 		if(action.equals("uncomment")){
-			getEditor(tabbedPane.getSelectedIndex()).uncomment();
+			getEditor(tabbedPane.getSelectedIndex()).lineUncomment("% ");
 		} else
 
     // diff
