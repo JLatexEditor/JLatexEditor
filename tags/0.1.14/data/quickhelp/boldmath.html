@@ -1,0 +1,57 @@
+<html>
+<head>
+<title>Help On LaTeX \boldmath</title>
+<link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
+</head>
+<body>
+
+<h3>Hypertext Help with LaTeX</h3>
+
+<h2>\boldmath</h2>
+
+<p>The <tt>\boldmath</tt>
+<a href="declarations.html">declaration</a> switches to a bold
+math italic font; this causes letters, numbers, and
+<strong>most</strong> symbols used in math mode to be set in a
+bold type.</p>
+
+<p>(In <a href="versions.html">LaTeX2e</a>
+<strong>everything</strong> in the formula is set in a bold font.)</p>
+
+<p>The <tt>\unboldmath</tt>
+<a href="declarations.html">declaration</a> switches
+back to the normal math italic font.</p>
+
+<p>Note, these commands should <strong>not</strong> be used in
+math mode. Thus the scope of the
+<a href="declarations.html">declaration</a> must include the
+math mode expressions to which you want it to apply.</p>
+
+<p>If you want only part of a formula to be bold an
+<tt><a href="ltx-265.html">\mbox</a></tt> command is useful:</p>
+
+<pre>
+  <a href="ltx-115.html#math">\(</a> Regular formula + \mbox{\boldmath$ Bold part$} = 0 <a href="ltx-115.html#math">\)</a>
+</pre>
+
+<p>Both <tt>\boldmath</tt> and <tt>\unboldmath</tt> commands are 
+<a href="fragile.html">fragile</a>.</p>
+
+<hr noshade="noshade" size="1">
+
+<p>Related topics</p>
+<ul>
+  <li><a href="ltx-115.html">Math Formulas</a></li>
+  <li><a href="mathfonts.html">Math fonts and styles</a></li>
+  <li><a href="ltx-176.html">Typefaces</a> and
+    <a href="ltx-177.html">Styles</a></li>
+</ul>
+
+<p>Return to <a href="ltx-2.html">LaTeX Table of Contents</a></p>
+
+<hr noshade="noshade" size="1">
+<address>
+Revised 7 Jul 1995.
+</address>
+</body>
+</html>

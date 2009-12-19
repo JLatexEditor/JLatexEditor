@@ -1,0 +1,193 @@
+<html>
+
+<head>
+
+<title>Help On LaTeX Letters</title>
+
+<link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
+
+</head>
+
+<body>
+
+
+
+
+
+<h2>Letters</h2>
+
+
+
+<p>You can use LaTeX to typeset letters, both personal and
+
+business. The letter document style is designed to make a
+
+number of letters at once, although you can make just one if you
+
+so desire.</p>
+
+
+
+<p>Your *.tex source file has the same 
+
+<a href="input.html#structure">minimum commands</a> as the
+
+other document styles, i.e., you must have the following 
+
+commands as a minimum:</p>
+
+
+
+<pre>
+
+    \documentstyle{letter}
+
+    <a href="ltx-315.html">\signature{Your Name}</a> 
+
+    <a href="ltx-93.html">\address{Return address}</a>
+
+    \begin{document}
+
+    ... First letter ...
+
+    ... Second letter ...
+
+    ...
+
+    \end{document}
+
+</pre>
+
+
+
+<p>Note that the <tt>\address</tt> and <tt>\signature</tt>
+
+commands are <a href="declarations.html">declarations</a> and
+
+follow the usual scope rules. They are generally placed in the
+
+preamble, as indicated here, and apply to all letters in the file.</p>
+
+
+
+<p>Each letter is a letter <a href="ltx-27.html">environment</a>,
+
+whose argument is the name and address of the recipient. For
+
+example, a typical letter might have</p>
+
+
+
+<pre>
+
+   \begin{letter}{Mr. John Doe \\ 2345 Jones St. 
+
+         \\ Oakland, CA  91123}
+
+   <a href="ltx-97.html">\opening{Dear John,}</a>
+
+     ...
+
+     text of letter 
+
+     ...
+
+   <a href="ltx-98.html">\closing{Best regards,}</a>
+
+   \end{letter}
+
+</pre>
+
+
+
+<p>The letter itself begins with the
+
+<tt><a href="ltx-97.html">\opening</a></tt> command. The text
+
+of the letter follows. It is typed as ordinary LaTeX input. 
+
+Commands that make no sense in a letter, like
+
+<tt>\chapter,</tt> don't work. The letter closes with a
+
+<tt><a href="ltx-98.html">\closing</a></tt> command.</p>
+
+
+
+<h3>Closing matter</h3>
+
+
+
+<p>Several commands may be used after the <tt>\closing</tt> command:</p>
+
+
+
+<ul>
+
+  <li><tt>\ps{PS text}</tt> command produces a "P.S."</li>
+
+  <li><tt>\cc{text}</tt> command produces  the usual "cc: text". </li>
+
+  <li><tt>\encl{list of enclosures}</tt> command produces an "encl:" list</li>
+
+</ul>
+
+
+
+<h3>Date</h3>
+
+
+
+<p>The <tt><a href="ltx-330.html">\today</a></tt> command is
+
+used by the letter <a href="ltx-22.html">document style</a> to
+
+generate the date. If you wish a fixed date, rather than the
+
+current date, you should use</p>
+
+
+
+<pre>
+
+   <a href="ltx-18.html">\renewcommand</a>{\today}{Month day, year}
+
+</pre>
+
+
+
+<p>This may be put in the preamble if it is to apply to all
+
+letters in the file, or just before the <tt>\opening</tt>
+
+command if it is to apply to just that letter.</p>
+
+
+
+<hr noshade="noshade" size="1">
+
+
+
+<p>See also</p>
+
+
+
+<ul>
+
+  <li><tt><a href="ltx-93.html">\address</a></tt></li>
+
+  <li><tt><a href="ltx-98.html">\closing</a></tt></li>
+
+  <li><tt><a href="ltx-261.html">\location</a></tt></li>
+
+  <li><tt><a href="ltx-97.html">\opening</a></tt></li>
+
+  <li><tt><a href="ltx-315.html">\signature</a></tt></li>
+
+  <li><tt><a href="ltx-323.html">\telephone</a></tt></li>
+
+</ul>
+
+
+
+</body></html>
