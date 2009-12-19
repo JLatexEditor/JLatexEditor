@@ -58,7 +58,7 @@
 		</copy>
 	</target>
 
-	<!-- Builds the update directory. -->
+	<!-- Builds the upload directory including the jar file. -->
 	<target name="jar" depends="compile,updateBuildNumber">
 		<delete dir="${upload}"/>
 		<mkdir dir="${upload}"/>
@@ -92,30 +92,23 @@
 		  <replacefilter token="@build.number@" value="${build.number}"/>
 		</replace>
 	</target>
-
+	
+	<!-- Increments the build number. -->
+	<target name="updateBuildNumber">
+		<buildnumber/>
+		
+		<echo message="${jle.version}.${build.number}" file="${buildClasses}/version.txt"/>
+	</target>
+	
 	<!-- Build all files needed for deployment. -->
 	<target name="create_release" depends="jar">
 		<mkdir dir="${releases}"/>
-
+		
 		<exec executable="scripts/create_release">
 			<arg value="${jle.version}.${build.number}"/>
 		</exec>
 	</target>
-
-	<!-- Increments the build number. -->
-	<target name="updateBuildNumber">
-	  <buildnumber/>
-
-		<echo message="${jle.version}.${build.number}" file="${buildClasses}/version.txt"/>
-	</target>
-
-	<!-- Copies all files to deploy into the corresponding web directories. -->
-	<target name="copy_release" depends="create_release">
-		<exec executable="scripts/copy_release">
-			<arg value="JLatexEditor-${jle.version}.${build.number}"/>
-		</exec>
-	</target>
-
+	
 	<!-- Validates the source code and creates a new release on the remote server. -->
 	<target name="create_remote_release" depends="compile">
 		<exec executable="scripts/create_remote_release">
