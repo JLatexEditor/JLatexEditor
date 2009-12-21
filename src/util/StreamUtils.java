@@ -61,7 +61,9 @@ public class StreamUtils{
 
   /**
 	 * Opens an InputStream for the given resource name.
-	 */
+   *
+   * @param fileName resource name / file name (does not have to start with a "/")
+   */
 	public static InputStream getInputStream(String fileName) throws FileNotFoundException {
 	  // try to find the resource in local class resources
 	  InputStream localStream = StreamUtils.class.getResourceAsStream("/" + fileName);
