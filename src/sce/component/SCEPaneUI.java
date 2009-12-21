@@ -224,7 +224,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 		    // move caret to first non-space character
 		    char[] chars = document.getRow(caret.getRow()).toCharArray();
 		    for (int i=rowLength; i>0; i--) {
-			    if (chars[i-1] != ' ' && chars[i] != '\t') {
+			    if (chars[i-1] != ' ' && chars[i-1] != '\t') {
 				    caret.moveTo(caret.getRow(), i);
 				    break;
 			    }
