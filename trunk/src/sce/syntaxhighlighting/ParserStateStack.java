@@ -65,7 +65,7 @@ public class ParserStateStack{
   }
 
   /**
-   * Compares two parser state stacks.
+   * Compares two states state stacks.
    *
    * @param psStack the stack to compare with
    * @return true, if they are equal
@@ -90,7 +90,7 @@ public class ParserStateStack{
     ParserStateStack clone = new ParserStateStack();
 
 	  for (ParserState aStateStack : stateStack) {
-		  clone.push((aStateStack).copy());
+		  clone.push(aStateStack.copy());
 	  }
 
     return clone;
