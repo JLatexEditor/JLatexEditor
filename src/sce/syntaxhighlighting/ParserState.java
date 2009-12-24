@@ -5,6 +5,11 @@
 
 package sce.syntaxhighlighting;
 
+public interface ParserState {
+	public ParserState copy();
+}
+
+/*
 public class ParserState implements Cloneable{
   public boolean mode_verbatim = false;
   public boolean mode_math = false;
@@ -12,12 +17,12 @@ public class ParserState implements Cloneable{
   public boolean text_bold = false;
   public boolean text_italic = false;
 
-  /**
+  / **
    * Compares the two states.
    *
    * @param state the state to compare with
    * @return true, if the states are equal
-   */
+   * /
   public boolean equals(ParserState state){
     if(state == null) return false;
 
@@ -30,11 +35,11 @@ public class ParserState implements Cloneable{
     return true;
   }
 
-  /**
-   * Clones this parser state.
+  / **
+   * Clones this states state.
    *
    * @return the clone
-   */
+   * /
   public ParserState copy(){
     ParserState clone = new ParserState();
 
@@ -46,3 +51,4 @@ public class ParserState implements Cloneable{
     return clone;
   }
 }
+*/

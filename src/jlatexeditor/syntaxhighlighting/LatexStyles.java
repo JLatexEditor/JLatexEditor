@@ -36,13 +36,14 @@ public class LatexStyles{
   public static final byte U_MISSPELLED = 101;
 
   private static Map<TextAttribute, Object>[] stylesMap = new Map[Byte.MAX_VALUE+1];
-  private static Map<String, Byte> commandsMap = new HashMap<String, Byte>();
+  private static Map<String, CommandStyle> commandsMap = new HashMap<String, CommandStyle>();
 
   private static Map<String,Byte> name2Id = new HashMap<String, Byte>();
 
   private static String styleFile = "data/styles/user.xml";
+	private static final CommandStyle NORMAL_COMMAND_STYLE = new CommandStyle(COMMAND, (byte) -1);
 
-  static {
+	static {
     load();
   }
 
@@ -76,9 +77,9 @@ public class LatexStyles{
 	  underlineMisspelling.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_LOW_GRAY);
   }
 
-  public static Byte getCommandStyle(String command) {
-    Byte style = commandsMap.get(command);
-    return style != null ? style : COMMAND;
+  public static CommandStyle getCommandStyle(String command) {
+    CommandStyle style = commandsMap.get(command);
+    return style != null ? style : NORMAL_COMMAND_STYLE;
   }
 
   public static void load() {
@@ -109,7 +110,7 @@ public class LatexStyles{
       if(styleElement.getName().equals("special")) {
         for(XMLElement element : styleElement.getChildElements()) {
           if(element.getName().equals("command")) {
-            commandsMap.put(element.getAttribute("name"), name2Id.get(element.getAttribute("style")));
+            commandsMap.put(element.getAttribute("name"), getCommandStyle(element));
           }
         }
         continue;
@@ -125,7 +126,16 @@ public class LatexStyles{
     }
   }
 
-  public static void save(String fileName) {
+	private static CommandStyle getCommandStyle(XMLElement element) {
+		byte commandStyle = name2Id.get(element.getAttribute("style"));
+		byte paramStyle = -1;
+		if (element.getAttribute("paramStyle") != null) {
+			paramStyle = name2Id.get(element.getAttribute("paramStyle"));
+		}
+		return new CommandStyle(commandStyle, paramStyle);
+	}
+
+	public static void save(String fileName) {
     // TODO
   }
 
@@ -154,9 +164,24 @@ public class LatexStyles{
   }
 
   private static Color getColor(XMLElement color) {
-    int r = Integer.parseInt(color.getAttribute("r"));
-    int g = Integer.parseInt(color.getAttribute("g"));
-    int b = Integer.parseInt(color.getAttribute("b"));
-    return new Color(r,g,b);
+	  if (color.getAttribute("rgb") != null) {
+			return new Color(Integer.parseInt(color.getAttribute("rgb") ,16));
+	  } else {
+			int r = Integer.parseInt(color.getAttribute("r"));
+			int g = Integer.parseInt(color.getAttribute("g"));
+			int b = Integer.parseInt(color.getAttribute("b"));
+			return new Color(r,g,b);
+	  }
   }
+
+	// (command style, parameter style) pair
+	public static class CommandStyle {
+		public byte commandStyle;
+		public byte parameterStyle;
+
+		public CommandStyle(byte commandStyle, byte parameterStyle) {
+			this.commandStyle = commandStyle;
+			this.parameterStyle = parameterStyle;
+		}
+	}
 }

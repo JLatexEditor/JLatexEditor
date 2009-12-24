@@ -5,6 +5,8 @@
 
 package jlatexeditor.syntaxhighlighting;
 
+import jlatexeditor.syntaxhighlighting.states.MathMode;
+import jlatexeditor.syntaxhighlighting.states.RootState;
 import sce.component.*;
 import sce.syntaxhighlighting.ParserState;
 import sce.syntaxhighlighting.ParserStateStack;
@@ -49,22 +51,22 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
   }
 
   /**
-   * Resets the parser/ syntax highlighting to initial state.
+   * Resets the states/ syntax highlighting to initial state.
    */
   public void reset(){
     // get the actual document rows
     int rowsCount = document.getRowsCount();
     SCEDocumentRow rows[] = document.getRows();
 
-    // reset all parser states and mark rows as modified
+    // reset all states states and mark rows as modified
     for(int row_nr = 0; row_nr < rowsCount; row_nr++){
       rows[row_nr].modified = true;
       rows[row_nr].parserStateStack = null;
     }
 
-    // initialize the first row with parser state
+    // initialize the first row with states state
     rows[0].parserStateStack = new ParserStateStack();
-    rows[0].parserStateStack.push(new ParserState());
+    rows[0].parserStateStack.push(new RootState());
   }
 
   public void run(){
@@ -87,7 +89,7 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
       try{
         parse();
       }catch(RuntimeException e){
-        // internal parser error (should never happen)
+        // internal states error (should never happen)
         e.printStackTrace();
       }
 
@@ -108,7 +110,7 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
       SCEDocumentRow row = rows[row_nr];
       if(!row.modified) continue;
 
-      // has this row a known parser state?
+      // has this row a known states state?
       if(row.parserStateStack != null){
         parseRow(row_nr, rowsCount, rows);
       }else{
@@ -126,13 +128,14 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
    */
   private void parseRow(int row_nr, int rowsCount, SCEDocumentRow rows[]){
     boolean ready = false;
+	  LatexStyles.CommandStyle lastCommandStyle = null;
 
     while(!ready && row_nr < rowsCount){
       SCEDocumentRow row = rows[row_nr];
       // this may never be
       if(row.parserStateStack == null) throw new RuntimeException("Internal parser error occured.");
 
-      // the current parser state (at the beginning of the row)
+      // the current states state (at the beginning of the row)
       ParserStateStack stateStack = row.parserStateStack.copy();
       ParserState state = stateStack.peek();
 
@@ -158,11 +161,12 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
             }else{
               sce_char.style = LatexStyles.ERROR;
             }
+	          lastCommandStyle = null;
           }else{
-            Byte style = LatexStyles.getCommandStyle(command);
+            lastCommandStyle = LatexStyles.getCommandStyle(command);
             // highlight the command
             for(int i = 0; i <= command.length(); i++){
-              chars[char_nr + i].style = style;
+              chars[char_nr + i].style = lastCommandStyle.commandStyle;
             }
             char_nr += command.length();
           }
@@ -172,6 +176,16 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 
         // search for '$' and "$$"
         if(c == '$'){
+	        boolean doubleMath = chars[char_nr + 1].character == '$';
+	        if (doubleMath) char_nr++;
+
+	        // if active math mode -> close; otherwise open
+	        if (state instanceof MathMode) {
+		        stateStack.pop();
+		        state = stateStack.peek();
+	        } else {
+		        stateStack.push(state = new MathMode(doubleMath));
+	        }
 
           continue;
         }
@@ -228,7 +242,7 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
       // go to the next row
       row_nr++;
 
-      // set the parser state for the next row
+      // set the states state for the next row
       if(row_nr < rowsCount){
         if(stateStack.equals(rows[row_nr].parserStateStack)){
           ready = true;
@@ -261,6 +275,8 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
       // we found the end of the command
       break;
     }
+	  // command consists of at least 1 char
+	  if (end_offset == offset) end_offset++;
 
     // did we find a command?
     if(offset != end_offset){
