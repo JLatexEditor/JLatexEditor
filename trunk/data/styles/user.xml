@@ -6,15 +6,15 @@
   </element>
 
   <element name="command" style="plain">
-    <foreground><color r="128" g="0" b="0"/></foreground>
+    <foreground><color r="0" g="0" b="255"/></foreground>
   </element>
 
   <element name="comment" style="italic">
     <foreground><color r="128" g="128" b="128"/></foreground>
   </element>
 
-  <element name="bracket" style="plain">
-    <foreground><color r="0" g="0" b="0"/></foreground>
+  <element name="bracket" style="bold">
+    <foreground><color rgb="2fbf53"/></foreground>
   </element>
 
   <element name="number" style="plain">
