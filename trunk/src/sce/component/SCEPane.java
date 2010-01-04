@@ -168,12 +168,13 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     int height = g2D.getClipBounds().height;
 
     // calculate the start and end row
-    SCEDocumentPosition upperLeft = viewToModel(0, y);
-    SCEDocumentPosition lowerRight = viewToModel(0, y + height);
+    SCEDocumentPosition upperLeft = viewToModel(x, y);
+    SCEDocumentPosition lowerRight = viewToModel(x + width, y + height);
     int startRow = upperLeft.getRow();
     int endRow = lowerRight.getRow() + 1;
     int startCol = upperLeft.getColumn();
     int endCol = lowerRight.getColumn() + 1;
+    int charWidth = g2D.getFontMetrics(GProperties.getEditorFont()).charsWidth(new char[] {' '}, 0, 1);
 
     // highlight the current line
     g2D.setColor(currentLineHighlightColor);
@@ -205,9 +206,9 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 
     // draw the text
     for(int line = startRow; line < endRow; line++){
-      AttributedString attributedString = document.getRowAttributed(line);
+      AttributedString attributedString = document.getRowAttributed(line, startCol, endCol+1);
       if(attributedString == null) continue;
-      int posx = lineNumberSpacer + SPACE_LEFT;
+      int posx = lineNumberSpacer + SPACE_LEFT + startCol * charWidth;
       int posy = line * lineHeight + lineAscent - 1;
       g2D.drawString(attributedString.getIterator(), posx, posy);
     }
