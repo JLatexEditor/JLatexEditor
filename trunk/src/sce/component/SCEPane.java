@@ -162,12 +162,18 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     g2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, GProperties.getTextAntialiasign());
     
     // clip bounds
+    int x = g2D.getClipBounds().x;
     int y = g2D.getClipBounds().y;
+    int width = g2D.getClipBounds().width;
     int height = g2D.getClipBounds().height;
 
     // calculate the start and end row
-    int startRow = viewToModel(0, y).getRow();
-    int endRow = viewToModel(0, y + height).getRow() + 1;
+    SCEDocumentPosition upperLeft = viewToModel(0, y);
+    SCEDocumentPosition lowerRight = viewToModel(0, y + height);
+    int startRow = upperLeft.getRow();
+    int endRow = lowerRight.getRow() + 1;
+    int startCol = upperLeft.getColumn();
+    int endCol = lowerRight.getColumn() + 1;
 
     // highlight the current line
     g2D.setColor(currentLineHighlightColor);

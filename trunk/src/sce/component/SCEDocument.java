@@ -131,6 +131,11 @@ public class SCEDocument{
     return rows[row_nr].toString();
   }
 
+  public String getRow(int row_nr, int col_start, int col_end){
+    if(row_nr >= rowsCount) return "";
+    return rows[row_nr].toString(col_start, col_end);
+  }
+
   /**
    * Sets the text of this document.
    *
@@ -363,31 +368,38 @@ public class SCEDocument{
    */
   public synchronized AttributedString getRowAttributed(int row_nr){
     if(row_nr >= rowsCount) return null;
+    return getRowAttributed(row_nr, 0, getRowLength(row_nr));
+  }
+
+  public synchronized AttributedString getRowAttributed(int row_nr, int col_start, int col_end){
+    if(row_nr >= rowsCount) return null;
+
+    SCEDocumentRow row = rows[row_nr];
+    col_end = Math.min(col_end, row.length);
 
     // create the attributedString
-    String string = getRow(row_nr);
+    String string = getRow(row_nr, col_start, col_end);
     if(string == null || string.length() == 0) return null;
     AttributedString attributedString = new AttributedString(string);
 
     // add the attributes
-    SCEDocumentRow row = rows[row_nr];
-
-    for(int column_nr = 0; column_nr < row.length; column_nr++){
-      int begin_index = column_nr;
+    for(int column_nr = col_start; column_nr < col_end; column_nr++){
+      int begin_index = column_nr - col_start;
       while(column_nr < row.length - 1 &&
 	      row.chars[column_nr].style == row.chars[column_nr + 1].style &&
 	      row.chars[column_nr].overlayStyle == row.chars[column_nr + 1].overlayStyle) column_nr++;
-      attributedString.addAttributes(stylesMap[row.chars[begin_index].style], begin_index, column_nr + 1);
-      attributedString.addAttributes(stylesMap[row.chars[begin_index].overlayStyle], begin_index, column_nr + 1);
+      int end_index = column_nr + 1 - col_start;
+      attributedString.addAttributes(stylesMap[row.chars[begin_index].style], begin_index, end_index);
+      attributedString.addAttributes(stylesMap[row.chars[begin_index].overlayStyle], begin_index, end_index);
     }
 
     // pay attention to selection
     if(hasSelection() && row_nr >= selectionStart.getRow() && row_nr <= selectionEnd.getRow()){
-      for(int column_nr = 0; column_nr < row.length; column_nr++){
+      for(int column_nr = col_start; column_nr < col_end; column_nr++){
         if(row_nr == selectionStart.getRow() && column_nr < selectionStart.getColumn()) continue;
         if(row_nr == selectionEnd.getRow() && column_nr >= selectionEnd.getColumn()) continue;
 
-        attributedString.addAttribute(TextAttribute.FOREGROUND, Color.WHITE, column_nr, column_nr + 1);
+        attributedString.addAttribute(TextAttribute.FOREGROUND, Color.WHITE, column_nr - col_start, column_nr + 1 - col_start);
       }
     }
 
