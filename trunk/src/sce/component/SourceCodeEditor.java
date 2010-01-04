@@ -41,6 +41,7 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
     textPane = new SCEPane();
     scrollPane = new JScrollPane(textPane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
     scrollPane.getVerticalScrollBar().setUnitIncrement(30);
+    scrollPane.getHorizontalScrollBar().setUnitIncrement(16);
 
     markerBar = new SCEMarkerBar(this);
 
