@@ -376,7 +376,8 @@ public class SCEDocument{
 
     SCEDocumentRow row = rows[row_nr];
     col_end = Math.min(col_end, row.length);
-
+    if(col_start >= col_end) return null;
+    
     // create the attributedString
     String string = getRow(row_nr, col_start, col_end);
     if(string == null || string.length() == 0) return null;
@@ -385,7 +386,7 @@ public class SCEDocument{
     // add the attributes
     for(int column_nr = col_start; column_nr < col_end; column_nr++){
       int begin_index = column_nr - col_start;
-      while(column_nr < row.length - 1 &&
+      while(column_nr < col_end - 1 &&
 	      row.chars[column_nr].style == row.chars[column_nr + 1].style &&
 	      row.chars[column_nr].overlayStyle == row.chars[column_nr + 1].overlayStyle) column_nr++;
       int end_index = column_nr + 1 - col_start;
