@@ -99,9 +99,15 @@ public class SCEDocumentRow{
    * @return char array
    */
   public char[] toCharArray(){
-    char textChars[] = new char[length];
-    for(int column_nr = 0; column_nr < length; column_nr++){
-      textChars[column_nr] = chars[column_nr].character;
+    return toCharArray(0, length);
+  }
+
+  public char[] toCharArray(int col_start, int col_end){
+    if(col_end <= col_start) return new char[0];
+
+    char textChars[] = new char[col_end - col_start];
+    for(int column_nr = col_start; column_nr < col_end; column_nr++){
+      textChars[column_nr - col_start] = chars[column_nr].character;
     }
     return textChars;
   }
@@ -113,5 +119,9 @@ public class SCEDocumentRow{
    */
   public String toString(){
     return new String(toCharArray());
+  }
+
+  public String toString(int col_start, int col_end){
+    return new String(toCharArray(col_start, col_end));
   }
 }
