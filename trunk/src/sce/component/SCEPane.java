@@ -206,7 +206,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 
     // draw the text
     for(int line = startRow; line < endRow; line++){
-      AttributedString attributedString = document.getRowAttributed(line, startCol, endCol+1);
+      AttributedString attributedString = document.getRowAttributed(line, startCol, endCol);
       if(attributedString == null) continue;
       int posx = lineNumberSpacer + SPACE_LEFT + startCol * charWidth;
       int posy = line * lineHeight + lineAscent - 1;
