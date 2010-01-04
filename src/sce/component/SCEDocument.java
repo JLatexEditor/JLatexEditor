@@ -390,8 +390,8 @@ public class SCEDocument{
 	      row.chars[column_nr].style == row.chars[column_nr + 1].style &&
 	      row.chars[column_nr].overlayStyle == row.chars[column_nr + 1].overlayStyle) column_nr++;
       int end_index = column_nr + 1 - col_start;
-      attributedString.addAttributes(stylesMap[row.chars[begin_index].style], begin_index, end_index);
-      attributedString.addAttributes(stylesMap[row.chars[begin_index].overlayStyle], begin_index, end_index);
+      attributedString.addAttributes(stylesMap[row.chars[begin_index + col_start].style], begin_index, end_index);
+      attributedString.addAttributes(stylesMap[row.chars[begin_index + col_start].overlayStyle], begin_index, end_index);
     }
 
     // pay attention to selection

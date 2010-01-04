@@ -172,7 +172,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     SCEDocumentPosition lowerRight = viewToModel(x + width, y + height);
     int startRow = upperLeft.getRow();
     int endRow = lowerRight.getRow() + 1;
-    int startCol = upperLeft.getColumn();
+    int startCol = Math.max(0, upperLeft.getColumn()-1);
     int endCol = lowerRight.getColumn() + 1;
     int charWidth = g2D.getFontMetrics(GProperties.getEditorFont()).charsWidth(new char[] {' '}, 0, 1);
 
