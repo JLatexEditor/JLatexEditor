@@ -8,6 +8,8 @@ import sce.component.SourceCodeEditor;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * LaTeX compiler.
@@ -26,6 +28,8 @@ public class LatexCompiler extends Thread {
 
   // The listeners
   private ArrayList<LatexCompileListener> compileListeners = new ArrayList<LatexCompileListener>();
+
+  private static Pattern fileLineError = Pattern.compile("([^:]+):([\\d]+):(.*)");
 
   public LatexCompiler(int type, SourceCodeEditor editor, ErrorView errorView){
     this.type = type;
@@ -53,9 +57,9 @@ public class LatexCompiler extends Thread {
     Process latexCompiler = null;
     try{
       if(type == TYPE_PDF) {
-        latexCompiler = exec("pdflatex -interaction=nonstopmode " + baseName + ".tex", file.getParentFile());
+        latexCompiler = exec("pdflatex -file-line-error -interaction=nonstopmode " + baseName + ".tex", file.getParentFile());
       } else {
-        latexCompiler = exec("latex -interaction=nonstopmode -output-format=dvi " + baseName + ".tex", file.getParentFile());
+        latexCompiler = exec("latex -file-line-error -interaction=nonstopmode -output-format=dvi " + baseName + ".tex", file.getParentFile());
       }
     } catch(Exception e){
       e.printStackTrace();
@@ -63,7 +67,6 @@ public class LatexCompiler extends Thread {
     }
 
     BufferedReader in = new BufferedReader(new InputStreamReader(latexCompiler.getInputStream()), 100000);
-
     try{
       LatexCompileError error;
 
@@ -71,13 +74,23 @@ public class LatexCompiler extends Thread {
       String line = in.readLine(); errorView.appendLine(line);
       while(line != null){
         // error messages
-        if(line.startsWith("!")) {
+        Matcher errorMatcher = fileLineError.matcher(line);
+        if(line.startsWith("!") || errorMatcher.matches()) {
           error = new LatexCompileError();
           error.setType(LatexCompileError.TYPE_ERROR);
-          String fileName = fileStack.get(fileStack.size() - 1);
-          error.setFile(new File(file.getParentFile(), fileName), fileName);
+          if(line.startsWith("!")) {
+            String fileName = fileStack.get(fileStack.size() - 1);
+            error.setFile(new File(file.getParentFile(), fileName), fileName);
+            error.setMessage(line.substring(1).trim());
+          } else {
+            String fileName = errorMatcher.group(1);
+            error.setFile(new File(file.getParentFile(), fileName), fileName);
+            error.setLine(Integer.parseInt(errorMatcher.group(2)));
+            error.setMessage(errorMatcher.group(3).trim());
 
-          error.setMessage(line.substring(1).trim());
+            // bug
+            if(!fileStack.get(fileStack.size()-1).equals(fileName)) fileStack.add(fileName);
+          }
 
           while(line != null && !line.startsWith("l.")) {
             if(line.startsWith("<argument>")) {
@@ -169,7 +182,8 @@ public class LatexCompiler extends Thread {
         }
 
         // opening and closing files
-        if((line.indexOf("(") != -1 && !line.startsWith("(see")) || line.indexOf(')') != -1) {
+        if((line.indexOf("(") != -1 && !line.startsWith("(see")) || line.startsWith(")") ||
+                (line.indexOf(')') != -1 && (line.startsWith("[") || line.indexOf(".tex") != 0 || line.indexOf(".sty") != 0 || line.indexOf(".bbl") != 0 || line.indexOf(".aux") != 0)) ) {
           int position = 0;
 
           while(position < line.length()) {
@@ -195,7 +209,8 @@ public class LatexCompiler extends Thread {
               }
               fileStack.add(fileName);
             } else {
-              fileStack.remove(fileStack.size() - 1);
+              // never empty the stack... parsing bugs
+              if(fileStack.size() > 1) fileStack.remove(fileStack.size() - 1);
               position = close + 1;
             }
           }
