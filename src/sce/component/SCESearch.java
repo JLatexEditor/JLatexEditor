@@ -94,15 +94,17 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener {
     int length = search.length();
     if(length != 0) {
       SCEDocument document = editor.getTextPane().getDocument();
-      for(int row = 0; row < document.getRowsCount(); row++) {
-        String rowText = document.getRow(row);
+      SCEDocumentRow[] rows = document.getRows();
+      for(int rowNr = 0; rowNr < rows.length; rowNr++) {
+        SCEDocumentRow row = rows[rowNr];
+        String rowText = row.toString();
         if(!caseSensitive.isSelected()) rowText = rowText.toLowerCase();
         int column = -1;
         while((column = rowText.indexOf(search, column+1)) != -1) {
-          if(caret.getRow() == row && caret.getColumn() == column) moveCaret = false;
-          positions.add(new Position(row, column));
-          pane.addTextHighlight(new SCETextHighlight(pane, new SCEDocumentPosition(row, column), new SCEDocumentPosition(row, column+length), Color.YELLOW));
-          markerBar.addMarker(new SCEMarkerBar.Marker(SCEMarkerBar.TYPE_SEARCH, row, column, ""));
+          if(caret.getRow() == rowNr && caret.getColumn() == column) moveCaret = false;
+          positions.add(new Position(rowNr, column));
+          pane.addTextHighlight(new SCETextHighlight(pane, new SCEDocumentPosition(row.chars[column]), new SCEDocumentPosition(row.chars[column+length]), Color.YELLOW));
+          markerBar.addMarker(new SCEMarkerBar.Marker(SCEMarkerBar.TYPE_SEARCH, rowNr, column, ""));
         }
       }
     }
