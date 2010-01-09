@@ -13,14 +13,14 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * Jump to completion.
+ * Jump to completion (control+b).
  *
  * @author Stefan Endrullis
  */
 public class JumpTo implements KeyListener {
 	private static List<String> defaultExtensions = Arrays.asList("", ".tex");
 
-	private PatternPair pattern = new PatternPair("\\{(\\w*)", "(\\w*)\\}");
+	private PatternPair pattern = new PatternPair("\\{([^\\{]*)", "([^\\}]*)\\}");
 
 	private SourceCodeEditor editor;
 	private JLatexEditorJFrame jLatexEditorJFrame;
