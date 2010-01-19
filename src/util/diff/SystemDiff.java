@@ -83,6 +83,9 @@ public class SystemDiff {
       lineNr++;
       for(; lineNr < lines.size(); lineNr++) {
         line = lines.get(lineNr);
+        // "\ No newline at end of file"
+        if(line.startsWith("\\")) continue;
+
         if(line.startsWith("<") || line.startsWith(">")) {
           if(inSource) sourceLines.add(line.substring(2)); else targetLines.add(line.substring(2));
           continue;

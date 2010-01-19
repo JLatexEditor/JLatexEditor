@@ -109,6 +109,11 @@ public class LocalHistory extends JPanel implements ComponentListener, ListSelec
   }
 
   public void valueChanged(ListSelectionEvent e) {
+    if(list.getSelectedIndex() == -1) {
+      latexEditor.getActiveEditor().closeDiffView();
+      return;
+    }
+
     List<String> document = (ArrayList<String>) backup.clone();
     for(int changeNr = 0; changeNr <= list.getSelectedIndex(); changeNr++) {
       HistoryEntry historyEntry = (HistoryEntry) model.getElementAt(changeNr);
