@@ -1,0 +1,105 @@
+<html>
+
+<head>
+
+<title>Help On LaTeX \appendix</title>
+
+<link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
+
+</head>
+
+<body>
+
+
+
+
+
+<h2>\appendix</h2>
+
+
+
+<p>The <tt>\appendix</tt>  command changes  the way sectional 
+
+units are numbered.  The <tt>\appendix</tt>  command  generates 
+
+no text  and does  not  affect  the numbering of parts.</p>
+
+
+
+<p>Thus, if you want your appendix to be set off with a section-like
+
+label you need something like</p>
+
+
+
+<pre>
+
+    \begin{<a href="ltx-29.html">center</a>}
+
+      {<a href="ltx-204.html">\bf</a> APPENDIX}
+
+    \end{center}
+
+</pre>
+
+
+
+<p>I have found the <tt>\appendix</tt> command to sometimes
+
+cause problems since <em>everything</em> which follows it is
+
+treated as part of the appendix, for example, a list of figures,
+
+which I generally want to place after an appendix is labeled
+
+"Appendix: List of Figures".</p>
+
+
+
+<p>One can create a section labeled "APPENDIX" with distinctive
+
+numbering by using the
+
+<tt><a href="ltx-141.html">\section</a></tt> command with
+
+suitably redefined commands for the
+
+<a href="ltx-3.html">Counters</a>.  The following example
+
+generates a single "Appendix" with equations numbered A-1, A-2, ...</p>
+
+
+
+<pre>
+
+  <a href="ltx-18.html">\renewcommand</a>{\theequation}{A-\arabic{equation}}
+
+  % redefine the command that creates the equation no.
+
+  <a href="ltx-310.html">\setcounter</a>{equation}{0}  % reset counter 
+
+  <a href="ltx-141.html">\section*</a>{APPENDIX}  % use *-form to suppress numbering
+
+</pre>
+
+
+
+<p>If one had several appendices, appropriate numbering could be
+
+obtained by redefining the <tt>\thesection</tt> command and
+
+resetting the section counter in an analogous manner.</p>
+
+
+
+<hr noshade="noshade" size="1">
+
+
+
+<p>
+
+See also: <a href="ltx-141.html">Sectioning</a>,
+
+  <a href="ltx-3.html">Counters</a><br> 
+
+</body></html>
