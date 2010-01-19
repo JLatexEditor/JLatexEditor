@@ -22,6 +22,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
   private JCheckBox caseSensitive = new JCheckBox("Case sensitive", false);
   private JCheckBox regExp = new JCheckBox("Regexp", false);
   private ImageButton buttonClose;
+  private ImageButton buttonShowReplace;
 
   // search update thread
   private UpdateThread updateThread = new UpdateThread();
@@ -48,8 +49,18 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
             new ImageIcon(getClass().getResource("/images/buttons/close_highlight.png")),
             new ImageIcon(getClass().getResource("/images/buttons/close_press.png")));
 
-    setLayout(new FlowLayout(FlowLayout.LEFT, 10, 5));
-    input.setColumns(30);
+    buttonShowReplace = new ImageButton(
+            new ImageIcon(getClass().getResource("/images/buttons/showReplace.png")),
+            new ImageIcon(getClass().getResource("/images/buttons/showReplace_highlight.png")),
+            new ImageIcon(getClass().getResource("/images/buttons/showReplace_press.png")));
+
+    GroupLayout layout = new GroupLayout(this);
+    setLayout(layout);
+
+    layout.setAutoCreateGaps(true);
+    //layout.setAutoCreateContainerGaps(true);
+
+    input.setColumns(40);
     add(input);
     input.addKeyListener(this);
     editor.getTextPane().addKeyListener(this);
@@ -63,12 +74,34 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     regExp.setOpaque(false);
     add(regExp);
     regExp.addActionListener(this);
-    buttonClose.addActionListener(this);
     add(buttonClose);
     buttonClose.addActionListener(this);
+    add(buttonShowReplace);
+    buttonShowReplace.addActionListener(this);
 
-    setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+    layout.setHorizontalGroup(
+       layout.createSequentialGroup()
+               .addGap(5)
+               .addComponent(input)
+               .addComponent(buttonNext)
+               .addComponent(buttonPrevious)
+               .addComponent(caseSensitive)
+               .addComponent(regExp)
+               .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
+                                100, Short.MAX_VALUE)
+               .addComponent(buttonShowReplace)
+    );
+    layout.setVerticalGroup(
+       layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+               .addComponent(input)
+               .addComponent(buttonNext)
+               .addComponent(buttonPrevious)
+               .addComponent(caseSensitive)
+               .addComponent(regExp)
+               .addComponent(buttonShowReplace)
+    );
 
+    
     updateThread = new UpdateThread();
     updateThread.start();
   }

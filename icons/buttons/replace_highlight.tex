@@ -1,0 +1,29 @@
+
+\documentclass[times,10pt,twocolumn]{article} 
+\usepackage[english]{babel}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,amstext,amsthm}
+\usepackage{comment}
+\usepackage{color}
+\usepackage{wrapfig}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,automata,backgrounds,calc,chains,fadings,folding,decorations.fractals,decorations.pathreplacing,fit,patterns,positioning,mindmap,shadows,shapes.geometric,shapes.symbols,through,trees,plotmarks}
+
+\input{button.def}
+
+\begin{document}
+\pagestyle{empty}
+\scalebox{5}{
+  \begin{tikzpicture}[very thick]
+    \buttonredhighlight[1.7]{   
+    \begin{scope}[rounded corners=.5mm]
+    \node [anchor=center] at (8.5mm,5mm) {replace};
+    \end{scope}
+    }
+  \end{tikzpicture}
+}
+\end{document}
+
+

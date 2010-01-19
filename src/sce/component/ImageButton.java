@@ -39,6 +39,14 @@ public class ImageButton extends JPanel implements MouseListener {
     return new Dimension(current.getIconWidth(), current.getIconHeight());
   }
 
+  public Dimension getMinimumSize() {
+    return getPreferredSize();
+  }
+
+  public Dimension getMaximumSize() {
+    return getPreferredSize();
+  }
+
   public void addActionListener(ActionListener listener) {
     listeners.add(listener);
   }
