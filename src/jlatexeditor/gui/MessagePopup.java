@@ -39,7 +39,7 @@ public class MessagePopup extends JPopupMenu {
 
     // green rectangle
     g2D.clearRect(0,0,getWidth(),getHeight());
-    g2D.setColor(new Color(217, 231, 194));
+    g2D.setColor(new Color(192, 239, 192)); // 217, 231, 194
     g2D.fillRoundRect(2,2,getWidth()-4,getHeight()-4,15,15);
     g2D.setColor(new Color(0, 128, 0));
     g2D.setStroke(new BasicStroke(2));

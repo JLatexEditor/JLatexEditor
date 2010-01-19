@@ -7,18 +7,24 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Search pane.
  */
-public class SCESearch extends JPanel implements ActionListener, KeyListener {
+public class SCESearch extends JPanel implements ActionListener, KeyListener, SCEDocumentListener {
   private SourceCodeEditor editor;
 
   private JTextField input = new JTextField();
   private ImageButton buttonNext;
   private ImageButton buttonPrevious;
   private JCheckBox caseSensitive = new JCheckBox("Case sensitive", false);
+  private JCheckBox regExp = new JCheckBox("Regexp", false);
   private ImageButton buttonClose;
+
+  // search update thread
+  private UpdateThread updateThread = new UpdateThread();
 
   // search results
   private ArrayList<Position> positions = new ArrayList<Position>();
@@ -54,11 +60,17 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener {
     caseSensitive.setOpaque(false);
     add(caseSensitive);
     caseSensitive.addActionListener(this);
+    regExp.setOpaque(false);
+    add(regExp);
+    regExp.addActionListener(this);
     buttonClose.addActionListener(this);
     add(buttonClose);
     buttonClose.addActionListener(this);
 
     setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+
+    updateThread = new UpdateThread();
+    updateThread.start();
   }
 
   public void focus() {
@@ -76,42 +88,6 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener {
   public void close() {
     setVisible(false);
     clearHighlights();
-  }
-
-  private void update() {
-    clearHighlights();
-    SCEMarkerBar markerBar = editor.getMarkerBar();
-    SCEPane pane = editor.getTextPane();
-
-    input.setBackground(Color.WHITE);
-
-    String search = input.getText();
-    if(!caseSensitive.isSelected()) search = search.toLowerCase();
-
-    SCECaret caret = editor.getTextPane().getCaret();
-    boolean moveCaret = true;
-
-    int length = search.length();
-    if(length != 0) {
-      SCEDocument document = editor.getTextPane().getDocument();
-      SCEDocumentRow[] rows = document.getRows();
-      for(int rowNr = 0; rowNr < rows.length; rowNr++) {
-        SCEDocumentRow row = rows[rowNr];
-        String rowText = row.toString();
-        if(!caseSensitive.isSelected()) rowText = rowText.toLowerCase();
-        int column = -1;
-        while((column = rowText.indexOf(search, column+1)) != -1) {
-          if(caret.getRow() == rowNr && caret.getColumn() == column) moveCaret = false;
-          positions.add(new Position(rowNr, column));
-          pane.addTextHighlight(new SCETextHighlight(pane, new SCEDocumentPosition(row.chars[column]), new SCEDocumentPosition(row.chars[column+length]), Color.YELLOW));
-          markerBar.addMarker(new SCEMarkerBar.Marker(SCEMarkerBar.TYPE_SEARCH, rowNr, column, ""));
-        }
-      }
-    }
-    markerBar.repaint();
-
-    if(moveCaret) next();
-    if(length > 0 && positions.size() == 0) input.setBackground(new Color(255, 204, 204));
   }
 
   private void moveTo(Position position) {
@@ -153,7 +129,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener {
 
   public void actionPerformed(ActionEvent e) {
     if(e.getSource() == buttonClose) close();
-    if(e.getSource() == caseSensitive) update();
+    if(e.getSource() == caseSensitive) updateThread.documentChanged();
     if(e.getSource() == buttonNext) next();
     if(e.getSource() == buttonPrevious) previous();
   }
@@ -169,7 +145,11 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener {
   }
 
   public void keyReleased(KeyEvent e) {
-    if(e.getSource() == input) update();
+    if(e.getSource() == input) updateThread.documentChanged();
+  }
+
+  public void documentChanged(SCEDocument sender, SCEDocumentEvent event) {
+    updateThread.documentChanged();
   }
 
   public static class Position {
@@ -187,6 +167,140 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener {
 
     public int getColumn() {
       return column;
+    }
+  }
+
+  private class UpdateThread extends Thread {
+    private boolean searchChanged = true;
+    private boolean documentChanged = true;
+
+    private String text = "";
+    private int text2row[] = new int[0];
+    private int text2column[] = new int[0];
+
+    private UpdateThread() {
+      setPriority(Thread.NORM_PRIORITY);
+    }
+
+    public synchronized void searchChanged() {
+      searchChanged = true;
+      notify();
+    }
+
+    public synchronized void documentChanged() {
+      documentChanged = true;
+      notify();
+    }
+
+    private void updateDocument() {
+      documentChanged = false;
+
+      SCEDocument document = editor.getTextPane().getDocument();
+      SCEDocumentRow[] documentRows = document.getRows();
+
+      StringBuilder builder = new StringBuilder(100000);
+      for(SCEDocumentRow row : documentRows) {
+        builder.append(row.toString());
+        builder.append('\n');
+
+        if (documentChanged) return;
+      }
+      text = builder.toString();
+      if(!caseSensitive.isSelected()) text = text.toLowerCase();
+
+      // update position map
+      if(text2row.length < text.length()) {
+        text2row = new int[text.length()];
+        text2column = new int[text.length()];
+      }
+      int rowNr = 0;
+      int columnNr = 0;
+      for(int charNr = 0; charNr < text.length(); charNr++) {
+        text2row[charNr] = rowNr;
+        text2column[charNr] = columnNr;
+
+        columnNr++;
+        char c = text.charAt(charNr);
+        if(c == '\n') { rowNr++; columnNr = 0; }
+      }
+    }
+
+    private void search() {
+      searchChanged = false;
+
+      SCEDocument document = editor.getTextPane().getDocument();
+
+      clearHighlights();
+      SCEMarkerBar markerBar = editor.getMarkerBar();
+      SCEPane pane = editor.getTextPane();
+
+      input.setBackground(Color.WHITE);
+
+      SCECaret caret = editor.getTextPane().getCaret();
+      boolean moveCaret = true;
+
+      String search = input.getText();
+      int length = search.length();
+
+      if(length != 0) {
+        if(!regExp.isSelected()) {
+          // normal search
+          if(!caseSensitive.isSelected()) search = search.toLowerCase();
+
+          int index = -1;
+          while((index = text.indexOf(search, index+1)) != -1) {
+            int rowNr = text2row[index];
+            int columnNr = text2column[index];
+
+            if(caret.getRow() == rowNr && caret.getColumn() == columnNr) moveCaret = false;
+            positions.add(new Position(rowNr, columnNr));
+            pane.addTextHighlight(new SCETextHighlight(pane, document.createDocumentPosition(rowNr, columnNr), document.createDocumentPosition(rowNr, columnNr+length), Color.YELLOW));
+            markerBar.addMarker(new SCEMarkerBar.Marker(SCEMarkerBar.TYPE_SEARCH, rowNr, columnNr, ""));
+          }
+        } else {
+          // regexp search
+          Pattern pattern = Pattern.compile(search, Pattern.MULTILINE | (caseSensitive.isSelected() ? Pattern.CASE_INSENSITIVE : 0));
+          Matcher matcher = pattern.matcher(text);
+          while(matcher.find()) {
+            int start = matcher.start();
+            int rowStart = text2row[start];
+            int columnStart = text2column[start];
+
+            int end = matcher.end();
+            int rowEnd = text2row[end];
+            int columnEnd = text2column[end];
+
+            if(caret.getRow() == rowStart && caret.getColumn() == columnStart) moveCaret = false;
+            positions.add(new Position(rowStart, columnStart));
+            pane.addTextHighlight(new SCETextHighlight(pane, document.createDocumentPosition(rowStart, columnStart), document.createDocumentPosition(rowEnd, columnEnd), Color.YELLOW));
+            markerBar.addMarker(new SCEMarkerBar.Marker(SCEMarkerBar.TYPE_SEARCH, rowStart, columnEnd, ""));
+          }
+        }
+      }
+
+      markerBar.repaint();
+      pane.repaint();
+
+      if(moveCaret) next();
+      if(length > 0 && positions.size() == 0) input.setBackground(new Color(255, 204, 204));
+    }
+
+    public void run() {
+      while(true) {
+        if(!documentChanged && !searchChanged) {
+          try {
+            synchronized(this) { wait(500); } 
+          } catch (InterruptedException e) { }
+        }
+        if(!searchChanged && !documentChanged) continue;
+
+        // update document information
+        if(documentChanged) updateDocument();
+        if(documentChanged) continue;
+
+        // search
+        try { search(); } catch(Throwable e) { }
+      }
     }
   }
 }

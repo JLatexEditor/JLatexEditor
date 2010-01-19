@@ -71,12 +71,12 @@ public class SCEMarkerBar extends JPanel implements SCEDocumentListener, MouseMo
     }
   }
 
-  public void clear() {
+  public synchronized void clear() {
     for(ArrayList<Marker> list : markers) list.clear();
     repaint();
   }
 
-  public void clear(int type) {
+  public synchronized void clear(int type) {
     markers.get(type).clear();
     repaint();
   }
@@ -85,7 +85,7 @@ public class SCEMarkerBar extends JPanel implements SCEDocumentListener, MouseMo
     return buttonClose;
   }
 
-  public void addMarker(Marker marker) {
+  public synchronized void addMarker(Marker marker) {
     markers.get(marker.type).add(marker);
   }
 
@@ -99,7 +99,7 @@ public class SCEMarkerBar extends JPanel implements SCEDocumentListener, MouseMo
     return (int) (heightOffset + heightFactor * row);
   }
 
-  public void paint(Graphics g) {
+  public synchronized void paint(Graphics g) {
     super.paint(g);
 
     updateLayout();

@@ -182,17 +182,19 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     g2D.fillRect(lineNumberSpacer, caretPos.y, getWidth(), lineHeight);
 
     // draw row highlights
+    synchronized(rowHighlights) {
 	  for (SCERowHighlight rowHighlight : rowHighlights) {
       int row = rowHighlight.getPosition().getRow();
       if(row < startRow || row > endRow) continue;
 		  rowHighlight.paint(g2D, this);
-	  }
+	  }}
 
     // draw text highlights
+    synchronized(textHighlights) {
 	  for (SCETextHighlight textHighlight : textHighlights) {
       if(textHighlight.getEndPosition().getRow() < startRow || textHighlight.getStartPosition().getRow() > endRow) continue;
 			textHighlight.paint(g2D, this);
-	  }
+	  }}
 
     // draw the selection
     if(document.hasSelection()){
@@ -610,7 +612,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    * @param highlight the highlight
    */
   public void addRowHighlight(SCERowHighlight highlight){
-    rowHighlights.add(highlight);
+    synchronized(rowHighlights) { rowHighlights.add(highlight); }
     repaint();
   }
 
@@ -620,12 +622,12 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    * @param highlight the highlight
    */
   public void removeRowHighlight(SCERowHighlight highlight){
-    rowHighlights.remove(highlight);
+    synchronized(rowHighlights) { rowHighlights.remove(highlight); }
     repaint();
   }
 
   public void removeAllRowHighlights(){
-    rowHighlights.clear();
+    synchronized(rowHighlights) { rowHighlights.clear(); }
     repaint();
   }
 
@@ -635,7 +637,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    * @param highlight the highlight
    */
   public void addTextHighlight(SCETextHighlight highlight){
-    textHighlights.add(highlight);
+    synchronized(textHighlights) { textHighlights.add(highlight); }
     repaint();
   }
 
@@ -645,12 +647,12 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    * @param highlight the highlight
    */
   public void removeTextHighlight(SCETextHighlight highlight){
-    textHighlights.remove(highlight);
+    synchronized(textHighlights) { textHighlights.remove(highlight); }
     repaint();
   }
 
   public void removeAllTextHighlights() {
-    textHighlights.clear();
+    synchronized(textHighlights) { textHighlights.clear(); }
   }
 
   // sce.component.SCEDocumentListener methods
