@@ -141,6 +141,8 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
 
     scrollPane.setViewportView(textPane);
     add(scrollPane, BorderLayout.CENTER);
+
+    textPane.removeAllRowHighlights();
   }
 
   public SCEDiff getDiffView() {
