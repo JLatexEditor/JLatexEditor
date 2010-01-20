@@ -21,9 +21,11 @@ import sce.syntaxhighlighting.SyntaxHighlighting;
 import util.StreamUtils;
 import util.updater.ProgramUpdater;
 
+import javax.annotation.Resource;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -476,9 +478,29 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		File file = null;
 		if (resource instanceof UntitledDoc) {
 		  UntitledDoc untitledDoc = (UntitledDoc) resource;
-		  // TODO call save file dialog to assign a file to this new document
-			JOptionPane.showMessageDialog(this, "Saving new files not implemented yet.");
-			return false;
+
+      openDialog.showDialog(this, "Save");
+      file = openDialog.getSelectedFile();
+      if(file == null) return false;
+
+      if(file.exists()) {
+        int choice = JOptionPane.showOptionDialog(
+                this,
+                "The file exists! Do you want to overwrite the file?",
+                "File Exists",
+                JOptionPane.WARNING_MESSAGE,
+                JOptionPane.YES_NO_OPTION,
+                null,
+                new Object[] {"Overwrite", "Cancel"},
+                2
+        );
+        if(choice == 1) return false;
+      }
+
+      TabLabel tabLabel = (TabLabel) tabbedPane.getTabComponentAt(getTab(resource));
+      resource = new FileDoc(file);
+      tabLabel.setResource(resource);
+      editor.setResource(resource);
 		} else
 		if (resource instanceof FileDoc) {
 		  FileDoc fileDoc = (FileDoc) resource;
@@ -881,6 +903,15 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
       addMouseListener(this);
 	    editor.getTextPane().getDocument().addSCEModificationStateListener(this);
+    }
+
+    public AbstractResource getResource() {
+      return resource;
+    }
+
+    public void setResource(AbstractResource resource) {
+      this.resource = resource;
+      label.setText(resource.getName());
     }
 
     public boolean contains(int x, int y) {
