@@ -94,6 +94,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 
     replace.setColumns(40);
     add(replace);
+    replace.setToolTipText("For regexp groups use #{1}, #{2}, ...");
     replace.addKeyListener(this);
     add(buttonReplace);
     buttonReplace.addActionListener(this);
