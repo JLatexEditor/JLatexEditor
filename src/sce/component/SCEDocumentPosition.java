@@ -118,4 +118,8 @@ public class SCEDocumentPosition implements SCEPosition, Comparable{
     if(getRow() == oPos.getRow() && getColumn() == oPos.getColumn()) return 0;
     return 1;
   }
+
+  public boolean equals(Object obj) {
+    return compareTo(obj) == 0;
+  }
 }
