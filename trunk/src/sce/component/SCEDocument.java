@@ -41,6 +41,8 @@ public class SCEDocument{
   private ArrayList<SCEDocumentListener> documentListeners = new ArrayList<SCEDocumentListener>();
 	// modification state listeners
   private ArrayList<SCEModificationStateListener> modificationStateListeners = new ArrayList<SCEModificationStateListener>();
+  // selection listeners
+  private ArrayList<SCESelectionListener> selectionListeners = new ArrayList<SCESelectionListener>();
 
   // Has the document been modified since the last save?
   private boolean modified = false;
@@ -230,6 +232,7 @@ public class SCEDocument{
     if(start == null || end == null){
       selectionStart = null;
       selectionEnd = null;
+      selectionChanged();
       return;
     }
 
@@ -240,6 +243,7 @@ public class SCEDocument{
       selectionStart = new SCEDocumentPosition(end.getRow(), end.getColumn());
       selectionEnd = new SCEDocumentPosition(start.getRow(), start.getColumn());
     }
+    selectionChanged();
   }
 
   /**
@@ -639,6 +643,13 @@ public class SCEDocument{
 		insert(text, startRow, startColumn);
 	}
 
+  public void replace(SCEDocumentPosition start, SCEDocumentPosition end, String text) {
+    int startRow = start.getRow();
+    int startColumn = start.getColumn();
+    remove(start, end);
+    insert(text, startRow, startColumn);
+  }
+
   /**
    * Sets the row propertie modiefied to true.
    *
@@ -780,6 +791,33 @@ public class SCEDocument{
    */
   public void removeSCEDocumentListener(SCEDocumentListener listener){
     documentListeners.remove(listener);
+  }
+
+  /**
+   * Informs the listeners about the selection change.
+   */
+  private void selectionChanged(){
+	  for (SCESelectionListener selectionListener : selectionListeners) {
+		  selectionListener.selectionChanged(this, selectionStart, selectionEnd);
+	  }
+  }
+
+  /**
+   * Adds a selection listener.
+   *
+   * @param listener the listener
+   */
+  public void addSCESelectionListener(SCESelectionListener listener){
+    selectionListeners.add(listener);
+  }
+
+  /**
+   * Removes a selection listener.
+   *
+   * @param listener the listener
+   */
+  public void removeSCEDocumentListener(SCESelectionListener listener){
+    selectionListeners.remove(listener);
   }
 
 	/**

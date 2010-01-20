@@ -15,7 +15,6 @@ public class ImageButton extends JPanel implements MouseListener {
   private ImageIcon icon;
   private ImageIcon over;
   private ImageIcon press;
-  private ImageIcon deactivated = null;
 
   private ImageIcon current;
   private boolean enabled = true;
@@ -33,13 +32,14 @@ public class ImageButton extends JPanel implements MouseListener {
     addMouseListener(this);
   }
 
-  public ImageButton(ImageIcon icon, ImageIcon over, ImageIcon press, ImageIcon deactivated) {
-    this(icon,over,press);
-    this.deactivated = deactivated;
-  }
-
   public void paint(Graphics g) {
-    g.drawImage(current.getImage(), 0, 0, null);
+    Graphics2D g2d = (Graphics2D) g;
+    if(!enabled) {
+      g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.3f));
+      g.drawImage(icon.getImage(), 0, 0, null);
+    } else {
+      g.drawImage(current.getImage(), 0, 0, null);
+    }
   }
 
   public boolean isEnabled() {
@@ -48,7 +48,7 @@ public class ImageButton extends JPanel implements MouseListener {
 
   public void setEnabled(boolean enabled) {
     this.enabled = enabled;
-    current = enabled ? icon : deactivated;
+    current = icon;
     repaint();
   }
 
@@ -80,22 +80,22 @@ public class ImageButton extends JPanel implements MouseListener {
   }
 
   public void mousePressed(MouseEvent e) {
-    current = enabled ? press : deactivated;
+    current = press;
     repaint();
   }
 
   public void mouseReleased(MouseEvent e) {
-    current = enabled ? icon : deactivated;
+    current = icon;
     repaint();
   }
 
   public void mouseEntered(MouseEvent e) {
-    current = enabled ? over : deactivated;
+    current = over;
     repaint();
   }
 
   public void mouseExited(MouseEvent e) {
-    current = enabled ? icon : deactivated;
+    current = icon;
     repaint();
   }
 }
