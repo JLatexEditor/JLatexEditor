@@ -28,3 +28,9 @@
 \newcommand{\buttonred}[1][1]{ \colorlet{c}{red} \mbutton[#1]}
 \newcommand{\buttonredhighlight}[1][1]{ \colorlet{c}{red!70} \mbutton[#1]}
 \newcommand{\buttonredpress}[1][1]{ \colorlet{c}{red!75!black} \mbuttonpress[#1]}
+\newcommand{\buttonreddeactive}[1][1]{
+  \begin{scope}[opacity=0.3]
+  \colorlet{c}{red!50!black} \mbutton[#1]
+  \end{scope}
+}
+
