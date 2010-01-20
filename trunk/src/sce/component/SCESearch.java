@@ -24,11 +24,20 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
   private ImageButton buttonClose;
   private ImageButton buttonShowReplace;
 
+  private boolean showReplace = false;
+  private JTextField replace = new JTextField();
+  private ImageButton buttonReplace;
+
+  private GroupLayout layout;
+
   // search update thread
   private UpdateThread updateThread = new UpdateThread();
 
   // search results
-  private ArrayList<Position> positions = new ArrayList<Position>();
+  private ArrayList<SCEDocumentRange> results = new ArrayList<SCEDocumentRange>();
+
+  private GroupLayout.Group groupHorizontal;
+  private GroupLayout.Group groupVertical;
 
   public SCESearch(SourceCodeEditor editor) {
     this.editor = editor;
@@ -54,11 +63,15 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
             new ImageIcon(getClass().getResource("/images/buttons/showReplace_highlight.png")),
             new ImageIcon(getClass().getResource("/images/buttons/showReplace_press.png")));
 
-    GroupLayout layout = new GroupLayout(this);
+    buttonReplace = new ImageButton(
+            new ImageIcon(getClass().getResource("/images/buttons/replace.png")),
+            new ImageIcon(getClass().getResource("/images/buttons/replace_highlight.png")),
+            new ImageIcon(getClass().getResource("/images/buttons/replace_press.png")));
+
+    layout = new GroupLayout(this);
     setLayout(layout);
 
     layout.setAutoCreateGaps(true);
-    //layout.setAutoCreateContainerGaps(true);
 
     input.setColumns(40);
     add(input);
@@ -79,31 +92,74 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     add(buttonShowReplace);
     buttonShowReplace.addActionListener(this);
 
-    layout.setHorizontalGroup(
-       layout.createSequentialGroup()
-               .addGap(5)
-               .addComponent(input)
-               .addComponent(buttonNext)
-               .addComponent(buttonPrevious)
-               .addComponent(caseSensitive)
-               .addComponent(regExp)
-               .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
-                                100, Short.MAX_VALUE)
-               .addComponent(buttonShowReplace)
-    );
-    layout.setVerticalGroup(
-       layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-               .addComponent(input)
-               .addComponent(buttonNext)
-               .addComponent(buttonPrevious)
-               .addComponent(caseSensitive)
-               .addComponent(regExp)
-               .addComponent(buttonShowReplace)
-    );
+    replace.setColumns(40);
+    add(replace);
+    replace.addKeyListener(this);
+    add(buttonReplace);
+    buttonReplace.addActionListener(this);
 
-    
+    groupHorizontal =
+      layout.createSequentialGroup()
+        .addGap(5)
+        .addGroup(
+          layout.createParallelGroup()
+            .addComponent(input)
+            .addComponent(replace)
+        )
+        .addGroup(
+          layout.createParallelGroup()
+            .addGroup(
+              layout.createSequentialGroup()
+                .addComponent(buttonNext)
+                .addComponent(buttonPrevious)
+                .addComponent(caseSensitive)
+                .addComponent(regExp)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
+                .addComponent(buttonShowReplace)
+            )
+            .addGroup(
+              layout.createSequentialGroup()
+                .addComponent(buttonReplace)
+            )
+        );
+
+    groupVertical =
+      layout.createSequentialGroup()
+        .addGap(2)
+        .addGroup(
+          layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+            .addComponent(input)
+            .addComponent(buttonNext)
+            .addComponent(buttonPrevious)
+            .addComponent(caseSensitive)
+            .addComponent(regExp)
+            .addComponent(buttonShowReplace)
+        )
+        .addGroup(
+          layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addComponent(replace)
+            .addComponent(buttonReplace)
+        )
+        .addGap(2);
+
+    layout.setHorizontalGroup(groupHorizontal);
+    layout.setVerticalGroup(groupVertical);
+
     updateThread = new UpdateThread();
     updateThread.start();
+
+    setShowReplace(false);
+  }
+  
+  public boolean isShowReplace() {
+    return showReplace;
+  }
+
+  public void setShowReplace(boolean showReplace) {
+    this.showReplace = showReplace;
+
+    replace.setVisible(showReplace);
+    buttonReplace.setVisible(showReplace);
   }
 
   public void focus() {
@@ -113,7 +169,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
   private void clearHighlights() {
     SCEMarkerBar markerBar = editor.getMarkerBar();
     markerBar.clear(SCEMarkerBar.TYPE_SEARCH);
-    positions.clear();
+    results.clear();
     SCEPane pane = editor.getTextPane();
     pane.removeAllTextHighlights();
   }
@@ -123,41 +179,44 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     clearHighlights();
   }
 
-  private void moveTo(Position position) {
-    editor.moveTo(position.getRow(), position.getColumn());
+  private void moveTo(SCEDocumentRange range) {
+    SCEDocumentPosition start = range.getStartPosition();
+    SCEDocumentPosition end = range.getEndPosition();
+
+    editor.moveTo(start.getRow(), start.getColumn());
     SCEDocument document = editor.getTextPane().getDocument();
-    SCEDocumentPosition start = document.createDocumentPosition(position.getRow(), position.getColumn());
-    SCEDocumentPosition end = document.createDocumentPosition(position.getRow(), position.getColumn() + input.getText().length());
     document.setSelectionRange(start, end);
     editor.getTextPane().repaint();
   }
 
   public void previous() {
     SCECaret caret = editor.getTextPane().getCaret();
-    Position last = null;
-    for(Position position : positions) {
-      if(position.getRow() > caret.getRow() || (position.getRow() == caret.getRow() && position.getColumn() >= caret.getColumn())) break;
-      last = position;
+    SCEDocumentRange last = null;
+    for(SCEDocumentRange result : results) {
+      SCEDocumentPosition start = result.getStartPosition();
+      if(start.getRow() > caret.getRow() || (start.getRow() == caret.getRow() && start.getColumn() >= caret.getColumn())) break;
+      last = result;
     }
     if(last != null) moveTo(last); else first();
   }
 
   public void next() {
     SCECaret caret = editor.getTextPane().getCaret();
-    for(Position position : positions) {
-      if(position.getRow() < caret.getRow() || (position.getRow() == caret.getRow() && position.getColumn() <= caret.getColumn())) continue;
-      moveTo(position);
+    for(SCEDocumentRange result : results) {
+      SCEDocumentPosition start = result.getStartPosition();
+      if(start.getRow() < caret.getRow() || (start.getRow() == caret.getRow() && start.getColumn() <= caret.getColumn())) continue;
+      moveTo(result);
       return;
     }
     last();
   }
 
   private void first() {
-    if(positions.size() > 0) moveTo(positions.get(0));
+    if(results.size() > 0) moveTo(results.get(0));
   }
 
   private void last() {
-    if(positions.size() > 0) moveTo(positions.get(positions.size()-1));
+    if(results.size() > 0) moveTo(results.get(results.size()-1));
   }
 
   public void actionPerformed(ActionEvent e) {
@@ -165,6 +224,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     if(e.getSource() == caseSensitive) updateThread.documentChanged();
     if(e.getSource() == buttonNext) next();
     if(e.getSource() == buttonPrevious) previous();
+    if(e.getSource() == buttonShowReplace) setShowReplace(!isShowReplace());
   }
 
   public void keyTyped(KeyEvent e) {
@@ -285,9 +345,12 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
             int rowNr = text2row[index];
             int columnNr = text2column[index];
 
+            SCEDocumentPosition start = document.createDocumentPosition(rowNr, columnNr);
+            SCEDocumentPosition end = document.createDocumentPosition(rowNr, columnNr+length);
+
             if(caret.getRow() == rowNr && caret.getColumn() == columnNr) moveCaret = false;
-            positions.add(new Position(rowNr, columnNr));
-            pane.addTextHighlight(new SCETextHighlight(pane, document.createDocumentPosition(rowNr, columnNr), document.createDocumentPosition(rowNr, columnNr+length), Color.YELLOW));
+            results.add(new SCEDocumentRange(start,end));
+            pane.addTextHighlight(new SCETextHighlight(pane, start, end, Color.YELLOW));
             markerBar.addMarker(new SCEMarkerBar.Marker(SCEMarkerBar.TYPE_SEARCH, rowNr, columnNr, ""));
           }
         } else {
@@ -295,17 +358,20 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
           Pattern pattern = Pattern.compile(search, Pattern.MULTILINE | (caseSensitive.isSelected() ? Pattern.CASE_INSENSITIVE : 0));
           Matcher matcher = pattern.matcher(text);
           while(matcher.find()) {
-            int start = matcher.start();
-            int rowStart = text2row[start];
-            int columnStart = text2column[start];
+            int startIndex = matcher.start();
+            int rowStart = text2row[startIndex];
+            int columnStart = text2column[startIndex];
 
-            int end = matcher.end();
-            int rowEnd = text2row[end];
-            int columnEnd = text2column[end];
+            int endIndex = matcher.end();
+            int rowEnd = text2row[endIndex];
+            int columnEnd = text2column[endIndex];
+
+            SCEDocumentPosition start = document.createDocumentPosition(rowStart, columnStart);
+            SCEDocumentPosition end = document.createDocumentPosition(rowEnd, columnEnd);
 
             if(caret.getRow() == rowStart && caret.getColumn() == columnStart) moveCaret = false;
-            positions.add(new Position(rowStart, columnStart));
-            pane.addTextHighlight(new SCETextHighlight(pane, document.createDocumentPosition(rowStart, columnStart), document.createDocumentPosition(rowEnd, columnEnd), Color.YELLOW));
+            results.add(new SCEDocumentRange(start,end));
+            pane.addTextHighlight(new SCETextHighlight(pane, start, end, Color.YELLOW));
             markerBar.addMarker(new SCEMarkerBar.Marker(SCEMarkerBar.TYPE_SEARCH, rowStart, columnEnd, ""));
           }
         }
@@ -315,7 +381,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
       pane.repaint();
 
       if(moveCaret) next();
-      if(length > 0 && positions.size() == 0) input.setBackground(new Color(255, 204, 204));
+      if(length > 0 && results.size() == 0) input.setBackground(new Color(255, 204, 204));
     }
 
     public void run() {

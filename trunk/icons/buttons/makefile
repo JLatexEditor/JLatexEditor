@@ -14,7 +14,7 @@ pngs: $(pngs)
 	@rm $*.aux $*.log  >/dev/null 2>&1 || true
 
 %.png: %.pdf
-	convert $*.pdf -trim -resize 20x20 $*.png
+	convert $*.pdf -trim -resize 200x20 $*.png
 
 clean:
 	@rm $(pdfs) $(pngs) >/dev/null 2>&1 || true
