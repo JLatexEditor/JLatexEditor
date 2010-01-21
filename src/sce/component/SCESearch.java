@@ -1,7 +1,6 @@
 package sce.component;
 
 import javax.swing.*;
-import javax.swing.text.Document;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -143,13 +142,14 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
         )
         .addGap(2);
 
-    SCEPane pane = editor.getTextPane();
-    pane.addKeyListener(this);
-    pane.getDocument().addSCEDocumentListener(this);
-    pane.getDocument().addSCESelectionListener(this);
-
     layout.setHorizontalGroup(groupHorizontal);
     layout.setVerticalGroup(groupVertical);
+
+    SCEPane pane = editor.getTextPane();
+    SCEDocument document = pane.getDocument();
+    pane.addKeyListener(this);
+    document.addSCEDocumentListener(this);
+    document.addSCESelectionListener(this);
 
     updateThread = new UpdateThread();
     updateThread.start();
@@ -180,9 +180,13 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     pane.removeAllTextHighlights();
   }
 
-  public void close() {
-    setVisible(false);
-    clearHighlights();
+  public void setVisible(boolean visibility) {
+    if(visibility) {
+      input.setText("");
+    } else {
+      clearHighlights();
+    }
+    super.setVisible(visibility);
   }
 
   private void moveTo(SCEDocumentRange range) {
@@ -226,7 +230,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
   }
 
   public void actionPerformed(ActionEvent e) {
-    if(e.getSource() == buttonClose) close();
+    if(e.getSource() == buttonClose) setVisible(false);
     if(e.getSource() == caseSensitive) {
       updateThread.documentChanged();
       updateThread.searchChanged();
@@ -273,7 +277,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 
   public void keyPressed(KeyEvent e) {
 	  if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
-		  close();
+		  setVisible(false);
 		  e.consume();
 	  }
   }
@@ -319,11 +323,13 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 
     public synchronized void searchChanged() {
       searchChanged = true;
+      if(!isVisible()) return;
       notify();
     }
 
     public synchronized void documentChanged() {
       documentChanged = true;
+      if(!isVisible()) return;
       notify();
     }
 
@@ -440,6 +446,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
           } catch (InterruptedException e) { }
         }
         if(!searchChanged && !documentChanged) continue;
+        if(!isVisible()) continue;
 
         // update document information
         if(documentChanged) updateDocument();
