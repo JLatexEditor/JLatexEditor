@@ -34,7 +34,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
           "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
           "äöüÄÖÜß" +
           "1234567890" +
-          "^<>|+*~'#,;.:-_!\"§$%&/()=?`´\\{[]} ";
+          "^<>|+*~'#,;.:-_!\"§$%&/()=?`´\\{[]}@ ";
 
 	public SCEPaneUI(SCEPane pane){
     this.pane = pane;

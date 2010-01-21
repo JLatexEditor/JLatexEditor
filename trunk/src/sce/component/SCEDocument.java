@@ -144,6 +144,18 @@ public class SCEDocument{
    * @param text the text
    */
   public void setText(String text){
+    // treat Windows line breaks
+    if(text.indexOf((char) 0x0D) != -1) {
+      StringBuilder builder = new StringBuilder(text.length());
+      int lastIndex = 0, index = -1;
+      while((index = text.indexOf((char) 0x0D, index+1)) != -1) {
+        builder.append(text.substring(lastIndex, index));
+        lastIndex = index + 1;
+      }
+      builder.append(text.substring(lastIndex));
+      text = builder.toString();
+    }
+
     clear();
     boolean editable_ = editable;
     editable = true;
@@ -816,7 +828,7 @@ public class SCEDocument{
    *
    * @param listener the listener
    */
-  public void removeSCEDocumentListener(SCESelectionListener listener){
+  public void removeSCESelectionListener(SCESelectionListener listener){
     selectionListeners.remove(listener);
   }
 

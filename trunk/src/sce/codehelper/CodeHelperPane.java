@@ -413,6 +413,32 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
       e.consume();
     }
 
+    // begin... end completion
+    if(e.getKeyChar() == '}') {
+      String begin = "\\begin";
+
+      int index = column-1;
+      String rowString = document.getRow(row);
+      while(index > 0) {
+        char c = rowString.charAt(index);
+        if(c == '{') break;
+        if(!Character.isLetterOrDigit(c)) return;
+        index--;
+      }
+      String environment = rowString.substring(index+1, column);
+
+      int beginIndex = index - begin.length();
+      if(beginIndex < 0) return;
+      if(rowString.substring(beginIndex, index).equals(begin)) {
+        String indentation = spaces.substring(0, beginIndex);
+        pane.setFreezeCaret(true);
+        document.insert("\n" + indentation + "\\end{" + environment + "}", row, column);
+        pane.setFreezeCaret(false);
+      }
+      e.consume();
+      return;
+    }
+
     // tab completion
     if(e.getKeyCode() == KeyEvent.VK_TAB){
       int commandStart = findPrefixStart(row, column);
