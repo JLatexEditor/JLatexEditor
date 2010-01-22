@@ -7,6 +7,8 @@ package sce.syntaxhighlighting;
 
 public interface ParserState {
 	public ParserState copy();
+
+  public byte[] getStyles();
 }
 
 /*
