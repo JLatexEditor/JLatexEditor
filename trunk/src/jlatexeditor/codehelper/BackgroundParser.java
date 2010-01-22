@@ -1,17 +1,72 @@
 package jlatexeditor.codehelper;
 
 import jlatexeditor.JLatexEditorJFrame;
+import sce.component.SourceCodeEditor;
+import util.ParseUtil;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Parsing files in background.
  */
 public class BackgroundParser extends Thread {
-  private JLatexEditorJFrame editor;
+  private JLatexEditorJFrame jle;
 
-  public BackgroundParser(JLatexEditorJFrame editor) {
-    this.editor = editor;
+  private long bibModified = 0;
+  private ArrayList<BibEntry> bibEntries = new ArrayList<BibEntry>();
+
+  public BackgroundParser(JLatexEditorJFrame jle) {
+    this.jle = jle;
+    setPriority(Thread.MIN_PRIORITY);
   }
 
   public void run() {
+    while(true) {
+      try {
+        synchronized (this) { wait(5000); }
+      } catch (InterruptedException e) { }
+
+      SourceCodeEditor editor = jle.getMainEditor();
+      String text = editor.getText();
+      File directory = new File(editor.getResource().getName()).getParentFile();
+
+      String bibCommand = "\\bibliography{";
+      int bibStart = text.indexOf(bibCommand);
+      if(bibStart != -1) {
+        int bibClose = text.indexOf('}', bibStart + bibCommand.length());
+        if(bibClose != -1) {
+          parseBib(directory, text.substring(bibStart + bibCommand.length(), bibClose));
+        }
+      }
+    }
+  }
+
+  private void parseBib(File directory, String fileName) {
+    File bibFile = new File(directory, fileName);
+    if(bibFile.lastModified() == bibModified) return;
+    bibModified = bibFile.lastModified();
+
+    bibEntries = BibParser.parseBib(bibFile);
+  }
+
+  public ArrayList<BibEntry> getBibEntries() {
+    return bibEntries;
+  }
+
+  public ArrayList<BibEntry> getBibEntries(String search) {
+    ArrayList<String> keys = ParseUtil.splitBySpace(search);
+    ArrayList<BibEntry> entries = new ArrayList<BibEntry>(bibEntries);
+
+    for(String key : keys) {
+      Iterator<BibEntry> iterator = entries.iterator();
+      while(iterator.hasNext()) {
+        BibEntry entry = iterator.next();
+        if(entry.getBlock().indexOf(key) == -1) iterator.remove();
+      }
+    }
+
+    return bibEntries;
   }
 }

@@ -388,6 +388,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     return getEditor(tabbedPane.getSelectedIndex());
   }
 
+  public SourceCodeEditor getMainEditor() {
+    return mainEditor != null ? mainEditor : getActiveEditor();
+  }
+
 	private SourceCodeEditor addTab(AbstractResource resource) throws IOException {
 		SourceCodeEditor editor = createSourceCodeEditor();
 		tabbedPane.removeChangeListener(this);
