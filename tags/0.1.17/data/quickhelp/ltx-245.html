@@ -1,0 +1,75 @@
+<html>
+
+<head>
+
+<title>Help On LaTeX \include</title>
+
+<link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
+
+</head>
+
+<body>
+
+
+
+
+
+<h2>\include</h2>
+
+
+
+<p><tt>\include{file}</tt></p>
+
+
+
+<p>The <tt>\include</tt> command is used in conjunction with the
+
+<tt><a href="ltx-246.html">\includeonly</a></tt> command for
+
+selective inclusion of files. The <tt>file</tt> argument is the
+
+first name of a file, denoting <tt>file.tex</tt>. If the file is
+
+also in the file list of the <tt>\includeonly</tt> command or if
+
+there is no <tt>\includeonly</tt> command, the <tt>\include</tt>
+
+command is equivalent to</p>
+
+
+
+<pre>
+
+    <a href="ltx-213.html">\clearpage</a> \input{file} <a href="ltx-213.html">\clearpage</a>
+
+</pre>
+
+
+
+<p>except that if the file <tt>file.tex</tt> does not exist,
+
+then a warning message rather than an error is produced. If the
+
+file is not in the file list, the <tt>\include</tt> command is
+
+equivalent to <tt>\clearpage</tt>.</p>
+
+
+
+<p>The <tt>\include</tt> command may not appear in the preamble
+
+or in a file read by another <tt>\include</tt> command.</p>
+
+
+
+<hr noshade="noshade" size="1">
+
+
+
+<p>
+
+See also <a href="ltx-165.html">Splitting the Input</a><br>
+
+See also <tt><a href="ltx-248.html">\input</a></tt><br>
+
+</body></html>
