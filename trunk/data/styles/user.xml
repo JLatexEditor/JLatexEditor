@@ -22,7 +22,11 @@
   </element>
 
   <element name="math" style="plain">
-    <foreground><color r="0" g="255" b="0"/></foreground>
+    <foreground><color r="0" g="160" b="0"/></foreground>
+  </element>
+
+  <element name="math_command" style="plain">
+    <foreground><color r="96" g="96" b="0"/></foreground>
   </element>
 
   <element name="error" style="plain">

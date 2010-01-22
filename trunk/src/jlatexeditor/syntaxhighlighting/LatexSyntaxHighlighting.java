@@ -148,25 +148,29 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
         SCEDocumentChar sce_char = chars[char_nr];
         char c = sce_char.character;
 
+        byte[] stateStyles = state.getStyles();
+
         // search for a backslash '\'
         if(c == '\\'){
           String command = getCommandString(row, char_nr + 1);
 
           if(command == null){
+            byte styleText = stateStyles[LatexStyles.TEXT];
             // if there is no command -> '\' escapes the next character -> set style text
             if(char_nr < row.length - 1){
-              sce_char.style = LatexStyles.TEXT;
-              chars[char_nr + 1].style = LatexStyles.TEXT;
+              sce_char.style = styleText;
+              chars[char_nr + 1].style = styleText;
               char_nr += 1;
             }else{
-              sce_char.style = LatexStyles.ERROR;
+              sce_char.style = stateStyles[LatexStyles.ERROR];
             }
 	          lastCommandStyle = null;
           }else{
             lastCommandStyle = LatexStyles.getCommandStyle(command);
             // highlight the command
+            byte commandStyle = stateStyles[lastCommandStyle.commandStyle];
             for(int i = 0; i <= command.length(); i++){
-              chars[char_nr + i].style = lastCommandStyle.commandStyle;
+              chars[char_nr + i].style = commandStyle;
             }
             char_nr += command.length();
           }
@@ -176,8 +180,13 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 
         // search for '$' and "$$"
         if(c == '$'){
+          sce_char.style = stateStyles[LatexStyles.MATH];
+
 	        boolean doubleMath = chars[char_nr + 1].character == '$';
-	        if (doubleMath) char_nr++;
+	        if (doubleMath) {
+            char_nr++;
+            chars[char_nr].style = stateStyles[LatexStyles.MATH];
+          }
 
 	        // if active math mode -> close; otherwise open
 	        if (state instanceof MathMode) {
@@ -192,25 +201,26 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 
         // search for '{' and '}'
         if(c == '{'){
-          sce_char.style = LatexStyles.BRACKET;
+          sce_char.style = stateStyles[LatexStyles.BRACKET];
           continue;
         }
         if(c == '}'){
-          sce_char.style = LatexStyles.BRACKET;
+          sce_char.style = stateStyles[LatexStyles.BRACKET];
           continue;
         }
 
         // search for '%' (comment)
         if(c == '%'){
-          while(char_nr < row.length) chars[char_nr++].style = LatexStyles.COMMENT;
+          byte commentStyle = stateStyles[LatexStyles.COMMENT];
+          while(char_nr < row.length) chars[char_nr++].style = commentStyle;
           continue;
         }
 
         // default style is text or number
         if(c >= '0' && c <= '9'){
-          sce_char.style = LatexStyles.NUMBER;
+          sce_char.style = stateStyles[LatexStyles.NUMBER];
         }else{
-          sce_char.style = LatexStyles.TEXT;
+          sce_char.style = stateStyles[LatexStyles.TEXT];
         }
       }
 

@@ -1,5 +1,6 @@
 package jlatexeditor.syntaxhighlighting.states;
 
+import jlatexeditor.syntaxhighlighting.LatexStyles;
 import sce.syntaxhighlighting.ParserState;
 
 /**
@@ -8,11 +9,20 @@ import sce.syntaxhighlighting.ParserState;
  * @author Stefan Endrullis
  */
 public class RootState implements ParserState {
+  private static byte[] styles = new byte[256];
+  static {
+    for(int i = 0; i < styles.length; i++) styles[i] = (byte) i;
+  }
+
 	public ParserState copy() {
 		return this;
 	}
 
-	@Override
+  public byte[] getStyles() {
+    return styles;
+  }
+
+  @Override
 	public boolean equals(Object obj) {
 		return obj instanceof RootState;
 	}

@@ -27,8 +27,9 @@ public class LatexStyles{
   public static final byte NUMBER = 4;
 
   public static final byte MATH = 5;
+  public static final byte MATH_COMMAND = 6;
 
-  public static final byte ERROR = 6;
+  public static final byte ERROR = 7;
 
   public static final byte USER = 50;
 
@@ -54,6 +55,7 @@ public class LatexStyles{
     name2Id.put("bracket", BRACKET);
     name2Id.put("number", NUMBER);
     name2Id.put("math", MATH);
+    name2Id.put("math_command", MATH_COMMAND);
     name2Id.put("error", ERROR);
 
     for(int i = 0; i < stylesMap.length; i++) stylesMap[i] = null;
