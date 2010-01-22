@@ -52,6 +52,7 @@ public class BibParser {
 
       entry.setBlock(block);
       results.add(entry);
+      System.out.println(entry);
     }
 
     return results;

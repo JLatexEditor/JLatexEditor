@@ -6,6 +6,7 @@
 
 package jlatexeditor;
 
+import jlatexeditor.codehelper.BackgroundParser;
 import jlatexeditor.codehelper.JumpTo;
 import jlatexeditor.codehelper.SpellCheckSuggester;
 import jlatexeditor.errorhighlighting.LatexCompiler;
@@ -69,6 +70,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 	private final ProgramUpdater updater = new ProgramUpdater("JLatexEditor update", "http://endrullis.de/JLatexEditor/update/");
 
+  // background parser
+  private BackgroundParser backgroundParser;
 
   public static void main(String args[]){
     /*
@@ -338,6 +341,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 				}
 			}.start();
 	  }
+
+    // background parser
+    backgroundParser = new BackgroundParser(this);
+    backgroundParser.start();
   }
 
   private SourceCodeEditor createSourceCodeEditor() {

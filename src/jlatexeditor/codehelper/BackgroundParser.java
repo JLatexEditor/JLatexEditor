@@ -1,6 +1,7 @@
 package jlatexeditor.codehelper;
 
 import jlatexeditor.JLatexEditorJFrame;
+import sce.component.AbstractResource;
 import sce.component.SourceCodeEditor;
 import util.ParseUtil;
 
@@ -25,12 +26,16 @@ public class BackgroundParser extends Thread {
   public void run() {
     while(true) {
       try {
-        synchronized (this) { wait(5000); }
+        synchronized (this) { wait(1000); }
       } catch (InterruptedException e) { }
 
       SourceCodeEditor editor = jle.getMainEditor();
-      String text = editor.getText();
-      File directory = new File(editor.getResource().getName()).getParentFile();
+      AbstractResource resource = editor.getResource();
+      if(!(resource instanceof JLatexEditorJFrame.FileDoc)) continue;
+
+      String text= editor.getText();
+      File file = ((JLatexEditorJFrame.FileDoc) resource).getFile();
+      File directory = file.getParentFile();
 
       String bibCommand = "\\bibliography{";
       int bibStart = text.indexOf(bibCommand);
@@ -44,6 +49,7 @@ public class BackgroundParser extends Thread {
   }
 
   private void parseBib(File directory, String fileName) {
+    if(!fileName.endsWith(".bib")) fileName = fileName + ".bib";
     File bibFile = new File(directory, fileName);
     if(bibFile.lastModified() == bibModified) return;
     bibModified = bibFile.lastModified();
