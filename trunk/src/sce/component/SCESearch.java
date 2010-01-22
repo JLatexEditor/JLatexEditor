@@ -440,9 +440,9 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 
     public void run() {
       while(true) {
-        if(!documentChanged && !searchChanged) {
+        if((!documentChanged && !searchChanged) || !isVisible()) {
           try {
-            synchronized(this) { wait(500); } 
+            synchronized(this) { wait(1000); } 
           } catch (InterruptedException e) { }
         }
         if(!searchChanged && !documentChanged) continue;

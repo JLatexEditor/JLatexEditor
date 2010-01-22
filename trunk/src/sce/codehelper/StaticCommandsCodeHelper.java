@@ -2,12 +2,9 @@ package sce.codehelper;
 
 import my.XML.XMLDocument;
 import my.XML.XMLElement;
-import my.XML.XMLException;
 import my.XML.XMLParser;
 import util.StreamUtils;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
