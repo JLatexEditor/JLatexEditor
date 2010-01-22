@@ -238,8 +238,6 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
    * @param column the column
    */
   private void startTemplate(String templateWithAt, ArrayList<CHCommandArgument> arguments, int row, int column){
-    // convert to real line breaks
-    templateWithAt = templateWithAt.replaceAll("\\\\n", "\n");
     template = templateWithAt;
 
     // remove the caret mark
