@@ -86,10 +86,10 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     regExp.setOpaque(false);
     add(regExp);
     regExp.addActionListener(this);
-    add(buttonClose);
-    buttonClose.addActionListener(this);
     add(buttonShowReplace);
     buttonShowReplace.addActionListener(this);
+    add(buttonClose);
+    buttonClose.addActionListener(this);
 
     replace.setColumns(40);
     add(replace);
@@ -116,6 +116,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
                 .addComponent(regExp)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
                 .addComponent(buttonShowReplace)
+                .addComponent(buttonClose)
             )
             .addGroup(
               layout.createSequentialGroup()
@@ -134,6 +135,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
             .addComponent(caseSensitive)
             .addComponent(regExp)
             .addComponent(buttonShowReplace)
+            .addComponent(buttonClose)
         )
         .addGroup(
           layout.createParallelGroup(GroupLayout.Alignment.LEADING)
