@@ -109,13 +109,42 @@ public class StaticCommandsCodeHelper extends CodeHelper {
 	  Collections.sort(commands);
 	}
 
-	@Override
-	public Iterable<CHCommand> getCommandsAt(int row, int column) {
-		return commands;
+	public Iterable<CHCommand> getCommands(String prefix) {
+    ArrayList<CHCommand> commandsFiltered = new ArrayList<CHCommand>(commands.size());
+    for(CHCommand command : commands) {
+      if(command.getName().startsWith(prefix)) commandsFiltered.add(command);
+    }
+		return commandsFiltered;
 	}
 
-  @Override
-  public Iterable<CHCommand> getCommands() {
-    return commands;
+  /**
+   * Searches for the best completion of the prefix.
+   *
+   * @param prefix the prefix
+   * @return the completion suggestion (without the prefix)
+   */
+  public String getCompletion(String prefix){
+    int prefixLength = prefix.length();
+    String completion = null;
+
+	  for (CHCommand command : getCommands(prefix)) {
+		  String commandName = command.getName();
+		  if (commandName.startsWith(prefix)) {
+			  if (completion == null) {
+				  completion = commandName;
+			  } else {
+				  // find the common characters
+				  int commonIndex = prefixLength;
+				  int commonLength = Math.min(completion.length(), commandName.length());
+				  while (commonIndex < commonLength) {
+					  if (completion.charAt(commonIndex) != commandName.charAt(commonIndex)) break;
+					  commonIndex++;
+				  }
+				  completion = completion.substring(0, commonIndex);
+			  }
+		  }
+	  }
+
+    return completion;
   }
 }

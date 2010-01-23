@@ -34,6 +34,10 @@ public class CHCommand implements Comparable{
     return name;
   }
 
+  public void setName(String name) {
+    this.name = name;
+  }
+
   /**
    * Returns the usage string of the command (parameters are surrounded by @param@)
    *
@@ -92,7 +96,7 @@ public class CHCommand implements Comparable{
   // Comparable methods
   public int compareTo(Object o) {
     if(!(o instanceof CHCommand)) return -1;
-    return name.compareTo(((CHCommand) o).getName());
+    return getName().compareTo(((CHCommand) o).getName());
   }
 
   /**
@@ -101,6 +105,6 @@ public class CHCommand implements Comparable{
    * @return command as string
    */
   public String toString(){
-    return name;
+    return getName();
   }
 }

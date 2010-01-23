@@ -19,19 +19,15 @@ public class BibParser {
       bib = StreamUtils.readFile(file.getAbsolutePath());
     } catch (IOException e) { return results; }
 
-    int at = 0;
-    while((at = bib.indexOf("@", at)) != -1) {
-      System.out.println("1");
+    int at = -1;
+    while((at = bib.indexOf("@", at+1)) != -1) {
       int openBracket = bib.indexOf('{', at);
       if(openBracket == -1) break;
       String type = bib.substring(at+1, openBracket).trim();
 
-      System.out.println("2");
       // parse block
       String block = ParseUtil.parseBalanced(bib, openBracket + 1, '}');
 
-      System.out.println(block);
-      
       int comma = block.indexOf(',');
       if(comma == -1) break;
       String name = block.substring(0, comma).trim();
@@ -47,19 +43,24 @@ public class BibParser {
         if(eq == -1) continue;
 
         String key = line.substring(0,eq).trim().toLowerCase();
-        String value = line.substring(eq+1).trim();
-        System.out.println(key);
+        String value = removeBraces(line.substring(eq+1).trim());
 
         if(key.equals("title")) entry.setTitle(value);
         if(key.equals("author")) entry.setAuthors(value);
         if(key.equals("year")) entry.setYear(value);
       }
 
-      entry.setBlock(block);
+      entry.setEntryName(name);
+      entry.setText(block);
       results.add(entry);
-      System.out.println(entry);
     }
 
     return results;
+  }
+
+  private static String removeBraces(String string) {
+    if(string.startsWith("{") || string.startsWith("\"")) string = string.substring(1);
+    if(string.endsWith("}") || string.endsWith("\"")) string = string.substring(0,string.length()-1);
+    return string;
   }
 }

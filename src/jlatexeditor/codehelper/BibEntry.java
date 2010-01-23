@@ -1,25 +1,28 @@
 package jlatexeditor.codehelper;
 
+import sce.codehelper.CHCommand;
+
 /**
 * BibEntry.
 */
-public class BibEntry {
-  private String name = "";
+public class BibEntry extends CHCommand {
+  private String entryName = "";
   private String title = "";
   private String authors = "";
   private String year = "";
 
-  private String block = "";
+  private String text = "";
 
   public BibEntry() {
+    super("");
   }
 
-  public String getName() {
-    return name;
+  public String getEntryName() {
+    return entryName;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setEntryName(String entryName) {
+    this.entryName = entryName;
   }
 
   public String getTitle() {
@@ -46,15 +49,19 @@ public class BibEntry {
     this.year = year;
   }
 
-  public String getBlock() {
-    return block;
+  public String getText() {
+    return text;
   }
 
-  public void setBlock(String block) {
-    this.block = block;
+  public void setText(String text) {
+    this.text = text;
   }
 
-  public String toString() {
-    return name + ": " + title + "</br>\n" + authors + ", " + year; 
+  public String getUsage() {
+    return entryName + "}";
+  }
+
+  public String getName() {
+    return "<html>" + entryName + "<br>" + title + "<br>\n" + authors + ", " + year + "</html>";
   }
 }

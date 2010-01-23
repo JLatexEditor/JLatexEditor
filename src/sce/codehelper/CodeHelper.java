@@ -10,9 +10,8 @@ import sce.component.SCEDocument;
 public abstract class CodeHelper {
 	protected SCEDocument document = null;
 
-	public abstract Iterable<CHCommand> getCommandsAt(int row, int column);
-
-  public abstract Iterable<CHCommand> getCommands();
+  public abstract Iterable<? extends CHCommand> getCommands(String search);
+  public abstract String getCompletion(String search);
 
   // getters and setters
 	public void setDocument(SCEDocument document) {
