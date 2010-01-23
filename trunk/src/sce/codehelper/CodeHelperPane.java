@@ -146,6 +146,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
     int commandStart = pane.findSplitterInRow(row, column, -1);
     if(column > 0 && documentRow.chars[column - 1].character == ' ') commandStart = column;
+    if(column > 0 && documentRow.chars[column - 1].character == ' ') commandStart = column;
     if(commandStart > 0 && documentRow.chars[commandStart - 1].character == '\\') commandStart--;
 
     return commandStart;
@@ -175,13 +176,16 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     list.setSelectedValue(selectedValue, true);
     if(selectedValue == null || !model.contains(selectedValue)) list.setSelectedIndex(0);
 
-    if(column < commandPosition.getColumn()-1){
+    if(column < commandPosition.getColumn()){
       setVisible(false);
       commandPosition = null;
       return;
     }
 
-    setSize(getPreferredSize());
+    Dimension size = getPreferredSize();
+    size = new Dimension((int) (size.width*1.2 + 50), size.height + 3);
+    setPreferredSize(size);
+    popup.setPreferredSize(size);
     popup.pack();
   }
 
@@ -339,20 +343,16 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     int column = caret.getColumn();
 
     // ctrl + space
-    boolean ctrlSpace = e.getKeyCode() == KeyEvent.VK_SPACE && e.isControlDown() && !isVisible();
-    // \cite{
-    boolean cite = e.getKeyChar() == '{' && document.getRow(row, Math.max(0, column-5), column).equals("\\cite");
-
-    // run code helper
-    if(ctrlSpace || cite){
+    if(e.getKeyCode() == KeyEvent.VK_SPACE && e.isControlDown() && !isVisible()){
       Point caretPos = pane.modelToView(row, column);
 
-      if(ctrlSpace) {
+      // \cite{
+      boolean cite = document.getRow(row, Math.max(0, column-6), column).equals("\\cite{");
+      if(!cite) {
         commandPosition = new SCEDocumentPosition(row, findPrefixStart(row, column));
         currentHelper = codeHelper;
-      } else
-      if(cite) {
-        commandPosition = new SCEDocumentPosition(row, column+1);
+      } else {
+        commandPosition = new SCEDocumentPosition(row, column);
         currentHelper = bibHelper;
       }
       updatePrefix();

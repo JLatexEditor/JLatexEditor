@@ -51,7 +51,12 @@ public class BibParser {
       }
 
       entry.setEntryName(name);
-      entry.setText(block);
+      entry.setText(
+              entry.getEntryName() + " " +
+                      entry.getTitle() + " " +
+                      entry.getAuthors() + " " +
+                      entry.getYear()
+                 );
       results.add(entry);
     }
 
