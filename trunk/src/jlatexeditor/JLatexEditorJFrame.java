@@ -343,8 +343,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  }
 
     // background parser
-    backgroundParser = new BackgroundParser(this);
-    backgroundParser.start();
+    //sbackgroundParser = new BackgroundParser(this);
+    //backgroundParser.start();
   }
 
   private SourceCodeEditor createSourceCodeEditor() {
