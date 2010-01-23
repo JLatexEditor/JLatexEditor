@@ -20,14 +20,18 @@ public class BibParser {
     } catch (IOException e) { return results; }
 
     int at = 0;
-    while((at = bib.indexOf("@")) != -1) {
+    while((at = bib.indexOf("@", at)) != -1) {
+      System.out.println("1");
       int openBracket = bib.indexOf('{', at);
       if(openBracket == -1) break;
       String type = bib.substring(at+1, openBracket).trim();
 
+      System.out.println("2");
       // parse block
       String block = ParseUtil.parseBalanced(bib, openBracket + 1, '}');
 
+      System.out.println(block);
+      
       int comma = block.indexOf(',');
       if(comma == -1) break;
       String name = block.substring(0, comma).trim();
@@ -44,6 +48,7 @@ public class BibParser {
 
         String key = line.substring(0,eq).trim().toLowerCase();
         String value = line.substring(eq+1).trim();
+        System.out.println(key);
 
         if(key.equals("title")) entry.setTitle(value);
         if(key.equals("author")) entry.setAuthors(value);
