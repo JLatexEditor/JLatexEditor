@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  * @author Stefan Endrullis
  */
 public class JumpTo implements KeyListener {
-	private static List<String> defaultExtensions = Arrays.asList("", ".tex");
+	private static List<String> defaultExtensions = Arrays.asList("", ".tex", ".bib");
 
 	private PatternPair pattern = new PatternPair("\\{([^\\{]*)", "([^\\}]*)\\}");
 
@@ -42,10 +42,13 @@ public class JumpTo implements KeyListener {
 			if (word != null) {
 				if (editor.getResource() instanceof FileDoc) {
 				  FileDoc fileDoc = (FileDoc) editor.getResource();
+					String thisFileName = fileDoc.getFile().getName();
 					File dir = fileDoc.getFile().getParentFile();
 
 					for (String extension : defaultExtensions) {
-						File fileUnderCaret = new File (dir, word.word + extension);
+						String thatFileName = word.word + extension;
+						if (thisFileName.equals(thatFileName)) continue;
+						File fileUnderCaret = new File (dir, thatFileName);
 
 						if (fileUnderCaret.exists() && fileUnderCaret.isFile()) {
 							jLatexEditorJFrame.open(new FileDoc(fileUnderCaret));
