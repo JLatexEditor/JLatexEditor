@@ -1,7 +1,9 @@
 package jlatexeditor.codehelper;
 
 import sce.component.SCECaret;
+import sce.component.SCEDocumentPosition;
 import sce.component.SCEPane;
+import sce.component.SCEPosition;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,6 +35,12 @@ public class PatternPair {
 		SCECaret caret = pane.getCaret();
 
 		return find (pane.getDocument().getRow(caret.getRow()), caret.getRow(), caret.getColumn());
+	}
+
+	public WordWithPos find (SCEPane pane, SCEPosition pos) {
+		SCECaret caret = pane.getCaret();
+
+		return find (pane.getDocument().getRow(pos.getRow()), pos.getRow(), pos.getColumn());
 	}
 
 	public WordWithPos find (String rowString, int row, int column) {
