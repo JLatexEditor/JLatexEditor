@@ -63,16 +63,16 @@ public class BackgroundParser extends Thread {
 
   public ArrayList<BibEntry> getBibEntries(String search) {
     ArrayList<String> keys = ParseUtil.splitBySpace(search);
-    ArrayList<BibEntry> entries = new ArrayList<BibEntry>(bibEntries);
+    ArrayList<BibEntry> entries = new ArrayList<BibEntry>();
 
-    for(String key : keys) {
-      Iterator<BibEntry> iterator = entries.iterator();
-      while(iterator.hasNext()) {
-        BibEntry entry = iterator.next();
-        if(entry.getBlock().indexOf(key) == -1) iterator.remove();
+    for(BibEntry entry : bibEntries) {
+      boolean all = true;
+      for(String key : keys) {
+        if(entry.getText().indexOf(key) == -1) { all = false; break; }
       }
+      if(all) entries.add(entry);
     }
 
-    return bibEntries;
+    return entries;
   }
 }

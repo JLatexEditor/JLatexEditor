@@ -6,27 +6,22 @@
 
 package jlatexeditor;
 
-import jlatexeditor.codehelper.BackgroundParser;
-import jlatexeditor.codehelper.JumpTo;
-import jlatexeditor.codehelper.SpellCheckSuggester;
+import jlatexeditor.codehelper.*;
 import jlatexeditor.errorhighlighting.LatexCompiler;
 import jlatexeditor.gui.AboutDialog;
 import jlatexeditor.gui.LocalHistory;
 import sce.component.*;
 import jlatexeditor.errorhighlighting.LatexErrorHighlighting;
 import jlatexeditor.quickhelp.LatexQuickHelp;
-import jlatexeditor.codehelper.LatexCodeHelper;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
 import sce.syntaxhighlighting.SyntaxHighlighting;
 import util.StreamUtils;
 import util.updater.ProgramUpdater;
 
-import javax.annotation.Resource;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -343,8 +338,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  }
 
     // background parser
-    //sbackgroundParser = new BackgroundParser(this);
-    //backgroundParser.start();
+    backgroundParser = new BackgroundParser(this);
+    backgroundParser.start();
   }
 
   private SourceCodeEditor createSourceCodeEditor() {
@@ -363,6 +358,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  // code completion and quick help
 	  scePane.setCodeHelper(new LatexCodeHelper("data/codehelper/commands.xml"));
 	  scePane.setTabCompletion(new LatexCodeHelper("data/codehelper/tabCompletion.xml"));
+	  scePane.setBibHelper(new BibCodeHelper(getBackgroundParser()));
 	  scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
 
 	  try {
@@ -377,6 +373,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  scePane.addKeyListener(this);
 
 	  return editor;
+  }
+
+  public BackgroundParser getBackgroundParser() {
+    return backgroundParser;
   }
 
   public int getTab(AbstractResource resource) {

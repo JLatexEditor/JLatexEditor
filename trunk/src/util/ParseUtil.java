@@ -10,15 +10,16 @@ public class ParseUtil {
       char c = text.charAt(index);
       switch (c) {
         case '\\' : index = index+2; continue;
-        case '{' : depth++; break;
-        case '}' : depth--; if(depth < 0) return text.substring(start, index); else break;
+        case '{' : depth++; index++; continue;
+        case '}' : depth--; if(depth < 0) { return text.substring(start, index); } else { index++; continue; }
         case '"' : index++;
                    int close = text.indexOf('"', index);
-                   if(close == -1) close = text.length();
-                   index = close;
+                   if(close == -1) close = text.length()-1;
+                   index = close+1;
                    continue;
       }
-      if(c == stop) return text.substring(start, index);
+      if(depth == 0 && c == stop) return text.substring(start, index);
+      index++;
     }
     return text.substring(start, index);
   }

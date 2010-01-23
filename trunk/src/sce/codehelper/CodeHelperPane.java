@@ -17,20 +17,23 @@ import java.util.Iterator;
  */
 public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocumentListener{
   // the source code pane
-  SCEPane pane = null;
-  SCEDocument document = null;
-  SCECaret caret = null;
+  protected SCEPane pane = null;
+  protected SCEDocument document = null;
+  protected SCECaret caret = null;
 
   // the popup
-  JPopupMenu popup = null;
+  protected JPopupMenu popup = null;
 
   // the model
   private JList list = null;
   private DefaultListModel model = null;
+
+  // helpers
+  private CodeHelper currentHelper = null;
+
 	private CodeHelper codeHelper = null;
 	private CodeHelper tabCompletion = null;
-  // the command reference
-  private Iterable<CHCommand> commands = null;
+	private CodeHelper bibHelper = null;
 
   // the position of the code helper
   private SCEDocumentPosition commandPosition = null;
@@ -53,7 +56,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
     // create the list
     list = new JList();
-    list.setBackground(new Color(235, 244, 254));
+    list.setCellRenderer(new SCEListCellRenderer()); //list.setBackground(new Color(235, 244, 254));
     model = new DefaultListModel();
     list.setModel(model);
 
@@ -109,55 +112,12 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     }
   }
 
-	/**
-   * Sets the prefix of the commands.
-   *
-   * @param prefix the prefix
-   */
-  public void setPrefix(String prefix){
-    this.prefix = prefix;
-
-    Object selectedValue = null;
-    if(model.size() > 0) selectedValue = list.getSelectedValue();
-
-    model.removeAllElements();
-	  for (CHCommand command : commands) {
-		  if (command.getName().startsWith(prefix)) model.addElement(command);
-	  }
-
-    list.setSelectedValue(selectedValue, true);
-    if(selectedValue == null || !model.contains(selectedValue)) list.setSelectedIndex(0);
+  public CodeHelper getBibHelper() {
+    return bibHelper;
   }
 
-  /**
-   * Searches for the best completion of the prefix.
-   *
-   * @param prefix the prefix
-   * @return the completion suggestion (without the prefix)
-   */
-  public String getCompletion(String prefix){
-    int prefixLength = prefix.length();
-    String completion = null;
-
-	  for (CHCommand command : commands) {
-		  String commandName = command.getName();
-		  if (commandName.startsWith(prefix)) {
-			  if (completion == null) {
-				  completion = commandName;
-			  } else {
-				  // find the common characters
-				  int commonIndex = prefixLength;
-				  int commonLength = Math.min(completion.length(), commandName.length());
-				  while (commonIndex < commonLength) {
-					  if (completion.charAt(commonIndex) != commandName.charAt(commonIndex)) break;
-					  commonIndex++;
-				  }
-				  completion = completion.substring(0, commonIndex);
-			  }
-		  }
-	  }
-
-    return completion;
+  public void setBibHelper(CodeHelper bibHelper) {
+    this.bibHelper = bibHelper;
   }
 
   public JList getList(){
@@ -195,22 +155,31 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
    * Updates the search prefix for the code helper.
    */
   private void updatePrefix(){
-    if(commandPosition == null) return;
+    if(commandPosition == null || currentHelper == null) return;
 
     int row = caret.getRow();
     int column = caret.getColumn();
 
-	  // ask code helper for command suggestions at this position
-	  commands = codeHelper.getCommandsAt(row, column);
+    // get selection
+    Object selectedValue = null;
+    if(model.size() > 0) selectedValue = list.getSelectedValue();
 
-    if(column < commandPosition.getColumn()){
+    // extract the command from start until caret column
+    prefix = document.getRow(row,commandPosition.getColumn(),column);
+
+	  // ask code helper for command suggestions at this position
+    model.removeAllElements();
+	  for (CHCommand command : currentHelper.getCommands(prefix)) model.addElement(command);
+
+    // restore selection
+    list.setSelectedValue(selectedValue, true);
+    if(selectedValue == null || !model.contains(selectedValue)) list.setSelectedIndex(0);
+
+    if(column < commandPosition.getColumn()-1){
       setVisible(false);
       commandPosition = null;
       return;
     }
-
-    // extract the command from start until caret column
-    setPrefix(document.getRow(row).substring(commandPosition.getColumn(),column));
 
     setSize(getPreferredSize());
     popup.pack();
@@ -360,7 +329,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 		pane.removeKeyListener(this);
 		document.removeSCEDocumentListener(this);
 	}
-	
+
   // KeyListener methods
   public void keyTyped(KeyEvent e){
   }
@@ -369,14 +338,26 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     int row = caret.getRow();
     int column = caret.getColumn();
 
+    // ctrl + space
+    boolean ctrlSpace = e.getKeyCode() == KeyEvent.VK_SPACE && e.isControlDown() && !isVisible();
+    // \cite{
+    boolean cite = e.getKeyChar() == '{' && document.getRow(row, Math.max(0, column-5), column).equals("\\cite");
+
     // run code helper
-    if(e.getKeyCode() == KeyEvent.VK_SPACE && e.isControlDown() && !isVisible()){
+    if(ctrlSpace || cite){
       Point caretPos = pane.modelToView(row, column);
 
-      commandPosition = new SCEDocumentPosition(row, findPrefixStart(row, column));
+      if(ctrlSpace) {
+        commandPosition = new SCEDocumentPosition(row, findPrefixStart(row, column));
+        currentHelper = codeHelper;
+      } else
+      if(cite) {
+        commandPosition = new SCEDocumentPosition(row, column+1);
+        currentHelper = bibHelper;
+      }
       updatePrefix();
 
-      String completion = getCompletion(prefix);
+      String completion = currentHelper.getCompletion(prefix);
       if(completion != null) setText(completion);
 
       setVisible(true);
@@ -442,7 +423,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
       int commandStart = findPrefixStart(row, column);
       String commandName = document.getRow(row).substring(commandStart, column);
 
-      for (CHCommand command : tabCompletion.getCommands()) {
+      for (CHCommand command : tabCompletion.getCommands("")) {
         if(commandName.equals(command.getName())) {
           document.remove(row, commandStart, row, column);
           startTemplate(command.getUsage(), command.getArguments(), row, commandStart);
@@ -490,7 +471,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     }
 
     // enter
-    if(e.getKeyCode() == KeyEvent.VK_ENTER || (e.getKeyCode() == KeyEvent.VK_SPACE && !e.isControlDown())){
+    if(e.getKeyCode() == KeyEvent.VK_ENTER || (currentHelper == codeHelper && e.getKeyCode() == KeyEvent.VK_SPACE && !e.isControlDown())){
       if(model.size() == 0) return;
 
       // remove the current text and then start the template
@@ -537,5 +518,15 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     }
 
     if(isVisible()) updatePrefix();
+  }
+
+  public static class SCEListCellRenderer extends DefaultListCellRenderer {
+    public static final Color BACKGROUND = new Color(219, 224, 253);
+
+    public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+      Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+      if(!isSelected) component.setBackground(index % 2 == 0 ? BACKGROUND : Color.WHITE);
+      return component;
+    }
   }
 }
