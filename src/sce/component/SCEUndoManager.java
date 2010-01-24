@@ -70,6 +70,7 @@ public class SCEUndoManager implements SCEDocumentListener{
       if(Math.abs(event.getTimeMillis() - lastTime) > timeDistance) break;
       lastTime = event.getTimeMillis();
       nextEvents.pop();
+      lastEvents.push(event);
 
       SCEDocumentPosition start = event.getRangeStart();
       SCEDocumentPosition end = event.getRangeEnd();
@@ -98,9 +99,9 @@ public class SCEUndoManager implements SCEDocumentListener{
   public void documentChanged(SCEDocument sender, SCEDocumentEvent event){
     // don't work with undo events
     if((event.getEventType() & SCEDocumentEvent.EVENT_UNDO) != 0) return;
+    if((event.getEventType() & SCEDocumentEvent.EVENT_REDO) != 0) return;
 
     lastEvents.push(event);
-
-    if((event.getEventType() & SCEDocumentEvent.EVENT_REDO) == 0) nextEvents.clear();
+    nextEvents.clear();
   }
 }
