@@ -107,7 +107,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     UIManager.put("Menu.background", SCETabbedPaneUI.BLUE);
     UIManager.put("Menu.selectionBackground", SCETabbedPaneUI.BLUE);
     UIManager.put("MenuBar.gradient", Arrays.asList(1.0f, 0.0f, SCETabbedPaneUI.BLUE, SCETabbedPaneUI.BLUE.brighter(), SCETabbedPaneUI.BLUE.darker()));
-    UIManager.put("MenuBar.border", null);
 
 	  new AboutDialog(null).showAndAutoHideAfter(5000);
 
