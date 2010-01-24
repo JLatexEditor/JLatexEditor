@@ -21,7 +21,7 @@ public class PatternPair {
 	private boolean combine;
 
 	public PatternPair(String leftPattern, String rightPattern) {
-		this(leftPattern, false, rightPattern);
+		this(leftPattern, true, rightPattern);
 	}
 
 	public PatternPair(String leftPattern, boolean combine, String rightPattern) {
@@ -53,13 +53,13 @@ public class PatternPair {
 			int leftGroupMax = combine ? leftGroupCount-1 : leftGroupCount;
 			int rightGroupMin = combine ? 2 : 1;
 			for (int i=1; i<=leftGroupMax; i++) {
-				groups.add(new WordWithPos(leftMatcher.group(i) + rightMatcher.group(i), row, leftMatcher.start(i)));
+				groups.add(new WordWithPos(leftMatcher.group(i), row, leftMatcher.start(i)));
 			}
 			if (combine) {
 				groups.add(new WordWithPos(leftMatcher.group(leftGroupCount) + rightMatcher.group(1), row, leftMatcher.start(leftGroupCount)));
 			}
 			for (int i=rightGroupMin; i<=rightGroupCount; i++) {
-				groups.add(new WordWithPos(leftMatcher.group(i) + rightMatcher.group(i), row, leftMatcher.start(i)));
+				groups.add(new WordWithPos(rightMatcher.group(i) + rightMatcher.group(i), row, rightMatcher.start(i)));
 			}
 
 			return groups;
