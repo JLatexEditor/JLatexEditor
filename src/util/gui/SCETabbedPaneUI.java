@@ -22,9 +22,9 @@ public class SCETabbedPaneUI extends BasicTabbedPaneUI {
 
   public SCETabbedPaneUI(JTabbedPane tabbedPane) {
     this.tabbedPane = tabbedPane;
-    UIManager.put("TabbedPane.contentAreaColor", BLUE);
-    UIManager.put("TabbedPane.background", BLUE);
-    UIManager.put("TabbedPane.tabAreaBackground", BLUE);
+    UIManager.put("TabbedPane.contentAreaColor", Color.WHITE);
+    UIManager.put("TabbedPane.background", Color.WHITE);
+    UIManager.put("TabbedPane.tabAreaBackground", Color.WHITE);
     UIManager.put("TabbedPane.contentBorderInsets", new Insets(0, 0, 0, 0));
     UIManager.put("TabbedPane.selectedTabPadInsets", new Insets(0, 0, 0, 0));
     UIManager.put("TabbedPane.tabAreaInsets", new Insets(0, 0, 0, 0));
