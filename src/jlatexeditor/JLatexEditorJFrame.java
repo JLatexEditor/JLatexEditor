@@ -22,6 +22,7 @@ import util.updater.ProgramUpdater;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -106,6 +107,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  super("JLatexEditor " + version);
     this.args = args;
     addWindowListener(this);
+
+	  initFileChooser();
 
     /*
     JRootPane rootPane = getRootPane();
@@ -342,7 +345,31 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     backgroundParser.start();
   }
 
-  private SourceCodeEditor createSourceCodeEditor() {
+	private void initFileChooser() {
+		openDialog.addChoosableFileFilter(new FileFilter() {
+			// Handles which files are allowed by filter.
+			public boolean accept(File f) {
+				// Allow directories to be seen.
+				if (f.isDirectory()) return true;
+
+				// Allows files with .rtf extension to be seen.
+				if (f.getName().toLowerCase().endsWith(".tex") ||
+						f.getName().toLowerCase().endsWith(".def") ||
+						f.getName().toLowerCase().endsWith(".bib"))
+					return true;
+
+				// Otherwise file is not shown.
+				return false;
+			}
+
+			// 'Files of Type' description
+			public String getDescription() {
+				return "LaTeX files (*.tex, *.def, *.bib)";
+			}
+		});
+	}
+
+	private SourceCodeEditor createSourceCodeEditor() {
     SourceCodeEditor editor = new SourceCodeEditor<AbstractResource>(null);
 
     SCEPane scePane = editor.getTextPane();
