@@ -297,7 +297,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  updateMenuItem.setMnemonic('u');
 	  //updateMenuItem.setAccelerator(KeyStroke.getKeyStroke("alt u"));
 	  updateMenuItem.addActionListener(this);
-	  if (devVersion) updateMenuItem.setEnabled(false);
+	  if (devVersion) updateMenuItem.setVisible(false);
 	  helpMenu.add(updateMenuItem);
 
 	  JMenuItem aboutCommitItem = new JMenuItem("About");
