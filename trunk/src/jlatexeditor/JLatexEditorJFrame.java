@@ -101,7 +101,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     } catch (Exception e) { }
     */
 
-    //UIManager.put("FileChooserUI", "util.filechooser.SCEFileChooserUI");
+    UIManager.put("FileChooserUI", "util.filechooser.SCEFileChooserUI");
     UIManager.put("TabbedPaneUI", "util.gui.SCETabbedPaneUI");
     UIManager.put("List.timeFactor", 200L);
     UIManager.put("Menu.background", SCETabbedPaneUI.BLUE);
