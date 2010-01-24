@@ -24,9 +24,13 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.ColorUIResource;
+import javax.swing.plaf.metal.MetalMenuBarUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -100,6 +104,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     //UIManager.put("FileChooserUI", "util.filechooser.SCEFileChooserUI");
     UIManager.put("TabbedPaneUI", "util.gui.SCETabbedPaneUI");
     UIManager.put("List.timeFactor", 200L);
+    UIManager.put("Menu.background", SCETabbedPaneUI.BLUE);
+    UIManager.put("Menu.selectionBackground", SCETabbedPaneUI.BLUE);
+    UIManager.put("MenuBar.gradient", Arrays.asList(1.0f, 0.0f, SCETabbedPaneUI.BLUE, SCETabbedPaneUI.BLUE.brighter(), SCETabbedPaneUI.BLUE.darker()));
+    UIManager.put("MenuBar.border", null);
 
 	  new AboutDialog(null).showAndAutoHideAfter(5000);
 

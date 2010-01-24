@@ -6,6 +6,8 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
 
 public class SCETabbedPaneUI extends BasicTabbedPaneUI {
+  public static Color BLUE = new Color(163, 201, 247);
+
   private ImageIcon image_active_left;
   private ImageIcon image_active;
   private ImageIcon image_active_right;
@@ -20,9 +22,9 @@ public class SCETabbedPaneUI extends BasicTabbedPaneUI {
 
   public SCETabbedPaneUI(JTabbedPane tabbedPane) {
     this.tabbedPane = tabbedPane;
-    UIManager.put("TabbedPane.contentAreaColor", new Color(163, 201, 247));
-    UIManager.put("TabbedPane.background", new Color(163, 201, 247));
-    UIManager.put("TabbedPane.tabAreaBackground", new Color(163, 201, 247));
+    UIManager.put("TabbedPane.contentAreaColor", BLUE);
+    UIManager.put("TabbedPane.background", BLUE);
+    UIManager.put("TabbedPane.tabAreaBackground", BLUE);
     UIManager.put("TabbedPane.contentBorderInsets", new Insets(0, 0, 0, 0));
     UIManager.put("TabbedPane.selectedTabPadInsets", new Insets(0, 0, 0, 0));
     UIManager.put("TabbedPane.tabAreaInsets", new Insets(0, 0, 0, 0));
