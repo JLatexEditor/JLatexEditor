@@ -8,8 +8,8 @@ import sce.codehelper.StaticCommandsCodeHelper;
  * @author Jörg Endrullis
  * @author Stefan Endrullis
  */
-public class LatexCodeHelper extends StaticCommandsCodeHelper {
-	public LatexCodeHelper(String commandsXml) {
+public class LatexCommandCodeHelper extends StaticCommandsCodeHelper {
+	public LatexCommandCodeHelper(String commandsXml) {
 		// collect all commands
 		readCommands(commandsXml);
 	}

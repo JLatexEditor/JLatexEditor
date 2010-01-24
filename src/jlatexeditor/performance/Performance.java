@@ -1,7 +1,7 @@
 package jlatexeditor.performance;
 
 import jlatexeditor.JLatexEditorJFrame;
-import jlatexeditor.codehelper.LatexCodeHelper;
+import jlatexeditor.codehelper.LatexCommandCodeHelper;
 import jlatexeditor.codehelper.SpellCheckSuggester;
 import jlatexeditor.quickhelp.LatexQuickHelp;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
@@ -36,8 +36,8 @@ public class Performance {
     SyntaxHighlighting syntaxHighlighting = new LatexSyntaxHighlighting(pane);
     syntaxHighlighting.start();
 
-    pane.setCodeHelper(new LatexCodeHelper("data/codehelper/commands.xml"));
-    pane.setTabCompletion(new LatexCodeHelper("data/codehelper/tabCompletion.xml"));
+    pane.setCodeHelper(new LatexCommandCodeHelper("data/codehelper/commands.xml"));
+    pane.setTabCompletion(new LatexCommandCodeHelper("data/codehelper/tabCompletion.xml"));
     pane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
 
     try {

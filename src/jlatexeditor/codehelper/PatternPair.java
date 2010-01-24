@@ -4,6 +4,8 @@ import sce.component.SCECaret;
 import sce.component.SCEPane;
 import sce.component.SCEPosition;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,38 +18,51 @@ import java.util.regex.Pattern;
 public class PatternPair {
 	private Pattern leftPattern;
 	private Pattern rightPattern;
-	private int leftGroup;
-	private int rightGroup;
+	private boolean combine;
 
 	public PatternPair(String leftPattern, String rightPattern) {
-		this(leftPattern, 1, rightPattern, 1);
+		this(leftPattern, false, rightPattern);
 	}
 
-	public PatternPair(String leftPattern, int leftGroup, String rightPattern, int rightGroup) {
+	public PatternPair(String leftPattern, boolean combine, String rightPattern) {
 		this.leftPattern = Pattern.compile(leftPattern + "$");
-		this.leftGroup = leftGroup;
+		this.combine = combine;
 		this.rightPattern = Pattern.compile("^" + rightPattern);
-		this.rightGroup = rightGroup;
 	}
 
-	public WordWithPos find (SCEPane pane) {
+	public List<WordWithPos> find (SCEPane pane) {
 		SCECaret caret = pane.getCaret();
 
 		return find (pane.getDocument().getRow(caret.getRow()), caret.getRow(), caret.getColumn());
 	}
 
-	public WordWithPos find (SCEPane pane, SCEPosition pos) {
+	public List<WordWithPos> find (SCEPane pane, SCEPosition pos) {
 		SCECaret caret = pane.getCaret();
 
 		return find (pane.getDocument().getRow(pos.getRow()), pos.getRow(), pos.getColumn());
 	}
 
-	public WordWithPos find (String rowString, int row, int column) {
+	public List<WordWithPos> find (String rowString, int row, int column) {
 		Matcher leftMatcher = leftPattern.matcher(rowString.substring(0, column));
 		Matcher rightMatcher = rightPattern.matcher(rowString.substring(column, rowString.length()));
 
 		if (leftMatcher.find() && rightMatcher.find()) {
-			return new WordWithPos(leftMatcher.group(leftGroup) + rightMatcher.group(rightGroup), row, leftMatcher.start(leftGroup));
+			ArrayList<WordWithPos> groups = new ArrayList<WordWithPos>();
+			int leftGroupCount = leftMatcher.groupCount();
+			int rightGroupCount = rightMatcher.groupCount();
+			int leftGroupMax = combine ? leftGroupCount-1 : leftGroupCount;
+			int rightGroupMin = combine ? 2 : 1;
+			for (int i=1; i<=leftGroupMax; i++) {
+				groups.add(new WordWithPos(leftMatcher.group(i) + rightMatcher.group(i), row, leftMatcher.start(i)));
+			}
+			if (combine) {
+				groups.add(new WordWithPos(leftMatcher.group(leftGroupCount) + rightMatcher.group(1), row, leftMatcher.start(leftGroupCount)));
+			}
+			for (int i=rightGroupMin; i<=rightGroupCount; i++) {
+				groups.add(new WordWithPos(leftMatcher.group(i) + rightMatcher.group(i), row, leftMatcher.start(i)));
+			}
+
+			return groups;
 		}
 
 		return null;
