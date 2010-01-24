@@ -8,13 +8,15 @@ package sce.component;
 import java.util.Stack;
 
 public class SCEUndoManager implements SCEDocumentListener{
+  public static long timeDistance = 250;
+
   // the document
   private SCEDocument document = null;
 
   // the captured events
-  private Stack lastEvents = new Stack();
+  private Stack<SCEDocumentEvent> lastEvents = new Stack<SCEDocumentEvent>();
   // the redo events
-  private Stack nextEvents = new Stack();
+  private Stack<SCEDocumentEvent> nextEvents = new Stack<SCEDocumentEvent>();
 
   /**
    * Creates an undo manager for the specific document.
@@ -30,27 +32,58 @@ public class SCEUndoManager implements SCEDocumentListener{
   /**
    * Undos the last event.
    */
-  public void undo(){
+  public void undo(boolean atomic){
     if(lastEvents.isEmpty()) return;
 
-    SCEDocumentEvent event = (SCEDocumentEvent) lastEvents.pop();
+    long lastTime = lastEvents.peek().getTimeMillis();
+    while(!lastEvents.isEmpty()) {
+      SCEDocumentEvent event = lastEvents.peek();
+      if(Math.abs(event.getTimeMillis() - lastTime) > timeDistance) break;
+      lastTime = event.getTimeMillis();
+      lastEvents.pop();
+      nextEvents.push(event);
 
-    SCEDocumentPosition start = event.getRangeStart();
-    SCEDocumentPosition end = event.getRangeEnd();
+      SCEDocumentPosition start = event.getRangeStart();
+      SCEDocumentPosition end = event.getRangeEnd();
+      String text = event.getText();
 
-    if(event.isInsert()){
-      document.remove(start.getRow(), start.getColumn(), end.getRow(), end.getColumn(), SCEDocumentEvent.EVENT_UNDO);
-    }
-    if(event.isRemove()){
-      document.insert(event.getText(), start.getRow(), start.getColumn(), SCEDocumentEvent.EVENT_UNDO);
+      if(event.isInsert()){
+        document.remove(start.getRow(), start.getColumn(), end.getRow(), end.getColumn(), SCEDocumentEvent.EVENT_UNDO);
+      }
+      if(event.isRemove()){
+        document.insert(text, start.getRow(), start.getColumn(), SCEDocumentEvent.EVENT_UNDO);
+      }
+
+      if(atomic) break;
     }
   }
 
   /**
    * Redos the last undo event.
    */
-  public void redo(){
-	  // TODO
+  public void redo(boolean atomic){
+    if(nextEvents.isEmpty()) return;
+
+    long lastTime = nextEvents.peek().getTimeMillis();
+    while(!nextEvents.isEmpty()) {
+      SCEDocumentEvent event = nextEvents.peek();
+      if(Math.abs(event.getTimeMillis() - lastTime) > timeDistance) break;
+      lastTime = event.getTimeMillis();
+      nextEvents.pop();
+
+      SCEDocumentPosition start = event.getRangeStart();
+      SCEDocumentPosition end = event.getRangeEnd();
+      String text = event.getText();
+
+      if(event.isInsert()){
+        document.insert(text, start.getRow(), start.getColumn(), SCEDocumentEvent.EVENT_REDO);
+      }
+      if(event.isRemove()){
+        document.remove(start.getRow(), start.getColumn(), end.getRow(), end.getColumn(), SCEDocumentEvent.EVENT_REDO);
+      }
+
+      if(atomic) break;
+    }
   }
 
   /**
@@ -67,5 +100,7 @@ public class SCEUndoManager implements SCEDocumentListener{
     if((event.getEventType() & SCEDocumentEvent.EVENT_UNDO) != 0) return;
 
     lastEvents.push(event);
+
+    if((event.getEventType() & SCEDocumentEvent.EVENT_REDO) == 0) nextEvents.clear();
   }
 }
