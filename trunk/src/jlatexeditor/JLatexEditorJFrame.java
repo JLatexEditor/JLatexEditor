@@ -23,6 +23,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -346,27 +347,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   }
 
 	private void initFileChooser() {
-		openDialog.addChoosableFileFilter(new FileFilter() {
-			// Handles which files are allowed by filter.
-			public boolean accept(File f) {
-				// Allow directories to be seen.
-				if (f.isDirectory()) return true;
-
-				// Allows files with .rtf extension to be seen.
-				if (f.getName().toLowerCase().endsWith(".tex") ||
-						f.getName().toLowerCase().endsWith(".def") ||
-						f.getName().toLowerCase().endsWith(".bib"))
-					return true;
-
-				// Otherwise file is not shown.
-				return false;
-			}
-
-			// 'Files of Type' description
-			public String getDescription() {
-				return "LaTeX files (*.tex, *.def, *.bib)";
-			}
-		});
+		openDialog.addChoosableFileFilter(new FileNameExtensionFilter(
+			"LaTeX files (*.tex, *.def, *.bib)", "tex", "def", "bib"));
 	}
 
 	private SourceCodeEditor createSourceCodeEditor() {
