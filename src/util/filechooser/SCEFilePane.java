@@ -33,6 +33,7 @@ import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.List;
+import java.util.Timer;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -109,7 +110,7 @@ public class SCEFilePane extends JPanel implements PropertyChangeListener {
 
         {
             Long l = (Long) UIManager.get("Table.timeFactor");
-            timeFactor = (l != null) ? l : 1000L;
+            timeFactor = (l != null) ? l : 500L;
         }
 
         /**
@@ -285,6 +286,21 @@ public class SCEFilePane extends JPanel implements PropertyChangeListener {
         super(new BorderLayout());
 
         this.fileChooserUIAccessor = fileChooserUIAccessor;
+        fileChooserUIAccessor.getFileChooser().addPropertyChangeListener(new PropertyChangeListener() {
+          public void propertyChange(PropertyChangeEvent evt) {
+            new Timer().schedule(
+                    new TimerTask() {
+                      public void run() {
+                        if(list != null) {
+                          list.requestFocus();
+                          if(list.getSelectedIndex() < 0) list.setSelectedIndex(0);
+                        }
+                        else if(detailsTable != null) detailsTable.requestFocus();
+                      }
+                    }, 100
+            );
+          }
+        });
 
         installDefaults();
         createActionMap();
@@ -377,9 +393,10 @@ public class SCEFilePane extends JPanel implements PropertyChangeListener {
         currentViewPanel = viewPanels[viewType];
         add(currentViewPanel, BorderLayout.CENTER);
 
-        if (isFocusOwner && newFocusOwner != null) {
-            newFocusOwner.requestFocusInWindow();
-        }
+        //if (isFocusOwner && newFocusOwner != null) {
+        //    newFocusOwner.requestFocusInWindow();
+        //}
+      currentViewPanel.requestFocus();
 
         revalidate();
         repaint();
@@ -2005,4 +2022,8 @@ public class SCEFilePane extends JPanel implements PropertyChangeListener {
         public MouseListener createDoubleClickListener(JList list);
         public ListSelectionListener createListSelectionListener();
     }
+
+  public void requestFocus() {
+    currentViewPanel.requestFocus();
+  }
 }

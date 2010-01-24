@@ -97,6 +97,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     */
 
     UIManager.put("FileChooserUI", "util.filechooser.SCEFileChooserUI");
+    UIManager.put("List.timeFactor", 200L);
 
 	  new AboutDialog(null).showAndAutoHideAfter(5000);
 

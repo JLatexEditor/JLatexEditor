@@ -758,6 +758,7 @@ public class SCEFileChooserUI extends BasicFileChooserUI {
 			// Ancestor was added, set initial focus
 			//fileNameTextField.selectAll();
 			//fileNameTextField.requestFocus();
+          filePane.requestFocus();
 		    }
 		}
 	    }
