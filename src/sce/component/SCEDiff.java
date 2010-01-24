@@ -117,14 +117,13 @@ public class SCEDiff extends JPanel implements ComponentListener {
 		SCECaret caret = left.getCaret();
 		int currRow = caret.getRow();
 
-		for (int modi = 0; modi < modifications.size(); modi++) {
-			if (modifications.get(modi).getTargetStartIndex() >= currRow) {
-				if (modi > 0) {
-					left.getCaret().moveTo(modifications.get(modi-1).getTargetStartIndex(), 0);
-				}
+		for (int modi = modifications.size()-1; modi >= 0; modi--) {
+			if (modifications.get(modi).getTargetStartIndex() < currRow) {
+				left.getCaret().moveTo(modifications.get(modi).getTargetStartIndex(), 0);
 				break;
 			}
 		}
+
 	}
 
 	public void jumpToNextTargetModification() {
