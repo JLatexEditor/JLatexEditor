@@ -1,7 +1,5 @@
 package util.diff;
 
-import java.util.ArrayList;
-
 /**
  * Tokenizer.
  */

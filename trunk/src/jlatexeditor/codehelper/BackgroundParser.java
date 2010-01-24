@@ -7,7 +7,6 @@ import util.ParseUtil;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * Parsing files in background.

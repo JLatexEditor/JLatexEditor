@@ -1,6 +1,5 @@
 package jlatexeditor.codehelper;
 
-import jlatexeditor.syntaxhighlighting.LatexStyles;
 import sce.codehelper.CodeAssistant;
 import sce.codehelper.SCEPopup;
 import sce.component.SCECaret;

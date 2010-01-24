@@ -1,13 +1,15 @@
 package jlatexeditor.performance;
 
-import jlatexeditor.ErrorView;
 import jlatexeditor.JLatexEditorJFrame;
 import jlatexeditor.codehelper.LatexCodeHelper;
 import jlatexeditor.codehelper.SpellCheckSuggester;
 import jlatexeditor.quickhelp.LatexQuickHelp;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
-import sce.component.*;
+import sce.component.SCECaret;
+import sce.component.SCEDocument;
+import sce.component.SCEPane;
+import sce.component.SourceCodeEditor;
 import sce.syntaxhighlighting.SyntaxHighlighting;
 import util.StreamUtils;
 

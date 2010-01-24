@@ -5,10 +5,9 @@
 
 package qaqua;
 
-import javax.swing.plaf.basic.BasicPopupMenuUI;
-import javax.swing.plaf.ComponentUI;
 import javax.swing.*;
-import java.awt.*;
+import javax.swing.plaf.ComponentUI;
+import javax.swing.plaf.basic.BasicPopupMenuUI;
 
 public class QaquaPopupMenuUI extends BasicPopupMenuUI{
   public static ComponentUI createUI(JComponent x){

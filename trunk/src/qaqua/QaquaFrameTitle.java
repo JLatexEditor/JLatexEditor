@@ -7,8 +7,8 @@ package qaqua;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.font.TextAttribute;
 import java.awt.event.*;
+import java.awt.font.TextAttribute;
 import java.text.AttributedString;
 
 public class QaquaFrameTitle extends JPanel implements ActionListener, MouseListener, MouseMotionListener{

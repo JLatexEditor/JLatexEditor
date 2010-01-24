@@ -1,6 +1,5 @@
 package sce.codehelper;
 
-import sce.component.SCEDocument;
 import sce.component.SCEPane;
 
 /**

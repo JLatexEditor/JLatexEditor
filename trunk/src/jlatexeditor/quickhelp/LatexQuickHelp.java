@@ -4,7 +4,10 @@ import sce.component.SCEDocument;
 import sce.quickhelp.QuickHelp;
 import util.StreamUtils;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Hashtable;
