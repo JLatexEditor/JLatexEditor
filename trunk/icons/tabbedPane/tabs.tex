@@ -13,6 +13,7 @@
 \usetikzlibrary{arrows,automata,backgrounds,calc,chains,fadings,folding,decorations.fractals,decorations.pathreplacing,fit,patterns,positioning,mindmap,shadows,shapes.geometric,shapes.symbols,through,trees,plotmarks}
 
 \definecolor{mblue}{RGB}{163,201,247}
+\definecolor{background}{RGB}{238,238,238}
 
 \newcommand{\tabdist}{3mm}
 \newcommand{\tabsteep}{0.7mm}
@@ -35,6 +36,8 @@
 \pagestyle{empty}
 \scalebox{2}{
 \begin{tikzpicture}[thick]
+  \draw [fill=background,background] (0,0) rectangle (14cm+2*\tabdist,1.0cm);
+
   \tab{mblue}{00mm}
   \tab{white}{30mm}
 
