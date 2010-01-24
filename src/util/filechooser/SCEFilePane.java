@@ -1724,7 +1724,7 @@ public class SCEFilePane extends JPanel implements PropertyChangeListener {
     }
 
     public void clearSelection() {
-        if (listSelectionModel != null) {
+        if (listSelectionModel != null && !listSelectionModel.isSelectionEmpty()) {
             listSelectionModel.clearSelection();
             if (listSelectionModel instanceof DefaultListSelectionModel) {
                 ((DefaultListSelectionModel)listSelectionModel).moveLeadSelectionIndex(0);
