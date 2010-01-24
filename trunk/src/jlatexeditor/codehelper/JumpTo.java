@@ -45,8 +45,10 @@ public class JumpTo implements KeyListener, MouseListener {
 	private void jumpTo(SCEPosition pos, InputEvent e) {
 		SCEPane pane = editor.getTextPane();
 
-		WordWithPos word = pattern.find(pane, pos);
-		if (word != null) {
+		List<WordWithPos> words = pattern.find(pane, pos);
+		if (words != null) {
+			WordWithPos word = words.get(0);
+			
 			if (editor.getResource() instanceof FileDoc) {
 			  FileDoc fileDoc = (FileDoc) editor.getResource();
 				String thisFileName = fileDoc.getFile().getName();
