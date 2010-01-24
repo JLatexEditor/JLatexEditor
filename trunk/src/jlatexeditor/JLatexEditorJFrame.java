@@ -96,6 +96,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     } catch (Exception e) { }
     */
 
+    UIManager.put("FileChooserUI", "util.filechooser.SCEFileChooserUI");
+
 	  new AboutDialog(null).showAndAutoHideAfter(5000);
 
 	  JLatexEditorJFrame latexEditor = new JLatexEditorJFrame(args);
