@@ -85,10 +85,12 @@ public class SCEDiff extends JPanel implements ComponentListener {
 		  @Override
 		  public void keyPressed(KeyEvent e) {
 			  if (e.getModifiers() == KeyEvent.ALT_MASK) {
+				  // alt+up
 				  if (e.getKeyCode() == KeyEvent.VK_UP) {
 					  jumpToPreviousTargetModification();
 					  e.consume();
 				  }
+				  // alt+down
 				  if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 					  jumpToNextTargetModification();
 					  e.consume();
@@ -100,10 +102,12 @@ public class SCEDiff extends JPanel implements ComponentListener {
 		  @Override
 		  public void keyPressed(KeyEvent e) {
 			  if (e.getModifiers() == KeyEvent.ALT_MASK) {
+				  // alt+up
 				  if (e.getKeyCode() == KeyEvent.VK_UP) {
 					  jumpToPreviousSourceModification();
 					  e.consume();
 				  }
+				  // alt+down
 				  if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 					  jumpToNextSourceModification();
 					  e.consume();
@@ -123,7 +127,6 @@ public class SCEDiff extends JPanel implements ComponentListener {
 				break;
 			}
 		}
-
 	}
 
 	public void jumpToNextTargetModification() {
@@ -142,11 +145,9 @@ public class SCEDiff extends JPanel implements ComponentListener {
 		SCECaret caret = right.getCaret();
 		int currRow = caret.getRow();
 
-		for (int modi = 0; modi < modifications.size(); modi++) {
-			if (modifications.get(modi).getSourceStartIndex() >= currRow) {
-				if (modi > 0) {
-					right.getCaret().moveTo(modifications.get(modi-1).getSourceStartIndex(), 0);
-				}
+		for (int modi = modifications.size()-1; modi >= 0; modi--) {
+			if (modifications.get(modi).getSourceStartIndex() < currRow) {
+				right.getCaret().moveTo(modifications.get(modi).getSourceStartIndex(), 0);
 				break;
 			}
 		}
