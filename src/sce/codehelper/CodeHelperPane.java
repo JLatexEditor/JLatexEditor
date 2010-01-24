@@ -423,7 +423,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
       int commandStart = findPrefixStart(row, column);
       String commandName = document.getRow(row).substring(commandStart, column);
 
-      for (CHCommand command : tabCompletion.getCommands("")) {
+      for (CHCommand command : tabCompletion.getCommands(commandName)) {
         if(commandName.equals(command.getName())) {
           document.remove(row, commandStart, row, column);
           startTemplate(command.getUsage(), command.getArguments(), row, commandStart);
