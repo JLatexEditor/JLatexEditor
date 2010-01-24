@@ -17,6 +17,7 @@ import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
 import sce.component.*;
 import sce.syntaxhighlighting.SyntaxHighlighting;
 import util.StreamUtils;
+import util.gui.SCETabbedPaneUI;
 import util.updater.ProgramUpdater;
 
 import javax.swing.*;
@@ -97,6 +98,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     */
 
     UIManager.put("FileChooserUI", "util.filechooser.SCEFileChooserUI");
+    UIManager.put("TabbedPaneUI", "util.gui.SCETabbedPaneUI");
     UIManager.put("List.timeFactor", 200L);
 
 	  new AboutDialog(null).showAndAutoHideAfter(5000);
