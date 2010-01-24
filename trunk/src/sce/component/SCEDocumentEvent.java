@@ -19,6 +19,7 @@ public class SCEDocumentEvent {
 
   // undo event
   public static final int EVENT_UNDO      = 1 << 5;
+  public static final int EVENT_REDO = 1 << 6;
 
   // the event properties
   private int eventType = 0;

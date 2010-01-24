@@ -320,7 +320,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 
 		// alt+backspace -> undo the last edit
 		if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE){
-			pane.getUndoManager().undo();
+			pane.getUndoManager().undo(false);
 			e.consume();
 		}
 	}
@@ -385,9 +385,9 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 	  // control+(shift)+Z -> undo/redo the last edit
 	  if(e.getKeyCode() == KeyEvent.VK_Z){
 		  if (e.isShiftDown()) {
-				pane.getUndoManager().redo();
+				pane.getUndoManager().redo(false);
 		  } else {
-			  pane.getUndoManager().undo();
+			  pane.getUndoManager().undo(false);
 		  }
 		  e.consume();
 			return;
