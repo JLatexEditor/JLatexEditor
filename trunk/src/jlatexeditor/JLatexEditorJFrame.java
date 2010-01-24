@@ -170,6 +170,22 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  editMenu.setMnemonic('E');
     menuBar.add(editMenu);
 
+    JMenuItem undoMenuItem = new JMenuItem("Undo");
+    undoMenuItem.setActionCommand("undo");
+	  undoMenuItem.setMnemonic('U');
+    undoMenuItem.setAccelerator(KeyStroke.getKeyStroke("control Z"));
+    undoMenuItem.addActionListener(this);
+    editMenu.add(undoMenuItem);
+
+    JMenuItem redoMenuItem = new JMenuItem("Redo");
+    redoMenuItem.setActionCommand("redo");
+	  redoMenuItem.setMnemonic('R');
+    redoMenuItem.setAccelerator(KeyStroke.getKeyStroke("control shift Z"));
+    redoMenuItem.addActionListener(this);
+    editMenu.add(redoMenuItem);
+
+    editMenu.addSeparator();
+
     JMenuItem findMenuItem = new JMenuItem("Find");
     findMenuItem.setActionCommand("find");
 	  findMenuItem.setMnemonic('F');
@@ -638,6 +654,15 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     if(action.equals("exit")){
       saveAll();
       System.exit(0);
+    } else
+
+    // undo
+    if(action.equals("undo")){
+      getEditor(tabbedPane.getSelectedIndex()).getTextPane().getUndoManager().undo(false);
+    } else
+    // undo
+    if(action.equals("redo")){
+      getEditor(tabbedPane.getSelectedIndex()).getTextPane().getUndoManager().redo(false);
     } else
 
     // find
