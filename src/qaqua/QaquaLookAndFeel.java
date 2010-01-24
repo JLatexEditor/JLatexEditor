@@ -8,8 +8,8 @@ package qaqua;
 import javax.swing.*;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import java.awt.*;
-import java.awt.image.PixelGrabber;
 import java.awt.image.MemoryImageSource;
+import java.awt.image.PixelGrabber;
 
 public class QaquaLookAndFeel extends MetalLookAndFeel{
   // the package name

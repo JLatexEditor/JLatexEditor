@@ -5,9 +5,9 @@
 
 package qaqua;
 
-import javax.swing.plaf.basic.BasicMenuItemUI;
-import javax.swing.plaf.ComponentUI;
 import javax.swing.*;
+import javax.swing.plaf.ComponentUI;
+import javax.swing.plaf.basic.BasicMenuItemUI;
 import java.awt.*;
 
 public class QaquaMenuItemUI extends BasicMenuItemUI{

@@ -1,8 +1,8 @@
 package qaqua;
 
-import javax.swing.plaf.basic.BasicMenuUI;
-import javax.swing.plaf.ComponentUI;
 import javax.swing.*;
+import javax.swing.plaf.ComponentUI;
+import javax.swing.plaf.basic.BasicMenuUI;
 import java.awt.*;
 
 /**

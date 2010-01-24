@@ -1,7 +1,6 @@
 package jlatexeditor.codehelper;
 
 import sce.component.SCECaret;
-import sce.component.SCEDocumentPosition;
 import sce.component.SCEPane;
 import sce.component.SCEPosition;
 

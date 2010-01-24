@@ -1,6 +1,5 @@
 package jlatexeditor.syntaxhighlighting.states;
 
-import jlatexeditor.syntaxhighlighting.LatexStyles;
 import sce.syntaxhighlighting.ParserState;
 
 /**

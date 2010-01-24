@@ -2,17 +2,20 @@ package jlatexeditor.gui;
 
 import jlatexeditor.JLatexEditorJFrame;
 import sce.component.SourceCodeEditor;
+import util.StreamUtils;
 import util.diff.Modification;
 import util.diff.SystemDiff;
-import util.StreamUtils;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

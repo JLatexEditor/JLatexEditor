@@ -1,6 +1,5 @@
 package jlatexeditor.codehelper;
 
-import sce.codehelper.CHCommand;
 import sce.codehelper.CodeHelper;
 
 public class BibCodeHelper extends CodeHelper {
