@@ -56,6 +56,8 @@ public class SCEUndoManager implements SCEDocumentListener{
 
       if(atomic) break;
     }
+
+    document.setSelectionRange(null,null);
   }
 
   /**
@@ -85,6 +87,8 @@ public class SCEUndoManager implements SCEDocumentListener{
 
       if(atomic) break;
     }
+
+    document.setSelectionRange(null,null);
   }
 
   /**
