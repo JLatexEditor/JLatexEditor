@@ -11,6 +11,7 @@ public class SCEUndoManager implements SCEDocumentListener{
   public static long timeDistance = 250;
 
   // the document
+  private SCEPane pane = null;
   private SCEDocument document = null;
 
   // the captured events
@@ -21,10 +22,11 @@ public class SCEUndoManager implements SCEDocumentListener{
   /**
    * Creates an undo manager for the specific document.
    *
-   * @param document the document
+   * @param pane the sce pane
    */
-  public SCEUndoManager(SCEDocument document){
-    this.document = document;
+  public SCEUndoManager(SCEPane pane){
+    this.pane = pane;
+    this.document = pane.getDocument();
 
     document.addSCEDocumentListener(this);
   }
@@ -88,7 +90,7 @@ public class SCEUndoManager implements SCEDocumentListener{
       if(atomic) break;
     }
 
-    document.setSelectionRange(null,null);
+    pane.clearSelection();
   }
 
   /**

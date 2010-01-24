@@ -96,7 +96,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     document.addSCEDocumentListener(this);
 
     // create undo manager
-    undoManager = new SCEUndoManager(document);
+    undoManager = new SCEUndoManager(this);
 
     // create a caret
     caret = new SCECaret(this);
@@ -315,6 +315,11 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 			repaint();
 		}
 	}
+
+  public void clearSelection() {
+    document.setSelectionRange(null, null);
+    caret.removeSelectionMark();
+  }
 
 	/**
    * Cut text to clipboard.
