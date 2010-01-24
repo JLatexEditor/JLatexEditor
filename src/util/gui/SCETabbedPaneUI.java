@@ -55,7 +55,9 @@ public class SCETabbedPaneUI extends BasicTabbedPaneUI {
   }
 
   protected int calculateTabWidth(int tabPlacement, int tabIndex, FontMetrics metrics) {
-    return super.calculateTabWidth(tabPlacement, tabIndex, metrics) + 20;
+    int width = super.calculateTabWidth(tabPlacement, tabIndex, metrics);
+    if(tabIndex == 0 || tabIndex == tabbedPane.getTabCount()-1) width += 10;
+    return width+20;
   }
 
   protected void paintTabBackground(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h, boolean isSelected) {
