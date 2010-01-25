@@ -17,6 +17,7 @@ import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
 import sce.component.*;
 import sce.syntaxhighlighting.SyntaxHighlighting;
 import util.StreamUtils;
+import util.filechooser.SCEFileChooser;
 import util.gui.SCETabbedPaneUI;
 import util.updater.ProgramUpdater;
 
@@ -56,7 +57,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private String args[];
 
   // last directory of the opening dialog
-  private JFileChooser openDialog = new JFileChooser();
+  private JFileChooser openDialog = new SCEFileChooser();
 
   // compile thread
   private LatexCompiler latexCompiler = null;
@@ -101,7 +102,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     } catch (Exception e) { }
     */
 
-    UIManager.put("FileChooserUI", "util.filechooser.SCEFileChooserUI");
     UIManager.put("TabbedPaneUI", "util.gui.SCETabbedPaneUI");
     UIManager.put("List.timeFactor", 200L);
     /*
