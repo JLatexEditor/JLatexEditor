@@ -205,6 +205,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     findMenuItem.addActionListener(this);
     editMenu.add(findMenuItem);
 
+    JMenuItem replaceMenuItem = new JMenuItem("Replace");
+    replaceMenuItem.setActionCommand("replace");
+	  replaceMenuItem.setMnemonic('R');
+    replaceMenuItem.setAccelerator(KeyStroke.getKeyStroke("control R"));
+    replaceMenuItem.addActionListener(this);
+    editMenu.add(replaceMenuItem);
+
     JMenuItem findNextMenuItem = new JMenuItem("Find Next");
     findNextMenuItem.setActionCommand("find next");
 	  findNextMenuItem.setMnemonic('N');
@@ -684,6 +691,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // find
     if(action.equals("find")){
       getEditor(tabbedPane.getSelectedIndex()).search();
+    } else
+    // replace
+    if(action.equals("replace")){
+      getEditor(tabbedPane.getSelectedIndex()).replace();
     } else
     // find next
     if(action.equals("find next")){
