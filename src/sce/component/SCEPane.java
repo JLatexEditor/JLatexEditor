@@ -60,12 +60,13 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 
   // UI properties
   private SCEPaneUI ui = null;
-  private Color currentLineHighlightColor = new Color(255, 255, 200); //new Color(255, 255, 220);
+  public static Color currentLineHighlightColor = new Color(255, 255, 200); //new Color(255, 255, 220);
 
-  private Color selectionHighlightColor = new Color(82, 109, 165);
+  public static Color selectionHighlightColor = new Color(82, 109, 165);
+  public static Color selectionHighlightColorLight = new Color(255 - (255 - 82)/3, 255 - (255 -109)/3, 255);
   private SCETextHighlight selectionHighlight = new SCETextHighlight(this, null, null, selectionHighlightColor);
 
-  private Color editRangeHighlightColor = new Color(155, 0,0);
+  public static Color editRangeHighlightColor = new Color(155, 0,0);
   private SCETextHighlight editRangeHighlight = new SCEEditRangeHighlight(this, null, null, editRangeHighlightColor);
 
   // highlights

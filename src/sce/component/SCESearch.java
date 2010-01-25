@@ -21,6 +21,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
   private ImageButton buttonPrevious;
   private JCheckBox caseSensitive = new JCheckBox("Case sensitive", false);
   private JCheckBox regExp = new JCheckBox("Regexp", false);
+  private JCheckBox selectionOnly = new JCheckBox("Selection only", true);
   private ImageButton buttonClose;
   private ImageButton buttonShowReplace;
 
@@ -35,6 +36,9 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 
   // search results
   private ArrayList<SCEDocumentRange> results = new ArrayList<SCEDocumentRange>();
+
+  // selection before searching
+  private SCEDocumentRange selection = null;
 
   private GroupLayout.Group groupHorizontal;
   private GroupLayout.Group groupVertical;
@@ -86,6 +90,9 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     regExp.setOpaque(false);
     add(regExp);
     regExp.addActionListener(this);
+    selectionOnly.setOpaque(false);
+    add(selectionOnly);
+    selectionOnly.addActionListener(this);
     add(buttonShowReplace);
     buttonShowReplace.addActionListener(this);
     add(buttonClose);
@@ -114,6 +121,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
                 .addComponent(buttonPrevious)
                 .addComponent(caseSensitive)
                 .addComponent(regExp)
+                .addComponent(selectionOnly)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
                 .addComponent(buttonShowReplace)
                 .addComponent(buttonClose)
@@ -134,6 +142,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
             .addComponent(buttonPrevious)
             .addComponent(caseSensitive)
             .addComponent(regExp)
+            .addComponent(selectionOnly)
             .addComponent(buttonShowReplace)
             .addComponent(buttonClose)
         )
@@ -157,6 +166,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     updateThread.start();
 
     setShowReplace(false);
+    setVisible(false);
   }
   
   public boolean isShowReplace() {
@@ -174,20 +184,36 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     input.grabFocus();
   }
 
-  private void clearHighlights() {
+  private void clearHighlights(boolean highlightSelection) {
     SCEMarkerBar markerBar = editor.getMarkerBar();
     markerBar.clear(SCEMarkerBar.TYPE_SEARCH);
-    results.clear();
     SCEPane pane = editor.getTextPane();
     pane.removeAllTextHighlights();
+    if(highlightSelection && selection != null) {
+      pane.addTextHighlight(new SCETextHighlight(pane, selection.getStartPosition(), selection.getEndPosition(), SCEPane.selectionHighlightColorLight));
+    }
   }
 
   public void setVisible(boolean visibility) {
+    if(visibility == isVisible()) return;
+
+    SCEPane pane = editor.getTextPane();
+    SCEDocument document = pane.getDocument();
     if(visibility) {
       input.setText("");
+
+      SCEDocumentPosition selectionStart = document.getSelectionStart();
+      SCEDocumentPosition selectionEnd = document.getSelectionEnd();
+      if(selectionStart == null || selectionEnd == null) {
+        selection = null;
+      } else {
+        selection = new SCEDocumentRange(selectionStart, selectionEnd);
+        document.setSelectionRange(null, null);
+      }
     } else {
-      clearHighlights();
+      results.clear();
     }
+    clearHighlights(visibility);
     super.setVisible(visibility);
   }
 
@@ -240,6 +266,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     if(e.getSource() == buttonNext) next();
     if(e.getSource() == buttonPrevious) previous();
     if(e.getSource() == regExp) updateThread.searchChanged();
+    if(e.getSource() == selectionOnly) updateThread.searchChanged();
     if(e.getSource() == buttonShowReplace) setShowReplace(!isShowReplace());
 
     if(e.getSource() == buttonReplace) {
@@ -369,11 +396,12 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     }
 
     private void search(boolean move) {
-      searchChanged = false;
+      ArrayList<SCEDocumentRange> resultsTemp = new ArrayList<SCEDocumentRange>();
 
+      searchChanged = false;
       SCEDocument document = editor.getTextPane().getDocument();
 
-      clearHighlights();
+      clearHighlights(true);
       SCEMarkerBar markerBar = editor.getMarkerBar();
       SCEPane pane = editor.getTextPane();
 
@@ -397,12 +425,13 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 
             SCEDocumentPosition start = document.createDocumentPosition(rowNr, columnNr);
             SCEDocumentPosition end = document.createDocumentPosition(rowNr, columnNr+length);
+            if(!filter(start, end)) continue;
 
             if(caret.getRow() == rowNr && caret.getColumn() == columnNr) {
               moveCaret = false;
               document.setSelectionRange(start,end);
             }
-            results.add(new SCEDocumentRange(start,end));
+            resultsTemp.add(new SCEDocumentRange(start,end));
             pane.addTextHighlight(new SCETextHighlight(pane, start, end, Color.YELLOW));
             markerBar.addMarker(new SCEMarkerBar.Marker(SCEMarkerBar.TYPE_SEARCH, rowNr, columnNr, ""));
           }
@@ -421,12 +450,13 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 
             SCEDocumentPosition start = document.createDocumentPosition(rowStart, columnStart);
             SCEDocumentPosition end = document.createDocumentPosition(rowEnd, columnEnd);
+            if(!filter(start, end)) continue;
 
             if(caret.getRow() == rowStart && caret.getColumn() == columnStart) {
               moveCaret = false;
               document.setSelectionRange(start,end);
             }
-            results.add(new SCEDocumentRange(start,end));
+            resultsTemp.add(new SCEDocumentRange(start,end));
             pane.addTextHighlight(new SCETextHighlight(pane, start, end, Color.YELLOW));
             markerBar.addMarker(new SCEMarkerBar.Marker(SCEMarkerBar.TYPE_SEARCH, rowStart, columnEnd, ""));
           }
@@ -437,7 +467,16 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
       pane.repaint();
 
       if(move && moveCaret) next();
-      if(length > 0 && results.size() == 0) input.setBackground(new Color(255, 204, 204));
+      if(length > 0 && resultsTemp.size() == 0) input.setBackground(new Color(255, 204, 204));
+
+      results = resultsTemp;
+    }
+
+    private boolean filter(SCEDocumentPosition start, SCEDocumentPosition end) {
+      if(!selectionOnly.isSelected() || selection == null) return true;
+      if(start.compareTo(selection.getStartPosition()) < 0) return false;
+      if(end.compareTo(selection.getEndPosition()) > 0) return false;
+      return true;
     }
 
     public void run() {

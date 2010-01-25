@@ -243,6 +243,15 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
     search.setVisible(true);
     validate();
     search.focus();
+    search.setShowReplace(false);
+  }
+
+  /**
+   * Show replace field.
+   */
+  public void replace() {
+    search();
+    search.setShowReplace(true);
   }
 
   public void actionPerformed(ActionEvent e) {
