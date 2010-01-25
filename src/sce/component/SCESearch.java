@@ -28,6 +28,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
   private boolean showReplace = false;
   private JTextField replace = new JTextField();
   private ImageButton buttonReplace;
+  private ImageButton buttonReplaceAll;
 
   private GroupLayout layout;
 
@@ -72,6 +73,11 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
             new ImageIcon(getClass().getResource("/images/buttons/replace_highlight.png")),
             new ImageIcon(getClass().getResource("/images/buttons/replace_press.png")));
 
+    buttonReplaceAll = new ImageButton(
+            new ImageIcon(getClass().getResource("/images/buttons/replace_all.png")),
+            new ImageIcon(getClass().getResource("/images/buttons/replace_all_highlight.png")),
+            new ImageIcon(getClass().getResource("/images/buttons/replace_all_press.png")));
+
     layout = new GroupLayout(this);
     setLayout(layout);
 
@@ -104,6 +110,8 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     replace.addKeyListener(this);
     add(buttonReplace);
     buttonReplace.addActionListener(this);
+    add(buttonReplaceAll);
+    buttonReplaceAll.addActionListener(this);
 
     groupHorizontal =
       layout.createSequentialGroup()
@@ -129,6 +137,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
             .addGroup(
               layout.createSequentialGroup()
                 .addComponent(buttonReplace)
+                .addComponent(buttonReplaceAll)
             )
         );
 
@@ -150,6 +159,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
           layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addComponent(replace)
             .addComponent(buttonReplace)
+            .addComponent(buttonReplaceAll)
         )
         .addGap(2);
 
@@ -178,6 +188,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 
     replace.setVisible(showReplace);
     buttonReplace.setVisible(showReplace);
+    buttonReplaceAll.setVisible(showReplace);
   }
 
   public void focus() {
