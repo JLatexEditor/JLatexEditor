@@ -26,6 +26,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.ColorUIResource;
+import javax.swing.plaf.FileChooserUI;
 import javax.swing.plaf.metal.MetalMenuBarUI;
 import java.awt.*;
 import java.awt.event.*;
@@ -505,12 +506,14 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	 * @return true if the process of saving the documents has NOT been canceled
 	 */
   public boolean saveAll() {
+    boolean all = true;
     for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
       SourceCodeEditor editor = (SourceCodeEditor) tabbedPane.getComponentAt(tab);
-      if (!save(editor)) return false;
+      AbstractResource resource = editor.getResource();
+      boolean save = (!(resource instanceof UntitledDoc)) || tab == tabbedPane.getSelectedIndex();
+      if(save) { if (!save(editor)) all = false; }
     }
-
-		return true;
+		return all;
   }
 
 	/**
@@ -526,9 +529,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 		File file = null;
 		if (resource instanceof UntitledDoc) {
-		  UntitledDoc untitledDoc = (UntitledDoc) resource;
-
-      openDialog.showDialog(this, "Save");
+      openDialog.setDialogTitle("Save " + resource.getName());
+      openDialog.setDialogType(JFileChooser.SAVE_DIALOG);
+      if(openDialog.showDialog(this, "Save") != JFileChooser.APPROVE_OPTION) return false;
       file = openDialog.getSelectedFile();
       if(file == null) return false;
 
@@ -645,7 +648,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 		// open a file
     if(action.equals("open")){
-      openDialog.showDialog(this, "Open");
+      openDialog.setDialogTitle("Open");
+      openDialog.setDialogType(JFileChooser.OPEN_DIALOG);
+      if(openDialog.showDialog(this, "Open") != JFileChooser.APPROVE_OPTION) return;
       if(openDialog.getSelectedFile() == null) return;
 
       open(new FileDoc(openDialog.getSelectedFile()));
