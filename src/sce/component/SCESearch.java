@@ -268,6 +268,34 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     if(results.size() > 0) moveTo(results.get(results.size()-1));
   }
 
+  private void replace(SCEDocumentPosition start, SCEDocumentPosition end) {
+    SCEDocument document = editor.getTextPane().getDocument();
+    String text = document.getText(start, end);
+
+    if(!regExp.isSelected()) {
+      document.replace(start, end, replace.getText());
+    } else {
+      Pattern pattern = Pattern.compile(input.getText(), Pattern.MULTILINE | (caseSensitive.isSelected() ? Pattern.CASE_INSENSITIVE : 0));
+      Matcher matcher = pattern.matcher(text);
+      matcher.find();
+
+      String replaceBy = replace.getText();
+      Pattern groupPattern = Pattern.compile("\\#\\{(\\d)\\}");
+      Matcher groupMatcher = groupPattern.matcher(replaceBy);
+
+      StringBuilder builder = new StringBuilder();
+      int index = 0;
+      while(groupMatcher.find()) {
+        builder.append(replaceBy.substring(index, groupMatcher.start()));
+        builder.append(matcher.group(Integer.parseInt(groupMatcher.group(1))));
+        index = groupMatcher.end();
+      }
+      builder.append(replaceBy.substring(index));
+
+      document.replace(start, end, builder.toString());
+    }
+  }
+
   public void actionPerformed(ActionEvent e) {
     if(e.getSource() == buttonClose) setVisible(false);
     if(e.getSource() == caseSensitive) {
@@ -282,33 +310,16 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 
     if(e.getSource() == buttonReplace) {
       SCEDocument document = editor.getTextPane().getDocument();
-      SCEDocumentPosition selectionStart = document.getSelectionStart();
-      SCEDocumentPosition selectionEnd = document.getSelectionEnd();
-      String text = document.getSelectedText();
-
-      if(!regExp.isSelected()) {
-        document.replace(selectionStart, selectionEnd, replace.getText());
-      } else {
-        Pattern pattern = Pattern.compile(input.getText(), Pattern.MULTILINE | (caseSensitive.isSelected() ? Pattern.CASE_INSENSITIVE : 0));
-        Matcher matcher = pattern.matcher(text);
-        matcher.find();
-
-        String replaceBy = replace.getText();
-        Pattern groupPattern = Pattern.compile("\\#\\{(\\d)\\}");
-        Matcher groupMatcher = groupPattern.matcher(replaceBy);
-
-        StringBuilder builder = new StringBuilder();
-        int index = 0;
-        while(groupMatcher.find()) {
-          builder.append(replaceBy.substring(index, groupMatcher.start()));
-          builder.append(matcher.group(Integer.parseInt(groupMatcher.group(1))));
-          index = groupMatcher.end();
-        }
-        builder.append(replaceBy.substring(index));
-
-        document.replace(selectionStart, selectionEnd, builder.toString());
-      }
+      replace(document.getSelectionStart(), document.getSelectionEnd());
       next();
+    }
+
+    if(e.getSource() == buttonReplaceAll) {
+      ArrayList<SCEDocumentRange> matches = results;
+      for(int matchNr = matches.size()-1; matchNr >= 0; matchNr--) {
+        SCEDocumentRange match = matches.get(matchNr);
+        replace(match.getStartPosition(), match.getEndPosition());
+      }
     }
   }
 
