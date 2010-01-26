@@ -37,6 +37,8 @@ public class SCEDiff extends JPanel implements ComponentListener {
   private SCEPane right;
   private JViewport rightViewport;
 
+  private SCEMarkerBar markerBar;
+
 	private KeyListener paneKeyListener, diffKeyListener;
 
   private int preferredLines = 0;
@@ -50,13 +52,14 @@ public class SCEDiff extends JPanel implements ComponentListener {
   private double[] line2Pane;
   private double[] line2Diff;
 
-  public SCEDiff(String leftTitle, final SCEPane left, String rightTitle, String rightText) {
+  public SCEDiff(String leftTitle, final SCEPane left, String rightTitle, String rightText, SCEMarkerBar markerBar) {
     setLayout(new BorderLayout());
     setDoubleBuffered(false);
     this.leftTitle = leftTitle;
     this.left = left;
     this.rightTitle = rightTitle;
     this.right = new SCEPane();
+    this.markerBar = markerBar;
 
     right.setText(rightText);
     updateDiff();
@@ -115,6 +118,14 @@ public class SCEDiff extends JPanel implements ComponentListener {
 			  }
 		  }
 	  });
+  }
+
+  public int getVirtualLines() {
+    JViewport viewport = scrollPane.getViewport();
+    if(viewport == null) return 40;
+    Component view = viewport.getView();
+    if(view == null) return 40;
+    return view.getHeight() / Math.max(left.getLineHeight(),1);
   }
 
 	public void jumpToPreviousTargetModification() {
@@ -181,6 +192,7 @@ public class SCEDiff extends JPanel implements ComponentListener {
   }
 
   public void updateDiff() {
+    markerBar.clear();
     SCEDocument paneDocument = left.getDocument();
     SCEDocument diffDocument = right.getDocument();
 
@@ -213,6 +225,24 @@ public class SCEDiff extends JPanel implements ComponentListener {
       }
       paneLine += modification.getTargetLength();
       diffLine += modification.getSourceLength();
+
+      int markerType;
+      switch (modification.getType()) {
+        case Modification.TYPE_ADD : markerType = SCEMarkerBar.TYPE_SVN_ADD; break;
+        case Modification.TYPE_REMOVE : markerType = SCEMarkerBar.TYPE_SVN_REMOVE; break;
+        default : markerType = SCEMarkerBar.TYPE_SVN_CHAGE;
+      }
+
+      int centerLine = preferredLines + changeMax/2;
+      final int visibleTop = (centerLine - left.getVisibleRowsCount()/2) *left.getLineHeight();
+      markerBar.addMarker(new SCEMarkerBar.Marker(markerType, preferredLines, preferredLines+changeMax,
+              new Runnable() {
+                public void run() {
+                  JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
+                  scrollBar.setValue(visibleTop);
+                }
+              }));
+
       preferredLines += changeMax;
     }
 
@@ -246,6 +276,8 @@ public class SCEDiff extends JPanel implements ComponentListener {
       }
       if(targetEnd == targetStart) left.addRowHighlight(new SCERowHighlight(left, targetStart, color, true));
     }
+
+    invalidate();
   }
 
   public SCEPane getTextPane() {
@@ -488,7 +520,7 @@ public class SCEDiff extends JPanel implements ComponentListener {
 
       double[] lineMap = diffView.getDiffPane().hasFocus() ? line2Diff : line2Pane;
 
-      Rectangle visible = currentViewport.getVisibleRect(); //currentPane.getVisibleRect();
+      Rectangle visible = currentViewport.getVisibleRect();
       if(visible.getY() > rectangle.getY() || visible.getY() + visible.getHeight() < rectangle.getY() + rectangle.getHeight()) {
         boolean up = rectangle.getY() < visible.getY();
         int lineHeight = currentPane.getLineHeight();

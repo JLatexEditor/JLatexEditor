@@ -113,7 +113,7 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
     if(!isDiffView()) {
       remove(scrollPane);
 
-      diff = new SCEDiff(getResource().getName(), textPane, title, text);
+      diff = new SCEDiff(getResource().getName(), textPane, title, text, getMarkerBar());
       LatexStyles.addStyles(diff.getDiffPane().getDocument());
       add(diff, BorderLayout.CENTER);
 
@@ -125,6 +125,8 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
       diff.updateDiff();
     }
     diff.updateLayout();
+    markerBar.repaint();
+    validate();
   }
 
   public void closeDiffView() {
@@ -215,6 +217,14 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
 	public SCEPane getFocusedPane() {
 		return hasDiffFocus() ? diff.getDiffPane() : textPane;
 	}
+
+  public int getVirtualLines() {
+    if(isDiffView()) {
+      return diff.getVirtualLines();
+    } else {
+      return textPane.getDocument().getRowsCount();
+    }
+  }
 
   public void copy() {
 	  getFocusedPane().copy();
