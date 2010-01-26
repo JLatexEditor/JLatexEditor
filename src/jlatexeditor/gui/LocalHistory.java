@@ -39,7 +39,7 @@ public class LocalHistory extends JPanel implements ComponentListener, ListSelec
 
     model = new DefaultListModel();
     list = new JList(model);
-    add(list, BorderLayout.CENTER);
+    add(new JScrollPane(list), BorderLayout.CENTER);
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     list.addListSelectionListener(this);
 
