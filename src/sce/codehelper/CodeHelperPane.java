@@ -36,7 +36,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 	private CodeHelper bibHelper = null;
 
   // the position of the code helper
-  private SCEDocumentPosition commandPosition = null;
+  private WordWithPos wordPos = null;
   // the prefix
   private String prefix = null;
 
@@ -97,7 +97,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 	public void setCodeHelper(CodeHelper codeHelper) {
 		this.codeHelper = codeHelper;
 		if (codeHelper != null) {
-			this.codeHelper.setDocument(document);
+			this.codeHelper.setSCEPane(pane);
 		}
 	}
 
@@ -108,7 +108,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
   public void setTabCompletion(CodeHelper tabCompletion) {
     this.tabCompletion = tabCompletion;
     if (tabCompletion != null) {
-      this.tabCompletion.setDocument(document);
+      this.tabCompletion.setSCEPane(pane);
     }
   }
 
@@ -118,6 +118,9 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
   public void setBibHelper(CodeHelper bibHelper) {
     this.bibHelper = bibHelper;
+	  if (bibHelper != null) {
+	    this.bibHelper.setSCEPane(pane);
+	  }
   }
 
   public JList getList(){
@@ -156,50 +159,45 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
    * Updates the search prefix for the code helper.
    */
   private void updatePrefix(){
-    if(commandPosition == null || currentHelper == null) return;
-
-    int row = caret.getRow();
-    int column = caret.getColumn();
+    if(wordPos == null || currentHelper == null) return;
 
     // get selection
     Object selectedValue = null;
     if(model.size() > 0) selectedValue = list.getSelectedValue();
 
     // extract the command from start until caret column
-    prefix = document.getRow(row,commandPosition.getColumn(),column);
+    prefix = wordPos.word;
 
 	  // ask code helper for command suggestions at this position
     model.removeAllElements();
-	  for (CHCommand command : currentHelper.getCommands(prefix)) model.addElement(command);
 
-    // restore selection
-    list.setSelectedValue(selectedValue, true);
-    if(selectedValue == null || !model.contains(selectedValue)) list.setSelectedIndex(0);
+	  if (currentHelper.documentChanged()) {
+	    for (CHCommand command : currentHelper.getCompletions()) model.addElement(command);
 
-    if(column < commandPosition.getColumn()){
-      setVisible(false);
-      commandPosition = null;
-      return;
-    }
+		  // restore selection
+		  list.setSelectedValue(selectedValue, true);
+		  if(selectedValue == null || !model.contains(selectedValue)) list.setSelectedIndex(0);
 
-    Dimension size = getPreferredSize();
-    size = new Dimension((int) (size.width*1.2 + 50), size.height + 3);
-    setPreferredSize(size);
-    popup.setPreferredSize(size);
-    popup.pack();
+		  Dimension size = getPreferredSize();
+		  size = new Dimension((int) (size.width*1.2 + 50), size.height + 3);
+		  setPreferredSize(size);
+		  popup.setPreferredSize(size);
+		  popup.pack();
+	  }
+	  else {
+		  wordPos = null;
+		  setVisible(false);
+	  }
   }
 
   /**
-   * Sets the text to insert at the current position.
-   *
-   * @param text the text to insert
+   * Replaces a word with another word.
+   * 
+   * @param word word to replace
+   * @param replacement replacement
    */
-  private void setText(String text){
-    int row = commandPosition.getRow();
-    int column = commandPosition.getColumn();
-
-    document.remove(row, column, row, caret.getColumn());
-    document.insert(text, row, column);
+  private void replace(WordWithPos word, String replacement){
+	  document.replace(word.row, word.startColumn, word.row, word.endColumn, replacement);
   }
 
   /**
@@ -291,7 +289,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
     // hide code helper
     setVisible(false);
-    commandPosition = null;
+    wordPos = null;
   }
 
   /**
@@ -339,32 +337,47 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
   }
 
   public void keyPressed(KeyEvent e){
-    int row = caret.getRow();
-    int column = caret.getColumn();
+    //int row = caret.getRow();
+    //int column = caret.getColumn();
 
-    // ctrl + space
+    // control+space
     if(e.getKeyCode() == KeyEvent.VK_SPACE && e.isControlDown() && !isVisible()){
-      Point caretPos = pane.modelToView(row, column);
-
+	    /*
       // \cite{
       boolean cite = document.getRow(row, Math.max(0, column-6), column).equals("\\cite{");
       if(!cite) {
-        commandPosition = new SCEDocumentPosition(row, findPrefixStart(row, column));
+        wordPos = new SCEDocumentPosition(row, findPrefixStart(row, column));
         currentHelper = codeHelper;
       } else {
-        commandPosition = new SCEDocumentPosition(row, column);
+        wordPos = new SCEDocumentPosition(row, column);
         currentHelper = bibHelper;
       }
+      */
+	    if (bibHelper.matches()) {
+		    currentHelper = bibHelper;
+		    wordPos = bibHelper.getWordToReplace();
+	    } else {
+		    currentHelper = codeHelper;
+		    wordPos = currentHelper.getWordToReplace();
+	    }
       updatePrefix();
 
-      String completion = currentHelper.getCompletion(prefix);
-      if(completion != null) setText(completion);
+	    if (currentHelper.matches()) {
+		    wordPos = currentHelper.getWordToReplace();
+		    String replacement = currentHelper.getMaxCommonPrefix();
 
-      setVisible(true);
-      popup.show(pane, caretPos.x, caretPos.y + pane.getLineHeight());
+		    if (replacement != null) {
+					replace(wordPos, replacement);
 
-      setSize(getPreferredSize());
-      popup.pack();
+					Point wordPoint = pane.modelToView(wordPos.row, wordPos.startColumn);
+
+					setVisible(true);
+					popup.show(pane, wordPoint.x, wordPoint.y + pane.getLineHeight());
+
+					setSize(getPreferredSize());
+					popup.pack();
+		    }
+	    }
 
       e.consume();
     }
@@ -373,7 +386,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
       // hide code helper
       setVisible(false);
-      commandPosition = null;
+      wordPos = null;
       // end template editing
       if(template != null){
         document.setEditRange(null, null);
@@ -392,6 +405,8 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
       e.consume();
     }
 
+	  // TODO: move somewhere else
+	  /*
     // begin... end completion
     if(e.getKeyChar() == '}') {
       String begin = "\\begin";
@@ -417,21 +432,23 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
       e.consume();
       return;
     }
+    */
 
     // tab completion
     if(e.getKeyCode() == KeyEvent.VK_TAB){
-      int commandStart = findPrefixStart(row, column);
-      String commandName = document.getRow(row).substring(commandStart, column);
+	    if (tabCompletion.matches()) {
+		    WordWithPos wordToReplace = tabCompletion.getWordToReplace();
 
-      for (CHCommand command : tabCompletion.getCommands(commandName)) {
-        if(commandName.equals(command.getName())) {
-          document.remove(row, commandStart, row, column);
-          startTemplate(command.getUsage(), command.getArguments(), row, commandStart);
+		    for (CHCommand command : tabCompletion.getCompletions()) {
+			    if(wordToReplace.word.equals(command.getName())) {
+				    document.remove(wordToReplace);
+				    startTemplate(command.getUsage(), command.getArguments(), wordToReplace.row, wordToReplace.startColumn);
 
-          e.consume();
-          return;
-        }
-      }
+				    e.consume();
+				    return;
+			    }
+		    }
+	    }
     }
 
     // continue only if the code helper is visible
@@ -440,7 +457,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     // hide on cursor movement
     if(e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT){
       setVisible(false);
-      commandPosition = null;
+      wordPos = null;
     }
 
     // up and down
@@ -476,10 +493,8 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
       // remove the current text and then start the template
       CHCommand command = (CHCommand) list.getSelectedValue();
-      int command_row = commandPosition.getRow();
-      int command_column = commandPosition.getColumn();
-      document.remove(command_row, command_column, row, caret.getColumn());
-      startTemplate(command.getUsage(), command.getArguments(), command_row, command_column);
+      document.remove(wordPos);
+      startTemplate(command.getUsage(), command.getArguments(), wordPos.row, wordPos.startColumn);
 
       e.consume();
     }

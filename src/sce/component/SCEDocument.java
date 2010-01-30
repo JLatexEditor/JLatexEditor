@@ -6,6 +6,7 @@
 package sce.component;
 
 import jlatexeditor.GProperties;
+import sce.codehelper.WordWithPos;
 
 import java.awt.*;
 import java.awt.font.TextAttribute;
@@ -660,6 +661,10 @@ public class SCEDocument{
     remove(start, end);
     insert(text, startRow, startColumn);
   }
+
+	public void remove(SCERange range) {
+		remove(range.getStartRow(), range.getStartCol(), range.getEndRow(), range.getEndCol());
+	}
 
   /**
    * Sets the row propertie modiefied to true.

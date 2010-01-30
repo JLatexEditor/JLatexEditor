@@ -2,6 +2,7 @@ package jlatexeditor.codehelper;
 
 import sce.codehelper.CodeAssistant;
 import sce.codehelper.SCEPopup;
+import sce.codehelper.WordWithPos;
 import sce.component.SCECaret;
 import sce.component.SCEDocument;
 import sce.component.SCEPane;
