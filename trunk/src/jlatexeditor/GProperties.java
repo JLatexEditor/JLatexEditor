@@ -16,10 +16,10 @@ public class GProperties {
 
   // properties
   private static Font editorFont = new Font("MonoSpaced", 0, 13);
-  private static Object textAntialiasign = RenderingHints.VALUE_TEXT_ANTIALIAS_OFF;
+  private static Object textAntiAliasing = RenderingHints.VALUE_TEXT_ANTIALIAS_OFF;
 
   static {
-    // text antialiasing
+    // text anti-aliasing
     TEXT_ANTIALIAS_KEYS = new String[] {"On", "Off", "GASP", "LCD HBGR", "LCD HRGB", "LCD VBGR", "LCD VRGB"};
 
     TEXT_ANTIALIAS_MAP.put("On", RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -52,12 +52,12 @@ public class GProperties {
     return MONOSPACE_FONTS;
   }
 
-  public static Object getTextAntialiasign() {
-    return textAntialiasign;
+  public static Object getTextAntiAliasing() {
+    return textAntiAliasing;
   }
 
-  public static void setTextAntialiasign(Object textAntialiasign) {
-    GProperties.textAntialiasign = textAntialiasign;
+  public static void setTextAntiAliasing(Object textAntiAliasing) {
+    GProperties.textAntiAliasing = textAntiAliasing;
   }
 
   public static Font getEditorFont() {

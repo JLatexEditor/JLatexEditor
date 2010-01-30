@@ -160,7 +160,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     //super.paint(g); // does not work for java version "1.6.0_06"
 
     Graphics2D g2D = (Graphics2D) g;
-    g2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, GProperties.getTextAntialiasign());
+    g2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, GProperties.getTextAntiAliasing());
     
     // clip bounds
     int x = g2D.getClipBounds().x;

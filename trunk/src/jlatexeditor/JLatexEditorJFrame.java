@@ -755,7 +755,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // text antialiasing
     if(action.startsWith("TextAntialias: ")) {
       String key = action.substring(action.indexOf(": ") + 2);
-      GProperties.setTextAntialiasign(GProperties.TEXT_ANTIALIAS_MAP.get(key));
+      GProperties.setTextAntiAliasing(GProperties.TEXT_ANTIALIAS_MAP.get(key));
       getEditor(tabbedPane.getSelectedIndex()).repaint();
     }
 */
