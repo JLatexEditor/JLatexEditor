@@ -11,13 +11,13 @@ public class BibCodeHelper extends PatternHelper {
 
   public BibCodeHelper(BackgroundParser backgroundParser) {
     this.backgroundParser = backgroundParser;
-	  pattern = new PatternPair("\\\\cite\\{([^{}]*)");
+	  pattern = new PatternPair("\\\\cite\\{([^{},]+,)?([^{},]*)");
   }
 
 	@Override
 	public boolean matches() {
 		if (super.matches()) {
-			word = params.get(0);
+			word = params.get(1);
 			return true;
 		}
 		return false;

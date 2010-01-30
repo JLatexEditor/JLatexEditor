@@ -17,7 +17,7 @@ public class WordWithPos implements SCERange {
 		this.word = word;
 		this.row = row;
 		this.startColumn = startColumn;
-		this.endColumn = startColumn + word.length();
+		this.endColumn = startColumn + (word == null ? 0 : word.length());
 	}
 
 	@Override
