@@ -1,19 +1,48 @@
 package jlatexeditor.codehelper;
 
+import sce.codehelper.CHCommand;
 import sce.codehelper.CodeHelper;
+import sce.codehelper.PatternPair;
+import sce.codehelper.WordWithPos;
 
-public class BibCodeHelper extends CodeHelper {
+public class BibCodeHelper extends PatternHelper {
   private BackgroundParser backgroundParser;
+	protected WordWithPos word;
 
   public BibCodeHelper(BackgroundParser backgroundParser) {
     this.backgroundParser = backgroundParser;
+	  pattern = new PatternPair("\\\\cite\\{([^{}]*)");
   }
 
-  public Iterable<BibEntry> getCommands(String search) {
+	@Override
+	public boolean matches() {
+		if (super.matches()) {
+			word = params.get(0);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public WordWithPos getWordToReplace() {
+		return word;
+	}
+
+	@Override
+	public Iterable<? extends CHCommand> getCompletions() {
+		return getCompletions(word.word);
+	}
+
+	@Override
+	public String getMaxCommonPrefix() {
+		return getMaxCommonPrefix(word.word);
+	}
+
+	public Iterable<BibEntry> getCompletions(String search) {
     return backgroundParser.getBibEntries(search);
   }
 
-  public String getCompletion(String search) {
-    return null;
+  public String getMaxCommonPrefix(String search) {
+    return search;
   }
 }

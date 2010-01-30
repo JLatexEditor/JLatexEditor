@@ -1,5 +1,6 @@
-package jlatexeditor.codehelper;
+package sce.codehelper;
 
+import sce.codehelper.WordWithPos;
 import sce.component.SCECaret;
 import sce.component.SCEPane;
 import sce.component.SCEPosition;
@@ -28,6 +29,10 @@ public class PatternPair {
 		this.leftPattern = Pattern.compile(leftPattern + "$");
 		this.combine = combine;
 		this.rightPattern = Pattern.compile("^" + rightPattern);
+	}
+
+	public PatternPair(String leftPattern) {
+		this(leftPattern, false, "");
 	}
 
 	public List<WordWithPos> find (SCEPane pane) {

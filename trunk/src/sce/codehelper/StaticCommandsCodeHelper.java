@@ -1,5 +1,6 @@
 package sce.codehelper;
 
+import jlatexeditor.codehelper.PatternHelper;
 import my.XML.XMLDocument;
 import my.XML.XMLElement;
 import my.XML.XMLParser;
@@ -14,9 +15,15 @@ import java.util.Collections;
  * @author Jörg Endrullis
  * @author Stefan Endrullis
  */
-public class StaticCommandsCodeHelper extends CodeHelper {
-	// the command reference
-	private ArrayList<CHCommand> commands = null;
+public class StaticCommandsCodeHelper extends PatternHelper {
+	/** The command reference. */
+	protected ArrayList<CHCommand> commands = null;
+	/** The last command that has been found. */
+	protected WordWithPos command = null;
+
+	public StaticCommandsCodeHelper() {
+		pattern = new PatternPair("(\\\\[a-zA-Z]*)", false, "");
+	}
 
 	/**
 	 * Reads the commands from xml file.
@@ -109,7 +116,31 @@ public class StaticCommandsCodeHelper extends CodeHelper {
 	  Collections.sort(commands);
 	}
 
-	public Iterable<CHCommand> getCommands(String prefix) {
+	@Override
+	public boolean matches() {
+		if (super.matches()) {
+			command = params.get(0);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public WordWithPos getWordToReplace() {
+		return command;
+	}
+
+	@Override
+	public Iterable<? extends CHCommand> getCompletions() {
+		return getCompletions(command.word);
+	}
+
+	@Override
+	public String getMaxCommonPrefix() {
+		return getMaxCommonPrefix(command.word);
+	}
+
+	public Iterable<CHCommand> getCompletions(String prefix) {
     ArrayList<CHCommand> commandsFiltered = new ArrayList<CHCommand>(commands.size());
     for(CHCommand command : commands) {
       if(command.getName().startsWith(prefix)) commandsFiltered.add(command);
@@ -123,11 +154,11 @@ public class StaticCommandsCodeHelper extends CodeHelper {
    * @param prefix the prefix
    * @return the completion suggestion (without the prefix)
    */
-  public String getCompletion(String prefix){
+  public String getMaxCommonPrefix(String prefix){
     int prefixLength = prefix.length();
     String completion = null;
 
-	  for (CHCommand command : getCommands(prefix)) {
+	  for (CHCommand command : getCompletions(prefix)) {
 		  String commandName = command.getName();
 		  if (commandName.startsWith(prefix)) {
 			  if (completion == null) {
