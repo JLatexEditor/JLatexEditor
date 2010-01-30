@@ -8,12 +8,14 @@ import sce.component.SCEPane;
 import java.util.ArrayList;
 
 /**
- * Latex code helper that determine the current context of the caret
- * and forwards the code helping request to the specific code helper.
+ * Combined code helper that handles several pattern based code helpers.
+ * It determines which PatternHelper can be applied in the current context
+ * when you call matches and uses this helper for the next calls of
+ * documentChanged, getWordToReplace, getCompletions, and getMaxCommonPrefix.
  *
  * @author Stefan Endrullis
  */
-public class LatexCodeHelper extends PatternHelper {
+public class CombinedCodeHelper extends PatternHelper {
 	private ArrayList<PatternHelper> patternHelpers = new ArrayList<PatternHelper>();
 	private PatternHelper currentPatternHelper = null;
 
