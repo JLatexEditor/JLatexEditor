@@ -28,7 +28,6 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 	/** Code Helper (code completion). */
   CodeHelper codeHelper = null;
   CodeHelper tabCompletion = null;
-  CodeHelper bibHelper = null;
 	/** Quick help. */
 	QuickHelp quickHelp = null;
   /** Undo manager. */
@@ -134,7 +133,6 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     ui = new SCEPaneUI(this);
 	  ui.setCodeHelper(codeHelper);
 	  ui.setTabCompletion(tabCompletion);
-	  ui.setBibHelper(bibHelper);
 	  ui.setQuickHelp(quickHelp);
 
     // get font properties
@@ -519,16 +517,6 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   public void setTabCompletion(CodeHelper tabCompletion) {
     this.tabCompletion = tabCompletion;
     if (ui != null) ui.setTabCompletion(tabCompletion);
-  }
-
-  /**
-   * Sets the bib completion for the source code editor.
-   *
-   * @param bibHelper bib completion
-   */
-  public void setBibHelper(CodeHelper bibHelper) {
-    this.bibHelper = bibHelper;
-    if (ui != null) ui.setBibHelper(bibHelper);
   }
 
 	/**

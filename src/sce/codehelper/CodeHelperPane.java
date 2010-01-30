@@ -29,18 +29,14 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
   private DefaultListModel model = null;
 
   // helpers
-  private CodeHelper currentHelper = null;
-
 	private CodeHelper codeHelper = null;
 	private CodeHelper tabCompletion = null;
-	private CodeHelper bibHelper = null;
 
   // the position of the code helper
   private WordWithPos wordPos = null;
   // the prefix
-  private String prefix = null;
 
-  // for working with templates
+	// for working with templates
   private String template = null;
   private SCEDocumentPosition templateCaretPosition = null;
   // template argument values
@@ -84,6 +80,9 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
   public void setVisible(boolean visible){
     super.setVisible(visible);
     popup.setVisible(visible);
+	  if (!visible) {
+		  wordPos = null;
+	  }
   }
 
   public boolean isVisible(){
@@ -110,17 +109,6 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     if (tabCompletion != null) {
       this.tabCompletion.setSCEPane(pane);
     }
-  }
-
-  public CodeHelper getBibHelper() {
-    return bibHelper;
-  }
-
-  public void setBibHelper(CodeHelper bibHelper) {
-    this.bibHelper = bibHelper;
-	  if (bibHelper != null) {
-	    this.bibHelper.setSCEPane(pane);
-	  }
   }
 
   public JList getList(){
@@ -159,20 +147,17 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
    * Updates the search prefix for the code helper.
    */
   private void updatePrefix(){
-    if(wordPos == null || currentHelper == null) return;
+    if(wordPos == null || codeHelper == null) return;
 
     // get selection
     Object selectedValue = null;
     if(model.size() > 0) selectedValue = list.getSelectedValue();
 
-    // extract the command from start until caret column
-    prefix = wordPos.word;
-
 	  // ask code helper for command suggestions at this position
     model.removeAllElements();
 
-	  if (currentHelper.documentChanged()) {
-	    for (CHCommand command : currentHelper.getCompletions()) model.addElement(command);
+	  if (codeHelper.documentChanged()) {
+	    for (CHCommand command : codeHelper.getCompletions()) model.addElement(command);
 
 		  // restore selection
 		  list.setSelectedValue(selectedValue, true);
@@ -185,7 +170,6 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 		  popup.pack();
 	  }
 	  else {
-		  wordPos = null;
 		  setVisible(false);
 	  }
   }
@@ -289,7 +273,6 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
     // hide code helper
     setVisible(false);
-    wordPos = null;
   }
 
   /**
@@ -342,29 +325,11 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
     // control+space
     if(e.getKeyCode() == KeyEvent.VK_SPACE && e.isControlDown() && !isVisible()){
-	    /*
-      // \cite{
-      boolean cite = document.getRow(row, Math.max(0, column-6), column).equals("\\cite{");
-      if(!cite) {
-        wordPos = new SCEDocumentPosition(row, findPrefixStart(row, column));
-        currentHelper = codeHelper;
-      } else {
-        wordPos = new SCEDocumentPosition(row, column);
-        currentHelper = bibHelper;
-      }
-      */
-	    if (bibHelper.matches()) {
-		    currentHelper = bibHelper;
-		    wordPos = bibHelper.getWordToReplace();
-	    } else {
-		    currentHelper = codeHelper;
-		    wordPos = currentHelper.getWordToReplace();
-	    }
-      updatePrefix();
 
-	    if (currentHelper.matches()) {
-		    wordPos = currentHelper.getWordToReplace();
-		    String replacement = currentHelper.getMaxCommonPrefix();
+	    if (codeHelper.matches()) {
+		    wordPos = codeHelper.getWordToReplace();
+		    updatePrefix();
+		    String replacement = codeHelper.getMaxCommonPrefix();
 
 		    if (replacement != null) {
 					replace(wordPos, replacement);
@@ -386,7 +351,6 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
       // hide code helper
       setVisible(false);
-      wordPos = null;
       // end template editing
       if(template != null){
         document.setEditRange(null, null);
@@ -457,7 +421,6 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     // hide on cursor movement
     if(e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT){
       setVisible(false);
-      wordPos = null;
     }
 
     // up and down
@@ -488,13 +451,17 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     }
 
     // enter
-    if(e.getKeyCode() == KeyEvent.VK_ENTER || (currentHelper == codeHelper && e.getKeyCode() == KeyEvent.VK_SPACE && !e.isControlDown())){
+    if(e.getKeyCode() == KeyEvent.VK_ENTER){
       if(model.size() == 0) return;
 
+	    WordWithPos oldWord = wordPos;
+	    setVisible(false);
+	    
       // remove the current text and then start the template
       CHCommand command = (CHCommand) list.getSelectedValue();
-      document.remove(wordPos);
-      startTemplate(command.getUsage(), command.getArguments(), wordPos.row, wordPos.startColumn);
+
+      document.remove(oldWord);
+      startTemplate(command.getUsage(), command.getArguments(), oldWord.row, oldWord.startColumn);
 
       e.consume();
     }

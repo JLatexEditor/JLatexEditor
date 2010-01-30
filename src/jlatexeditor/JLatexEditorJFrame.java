@@ -402,9 +402,11 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     syntaxHighlighting.start();
 
 	  // code completion and quick help
-	  scePane.setCodeHelper(new LatexCommandCodeHelper("data/codehelper/commands.xml"));
+		LatexCodeHelper codeHelper = new LatexCodeHelper();
+		codeHelper.addPatternHelper(new BibCodeHelper(getBackgroundParser()));
+		codeHelper.addPatternHelper(new LatexCommandCodeHelper("data/codehelper/commands.xml"));
+	  scePane.setCodeHelper(codeHelper);
 	  scePane.setTabCompletion(new LatexCommandCodeHelper("data/codehelper/tabCompletion.xml"));
-	  scePane.setBibHelper(new BibCodeHelper(getBackgroundParser()));
 	  scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
 
 	  try {

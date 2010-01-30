@@ -100,16 +100,6 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     codeHelperPane.setTabCompletion(tabCompletion);
   }
 
-  /**
-   * Sets the bib completion for the source code editor.
-   *
-   * @param bibHelper bib completion
-   */
-  public void setBibHelper(CodeHelper bibHelper) {
-    if(codeHelperPane == null) return;
-    codeHelperPane.setBibHelper(bibHelper);
-  }
-
 	/**
 	 * Sets the code helper for the source code editor.
 	 *

@@ -22,7 +22,7 @@ public class StaticCommandsCodeHelper extends PatternHelper {
 	protected WordWithPos command = null;
 
 	public StaticCommandsCodeHelper() {
-		pattern = new PatternPair("(\\\\[a-zA-Z]*)", false, "");
+		pattern = new PatternPair("(\\\\[a-zA-Z]*)");
 	}
 
 	/**
