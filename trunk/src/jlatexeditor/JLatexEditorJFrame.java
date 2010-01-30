@@ -18,21 +18,15 @@ import sce.component.*;
 import sce.syntaxhighlighting.SyntaxHighlighting;
 import util.StreamUtils;
 import util.filechooser.SCEFileChooser;
-import util.gui.SCETabbedPaneUI;
 import util.updater.ProgramUpdater;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.plaf.ColorUIResource;
-import javax.swing.plaf.FileChooserUI;
-import javax.swing.plaf.metal.MetalMenuBarUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -402,7 +396,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     syntaxHighlighting.start();
 
 	  // code completion and quick help
-		LatexCodeHelper codeHelper = new LatexCodeHelper();
+		CombinedCodeHelper codeHelper = new CombinedCodeHelper();
 		codeHelper.addPatternHelper(new BibCodeHelper(getBackgroundParser()));
 		codeHelper.addPatternHelper(new LatexCommandCodeHelper("data/codehelper/commands.xml"));
 	  scePane.setCodeHelper(codeHelper);
