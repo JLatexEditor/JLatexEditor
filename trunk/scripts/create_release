@@ -11,7 +11,9 @@ svn copy . $svnRepo/tags/$version -m "released version $version"
 
 mkdir -p dist/releases
 
-cd dist/
+cd dist/${programName}_prepare
+zsh ../../scripts/create_versions_xml >versions.xml
+cd ..
 
 # pack
 zip -r $prefix.zip $programName

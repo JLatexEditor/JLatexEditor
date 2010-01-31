@@ -2,10 +2,10 @@ goto START
 
 :UPDATE
 echo "UPDATE"
-move tmp\* .
-rmdir tmp
+xcopy /E /Y update .
+rmdir /S /Q update
 
 :START
-java -jar JLatexEditor.jar %1
+.wstart.bat
 
 IF errorlevel 255 goto UPDATE
