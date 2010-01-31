@@ -31,11 +31,7 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 
 	private static Aspell aspell;
 	static {
-		try {
-			aspell = Aspell.getInstance();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+  	aspell = Aspell.getInstance();
 	}
 
 	public LatexSyntaxHighlighting(SCEPane pane){
@@ -232,18 +228,21 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 	    while(matcher.find()) {
 		    // check if it's not a tex command and does not contain formula specific characters ("_" and numbers)
 		    String termString = matcher.group(1);
-		    StyleableTerm term;
+		    StyleableTerm term = null;
 		    if (BAD_TERM_CHARS.matcher(termString).find()) {
 			    term = new StyleableTerm(termString, chars, matcher.start(1), LatexStyles.U_NORMAL);
 		    } else {
 			    // spell check
 			    try {
-				    Aspell.Result aspellResult = aspell.check(termString);
-				    term = new StyleableTerm(termString, chars, matcher.start(1), aspellResult.isCorrect() ? LatexStyles.U_NORMAL : LatexStyles.U_MISSPELLED);
+            if(aspell != null) {
+              Aspell.Result aspellResult = aspell.check(termString);
+              term = new StyleableTerm(termString, chars, matcher.start(1), aspellResult.isCorrect() ? LatexStyles.U_NORMAL : LatexStyles.U_MISSPELLED);
+            }
 			    } catch (IOException e) {
-				    term = new StyleableTerm(termString, chars, matcher.start(1), LatexStyles.U_NORMAL);
 				    e.printStackTrace();
 			    }
+
+          if(term == null) term = new StyleableTerm(termString, chars, matcher.start(1), LatexStyles.U_NORMAL);
 		    }
 
 		    term.applyStyleToDoc();

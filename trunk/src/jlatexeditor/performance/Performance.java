@@ -42,10 +42,7 @@ public class Performance {
 
     try {
       pane.addCodeAssistantListener(new SpellCheckSuggester());
-    } catch (IOException e) {
-      System.err.println("Initialization of the spell check suggester failed!");
-      e.printStackTrace();
-    }
+    } catch (Exception e) { }
 
     long startTime = System.nanoTime();
 
