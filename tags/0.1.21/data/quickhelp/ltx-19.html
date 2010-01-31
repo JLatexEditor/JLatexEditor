@@ -1,0 +1,117 @@
+<html>
+
+<head>
+
+<title>Help On LaTeX \newenvironment</title>
+
+<link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
+
+</head>
+
+<body>
+
+
+
+
+
+<h2>\newenvironment</h2>
+
+
+
+<p>
+
+<tt>\newenvironment{nam}[args]{begdef}{enddef}</tt><br>
+
+<tt>\renewenvironment{nam}[args]{begdef}{enddef}</tt>
+
+</p>
+
+
+
+<p>These commands define or redefine an environment.</p>
+
+
+
+<ul>
+
+  <li><tt>nam</tt> The name of the environment. For
+
+    <tt>\newenvironment</tt> there must be no currently defined
+
+    environment by that name, nor may the command <tt>\nam</tt>
+
+    be currently defined. For <tt>\renewenvironment</tt> the
+
+    environment "<tt>nam</tt>" must already be defined.
+
+    <tt>nam</tt> may contain letters, numbers, and asterisks; it
+
+    may <strong>not</strong> begin with "end...".</li>
+
+
+
+  <li><tt>args</tt> An integer from 1 to 9 denoting the number
+
+    of arguments of the newly-defined environment. The default
+
+    is no arguments.</li>
+
+
+
+  <li><tt>begdef</tt> The text substituted for every occurrence
+
+    of <tt>\begin{nam}</tt>; a parameter of the form <tt>#n</tt>
+
+    in <tt>begdef</tt> is replaced by the text of the nth
+
+    argument when this substitution takes place.</li>
+
+
+
+  <li><tt>enddef</tt> The text substituted for every occurrence
+
+    of <tt>\end{nam}</tt>. It may not contain any argument parameters.</li>
+
+</ul>
+
+
+
+<h3>Changes in <a href="versions.html">LaTeX2e</a></h3>
+
+
+
+<p>It is possible to have an optional argument, the form of the
+
+command being</p>
+
+
+
+<pre>
+
+    \newenvironment{nam}[args][opt]{begdef}{enddef}
+
+    \renewenvironment{nam}[args][opt]{begdef}{enddef}
+
+</pre>
+
+
+
+<p>If <tt>opt</tt> is present, the first of the <tt>args</tt>
+
+arguments is optional with default value <tt>opt</tt>.  If it is
+
+absent all arguments are mandatory.</p>
+
+
+
+<hr noshade="noshade" size="1">
+
+
+
+<p>
+
+See also <a href="ltx-17.html">Defining commands</a>,
+
+<a href="ltx-27.html">Environments</a><br>
+
+</body></html>
