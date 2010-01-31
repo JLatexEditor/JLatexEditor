@@ -78,7 +78,11 @@
 		<!-- Copy start scripts. -->
 		<copy todir="${uploadPrepare}" file="scripts/jlatexeditor"/>
 		<copy todir="${uploadPrepare}" file="scripts/jlatexeditor.bat"/>
-		<copy todir="${uploadPrepare}" file="scripts/.wstart.bat"/>
+		<copy todir="${uploadPrepare}">
+			<fileset dir="scripts" defaultexcludes="no">
+				<filename name=".wstart.bat"/>
+			</fileset>
+		</copy>
 		<chmod file="${uploadPrepare}/jlatexeditor" perm="ugo+x"/>
 	</target>
 	
