@@ -68,9 +68,12 @@ public class GProperties {
       }
     }
 
+		String[] MONOSPACE_FONTS_ARRAY = new String[MONOSPACE_FONTS.size()];
+		MONOSPACE_FONTS.toArray(MONOSPACE_FONTS_ARRAY);
+
 	  // set default for the properties file
 	  properties.addEntry(new Comment(" Font settings"));
-	  properties.addEntry(new Def(EDITOR_FONT_NAME, STRING, "MonoSpaced"));
+	  properties.addEntry(new Def(EDITOR_FONT_NAME, new PSet(MONOSPACE_FONTS_ARRAY), "MonoSpaced"));
 	  properties.addEntry(new Def(EDITOR_FONT_SIZE, INT, "13"));
 	  properties.addEntry(new Def(EDITOR_FONT_ANTIALIASING, new PSet(TEXT_ANTIALIAS_KEYS), "Off"));
 	  //properties.addEntry(new Def("xwinfo", STRING, null, "xwinfo/xwinfo"));
