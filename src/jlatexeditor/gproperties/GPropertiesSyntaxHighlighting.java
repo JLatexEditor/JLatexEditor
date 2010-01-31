@@ -1,14 +1,12 @@
-
-/**
- * @author Jörg Endrullis
- */
-
 package jlatexeditor.gproperties;
 
+import de.endrullis.utils.BetterProperties2.*;
+import jlatexeditor.GProperties;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.syntaxhighlighting.StyleableTerm;
 import jlatexeditor.syntaxhighlighting.states.MathMode;
 import jlatexeditor.syntaxhighlighting.states.RootState;
+import sce.codehelper.PatternPair;
 import sce.component.*;
 import sce.syntaxhighlighting.ParserState;
 import sce.syntaxhighlighting.ParserStateStack;
@@ -19,9 +17,11 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Syntax highlighting for global.properties.
+ */
 public class GPropertiesSyntaxHighlighting extends SyntaxHighlighting implements SCEDocumentListener{
-	private static final Pattern TERM_PATTERN = Pattern.compile("(\\\\?[\\w_\\-\\^]+)");
-	private static final Pattern BAD_TERM_CHARS = Pattern.compile("[\\\\\\d_\\-\\^]");
+	private static final Pattern PATTERN = Pattern.compile("^([^#=]+)=([^#]*)");
 
   // text pane and document
   private SCEPane pane = null;
@@ -180,6 +180,23 @@ public class GPropertiesSyntaxHighlighting extends SyntaxHighlighting implements
         }
       }
 
+	    Matcher matcher = PATTERN.matcher(row.toString());
+	    if (matcher.find()) {
+		    String key = matcher.group(1);
+		    String value = matcher.group(2);
+
+		    Def def = GProperties.getDef(key);
+		    if (def == null) {
+			    // mark invalid key
+			    markError(row, matcher.start(1), key.length());
+		    } else {
+			    // check value
+			    if (!def.getRange().isValid(value)) {
+				    markError(row, matcher.start(2), value.length());
+			    }
+		    }
+	    }
+
       // go to the next row
       row_nr++;
 
@@ -194,7 +211,15 @@ public class GPropertiesSyntaxHighlighting extends SyntaxHighlighting implements
     }
   }
 
-  // SCEDocumentListener methods
+	private void markError(SCEDocumentRow row, int startColumn, int length) {
+		SCEDocumentChar[] chars = row.chars;
+		int endColumn = startColumn + length;
+		for (int i=startColumn; i<endColumn; i++) {
+			chars[i].style = GPropertiesStyles.ERROR;
+		}
+	}
+
+	// SCEDocumentListener methods
   public void documentChanged(SCEDocument sender, SCEDocumentEvent event){
     parseNeeded = true;
     currentlyChanging = true;
