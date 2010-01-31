@@ -15,6 +15,9 @@ cd dist/${programName}_prepare
 zsh ../../scripts/create_versions_xml >versions.xml
 cd ..
 
+rm -Rf $programName
+mv ${programName}_prepare $programName
+
 # pack
 zip -r $prefix.zip $programName
 tar -czf $prefix.tar.gz $programName
