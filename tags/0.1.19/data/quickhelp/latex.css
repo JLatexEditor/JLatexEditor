@@ -1,0 +1,30 @@
+BODY {
+  color: #000000;
+  background: #ffffee;
+}
+H1, H2 {
+  color: #cc0000;
+  font-family: sans-serif;
+}
+H3, H4, H5 {
+  font-family: sans-serif;
+}
+
+PRE, TT, CODE, KBD, VAR {
+  font-family: monospace;
+  color: #006633;
+}
+
+A:active {
+  color: #ff0000; 
+}   
+A:visited {
+  color: #cc0000;
+}   
+A:link {
+  color: #000099;
+}   
+A:hover {
+  color: #cc0000;
+}   
+

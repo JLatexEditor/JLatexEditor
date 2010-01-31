@@ -1,0 +1,30 @@
+
+\documentclass[times,10pt,twocolumn]{article} 
+\usepackage[english]{babel}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,amstext,amsthm}
+\usepackage{comment}
+\usepackage{color}
+\usepackage{wrapfig}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,automata,backgrounds,calc,chains,fadings,folding,decorations.fractals,decorations.pathreplacing,fit,patterns,positioning,mindmap,shadows,shapes.geometric,shapes.symbols,through,trees,plotmarks}
+
+\input{button.def}
+
+\begin{document}
+\pagestyle{empty}
+\scalebox{5}{
+  \begin{tikzpicture}[very thick]
+    \buttonredhighlight{    
+    \begin{scope}[rounded corners=.5mm]
+    \fill [draw=none,fill=white] (2mm,7mm) -- (3mm,8mm) -- (8mm,3mm) -- (7mm,2mm) -- cycle;
+    \fill [draw=none,fill=white] (2mm,3mm) -- (3mm,2mm) -- (8mm,7mm) -- (7mm,8mm) -- cycle;
+    \end{scope}
+    }
+  \end{tikzpicture}
+}
+\end{document}
+
+
