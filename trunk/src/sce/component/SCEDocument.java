@@ -676,7 +676,7 @@ public class SCEDocument{
   }
 
   /**
-   * Inserts a new row at the given positoin.
+   * Inserts a new row at the given position.
    *
    * @param row the row number
    * @param count number of rows to insert
