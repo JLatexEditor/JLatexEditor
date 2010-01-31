@@ -325,6 +325,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  JMenuItem globalSettings = new JMenuItem("Global Settings");
 		globalSettings.setActionCommand("global settings");
 	  globalSettings.setMnemonic('G');
+	  globalSettings.setAccelerator(KeyStroke.getKeyStroke("control alt S"));
 	  globalSettings.addActionListener(this);
 	  settingsMenu.add(globalSettings);
 
