@@ -6,6 +6,6 @@ xcopy /E /Y update .
 rmdir /S /Q update
 
 :START
-.wstart.bat
+call .wstart.bat
 
 IF errorlevel 255 goto UPDATE
