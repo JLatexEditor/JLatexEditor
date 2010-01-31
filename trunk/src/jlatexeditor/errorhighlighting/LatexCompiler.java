@@ -4,6 +4,7 @@ import jlatexeditor.ErrorView;
 import jlatexeditor.JLatexEditorJFrame;
 import sce.component.AbstractResource;
 import sce.component.SourceCodeEditor;
+import util.ProcessUtil;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -60,9 +61,9 @@ public class LatexCompiler extends Thread {
     Process latexCompiler = null;
     try{
       if(type == TYPE_PDF) {
-        latexCompiler = exec("pdflatex -file-line-error -interaction=nonstopmode " + baseName + ".tex", file.getParentFile());
+        latexCompiler = ProcessUtil.exec("pdflatex -file-line-error -interaction=nonstopmode " + baseName + ".tex", file.getParentFile());
       } else {
-        latexCompiler = exec("latex -file-line-error -interaction=nonstopmode -output-format=dvi " + baseName + ".tex", file.getParentFile());
+        latexCompiler = ProcessUtil.exec("latex -file-line-error -interaction=nonstopmode -output-format=dvi " + baseName + ".tex", file.getParentFile());
       }
     } catch(Exception e){
       e.printStackTrace();
@@ -232,15 +233,15 @@ public class LatexCompiler extends Thread {
     }
 
     try {
-      Process bibtex = exec("bibtex " + baseName, file.getParentFile());
+      Process bibtex = ProcessUtil.exec("bibtex " + baseName, file.getParentFile());
       bibtex.waitFor();
 
       if(type == TYPE_DVI_PS || type == TYPE_DVI_PS_PDF) {
-        Process dvips = exec("dvips " + baseName + ".dvi", file.getParentFile());
+        Process dvips = ProcessUtil.exec("dvips " + baseName + ".dvi", file.getParentFile());
         dvips.waitFor();
       }
       if(type == TYPE_DVI_PS_PDF) {
-        Process ps2pdf = exec("ps2pdf " + baseName + ".ps", file.getParentFile());
+        Process ps2pdf = ProcessUtil.exec("ps2pdf " + baseName + ".ps", file.getParentFile());
         ps2pdf.waitFor();
       }
     } catch (Exception e) {
@@ -252,22 +253,6 @@ public class LatexCompiler extends Thread {
 
   public void halt() {
     stop();
-  }
-
-  private Process exec(String command, File dir) throws IOException {
-    Process process;
-
-    ArrayList<String> env = new ArrayList<String>();
-    for(Map.Entry<String, String> entry : System.getenv().entrySet()) {
-      if(entry.getKey().equalsIgnoreCase("PWD")) continue;
-      env.add(entry.getKey() + "=" + entry.getValue());
-    }
-    String[] envArray = new String[env.size()];
-    env.toArray(envArray);
-
-    process = Runtime.getRuntime().exec(command, envArray, dir);
-
-    return process;
   }
 
   private void compileStart(){
