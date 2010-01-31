@@ -6,7 +6,6 @@
 package sce.component;
 
 import jlatexeditor.GProperties;
-import sce.codehelper.WordWithPos;
 
 import java.awt.*;
 import java.awt.font.TextAttribute;

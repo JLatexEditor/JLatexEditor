@@ -1,8 +1,8 @@
 package jlatexeditor.codehelper;
 
-import sce.codehelper.*;
-import sce.component.SCEDocument;
-import sce.component.SCEPane;
+import sce.codehelper.CodeHelper;
+import sce.codehelper.PatternPair;
+import sce.codehelper.WordWithPos;
 
 import java.util.List;
 
