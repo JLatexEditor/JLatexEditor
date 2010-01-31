@@ -107,7 +107,7 @@ public class GProperties {
 	}
 
 	private static void extractProperties() {
-		editorFont = new Font(properties.getProperty(EDITOR_FONT_NAME), 0, properties.getInt(EDITOR_FONT_SIZE));
+		editorFont = new Font(properties.getProperty(EDITOR_FONT_NAME), Font.PLAIN, properties.getInt(EDITOR_FONT_SIZE));
 		textAntiAliasing = TEXT_ANTIALIAS_MAP.get(properties.getProperty(EDITOR_FONT_ANTIALIASING));
 	}
 
@@ -144,7 +144,7 @@ public class GProperties {
 
   public static void setEditorFont(Font editorFont) {
     GProperties.editorFont = editorFont;
-	  properties.setProperty(EDITOR_FONT_NAME, editorFont.getPSName());
+	  properties.setProperty(EDITOR_FONT_NAME, editorFont.getFontName());
 	  properties.setProperty(EDITOR_FONT_SIZE, "" + editorFont.getSize());
 	  save();
   }
