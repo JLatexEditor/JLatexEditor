@@ -18,7 +18,7 @@
   </element>
 
   <element name="number" style="plain">
-    <foreground><color r="0" g="0" b="0"/></foreground>
+    <foreground><color r="0" g="128" b="0"/></foreground>
   </element>
 
   <element name="error" style="plain">

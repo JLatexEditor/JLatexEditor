@@ -10,6 +10,7 @@ import jlatexeditor.codehelper.*;
 import jlatexeditor.errorhighlighting.LatexCompiler;
 import jlatexeditor.errorhighlighting.LatexErrorHighlighting;
 import jlatexeditor.gproperties.GPropertiesStyles;
+import jlatexeditor.gproperties.GPropertiesSyntaxHighlighting;
 import jlatexeditor.gui.AboutDialog;
 import jlatexeditor.gui.LocalHistory;
 import jlatexeditor.quickhelp.LatexQuickHelp;
@@ -437,8 +438,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     GPropertiesStyles.addStyles(document);
 
     // syntax highlighting
-//    SyntaxHighlighting syntaxHighlighting = new LatexSyntaxHighlighting(scePane);
-//    syntaxHighlighting.start();
+    GPropertiesSyntaxHighlighting syntaxHighlighting = new GPropertiesSyntaxHighlighting(scePane);
+    syntaxHighlighting.start();
 
 	  // code completion and quick help
 		CombinedCodeHelper codeHelper = new CombinedCodeHelper();
