@@ -20,6 +20,7 @@ public class SCEFontWindow extends JFrame implements ListSelectionListener, Acti
   private JList sizeList;
   private int fontSize;
   private int prevFontSize;
+	private boolean init = true;
 
   private ActionListener actionListener;
 
@@ -122,9 +123,27 @@ public class SCEFontWindow extends JFrame implements ListSelectionListener, Acti
 
     pack();
     setVisible(true);
+
+	  // select the current font and size
+	  int nr = 0;
+	  fontList.setSelectedValue(fontName, true);
+	  /*
+	  for (String aFontName : GProperties.getMonospaceFonts()) {
+		  if (((String) aFontName).equals(fontName)) {
+			  fontList.setSelectedIndex(nr);
+			  System.out.println(nr);
+		  }
+		  nr++;
+	  }
+	  */
+	  sizeList.setSelectedIndex(GProperties.getEditorFont().getSize() - 6);
+	  
+	  init = false;
   }
 
   public void valueChanged(ListSelectionEvent e) {
+	  if (init) return;
+
     if(e.getSource() == fontList.getSelectionModel()) {
       fontName = fontList.getSelectedValue().toString();
     }
