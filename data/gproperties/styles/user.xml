@@ -1,0 +1,27 @@
+
+<styles>
+  <element name="text" style="plain">
+    <foreground><color r="0" g="0" b="0"/></foreground>
+    <!-- <background><color r="255" g="255" b="255"/></background> -->
+  </element>
+
+  <element name="key" style="plain">
+    <foreground><color r="0" g="0" b="255"/></foreground>
+  </element>
+
+  <element name="comment" style="italic">
+    <foreground><color r="128" g="128" b="128"/></foreground>
+  </element>
+
+  <element name="bracket" style="bold">
+    <foreground><color rgb="2fbf53"/></foreground>
+  </element>
+
+  <element name="number" style="plain">
+    <foreground><color r="0" g="0" b="0"/></foreground>
+  </element>
+
+  <element name="error" style="plain">
+    <foreground><color r="255" g="0" b="0"/></foreground>
+  </element>
+</styles>
