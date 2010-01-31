@@ -9,6 +9,7 @@ package jlatexeditor;
 import jlatexeditor.codehelper.*;
 import jlatexeditor.errorhighlighting.LatexCompiler;
 import jlatexeditor.errorhighlighting.LatexErrorHighlighting;
+import jlatexeditor.gproperties.GPropertiesStyles;
 import jlatexeditor.gui.AboutDialog;
 import jlatexeditor.gui.LocalHistory;
 import jlatexeditor.quickhelp.LatexQuickHelp;
@@ -389,7 +390,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 			"LaTeX files (*.tex, *.def, *.bib)", "tex", "def", "bib"));
 	}
 
-	private SourceCodeEditor createSourceCodeEditor() {
+	private SourceCodeEditor createLatexSourceCodeEditor() {
     SourceCodeEditor editor = new SourceCodeEditor<AbstractResource>(null);
 
     SCEPane scePane = editor.getTextPane();
@@ -425,6 +426,29 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  return editor;
   }
 
+	private SourceCodeEditor createGPropertiesSourceCodeEditor() {
+    SourceCodeEditor editor = new SourceCodeEditor<AbstractResource>(null);
+
+    SCEPane scePane = editor.getTextPane();
+    SCEDocument document = scePane.getDocument();
+
+		// TODO: user other styles
+    // add some styles to the document
+    GPropertiesStyles.addStyles(document);
+
+    // syntax highlighting
+//    SyntaxHighlighting syntaxHighlighting = new LatexSyntaxHighlighting(scePane);
+//    syntaxHighlighting.start();
+
+	  // code completion and quick help
+		CombinedCodeHelper codeHelper = new CombinedCodeHelper();
+	  scePane.setCodeHelper(codeHelper);
+
+	  scePane.addKeyListener(this);
+
+	  return editor;
+  }
+
   public BackgroundParser getBackgroundParser() {
     return backgroundParser;
   }
@@ -450,7 +474,12 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   }
 
 	private SourceCodeEditor addTab(AbstractResource resource) throws IOException {
-		SourceCodeEditor editor = createSourceCodeEditor();
+		SourceCodeEditor editor;
+		if (resource.getName().endsWith("global.properties")) {
+			editor = createGPropertiesSourceCodeEditor();
+		} else {
+			editor = createLatexSourceCodeEditor();
+		}
 		tabbedPane.removeChangeListener(this);
 		tabbedPane.addTab(resource.getName(), editor);
 		tabbedPane.addChangeListener(this);
