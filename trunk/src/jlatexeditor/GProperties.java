@@ -83,6 +83,10 @@ public class GProperties {
 		save();
   }
 
+	public static Def getDef(String key) {
+		return properties.getDefMap().get(key);
+	}
+
 	public static Range getRange(String key) {
 		return properties.getDefMap().get(key).getRange();
 	}
