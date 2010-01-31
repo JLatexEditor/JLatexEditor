@@ -320,6 +320,12 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     fontMenuItem.addActionListener(this);
     settingsMenu.add(fontMenuItem);  
 
+	  JMenuItem globalSettings = new JMenuItem("Global Settings");
+		globalSettings.setActionCommand("global settings");
+	  globalSettings.setMnemonic('G');
+	  globalSettings.addActionListener(this);
+	  settingsMenu.add(globalSettings);
+
 	  JMenu helpMenu = new JMenu("Help");
 	  helpMenu.setMnemonic('H');
 	  menuBar.add(helpMenu);
@@ -767,6 +773,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     if(action.equals("font window") || action.equals("font window cancel")){
       SCEFontWindow fontDialog = (SCEFontWindow) e.getSource();
       changeFont(fontDialog.getFontName(), fontDialog.getFontSize());
+    } else
+    if(action.equals("global settings")){
+	    open(new FileDoc(GProperties.CONFIG_FILE));
     } else
     if(action.equals("update")){
 		  checkForUpdates(false);
