@@ -144,7 +144,7 @@ public class GProperties {
 
   public static void setEditorFont(Font editorFont) {
     GProperties.editorFont = editorFont;
-	  properties.setProperty(EDITOR_FONT_NAME, editorFont.getFontName());
+	  properties.setProperty(EDITOR_FONT_NAME, editorFont.getFamily());
 	  properties.setProperty(EDITOR_FONT_SIZE, "" + editorFont.getSize());
 	  save();
   }
