@@ -83,12 +83,16 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 
 	/** Code assistants that are informed about alt+enter events. */
 	private ArrayList<CodeAssistant> codeAssistants = new ArrayList<CodeAssistant>();
+	private SourceCodeEditor sourceCodeEditor;
 
 
-  /**
+	/**
    * Creates a SCEPane (a text pane for editing source code).
+   * @param sourceCodeEditor source code editor
    */
-  public SCEPane(){
+  public SCEPane(SourceCodeEditor sourceCodeEditor){
+	  this.sourceCodeEditor = sourceCodeEditor;
+
     setBackground(Color.WHITE);
 
     // create the underlying document
