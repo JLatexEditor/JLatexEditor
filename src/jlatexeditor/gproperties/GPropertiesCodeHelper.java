@@ -1,7 +1,6 @@
 package jlatexeditor.gproperties;
 
-import de.endrullis.utils.BetterProperties2.Range;
-import de.endrullis.utils.BetterProperties2.PSet;
+import de.endrullis.utils.BetterProperties2.*;
 import jlatexeditor.GProperties;
 import jlatexeditor.codehelper.PatternHelper;
 import sce.codehelper.CHCommand;
@@ -14,7 +13,7 @@ import java.util.LinkedHashSet;
 public class GPropertiesCodeHelper extends PatternHelper {
 	protected String key;
 	protected WordWithPos value;
-	protected LinkedHashSet<String> range;
+	protected Range range;
 
   public GPropertiesCodeHelper() {
 	  pattern = new PatternPair("^([^#=]+)=([^#]*)");
@@ -26,12 +25,8 @@ public class GPropertiesCodeHelper extends PatternHelper {
 			key = params.get(0).word;
 			value = params.get(1);
 
-			Range range = GProperties.getRange(key);
-			if (range instanceof PSet) {
-				PSet set = (PSet) range;
-				this.range = set.content;
-				return true;
-			}
+			range = GProperties.getRange(key);
+			return true;
 		}
 		return false;
 	}
@@ -54,12 +49,15 @@ public class GPropertiesCodeHelper extends PatternHelper {
 	public Iterable<ValueCompletion> getCompletions(String key, final String prefix) {
 		ArrayList<ValueCompletion> list = new ArrayList<ValueCompletion>();
 
-		GProperties.getRange(key);
-
-		for (String value : range) {
-			if (value.startsWith(prefix)) {
-				list.add(new ValueCompletion(value));
+		if (range instanceof PSet) {
+			PSet set = (PSet) range;
+			for (String value : set.content) {
+				if (value.startsWith(prefix)) {
+					list.add(new ValueCompletion(value));
+				}
 			}
+		} else {
+			list.add(new ValueCompletion("<" + range.description() + ">"));
 		}
 
     return list;
@@ -69,32 +67,37 @@ public class GPropertiesCodeHelper extends PatternHelper {
 	 * Searches for the best completion of the prefix.
 	 *
 	 * @param key property name
-	 * @param fileName filename
+	 * @param prefix filename
 	 * @return the completion suggestion (without the prefix)
 	 */
-	public String getMaxCommonPrefix(String key, String fileName) {
-	  int prefixLength = fileName.length();
-	  String completion = null;
+	public String getMaxCommonPrefix(String key, String prefix) {
+		if (range instanceof PSet) {
+			int prefixLength = prefix.length();
+			String completion = null;
 
-		for (CHCommand command : getCompletions(key, fileName)) {
-			String commandName = command.getName();
-			if (commandName.startsWith(fileName)) {
-				if (completion == null) {
-					completion = commandName;
-				} else {
-					// find the common characters
-					int commonIndex = prefixLength;
-					int commonLength = Math.min(completion.length(), commandName.length());
-					while (commonIndex < commonLength) {
-						if (completion.charAt(commonIndex) != commandName.charAt(commonIndex)) break;
-						commonIndex++;
+			for (CHCommand command : getCompletions(key, prefix)) {
+				String commandName = command.getName();
+				if (commandName.startsWith(prefix)) {
+					if (completion == null) {
+						completion = commandName;
+					} else {
+						// find the common characters
+						int commonIndex = prefixLength;
+						int commonLength = Math.min(completion.length(), commandName.length());
+						while (commonIndex < commonLength) {
+							if (completion.charAt(commonIndex) != commandName.charAt(commonIndex)) break;
+							commonIndex++;
+						}
+						completion = completion.substring(0, commonIndex);
 					}
-					completion = completion.substring(0, commonIndex);
 				}
 			}
-		}
 
-	  return completion;
+			return completion;
+		}
+		else {
+			return prefix;
+		}
 	}
 
 	public static class ValueCompletion extends CHCommand {
