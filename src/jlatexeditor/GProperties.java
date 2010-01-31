@@ -79,6 +79,10 @@ public class GProperties {
 		save();
   }
 
+	public static Range getRange(String key) {
+		return properties.getDefMap().get(key).getRange();
+	}
+
 	public static void load() {
 		if (CONFIG_FILE.exists()) {
 			try {
