@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 public class BetterProperties2 extends Properties {
   /** Default values. */
   private ArrayList<Entry> entries = new ArrayList<Entry>();
+	private HashMap<String,Def> defMap = new HashMap<String, Def>();
 	private boolean ensureValidRanges = true;
 
 	public BetterProperties2() {
@@ -39,9 +40,21 @@ public class BetterProperties2 extends Properties {
    */
   public void addEntry(Entry entry) {
     entries.add(entry);
+	  if (entry instanceof Def) {
+			Def def = (Def) entry;
+			defMap.put(def.key, def);
+		}
   }
 
-  @Override
+	public ArrayList<Entry> getEntries() {
+		return entries;
+	}
+
+	public HashMap<String, Def> getDefMap() {
+		return defMap;
+	}
+
+	@Override
   public String setProperty(String s, String s1) {
     return (String) put(s, s1);
   }
@@ -55,25 +68,19 @@ public class BetterProperties2 extends Properties {
   }
 
   public void loadDefaults() {
-    for (Entry entry : entries) {
-      if (entry instanceof Def) {
-        Def def = (Def) entry;
-        if (def.getValue() != null) {
-          put(def.getKey(), def.getValue());
-        }
-      }
-    }
+	  for (Def def : defMap.values()) {
+		  if (def.getValue() != null) {
+		    put(def.getKey(), def.getValue());
+		  }
+	  }
   }
 
 	private void checkRanges() {
 		if (ensureValidRanges) {
-			for (Entry entry : entries) {
-				if (entry instanceof Def) {
-					Def def = (Def) entry;
-					// if user value is not valid -> reset to default
-					if (!def.range.isValid(getString(def.key))) {
-						put(def.getKey(), def.getValue());
-					}
+			for (Def def : defMap.values()) {
+				// if user value is not valid -> reset to default
+				if (!def.range.isValid(getString(def.key))) {
+					put(def.getKey(), def.getValue());
 				}
 			}
 		}
@@ -478,7 +485,7 @@ public class BetterProperties2 extends Properties {
 		}
 	}
 	public static class PSet implements Range {
-		private HashSet<String> content = new HashSet<String>();
+		public LinkedHashSet<String> content = new LinkedHashSet<String>();
 		public PSet (String... items) {
 			for (String item : items) {
 				content.add(item);

@@ -9,6 +9,7 @@ package jlatexeditor;
 import jlatexeditor.codehelper.*;
 import jlatexeditor.errorhighlighting.LatexCompiler;
 import jlatexeditor.errorhighlighting.LatexErrorHighlighting;
+import jlatexeditor.gproperties.GPropertiesCodeHelper;
 import jlatexeditor.gproperties.GPropertiesStyles;
 import jlatexeditor.gproperties.GPropertiesSyntaxHighlighting;
 import jlatexeditor.gui.AboutDialog;
@@ -444,6 +445,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 	  // code completion and quick help
 		CombinedCodeHelper codeHelper = new CombinedCodeHelper();
+		codeHelper.addPatternHelper(new GPropertiesCodeHelper());
 	  scePane.setCodeHelper(codeHelper);
 
 	  scePane.addKeyListener(this);
