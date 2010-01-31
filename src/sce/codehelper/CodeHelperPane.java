@@ -3,6 +3,7 @@ package sce.codehelper;
 import sce.component.*;
 
 import javax.swing.*;
+import javax.swing.text.Caret;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -405,7 +406,8 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
 		    for (CHCommand command : tabCompletion.getCompletions()) {
 			    if(wordToReplace.word.equals(command.getName())) {
-				    document.remove(wordToReplace);
+				    SCECaret caret = pane.getCaret();
+				    document.remove(wordToReplace.row, wordToReplace.startColumn, caret.getRow(), caret.getColumn());
 				    startTemplate(command.getUsage(), command.getArguments(), wordToReplace.row, wordToReplace.startColumn);
 
 				    e.consume();
@@ -460,7 +462,8 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
       // remove the current text and then start the template
       CHCommand command = (CHCommand) list.getSelectedValue();
 
-      document.remove(oldWord);
+	    SCECaret caret = pane.getCaret();
+	    document.remove(oldWord.row, oldWord.startColumn, caret.getRow(), caret.getColumn());
       startTemplate(command.getUsage(), command.getArguments(), oldWord.row, oldWord.startColumn);
 
       e.consume();

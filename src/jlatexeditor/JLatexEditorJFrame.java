@@ -399,6 +399,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  // code completion and quick help
 		CombinedCodeHelper codeHelper = new CombinedCodeHelper();
 		codeHelper.addPatternHelper(new BibCodeHelper(getBackgroundParser()));
+		codeHelper.addPatternHelper(new IncludeCodeHelper());
 		codeHelper.addPatternHelper(new LatexCommandCodeHelper("data/codehelper/commands.xml"));
 	  scePane.setCodeHelper(codeHelper);
 	  scePane.setTabCompletion(new LatexCommandCodeHelper("data/codehelper/tabCompletion.xml"));
