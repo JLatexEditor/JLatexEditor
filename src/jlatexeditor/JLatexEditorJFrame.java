@@ -6,6 +6,7 @@
 
 package jlatexeditor;
 
+import de.endrullis.utils.ProgramUpdater;
 import jlatexeditor.codehelper.*;
 import jlatexeditor.errorhighlighting.LatexCompiler;
 import jlatexeditor.errorhighlighting.LatexErrorHighlighting;
@@ -24,7 +25,6 @@ import sce.component.*;
 import sce.syntaxhighlighting.SyntaxHighlighting;
 import util.StreamUtils;
 import util.filechooser.SCEFileChooser;
-import util.updater.ProgramUpdater;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;

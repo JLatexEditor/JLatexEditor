@@ -1,4 +1,4 @@
-package util.updater;
+package de.endrullis.utils;
 
 import my.XML.XMLDocument;
 import my.XML.XMLElement;
@@ -23,13 +23,13 @@ import java.util.HashMap;
  */
 public class ProgramUpdater extends JFrame implements ActionListener {
 	public static final String VERSIONS_FILE_NAME = "versions.xml";
-	public static final String UPDATE_DIR = "tmp";
+	public static final String UPDATE_DIR = "update";
 
 	private JProgressBar progressBar = new JProgressBar();
 	private JButton abortButton = new JButton("Abort");
 
 	private String urlPrefix;
-	private HashMap<String,XMLElement> files = new HashMap<String,XMLElement>();
+	private HashMap<String, XMLElement> files = new HashMap<String,XMLElement>();
 	private ArrayList<String> files2download = new ArrayList<String>();
 	private int totalSize = 0;
 	private int currentSize = 0;
@@ -97,11 +97,11 @@ public class ProgramUpdater extends JFrame implements ActionListener {
 	  try {
 	    compareVersions();
 	    downloadFiles();
-	    writeTmpVersionsFile();
+	    writeUpdateVersionsFile();
 
 	    // if windows we have to and here and go on with call of AfterUpdate
 	    if(SystemUtils.isWinOS()) {
-	      System.out.println("isWinOS");
+	      System.out.println("Bad OS");
 	      moveAfterUpdate();
 		    // TODO
 	      //FootWizard.startApplication("AfterUpdate", new String[]{AFTER_UPDATE_JAR_NAME}, "");
@@ -184,12 +184,14 @@ public class ProgramUpdater extends JFrame implements ActionListener {
 	 * Loads the files from the web.
 	 */
 	private void downloadFiles() throws IOException, InterruptedException {
-	  // create tmp dir if not exists
-	  File tmpDir = new File(UPDATE_DIR);
-	  if(!tmpDir.exists()) tmpDir.mkdir();
+	  // create update dir if not exists
+	  File updateDir = new File(UPDATE_DIR);
+	  if(!updateDir.exists()) updateDir.mkdir();
 
 	  for (String filename : files2download) {
-	    out = new FileOutputStream(UPDATE_DIR + "/" + filename);
+		  File outFile = new File(UPDATE_DIR + "/" + filename);
+		  outFile.getParentFile().mkdirs();
+	    out = new FileOutputStream(outFile);
 	    in = getInputStream(filename);
 
 	    // read and write
@@ -218,11 +220,11 @@ public class ProgramUpdater extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * Overwrites the old after_update.jar with the new one (from tmp dir).
+	 * Overwrites the old after_update.jar with the new one (from update dir).
 	 */
 	private void moveAfterUpdate() {
 		/* TODO
-	  File afterUpdateJar = new File("tmp/" + AFTER_UPDATE_JAR_NAME);
+	  File afterUpdateJar = new File(UPDATE_DIR + "/" + AFTER_UPDATE_JAR_NAME);
 	  if (afterUpdateJar.exists()) {
 	    new File(AFTER_UPDATE_JAR_NAME).delete();
 	    afterUpdateJar.renameTo(new File(AFTER_UPDATE_JAR_NAME));
@@ -231,28 +233,28 @@ public class ProgramUpdater extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * Overwrites the old files with the new one (from tmp dir).
+	 * Overwrites the old files with the new one (from update dir).
 	 */
 	public static void moveFiles() {
-	  File tmpDir = new File(UPDATE_DIR);
-	  if (!tmpDir.isDirectory()) return;
+	  File updateDir = new File(UPDATE_DIR);
+	  if (!updateDir.isDirectory()) return;
 
-	  // move files in tmp dir to .
-	  File[] files2move = tmpDir.listFiles();
+	  // move files in update dir to .
+	  File[] files2move = updateDir.listFiles();
 	  for (File file : files2move) {
 	    file.renameTo(new File(file.getName()));
 	  }
 
-	  // remove the tmp dir
-	  tmpDir.delete();
+	  // remove the update dir
+	  updateDir.delete();
 	}
 
 	/**
 	 * Writes the new version file.
-	 * For the time being the file is located in tmp dir and will be moved
+	 * For the time being the file is located in update dir and will be moved
 	 * later (with AfterUpdate if windows) to . dir.
 	 */
-	private void writeTmpVersionsFile() throws IOException {
+	private void writeUpdateVersionsFile() throws IOException {
 	  XMLDocument doc = new XMLDocument();
 	  XMLElement filesXml = new XMLElement("files");
 	  for (XMLElement fileElement : files.values()) {
@@ -260,7 +262,7 @@ public class ProgramUpdater extends JFrame implements ActionListener {
 	  }
 	  doc.setRootElement(filesXml);
 
-	  FileWriter fileWriter = new FileWriter("tmp/" + VERSIONS_FILE_NAME);
+	  FileWriter fileWriter = new FileWriter(UPDATE_DIR + "/" + VERSIONS_FILE_NAME);
 	  fileWriter.write(doc.toString());
 	  fileWriter.close();
 	}
