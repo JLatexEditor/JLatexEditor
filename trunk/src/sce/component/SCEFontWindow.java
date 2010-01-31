@@ -1,6 +1,6 @@
 package sce.component;
 
-import jlatexeditor.GProperties;
+import jlatexeditor.gproperties.GProperties;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;

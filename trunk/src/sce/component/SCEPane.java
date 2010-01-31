@@ -1,6 +1,6 @@
 package sce.component;
 
-import jlatexeditor.GProperties;
+import jlatexeditor.gproperties.GProperties;
 import sce.codehelper.CodeAssistant;
 import sce.codehelper.CodeHelper;
 import sce.codehelper.SCEPopup;

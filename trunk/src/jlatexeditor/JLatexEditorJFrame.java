@@ -9,6 +9,7 @@ package jlatexeditor;
 import jlatexeditor.codehelper.*;
 import jlatexeditor.errorhighlighting.LatexCompiler;
 import jlatexeditor.errorhighlighting.LatexErrorHighlighting;
+import jlatexeditor.gproperties.GProperties;
 import jlatexeditor.gproperties.GPropertiesCodeHelper;
 import jlatexeditor.gproperties.GPropertiesStyles;
 import jlatexeditor.gproperties.GPropertiesSyntaxHighlighting;

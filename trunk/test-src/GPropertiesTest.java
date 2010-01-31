@@ -1,4 +1,4 @@
-import jlatexeditor.GProperties;
+import jlatexeditor.gproperties.GProperties;
 
 /**
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;

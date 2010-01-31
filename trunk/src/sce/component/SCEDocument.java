@@ -5,7 +5,7 @@
 
 package sce.component;
 
-import jlatexeditor.GProperties;
+import jlatexeditor.gproperties.GProperties;
 
 import java.awt.*;
 import java.awt.font.TextAttribute;

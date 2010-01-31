@@ -1,14 +1,13 @@
 package jlatexeditor.gproperties;
 
 import de.endrullis.utils.BetterProperties2.*;
-import jlatexeditor.GProperties;
+import jlatexeditor.gproperties.GProperties;
 import jlatexeditor.codehelper.PatternHelper;
 import sce.codehelper.CHCommand;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 
 public class GPropertiesCodeHelper extends PatternHelper {
 	protected String key;

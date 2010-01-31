@@ -1,19 +1,14 @@
 package jlatexeditor.gproperties;
 
 import de.endrullis.utils.BetterProperties2.*;
-import jlatexeditor.GProperties;
+import jlatexeditor.gproperties.GProperties;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
-import jlatexeditor.syntaxhighlighting.StyleableTerm;
-import jlatexeditor.syntaxhighlighting.states.MathMode;
 import jlatexeditor.syntaxhighlighting.states.RootState;
-import sce.codehelper.PatternPair;
 import sce.component.*;
 import sce.syntaxhighlighting.ParserState;
 import sce.syntaxhighlighting.ParserStateStack;
 import sce.syntaxhighlighting.SyntaxHighlighting;
-import util.Aspell;
 
-import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

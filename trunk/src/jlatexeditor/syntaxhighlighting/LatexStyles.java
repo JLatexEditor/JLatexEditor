@@ -5,7 +5,7 @@
 
 package jlatexeditor.syntaxhighlighting;
 
-import jlatexeditor.GProperties;
+import jlatexeditor.gproperties.GProperties;
 import my.XML.XMLDocument;
 import my.XML.XMLElement;
 import my.XML.XMLParser;
