@@ -667,7 +667,7 @@ public class SCEDocument{
 	}
 
   /**
-   * Sets the row propertie modiefied to true.
+   * Sets the row property modified to true.
    *
    * @param row_nr the row
    */
