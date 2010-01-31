@@ -115,8 +115,9 @@ public class GProperties {
 		CONFIG_FILE.getParentFile().mkdirs();
 		try {
 			properties.store(new FileOutputStream(CONFIG_FILE),
-					" JLatexEditor properties - use control+space to get completion for values\n"+
-					" Default values are commented out\n");
+					" JLatexEditor properties\n" +
+					" Use control+space to get completion for property values.\n" +
+					" Default values will be automatically commented out.\n");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
