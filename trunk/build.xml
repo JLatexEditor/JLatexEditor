@@ -3,17 +3,19 @@
 <project name="JLatexEditor" default="runJLatexEditor" basedir=".">
 	<!-- Update if needed. -->
 	<property name="jle.version"        value="0.1"/>
+	<property name="program.jar"        value="${ant.project.name}.jar"/>
 
 	<!-- Locations -->
 	<property name="src"                location="src"/>
 	<property name="build"              location="build"/>
 	<property name="lib"                location="lib"/>
 	<property name="dist"               location="dist"/>
-	<property name="upload"             location="${dist}/JLatexEditor"/>
+	<property name="upload"             location="${dist}/${ant.project.name}"/>
+	<property name="uploadPrepare"      location="${dist}/${ant.project.name}_prepare"/>
 	<property name="releases"           location="${dist}/releases"/>
 
 	<property name="buildClasses"       location="${build}/classes"/>
-	<property name="buildJar"           location="${upload}/JLatexEditor.jar"/>
+	<property name="programJar"         location="${uploadPrepare}/${program.jar}"/>
 	
 	<path id="libraries">
 		<fileset dir="${lib}">
@@ -60,11 +62,11 @@
 
 	<!-- Builds the upload directory including the jar file. -->
 	<target name="jar" depends="compile,updateBuildNumber">
-		<delete dir="${upload}"/>
-		<mkdir dir="${upload}"/>
+		<delete dir="${uploadPrepare}"/>
+		<mkdir dir="${uploadPrepare}"/>
 
 		<!-- Build jar file. -->
-		<jar jarfile="${buildJar}" basedir="${buildClasses}">
+		<jar jarfile="${programJar}" basedir="${buildClasses}">
 			<fileset dir=".">
 				<include name="data/**"/>
 			</fileset>
@@ -74,9 +76,10 @@
 		</jar>
 
 		<!-- Copy start scripts. -->
-		<copy todir="${upload}" file="scripts/jlatexeditor"/>
-		<copy todir="${upload}" file="scripts/jlatexeditor.bat"/>
-		<chmod file="${upload}/jlatexeditor" perm="ugo+x"/>
+		<copy todir="${uploadPrepare}" file="scripts/jlatexeditor"/>
+		<copy todir="${uploadPrepare}" file="scripts/jlatexeditor.bat"/>
+		<copy todir="${uploadPrepare}" file="scripts/.wstart.bat"/>
+		<chmod file="${uploadPrepare}/jlatexeditor" perm="ugo+x"/>
 	</target>
 	
 	<!-- Increments the build number. -->
