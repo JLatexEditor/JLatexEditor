@@ -14,6 +14,7 @@ import jlatexeditor.gproperties.GPropertiesStyles;
 import jlatexeditor.gproperties.GPropertiesSyntaxHighlighting;
 import jlatexeditor.gui.AboutDialog;
 import jlatexeditor.gui.LocalHistory;
+import jlatexeditor.gui.StatusBar;
 import jlatexeditor.quickhelp.LatexQuickHelp;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
@@ -51,6 +52,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private JSplitPane textToolsSplit = null;
   private JTabbedPane toolsTab = null;
   private ErrorView errorView = null;
+
+  private StatusBar statusBar = null;
 
   // command line arguments
   private String args[];
@@ -131,7 +134,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     */
 
     // set Layout
-    getContentPane().setLayout(new BorderLayout());
+    Container cp = getContentPane();
+    cp.setLayout(new BorderLayout());
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     // create menu
@@ -365,8 +369,11 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     textToolsSplit.setOneTouchExpandable(true);
     textToolsSplit.setResizeWeight(.85);
 
-    getContentPane().add(textToolsSplit, BorderLayout.CENTER);
-    getContentPane().validate();
+    statusBar = new StatusBar();
+
+    cp.add(textToolsSplit, BorderLayout.CENTER);
+    cp.add(statusBar, BorderLayout.SOUTH);
+    cp.validate();
 
     errorHighlighting.attach(getEditor(0), errorView);
 
