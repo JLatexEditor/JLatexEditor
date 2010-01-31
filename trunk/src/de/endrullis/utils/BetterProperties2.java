@@ -468,22 +468,68 @@ public class BetterProperties2 extends Properties {
 
 	public static interface Range {
 		public boolean isValid(String s);
+		public String description();
 	}
+	
 	public static class PInt implements Range {
-		private Pattern pattern = Pattern.compile("\\d+");
+		private int min = Integer.MIN_VALUE;
+		private int max = Integer.MAX_VALUE;
+
+		public PInt() {
+		}
+		public PInt(int min) {
+			this.min = min;
+		}
+		public PInt(int min, int max) {
+			this.min = min;
+			this.max = max;
+		}
+
 		@Override
 		public boolean isValid(String s) {
-			return pattern.matcher(s).find();
+			try {
+				int value = Integer.parseInt(s);
+				return value >= min && value <= max;
+			} catch (Exception e) {
+				return false;
+			}
+		}
+		@Override
+		public String description() {
+			return "integer value between " + min + " and " + max;
 		}
 	}
 
 	public static class PDouble implements Range {
-		private Pattern pattern = Pattern.compile("(\\d+)?\\.\\d+");
+		private double min = Double.MIN_VALUE;
+		private double max = Double.MAX_VALUE;
+
+		public PDouble() {
+		}
+		public PDouble(double min) {
+			this.min = min;
+		}
+		public PDouble(double min, double max) {
+			this.min = min;
+			this.max = max;
+		}
+
 		@Override
 		public boolean isValid(String s) {
-			return pattern.matcher(s).find();
+			try {
+				double value = Double.parseDouble(s);
+				return value >= min && value <= max;
+			} catch (Exception e) {
+				return false;
+			}
+		}
+
+		@Override
+		public String description() {
+			return "double value between " + min + " and " + max;
 		}
 	}
+
 	public static class PSet implements Range {
 		public LinkedHashSet<String> content = new LinkedHashSet<String>();
 		public PSet (String... items) {
@@ -495,20 +541,33 @@ public class BetterProperties2 extends Properties {
 		public boolean isValid(String s) {
 			return content.contains(s);
 		}
+
+		@Override
+		public String description() {
+			return "values out of (" + CollectionUtils.join(content, ", ") + ")";
+		}
 	}
+
 	public static class PBoolean extends PSet {
 		public PBoolean () {
 			super("true", "false");
 		}
 	}
+
 	public static class PString implements Range {
 		@Override
 		public boolean isValid(String s) {
 			return true;
 		}
+
+		@Override
+		public String description() {
+			return "arbitrary string";
+		}
 	}
 
 	public static final Range INT     = new PInt();
+	public static final Range INT_GT0 = new PInt(0);
 	public static final Range DOUBLE  = new PDouble();
 	public static final Range BOOLEAN = new PBoolean();
 	public static final Range STRING  = new PString();
