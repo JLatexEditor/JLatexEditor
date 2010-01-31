@@ -1,6 +1,5 @@
 package sce.codehelper;
 
-import sce.codehelper.WordWithPos;
 import sce.component.SCECaret;
 import sce.component.SCEPane;
 import sce.component.SCEPosition;

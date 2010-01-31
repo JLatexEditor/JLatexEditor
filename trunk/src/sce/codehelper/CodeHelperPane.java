@@ -3,7 +3,6 @@ package sce.codehelper;
 import sce.component.*;
 
 import javax.swing.*;
-import javax.swing.text.Caret;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;

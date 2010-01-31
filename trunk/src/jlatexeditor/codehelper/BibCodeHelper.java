@@ -1,7 +1,6 @@
 package jlatexeditor.codehelper;
 
 import sce.codehelper.CHCommand;
-import sce.codehelper.CodeHelper;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
 

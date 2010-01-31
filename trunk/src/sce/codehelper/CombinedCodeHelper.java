@@ -1,9 +1,6 @@
 package sce.codehelper;
 
 import jlatexeditor.codehelper.PatternHelper;
-import sce.codehelper.CHCommand;
-import sce.codehelper.WordReplacement;
-import sce.codehelper.WordWithPos;
 import sce.component.SCEPane;
 
 import java.util.ArrayList;

@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.*;
+import java.util.TimerTask;
 
 public class SCEFileChooser extends JFileChooser {
   private JList list = null;
