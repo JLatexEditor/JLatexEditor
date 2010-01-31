@@ -22,8 +22,9 @@ import java.util.regex.Pattern;
 public class BetterProperties2 extends Properties {
   /** Default values. */
   private ArrayList<Entry> entries = new ArrayList<Entry>();
+	private boolean ensureValidRanges = true;
 
-  public BetterProperties2() {
+	public BetterProperties2() {
     super();
   }
 
@@ -64,15 +65,31 @@ public class BetterProperties2 extends Properties {
     }
   }
 
+	private void checkRanges() {
+		if (ensureValidRanges) {
+			for (Entry entry : entries) {
+				if (entry instanceof Def) {
+					Def def = (Def) entry;
+					// if user value is not valid -> reset to default
+					if (!def.range.isValid(getString(def.key))) {
+						put(def.getKey(), def.getValue());
+					}
+				}
+			}
+		}
+	}
+
   @Override
   public void load(InputStream inputStream) throws IOException {
     // initialize map with defaults
     loadDefaults();
 
     super.load(inputStream);
+
+	  checkRanges();
   }
 
-  @Override
+	@Override
   public void store(Writer writer, String comments) throws IOException {
     store0((writer instanceof BufferedWriter) ? (BufferedWriter) writer : new BufferedWriter(writer),
         comments, false);
@@ -89,6 +106,8 @@ public class BetterProperties2 extends Properties {
     loadDefaults();
 
     super.loadFromXML(inputStream);
+
+	  checkRanges();
   }
 
   @Override

@@ -4,6 +4,7 @@ import de.endrullis.utils.BetterProperties2;
 import de.endrullis.utils.BetterProperties2.Comment;
 import de.endrullis.utils.BetterProperties2.Def;
 import de.endrullis.utils.BetterProperties2.Range;
+import de.endrullis.utils.BetterProperties2.PSet;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -27,15 +28,19 @@ public class GProperties {
 	private static BetterProperties2 properties = new BetterProperties2();
 	
   // properties
-  private static Font editorFont = new Font("MonoSpaced", 0, 13);
+  private static Font editorFont;
   private static Object textAntiAliasing = RenderingHints.VALUE_TEXT_ANTIALIAS_OFF;
 
 	public static final Range INT     = BetterProperties2.INT;
 	public static final Range DOUBLE  = BetterProperties2.DOUBLE;
 	public static final Range BOOLEAN = BetterProperties2.BOOLEAN;
 	public static final Range STRING  = BetterProperties2.STRING;
-	
-  static {
+
+	private static final String EDITOR_FONT_NAME = "editor.font.name";
+	private static final String EDITOR_FONT_SIZE = "editor.font.size";
+	private static final String EDITOR_FONT_ANTIALIASING = "editor.font.antialiasing";
+
+	static {
     // text anti-aliasing
     TEXT_ANTIALIAS_KEYS = new String[] {"On", "Off", "GASP", "LCD HBGR", "LCD HRGB", "LCD VBGR", "LCD VRGB"};
 
@@ -65,9 +70,13 @@ public class GProperties {
 
 	  // set default for the properties file
 	  properties.addEntry(new Comment(" Font settings"));
-	  properties.addEntry(new Def("editor.font.name", STRING, "MonoSpaced"));
-	  properties.addEntry(new Def("editor.font.size", INT, "13"));
-	  properties.addEntry(new Def("xwinfo", STRING, null, "xwinfo/xwinfo"));
+	  properties.addEntry(new Def(EDITOR_FONT_NAME, STRING, "MonoSpaced"));
+	  properties.addEntry(new Def(EDITOR_FONT_SIZE, INT, "13"));
+	  properties.addEntry(new Def(EDITOR_FONT_ANTIALIASING, new PSet(TEXT_ANTIALIAS_KEYS), "Off"));
+	  //properties.addEntry(new Def("xwinfo", STRING, null, "xwinfo/xwinfo"));
+
+		load();
+		save();
   }
 
 	public static void load() {
@@ -81,6 +90,13 @@ public class GProperties {
 		} else {
 			properties.loadDefaults();
 		}
+
+		extractProperties();
+	}
+
+	private static void extractProperties() {
+		editorFont = new Font(properties.getProperty(EDITOR_FONT_NAME), 0, properties.getInt(EDITOR_FONT_SIZE));
+		textAntiAliasing = TEXT_ANTIALIAS_MAP.get(properties.getProperty(EDITOR_FONT_ANTIALIASING));
 	}
 
 	public static void save() {
@@ -105,6 +121,8 @@ public class GProperties {
 
   public static void setTextAntiAliasing(Object textAntiAliasing) {
     GProperties.textAntiAliasing = textAntiAliasing;
+	  // TODO: set the value in the properties
+	  save();
   }
 
   public static Font getEditorFont() {
@@ -113,5 +131,8 @@ public class GProperties {
 
   public static void setEditorFont(Font editorFont) {
     GProperties.editorFont = editorFont;
+	  properties.setProperty(EDITOR_FONT_NAME, editorFont.getPSName());
+	  properties.setProperty(EDITOR_FONT_SIZE, "" + editorFont.getSize());
+	  save();
   }
 }
