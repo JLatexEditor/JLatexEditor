@@ -1,4 +1,4 @@
-package jlatexeditor;
+package jlatexeditor.gproperties;
 
 import de.endrullis.utils.BetterProperties2;
 import de.endrullis.utils.BetterProperties2.Comment;
