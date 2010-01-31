@@ -38,7 +38,7 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
     UIManager.put("ScrollBar.thumbHighlight", new Color(166, 202, 240));
 
     // Create the TextPane
-    textPane = new SCEPane();
+    textPane = new SCEPane(this);
     scrollPane = new JScrollPane(textPane, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
     scrollPane.getVerticalScrollBar().setUnitIncrement(30);
     scrollPane.getHorizontalScrollBar().setUnitIncrement(16);

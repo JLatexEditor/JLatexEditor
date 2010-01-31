@@ -58,7 +58,7 @@ public class SCEDiff extends JPanel implements ComponentListener {
     this.leftTitle = leftTitle;
     this.left = left;
     this.rightTitle = rightTitle;
-    this.right = new SCEPane();
+    this.right = new SCEPane(null);
     this.markerBar = markerBar;
 
     right.setText(rightText);
