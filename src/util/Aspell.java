@@ -18,6 +18,8 @@ import java.util.regex.Pattern;
  */
 public final class Aspell {
 	private static final Matcher masterDictMatcher = Pattern.compile("/([^/\\.]+)\\.multi").matcher("");
+
+  private static boolean instanceFailed = false;
 	private static Aspell instance = null;
 
 	private PrintStream aspellIn;
@@ -252,10 +254,15 @@ public final class Aspell {
 		} catch (Exception ignored) {}
 	}
 
-	public static Aspell getInstance() throws IOException {
-		if (instance == null) {
-			instance = new Aspell();
-		}
+	public static Aspell getInstance() {
+		if(instance == null && !instanceFailed) {
+      try {
+        instance = new Aspell();
+      } catch (IOException e) {
+        instanceFailed = true;
+        System.err.println("Warning: spell checker not available. Please install aspell!");
+      }
+    }
 		return instance;
 	}
 

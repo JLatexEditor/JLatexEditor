@@ -423,12 +423,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  scePane.setTabCompletion(new LatexCommandCodeHelper("data/codehelper/tabCompletion.xml"));
 	  scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
 
-	  try {
-		  scePane.addCodeAssistantListener(new SpellCheckSuggester());
-	  } catch (IOException e) {
-		  System.err.println("Initialization of the spell check suggester failed!");
-		  e.printStackTrace();
-	  }
+    try {
+      scePane.addCodeAssistantListener(new SpellCheckSuggester());
+    } catch (Exception e) { }
 
 	  new JumpTo(editor, this);
 

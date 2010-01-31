@@ -35,9 +35,9 @@ public class SpellCheckSuggester implements CodeAssistant, SCEPopup.ItemHandler 
 	private WordWithPos wordUnderCaret = null;
 	private SCEDocument document = null;
 
-
-	public SpellCheckSuggester() throws IOException {
+	public SpellCheckSuggester() throws Exception {
 		aspell = Aspell.getInstance();
+    if(aspell == null) throw new Exception("Initialization of the spell check suggester failed!");
 	}
 
 	public boolean assistAt (SCEPane pane) {
