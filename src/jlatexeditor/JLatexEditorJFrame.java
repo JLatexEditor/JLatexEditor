@@ -20,6 +20,7 @@ import jlatexeditor.gui.StatusBar;
 import jlatexeditor.quickhelp.LatexQuickHelp;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
+import jlatexeditor.tools.SVN;
 import sce.codehelper.CombinedCodeHelper;
 import sce.component.*;
 import sce.syntaxhighlighting.SyntaxHighlighting;
@@ -33,6 +34,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -304,8 +307,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  vcMenu.setMnemonic('V');
     menuBar.add(vcMenu);
 
-    JMenuItem svnMenuItem = new JMenuItem("SVN up");
-    svnMenuItem.setActionCommand("svn up");
+    JMenuItem svnMenuItem = new JMenuItem("SVN update");
+    svnMenuItem.setActionCommand("svn update");
 	  svnMenuItem.setMnemonic('u');
     svnMenuItem.setAccelerator(KeyStroke.getKeyStroke("alt U"));
     svnMenuItem.addActionListener(this);
@@ -370,7 +373,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     textToolsSplit.setOneTouchExpandable(true);
     textToolsSplit.setResizeWeight(.85);
 
-    statusBar = new StatusBar();
+    statusBar = new StatusBar(this);
 
     cp.add(textToolsSplit, BorderLayout.CENTER);
     cp.add(statusBar, BorderLayout.SOUTH);
@@ -711,17 +714,14 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
       open(new FileDoc(openDialog.getSelectedFile()));
     } else
-
     // save a file
     if(action.equals("save")){
       saveAll();
     } else
-
     // close
     if(action.equals("close")){
       closeTab(tabbedPane.getSelectedIndex());
     } else
-
     // exit
     if(action.equals("exit")){
       saveAll();
@@ -797,20 +797,50 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     if(action.equals("dvi + ps")) { saveAll(); compile(LatexCompiler.TYPE_DVI_PS); } else
     if(action.equals("dvi + ps + pdf")) { saveAll(); compile(LatexCompiler.TYPE_DVI_PS_PDF); } else
 
-/*
-    // font
-    if(action.startsWith("Font: ")) {
-      String fontName = action.substring(action.indexOf(": ") + 2);
-      GProperties.setEditorFont(new Font(fontName, Font.PLAIN, GProperties.getEditorFont().getSize()));
-      getEditor(tabbedPane.getSelectedIndex()).repaint();
-    }
-    // text antialiasing
-    if(action.startsWith("TextAntialias: ")) {
-      String key = action.substring(action.indexOf(": ") + 2);
-      GProperties.setTextAntiAliasing(GProperties.TEXT_ANTIALIAS_MAP.get(key));
-      getEditor(tabbedPane.getSelectedIndex()).repaint();
-    }
-*/
+    // svn update
+    if(action.equals("svn update")){
+      saveAll();
+      ArrayList<SVN.Result> results = null;
+      try {
+        results = SVN.getInstance().update(getMainEditor().getFile().getParentFile());
+      } catch (Exception exception) {
+        statusBar.showMessage("SVN update failed", "SVN update failed: " + exception.getMessage());
+        return;
+      }
+      StringBuilder builder = new StringBuilder();
+      builder.append("<html>");
+      builder.append("SVN update: " + (results.size() == 0 ? "All Quiet on the Western Front" : ""));
+      builder.append("<br>");
+      svnList("Updated/Merged:", builder, results, new int[] { SVN.Result.TYPE_UPDATE, SVN.Result.TYPE_MERGED });
+      svnList("Added:", builder, results, new int[] { SVN.Result.TYPE_ADD });
+      svnList("Deleted:", builder, results, new int[] { SVN.Result.TYPE_DELETE });
+      svnList("Conflicts:", builder, results, new int[] { SVN.Result.TYPE_CONFLICT });
+      builder.append("</html>");
+
+      checkExternalModification(false);
+      statusBar.showMessage("SVN update", builder.toString());
+    } else
+    // svn commit
+    if(action.equals("svn commit")){
+      saveAll();
+      String message = (String)JOptionPane.showInputDialog(
+                          this,
+                          "Commit message:",
+                          "SVN commit",
+                          JOptionPane.QUESTION_MESSAGE,
+                          null,
+                          null,
+                          "");
+      if(message != null) {
+        boolean committed = SVN.getInstance().commit(getMainEditor().getFile().getParentFile(), message);
+        if(committed) {
+          statusBar.showMessage("SVN commit", "SVN commit succeeded");
+        } else {
+          statusBar.showMessage("SVN commit failed", "SVN commit failed");
+        }
+      }
+    } else
+
 	  if(action.equals("font")){
 		  SCEFontWindow fontDialog = new SCEFontWindow(GProperties.getEditorFont().getFamily(), GProperties.getEditorFont().getSize(), this);
 		  fontDialog.setVisible(true);
@@ -835,54 +865,87 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
     // timer
     if(action.equals("timer")){
-      for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
-        SourceCodeEditor editor = getEditor(tab);
-	      
-        File file;
-	      if (editor.getResource() instanceof FileDoc) {
-	        FileDoc fileDoc = (FileDoc) editor.getResource();
-	        file = fileDoc.getFile();
-	      } else {
-		      continue;
-	      }
+      checkExternalModification(true);
+    }
+  }
 
-        Long oldModified = lastModified.get(file);
-        Long newModified = file.lastModified();
-        // has the file been changed?
-        if(!oldModified.equals(newModified)) {
-          boolean reload = false;
-          if(editor.getTextPane().getDocument().isModified()) {
-            int choice = JOptionPane.showOptionDialog(
-                    this,
-                    "The document `" + file.toString() + "'\n" +
-                    "has been modified externally as well as in the editor.\n" +
-                    "Overwriting will discard the external modifications in file.\n" +
-                    "Reloading will discard the modifications in the editor.\n",
-                    "External Modification",
-                    JOptionPane.WARNING_MESSAGE,
-                    JOptionPane.YES_NO_OPTION,
-                    null,
-                    new Object[] {"Overwrite", "Reload", "Don't reload"},
-                    2
-            );
-            if(choice == 0) save(editor);
-            if(choice == 1) reload = true;
-          } else {
-            reload = true;
+  private void svnList(String message, StringBuilder builder, ArrayList<SVN.Result> results, int[] types) {
+    boolean first = true;
+    for(SVN.Result result : results) {
+      for(int type : types) {
+        if(result.getType() == type) {
+          if(first) {
+            builder.append(message);
+            builder.append("<ul>");
+            first = false;
           }
-          if(reload) {
-            try {
-              editor.reload();
-              lastModified.put(file, newModified);
-            } catch (IOException e1) {
-              e1.printStackTrace();
-            }
+          builder.append("<li>" + result.getFile().getName() + "</li>");
+        }
+      }
+    }
+    if(!first) builder.append("</ul>");
+  }
+
+  private void checkExternalModification(boolean showPopup) {
+    ArrayList<String> reloaded = new ArrayList<String>();
+    for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
+      SourceCodeEditor editor = getEditor(tab);
+
+      File file;
+      if (editor.getResource() instanceof FileDoc) {
+        FileDoc fileDoc = (FileDoc) editor.getResource();
+        file = fileDoc.getFile();
+      } else {
+        continue;
+      }
+
+      Long oldModified = lastModified.get(file);
+      Long newModified = file.lastModified();
+      // has the file been changed?
+      if(!oldModified.equals(newModified)) {
+        boolean reload = false;
+        if(editor.getTextPane().getDocument().isModified()) {
+          int choice = JOptionPane.showOptionDialog(
+                  this,
+                  "The document `" + file.toString() + "'\n" +
+                  "has been modified externally as well as in the editor.\n" +
+                  "Overwriting will discard the external modifications in file.\n" +
+                  "Reloading will discard the modifications in the editor.\n",
+                  "External Modification",
+                  JOptionPane.WARNING_MESSAGE,
+                  JOptionPane.YES_NO_OPTION,
+                  null,
+                  new Object[] {"Overwrite", "Reload", "Don't reload"},
+                  2
+          );
+          if(choice == 0) save(editor);
+          if(choice == 1) reload = true;
+        } else {
+          reload = true;
+        }
+        if(reload) {
+          reloaded.add(file.getName());
+          try {
+            editor.reload();
+            lastModified.put(file, newModified);
+          } catch (IOException e1) {
+            e1.printStackTrace();
           }
         }
       }
     }
-  }
+    if(reloaded.size() > 0 && showPopup) {
+      StringBuilder builder = new StringBuilder();
+      builder.append("<html>");
+      builder.append("The following documents have been externally modified and reloaded:<br>");
+      builder.append("<ul>");
+      for(String name : reloaded) builder.append("<li>" + name + "</li>");
+      builder.append("</ul>");
+      builder.append("</html>");
 
+      statusBar.showMessage("External modifications", builder.toString());
+    }
+  }
 
 
   private void checkForUpdates(boolean startup) {

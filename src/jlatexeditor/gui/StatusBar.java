@@ -1,5 +1,6 @@
 package jlatexeditor.gui;
 
+import jlatexeditor.JLatexEditorJFrame;
 import util.ColorUtil;
 
 import javax.swing.*;
@@ -9,16 +10,28 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 
 /**
  * StatusBar.
  */
 public class StatusBar extends JPanel {
-  public StatusBar() {
+  private JLatexEditorJFrame jLatexEditor;
+
+  private ArrayList<String> messges = new ArrayList<String>();
+
+  public StatusBar(JLatexEditorJFrame jLatexEditor) {
+    this.jLatexEditor = jLatexEditor;
+
     setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 0));
 
     add(new MemoryUsage());
     setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+  }
+
+  public synchronized void showMessage(String shortMessage, String message) {
+    messges.add(message);
+    new MessagePopup(message, jLatexEditor);
   }
 
   public static class MemoryUsage extends JPanel implements ActionListener {
