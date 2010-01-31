@@ -569,6 +569,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 		AbstractResource resource = editor.getResource();
 
+		boolean gPropertiesSaved = false;
+
 		File file = null;
 		if (resource instanceof UntitledDoc) {
       openDialog.setDialogTitle("Save " + resource.getName());
@@ -599,6 +601,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		if (resource instanceof FileDoc) {
 		  FileDoc fileDoc = (FileDoc) resource;
 		  file = fileDoc.getFile();
+			gPropertiesSaved = file.equals(GProperties.CONFIG_FILE);
 		}
 
     String text = editor.getTextPane().getText();
@@ -642,6 +645,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
       lastModified.put(file, file.lastModified());
       editor.getTextPane().getDocument().setModified(false);
+
+	    if (gPropertiesSaved) {
+		    GProperties.load();
+	    }
     } catch(IOException ex){
       ex.printStackTrace();
     }
