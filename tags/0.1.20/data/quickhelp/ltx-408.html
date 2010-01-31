@@ -1,0 +1,185 @@
+<html>
+
+<head>
+
+<title>Variable size symbols</title>
+
+<link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
+
+</head>
+
+<body>
+
+
+
+
+
+<h2>Variable size symbols</h2>
+
+
+
+<p>The size of some mathematical symbols, notably summation
+
+signs, product signs, and integral signs, depends on the
+
+environment in which they appear (i.e., <tt>displaymath</tt> as
+
+opposed to <tt>math</tt> environments; see
+
+<a href="ltx-115.html">Math Formulas</a> and
+
+<a href="mathfonts.html">Math Fonts and Styles</a>).</p>
+
+
+
+<p>These include</p>
+
+
+
+<ul>
+
+  <li><tt>\sum</tt> a summation sign (capital sigma)</li>
+
+  <li><tt>\prod</tt> a product (capital pi)</li>
+
+  <li><tt>\coprod</tt> a coproduct (inverted capital pi)</li>
+
+  <li><tt>\int</tt> an integral sign</li>
+
+  <li><tt>\oint</tt> a surface (circular) integral sign</li>
+
+  <li><tt>\bigcup</tt> big "U"</li>
+
+  <li><tt>\bigcap</tt> big inverted "U"</li>
+
+  <li><tt>\bigvee</tt> big "V"</li>
+
+  <li><tt>\bigwedge</tt> big inverted "V"</li>
+
+  <li><tt>\bigodot</tt> big "O" with dot at center</li>
+
+  <li><tt>\bigotimes</tt> big "O" with cross inside</li>
+
+  <li><tt>\bigoplus</tt> big "O" with a + inside</li>
+
+  <li><tt>\biguplus</tt> big "U" with a + inside</li>
+
+</ul>
+
+
+
+<p>The <tt><a href="ltx-319.html">\sqrt</a></tt> command also
+
+produces a variable size symbol appropriate for the size of the
+
+radicand argument.</p>
+
+
+
+<p>The "limits" associated with these symbols are entered as
+
+<a href="ltx-179.html">subscripts</a> for entries appearing
+
+below the symbol and as <a href="ltx-180.html">superscripts</a>
+
+for entries appearing above the symbol. For example the sum from
+
+n=0 to infinity of x<sub>n</sub> would be entered as ,/p>
+
+
+
+<pre>
+
+  \sum_{n=0}^{<a href="ltx-407.html">\infty</a>} x_{n}
+
+</pre>
+
+
+
+<p>The actual placement of the limits depends on whether this is
+
+in <tt>displaymath</tt> mode in which case they are placed
+
+below/above or in <tt>math</tt> mode in running text in which
+
+case they are placed as regular subscripts and superscripts.</p>
+
+
+
+<p>Note that it is possible to treat several of these symbols (a
+
+common example would be a double sum) as a single symbol for
+
+placing limits above and/or below by using the
+
+<tt><a href="stackrel.html#mathop">\mathop</a></tt> command.</p>
+
+
+
+<p>"Hats" and "tildes" over symbols which stretch (as best they
+
+can) to the correct size for their arguments are produced by
+
+<tt><a href="ltx-401.html#math">\widehat</tt> and
+
+<tt>\widetilde</a></tt>.</p>
+
+
+
+<hr noshade="noshade" size="1">
+
+
+
+<p>Related topics:</p>
+
+
+
+<ul>
+
+  <li><a href="ltx-403.html">Delimiters</a> can be made variable sized </li>
+
+  <li><a href="mathfonts.html">Math fonts and styles</a></li>
+
+</ul>
+
+
+
+<ul>
+
+  <li><a href="ltx-115.html">Math Formulas</a></li>
+
+  <li><a href="ltx-117.html">Math Symbols</a></li>
+
+  <li><a href="ltx-119.html">Math Miscellany</a></li>
+
+  <li><a href="ltx-406.html">Arrows</a></li>
+
+  <li><a href="ltx-404.html">Binary and relational operators</a></li>
+
+  <li><a href="ltx-409.html">Math function symbols</a></li>
+
+  <li><a href="ltx-407.html">Miscellaneous symbols</a></li>
+
+</ul>
+
+
+
+<ul>
+
+  <li><tt><a href="ltx-403.html#big">\left</a></tt></li>
+
+  <li><tt><a href="ltx-403.html#big">\right</a></tt></li>
+
+  <li><tt><a href="ltx-319.html">\sqrt</a></tt></li>
+
+  <li><tt><a href="stackrel.html">\stackrel</a></tt> and
+
+    <tt><a href="stackrel.html">\mathop</a></tt></li>
+
+</ul>
+
+
+
+<p>
+
+</body></html>
