@@ -23,6 +23,7 @@ import java.util.ArrayList;
  * @author Stefan Endrullis
  */
 public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretListener, FocusListener{
+	SourceCodeEditor sourceCodeEditor;
   /** Document. */
   SCEDocument document = null;
 	/** Code Helper (code completion). */
@@ -83,7 +84,6 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 
 	/** Code assistants that are informed about alt+enter events. */
 	private ArrayList<CodeAssistant> codeAssistants = new ArrayList<CodeAssistant>();
-	private SourceCodeEditor sourceCodeEditor;
 
 
 	/**
@@ -248,7 +248,16 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     return preferredSize;
   }
 
-  /**
+	/**
+	 * Returns the source code editor.
+	 * 
+	 * @return source code editor
+	 */
+	public SourceCodeEditor getSourceCodeEditor() {
+		return sourceCodeEditor;
+	}
+
+	/**
    * Returns the underlying document.
    *
    * @return the document

@@ -39,4 +39,9 @@ public class WordWithPos implements SCERange {
 	public int getEndCol() {
 		return endColumn;
 	}
+
+	@Override
+	public String toString() {
+		return word + " @(" + row + "," + startColumn + ")";
+	}
 }
