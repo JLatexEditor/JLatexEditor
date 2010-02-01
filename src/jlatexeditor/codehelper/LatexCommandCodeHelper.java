@@ -9,7 +9,8 @@ import sce.codehelper.StaticCommandsCodeHelper;
  * @author Stefan Endrullis
  */
 public class LatexCommandCodeHelper extends StaticCommandsCodeHelper {
-	public LatexCommandCodeHelper(String commandsXml) {
+	public LatexCommandCodeHelper(String patternString, String commandsXml) {
+		super(patternString);
 		// collect all commands
 		readCommands(commandsXml);
 	}
