@@ -809,7 +809,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       }
       StringBuilder builder = new StringBuilder();
       builder.append("<html>");
-      builder.append("SVN update: " + (results.size() == 0 ? "All Quiet on the Western Front" : ""));
+      builder.append("SVN update: " + (results.size() == 0 ? "All Quiet on the Western Front" : "<br>"));
       builder.append("<br>");
       svnList("Updated/Merged:", builder, results, new int[] { SVN.Result.TYPE_UPDATE, SVN.Result.TYPE_MERGED });
       svnList("Added:", builder, results, new int[] { SVN.Result.TYPE_ADD });

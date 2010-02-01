@@ -32,7 +32,7 @@ public class SVN {
     }
 
     BufferedReader in = new BufferedReader(new InputStreamReader(svn.getInputStream()), 100000);
-    String line = null;
+    String line;
     while((line = in.readLine()) != null){
       char c = line.charAt(0);
       if(line.charAt(1) == ' ') {
@@ -53,9 +53,12 @@ public class SVN {
   }
 
   public synchronized boolean commit(File dir, String message) {
+    message = message.replace('"', ' ');
+    message = message.replace('\\', ' ');
+
     Process svn;
     try{
-      svn = ProcessUtil.exec("svn --non-interactive commit", dir);
+      svn = ProcessUtil.exec("svn --non-interactive commit -m \"" + message + "\"", dir);
     } catch(Exception e){
       e.printStackTrace();
       return false;
@@ -65,11 +68,13 @@ public class SVN {
 
     BufferedReader in = new BufferedReader(new InputStreamReader(svn.getInputStream()), 100000);
     try{
-      String line = null;
+      String line, lastLine = null;
       while((line = in.readLine()) != null){
+        System.out.println(line);
         if(line.startsWith("svn: Commit failed")) success = false;
+        lastLine = line;
       }
-      if(!line.startsWith("Committed revision")) success = false;
+      if(lastLine != null && !lastLine.startsWith("Committed revision")) success = false;
     } catch(IOException ignored){
     }
 
