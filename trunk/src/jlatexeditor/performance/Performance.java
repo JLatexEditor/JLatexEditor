@@ -36,8 +36,8 @@ public class Performance {
     SyntaxHighlighting syntaxHighlighting = new LatexSyntaxHighlighting(pane);
     syntaxHighlighting.start();
 
-    pane.setCodeHelper(new LatexCommandCodeHelper("data/codehelper/commands.xml"));
-    pane.setTabCompletion(new LatexCommandCodeHelper("data/codehelper/tabCompletion.xml"));
+    pane.setCodeHelper(new LatexCommandCodeHelper("(\\\\[a-zA-Z]*)", "data/codehelper/commands.xml"));
+    pane.setTabCompletion(new LatexCommandCodeHelper("([a-zA-Z]*)", "data/codehelper/tabCompletion.xml"));
     pane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
 
     try {

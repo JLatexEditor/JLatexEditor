@@ -21,8 +21,8 @@ public class StaticCommandsCodeHelper extends PatternHelper {
 	/** The last command that has been found. */
 	protected WordWithPos command = null;
 
-	public StaticCommandsCodeHelper() {
-		pattern = new PatternPair("(\\\\[a-zA-Z]*)");
+	public StaticCommandsCodeHelper(String patternString) {
+		pattern = new PatternPair(patternString);
 	}
 
 	/**
