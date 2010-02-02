@@ -61,9 +61,9 @@ public class LatexCompiler extends Thread {
     Process latexCompiler = null;
     try{
       if(type == TYPE_PDF) {
-        latexCompiler = ProcessUtil.exec("pdflatex -file-line-error -interaction=nonstopmode " + baseName + ".tex", file.getParentFile());
+        latexCompiler = ProcessUtil.exec(new String[] {"pdflatex", "-file-line-error", "-interaction=nonstopmode", baseName + ".tex"}, file.getParentFile());
       } else {
-        latexCompiler = ProcessUtil.exec("latex -file-line-error -interaction=nonstopmode -output-format=dvi " + baseName + ".tex", file.getParentFile());
+        latexCompiler = ProcessUtil.exec(new String[] {"latex", "-file-line-error", "-interaction=nonstopmode", "-output-format=dvi", baseName + ".tex"}, file.getParentFile());
       }
     } catch(Exception e){
       e.printStackTrace();
@@ -233,15 +233,15 @@ public class LatexCompiler extends Thread {
     }
 
     try {
-      Process bibtex = ProcessUtil.exec("bibtex " + baseName, file.getParentFile());
+      Process bibtex = ProcessUtil.exec(new String[] {"bibtex", baseName}, file.getParentFile());
       bibtex.waitFor();
 
       if(type == TYPE_DVI_PS || type == TYPE_DVI_PS_PDF) {
-        Process dvips = ProcessUtil.exec("dvips " + baseName + ".dvi", file.getParentFile());
+        Process dvips = ProcessUtil.exec(new String[] {"dvips", baseName + ".dvi"}, file.getParentFile());
         dvips.waitFor();
       }
       if(type == TYPE_DVI_PS_PDF) {
-        Process ps2pdf = ProcessUtil.exec("ps2pdf " + baseName + ".ps", file.getParentFile());
+        Process ps2pdf = ProcessUtil.exec(new String[] {"ps2pdf", baseName + ".ps"}, file.getParentFile());
         ps2pdf.waitFor();
       }
     } catch (Exception e) {

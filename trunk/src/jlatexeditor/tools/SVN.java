@@ -1,6 +1,5 @@
 package jlatexeditor.tools;
 
-import jlatexeditor.errorhighlighting.LatexCompileError;
 import util.Pair;
 import util.ProcessUtil;
 
@@ -26,7 +25,7 @@ public class SVN {
 
     Process svn;
     try{
-      svn = ProcessUtil.exec("svn --non-interactive update", dir);
+      svn = ProcessUtil.exec(new String[] {"svn", "--non-interactive", "update"}, dir);
     } catch(Exception e){
       e.printStackTrace();
       throw new Exception("SVN update failed!");
@@ -59,7 +58,7 @@ public class SVN {
 
     Process svn;
     try{
-      svn = ProcessUtil.exec("svn --non-interactive commit -m \"" + message + "\"", dir);
+      svn = ProcessUtil.exec(new String[] {"svn", "--non-interactive", "commit", "-m", message}, dir);
     } catch(Exception e){
       e.printStackTrace();
       return new Pair<Boolean,String>(false, "<font color=red><b>Exception: " + e.getMessage() + "</b></font>");
@@ -93,7 +92,7 @@ public class SVN {
   public synchronized void resolved(File file) {
     Process svn = null;
     try{
-      svn = ProcessUtil.exec("svn resolved " + file.getName(), file.getParentFile());
+      svn = ProcessUtil.exec(new String[] {"svn", "resolved", file.getName()}, file.getParentFile());
       svn.waitFor();
     } catch(Exception e){
       e.printStackTrace();

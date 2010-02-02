@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class ProcessUtil {
-  public static Process exec(String command, File dir) throws IOException {
+  public static Process exec(String command[], File dir) throws IOException {
     Process process;
 
     ArrayList<String> env = new ArrayList<String>();
