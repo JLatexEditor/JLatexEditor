@@ -37,7 +37,7 @@ public class GProperties {
 	public static final Range DOUBLE  = BetterProperties2.DOUBLE;
 	public static final Range BOOLEAN = BetterProperties2.BOOLEAN;
 	public static final Range STRING  = BetterProperties2.STRING;
-	public static final Range SHORTCUT = BetterProperties2.STRING;
+	public static final Range SHORTCUT = BetterProperties2.SHORTCUT;
 
 	private static final String EDITOR_FONT_NAME = "editor.font.name";
 	private static final String EDITOR_FONT_SIZE = "editor.font.size";
