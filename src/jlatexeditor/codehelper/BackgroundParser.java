@@ -4,9 +4,13 @@ import jlatexeditor.JLatexEditorJFrame;
 import sce.component.AbstractResource;
 import sce.component.SourceCodeEditor;
 import util.ParseUtil;
+import util.StreamUtils;
+import util.Trie;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * Parsing files in background.
@@ -17,31 +21,103 @@ public class BackgroundParser extends Thread {
   private long bibModified = 0;
   private ArrayList<BibEntry> bibEntries = new ArrayList<BibEntry>();
 
+  private Trie commands = new Trie();
+  private Trie labels = new Trie();
+
   public BackgroundParser(JLatexEditorJFrame jle) {
     this.jle = jle;
     setPriority(Thread.MIN_PRIORITY);
   }
 
+  public ArrayList<BibEntry> getBibEntries() {
+    return bibEntries;
+  }
+
+  public Trie getCommands() {
+    return commands;
+  }
+
+  public Trie getLabels() {
+    return labels;
+  }
+
   public void run() {
     while(true) {
-      try {
-        synchronized (this) { wait(1000); }
-      } catch (InterruptedException e) { }
-
       SourceCodeEditor editor = jle.getMainEditor();
       AbstractResource resource = editor.getResource();
       if(!(resource instanceof JLatexEditorJFrame.FileDoc)) continue;
 
-      String text= editor.getText();
       File file = ((JLatexEditorJFrame.FileDoc) resource).getFile();
       File directory = file.getParentFile();
 
-      String bibCommand = "\\bibliography{";
-      int bibStart = text.indexOf(bibCommand);
-      if(bibStart != -1) {
-        int bibClose = text.indexOf('}', bibStart + bibCommand.length());
-        if(bibClose != -1) {
-          parseBib(directory, text.substring(bibStart + bibCommand.length(), bibClose));
+      Trie commands = new Trie();
+      Trie labels = new Trie();
+      parseTex(directory, file.getName(), commands, labels, new HashSet<String>());
+
+      this.commands = commands;
+      this.labels = labels;
+
+      try {
+        synchronized (this) { wait(); }
+      } catch (InterruptedException e) { }
+    }
+  }
+
+  public synchronized void parse() {
+    notify();
+  }
+
+  private void parseTex(File directory, String fileName, Trie commands, Trie labels, HashSet<String> done) {
+    if(done.contains(fileName)) return; else done.add(fileName);
+
+    File file = new File(directory, fileName);
+    if(!file.exists()) file = new File(directory, fileName + ".tex");
+    if(!file.exists()) return;
+
+    String tex;
+    try {
+      tex = StreamUtils.readFile(file.getAbsolutePath());
+    } catch (IOException e) { return; }
+
+    int index = 0;
+    while(index < tex.length()) {
+      char c = tex.charAt(index);
+
+      // skip comments
+      if(c == '%') {
+        while(index < tex.length() && tex.charAt(index) != '\n') index++;
+        index++;
+        continue;
+      }
+      
+      // starting of commands?
+      if(c != '\\') { index++; continue; }
+      index++;
+      if(index >= tex.length()) return;
+      if(!Character.isLetter(tex.charAt(index))) { index++; continue; }
+
+      // find the end of the command
+      int begin = index;
+      index++;
+      while(index < tex.length() && Character.isLetter(tex.charAt(index))) index++;
+
+      // the command
+      String command = tex.substring(begin, index);
+      commands.add(command);
+
+      // label, input, include
+      if(command.equals("label") || command.equals("bibliography") || command.equals("input") || command.equals("include")) {
+        int closing = tex.indexOf('}', index);
+        if(closing == -1) continue;
+
+        String argument = tex.substring(index+1,closing);
+        if(command.equals("label")) {
+          labels.add(argument);
+        } else
+        if(command.equals("bibliography")) {
+          parseBib(directory, argument);
+        } else {
+          parseTex(directory, argument, commands, labels, done);
         }
       }
     }
@@ -54,10 +130,6 @@ public class BackgroundParser extends Thread {
     bibModified = bibFile.lastModified();
 
     bibEntries = BibParser.parseBib(bibFile);
-  }
-
-  public ArrayList<BibEntry> getBibEntries() {
-    return bibEntries;
   }
 
   public ArrayList<BibEntry> getBibEntries(String search) {

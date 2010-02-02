@@ -71,7 +71,6 @@ public class IncludeCodeHelper extends PatternHelper {
 		}
 
 		File[] fileList = path.listFiles(new FilenameFilter() {
-			@Override
 			public boolean accept(File dir, String name) {
 				return name.startsWith(fileName);
 			}
