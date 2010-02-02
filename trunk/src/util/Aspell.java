@@ -1,10 +1,7 @@
 package util;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,7 +17,7 @@ public final class Aspell {
 	private static final Matcher masterDictMatcher = Pattern.compile("/([^/\\.]+)\\.multi").matcher("");
 
   private static boolean instanceFailed = false;
-	private static Aspell instance = null;
+	private static HashMap<String,Aspell> instances = new HashMap<String, Aspell>();
 
 	private PrintStream aspellIn;
 	private BufferedReader aspellOut;
@@ -254,15 +251,20 @@ public final class Aspell {
 		} catch (Exception ignored) {}
 	}
 
-	public static Aspell getInstance() {
-		if(instance == null && !instanceFailed) {
-      try {
-        instance = new Aspell();
-      } catch (IOException e) {
-        instanceFailed = true;
-        System.err.println("Warning: spell checker not available. Please install aspell!");
-      }
-    }
+	public static Aspell getInstance(String lang) {
+		if (instanceFailed) return null;
+
+		Aspell instance = instances.get(lang);
+		if (instance == null) {
+			try {
+			  instance = new Aspell(lang);
+				instances.put(lang, instance);
+			} catch (IOException e) {
+			  instanceFailed = true;
+			  System.err.println("Warning: spell checker not available. Please install aspell!");
+			}
+		}
+
 		return instance;
 	}
 

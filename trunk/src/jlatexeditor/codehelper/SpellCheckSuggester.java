@@ -1,5 +1,6 @@
 package jlatexeditor.codehelper;
 
+import jlatexeditor.gproperties.GProperties;
 import sce.codehelper.CodeAssistant;
 import sce.codehelper.SCEPopup;
 import sce.codehelper.WordWithPos;
@@ -36,7 +37,7 @@ public class SpellCheckSuggester implements CodeAssistant, SCEPopup.ItemHandler 
 	private SCEDocument document = null;
 
 	public SpellCheckSuggester() throws Exception {
-		aspell = Aspell.getInstance();
+		aspell = Aspell.getInstance(GProperties.getAspellLang());
     if(aspell == null) throw new Exception("Initialization of the spell check suggester failed!");
 	}
 

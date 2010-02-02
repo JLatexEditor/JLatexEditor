@@ -5,6 +5,7 @@
 
 package jlatexeditor.syntaxhighlighting;
 
+import jlatexeditor.gproperties.GProperties;
 import jlatexeditor.syntaxhighlighting.states.MathMode;
 import jlatexeditor.syntaxhighlighting.states.RootState;
 import sce.component.*;
@@ -31,7 +32,7 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 
 	private static Aspell aspell;
 	static {
-  	aspell = Aspell.getInstance();
+  	aspell = Aspell.getInstance(GProperties.getAspellLang());
 	}
 
 	public LatexSyntaxHighlighting(SCEPane pane){
