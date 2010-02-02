@@ -92,7 +92,7 @@ public class GProperties {
 	  properties.addEntry(new Def(EDITOR_FONT_ANTIALIASING, new PSet(TEXT_ANTIALIAS_KEYS), "Off"));
 	  properties.addEntry(new Comment(" Spell checker settings"));
 	  properties.addEntry(new Def(ASPELL_LANG, new PSet(aspellDicts), "en_GB"));
-		properties.addEntry(new Comment("\n Shortcuts"));
+		properties.addEntry(new Comment("\n## Shortcuts"));
 	  //properties.addEntry(new Def("xwinfo", STRING, null, "xwinfo/xwinfo"));
 
 		properties.addEntry(new Comment(" File menu"));
