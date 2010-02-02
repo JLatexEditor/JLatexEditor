@@ -62,7 +62,7 @@ public class SVN {
       svn = ProcessUtil.exec("svn --non-interactive commit -m \"" + message + "\"", dir);
     } catch(Exception e){
       e.printStackTrace();
-      return new Pair<Boolean,String>(false,"");
+      return new Pair<Boolean,String>(false, "<font color=red><b>Exception: " + e.getMessage() + "</b></font>");
     }
 
     boolean success = true;
@@ -82,9 +82,9 @@ public class SVN {
         lastLine = line;
       }
       if(lastLine != null && !lastLine.startsWith("Committed revision")) success = false;
-    } catch(IOException ignored){
+    } catch(IOException e){
       success = false;
-      builder.append("<font color=red><b>Exception: " + ignored.getMessage() + "</b></font>");
+      builder.append("<font color=red><b>Exception: " + e.getMessage() + "</b></font>");
     }
 
     return new Pair<Boolean,String>(success, builder.toString());
