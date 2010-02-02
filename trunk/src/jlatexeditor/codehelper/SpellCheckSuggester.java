@@ -2,6 +2,7 @@ package jlatexeditor.codehelper;
 
 import jlatexeditor.gproperties.GProperties;
 import sce.codehelper.CodeAssistant;
+import sce.codehelper.PatternPair;
 import sce.codehelper.SCEPopup;
 import sce.codehelper.WordWithPos;
 import sce.component.SCECaret;
@@ -21,10 +22,7 @@ import java.util.regex.Pattern;
  * @author Stefan Endrullis
  */
 public class SpellCheckSuggester implements CodeAssistant, SCEPopup.ItemHandler {
-	/** Command has to start with a backslash and may only contain letters. */
-	static final Pattern wordStartPattern = Pattern.compile("(\\w*)$");
-	/** End of a command may end with an arbitrary number of letters. */
-	static final Pattern wordEndPattern = Pattern.compile("^(\\w*)");
+	private final PatternPair wordPattern = new PatternPair("([a-zA-ZäöüÄÖÜß]*)", "([a-zA-ZäöüÄÖÜß]*)");
 
 	static final Action addToDictionary = new Action("<add to dictionary>");
 	static final Action removeFromDictionary = new Action("<remove from dictionary>");
@@ -43,15 +41,13 @@ public class SpellCheckSuggester implements CodeAssistant, SCEPopup.ItemHandler 
 
 	public boolean assistAt (SCEPane pane) {
 		document = pane.getDocument();
-		SCECaret caret = pane.getCaret();
-
-		int row = caret.getRow();
-		int column = caret.getColumn();
 
 		// get the word under the caret
-		wordUnderCaret = findWord(document.getRow(row), row, column);
+		List<WordWithPos> wordList = wordPattern.find(pane);
 
-		if (wordUnderCaret == null) return false;
+		if (wordList == null) return false;
+
+		wordUnderCaret = wordList.get(0);
 
 		try {
 			Aspell.Result aspellResult = aspell.check(wordUnderCaret.word);
@@ -90,6 +86,7 @@ public class SpellCheckSuggester implements CodeAssistant, SCEPopup.ItemHandler 
 	 * @param column column
 	 * @return word
 	 */
+	/*
 	public WordWithPos findWord(String line, int row, int column){
 		Matcher startMatcher = wordStartPattern.matcher(line.substring(0, column));
 		Matcher endMatcher = wordEndPattern.matcher(line.substring(column, line.length()));
@@ -100,6 +97,7 @@ public class SpellCheckSuggester implements CodeAssistant, SCEPopup.ItemHandler 
 
 		return null;
 	}
+	*/
 
 	public void perform(Object item) {
 		if (item instanceof Action) {
