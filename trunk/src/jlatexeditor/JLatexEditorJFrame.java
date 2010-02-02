@@ -430,6 +430,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       boolean save = (!(resource instanceof UntitledDoc)) || tab == tabbedPane.getSelectedIndex();
       if(save) { if (!save(editor)) all = false; }
     }
+
+    backgroundParser.parse();
 		return all;
   }
 
@@ -976,6 +978,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
           tabbedPane.getTabComponentAt(tab).setForeground(Color.BLACK);
         }
         label.setForeground(Color.RED);
+
+        backgroundParser.parse();
       }
       if(closeIcon.contains(e.getX() - closeIcon.getX(), e.getY() - closeIcon.getY())) {
         closeTab(getTab(resource));
