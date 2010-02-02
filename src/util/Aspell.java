@@ -34,13 +34,20 @@ public final class Aspell {
 		}
 
 		// start aspell with language "en" / "en_GB"
-		Aspell aspell = new Aspell();
+		Aspell aspell = new Aspell("en_GB");
 		// test some words
-		System.out.println("\ntest come words");
+		System.out.println("\ntest some words");
 		System.out.println(aspell.check("the"));
 		System.out.println(aspell.check("bla"));
 		System.out.println(aspell.check("teh"));
 		System.out.println(aspell.check("linebreak"));
+		aspell.shutdown();
+
+		aspell = new Aspell("de_DE");
+		// test some words
+		System.out.println("\ntest some words");
+		System.out.println(aspell.check("Eingabemaske"));
+		System.out.println(aspell.check("Eingabemenge"));
 		aspell.shutdown();
 	}
 
