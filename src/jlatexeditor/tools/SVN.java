@@ -1,6 +1,7 @@
 package jlatexeditor.tools;
 
 import jlatexeditor.errorhighlighting.LatexCompileError;
+import util.Pair;
 import util.ProcessUtil;
 
 import java.io.BufferedReader;
@@ -52,7 +53,7 @@ public class SVN {
     return results;
   }
 
-  public synchronized boolean commit(File dir, String message) {
+  public synchronized Pair<Boolean,String> commit(File dir, String message) {
     message = message.replace('"', ' ');
     message = message.replace('\\', ' ');
 
@@ -61,24 +62,32 @@ public class SVN {
       svn = ProcessUtil.exec("svn --non-interactive commit -m \"" + message + "\"", dir);
     } catch(Exception e){
       e.printStackTrace();
-      return false;
+      return new Pair<Boolean,String>(false,"");
     }
 
     boolean success = true;
 
+    StringBuilder builder = new StringBuilder();
+    
     BufferedReader in = new BufferedReader(new InputStreamReader(svn.getInputStream()), 100000);
     try{
       String line, lastLine = null;
       while((line = in.readLine()) != null){
-        System.out.println(line);
+        if(line.startsWith("svn:")) {
+          builder.append("<font color=red><b>" + line + "</b></font><br>");
+        } else {
+          builder.append(line + "<br>");
+        }
         if(line.startsWith("svn: Commit failed")) success = false;
         lastLine = line;
       }
       if(lastLine != null && !lastLine.startsWith("Committed revision")) success = false;
     } catch(IOException ignored){
+      success = false;
+      builder.append("<font color=red><b>Exception: " + ignored.getMessage() + "</b></font>");
     }
 
-    return success;
+    return new Pair<Boolean,String>(success, builder.toString());
   }
 
   public synchronized void resolved(File file) {
