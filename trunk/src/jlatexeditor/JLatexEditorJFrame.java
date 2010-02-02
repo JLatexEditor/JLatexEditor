@@ -35,7 +35,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -150,212 +149,63 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  fileMenu.setMnemonic('F');
     menuBar.add(fileMenu);
 
-	  JMenuItem newMenuItem = new JMenuItem("New");
-	  newMenuItem.setActionCommand("new");
-		newMenuItem.setMnemonic('N');
-	  newMenuItem.setAccelerator(KeyStroke.getKeyStroke("control N"));
-	  newMenuItem.addActionListener(this);
-	  fileMenu.add(newMenuItem);
-
-    JMenuItem openMenuItem = new JMenuItem("Open");
-    openMenuItem.setActionCommand("open");
-	  openMenuItem.setMnemonic('O');
-    openMenuItem.setAccelerator(KeyStroke.getKeyStroke("control O"));
-    openMenuItem.addActionListener(this);
-    fileMenu.add(openMenuItem);
-
-    JMenuItem saveMenuItem = new JMenuItem("Save");
-    saveMenuItem.setActionCommand("save");
-	  saveMenuItem.setMnemonic('S');
-    saveMenuItem.setAccelerator(KeyStroke.getKeyStroke("control S"));
-    saveMenuItem.addActionListener(this);
-    fileMenu.add(saveMenuItem);
-
-    JMenuItem closeMenuItem = new JMenuItem("Close");
-    closeMenuItem.setActionCommand("close");
-	  closeMenuItem.setMnemonic('C');
-    closeMenuItem.setAccelerator(KeyStroke.getKeyStroke("control W"));
-    closeMenuItem.addActionListener(this);
-    fileMenu.add(closeMenuItem);
-
-    JMenuItem exitMenuItem = new JMenuItem("Exit");
-    exitMenuItem.setActionCommand("exit");
-	  exitMenuItem.setMnemonic('E');
-    exitMenuItem.addActionListener(this);
-    fileMenu.add(exitMenuItem);
+	  fileMenu.add(createMenuItem("New", "new", 'N'));
+	  fileMenu.add(createMenuItem("Open", "open", 'O'));
+	  fileMenu.add(createMenuItem("Save", "save", 'S'));
+	  fileMenu.add(createMenuItem("Close", "close", 'C'));
+	  fileMenu.add(createMenuItem("Exit", "exit", 'E'));
 
     JMenu editMenu = new JMenu("Edit");
 	  editMenu.setMnemonic('E');
     menuBar.add(editMenu);
 
-    JMenuItem undoMenuItem = new JMenuItem("Undo");
-    undoMenuItem.setActionCommand("undo");
-	  undoMenuItem.setMnemonic('U');
-    undoMenuItem.setAccelerator(KeyStroke.getKeyStroke("control Z"));
-    undoMenuItem.addActionListener(this);
-    editMenu.add(undoMenuItem);
-
-    JMenuItem redoMenuItem = new JMenuItem("Redo");
-    redoMenuItem.setActionCommand("redo");
-	  redoMenuItem.setMnemonic('R');
-    redoMenuItem.setAccelerator(KeyStroke.getKeyStroke("control shift Z"));
-    redoMenuItem.addActionListener(this);
-    editMenu.add(redoMenuItem);
-
+	  editMenu.add(createMenuItem("Undo", "undo", 'U'));
+	  editMenu.add(createMenuItem("Redo", "redo", 'R'));
     editMenu.addSeparator();
-
-    JMenuItem findMenuItem = new JMenuItem("Find");
-    findMenuItem.setActionCommand("find");
-	  findMenuItem.setMnemonic('F');
-    findMenuItem.setAccelerator(KeyStroke.getKeyStroke("control F"));
-    findMenuItem.addActionListener(this);
-    editMenu.add(findMenuItem);
-
-    JMenuItem replaceMenuItem = new JMenuItem("Replace");
-    replaceMenuItem.setActionCommand("replace");
-	  replaceMenuItem.setMnemonic('R');
-    replaceMenuItem.setAccelerator(KeyStroke.getKeyStroke("control R"));
-    replaceMenuItem.addActionListener(this);
-    editMenu.add(replaceMenuItem);
-
-    JMenuItem findNextMenuItem = new JMenuItem("Find Next");
-    findNextMenuItem.setActionCommand("find next");
-	  findNextMenuItem.setMnemonic('N');
-    findNextMenuItem.setAccelerator(KeyStroke.getKeyStroke("F3"));
-    findNextMenuItem.addActionListener(this);
-    editMenu.add(findNextMenuItem);
-
-    JMenuItem findPreviousMenuItem = new JMenuItem("Find Previous");
-    findPreviousMenuItem.setActionCommand("find previous");
-	  findPreviousMenuItem.setMnemonic('P');
-    findPreviousMenuItem.setAccelerator(KeyStroke.getKeyStroke("shift F3"));
-    findPreviousMenuItem.addActionListener(this);
-    editMenu.add(findPreviousMenuItem);
-
-    JMenuItem cutMenuItem = new JMenuItem("Cut");
-    cutMenuItem.setActionCommand("cut");
-    cutMenuItem.setAccelerator(KeyStroke.getKeyStroke("control X"));
-    cutMenuItem.addActionListener(this);
-    editMenu.add(cutMenuItem);
-
-    JMenuItem copyMenuItem = new JMenuItem("Copy");
-    copyMenuItem.setActionCommand("copy");
-    copyMenuItem.setAccelerator(KeyStroke.getKeyStroke("control C"));
-    copyMenuItem.addActionListener(this);
-    editMenu.add(copyMenuItem);
-
-    JMenuItem pasteMenuItem = new JMenuItem("Paste");
-    pasteMenuItem.setActionCommand("paste");
-    pasteMenuItem.setAccelerator(KeyStroke.getKeyStroke("control V"));
-    pasteMenuItem.addActionListener(this);
-    editMenu.add(pasteMenuItem);
-
+	  editMenu.add(createMenuItem("Find", "find", 'F'));
+	  editMenu.add(createMenuItem("Replace", "replace", 'R'));
+	  editMenu.add(createMenuItem("Find Next", "find next", 'N'));
+	  editMenu.add(createMenuItem("Find Previous", "find previous", 'P'));
+	  editMenu.add(createMenuItem("Cut", "cut", null));
+	  editMenu.add(createMenuItem("Copy", "copy", null));
+	  editMenu.add(createMenuItem("Paste", "paste", null));
 	  editMenu.addSeparator();
-
-	  JMenuItem commentMenuItem = new JMenuItem("Comment");
-	  commentMenuItem.setActionCommand("comment");
-	  commentMenuItem.setMnemonic('o');
-	  commentMenuItem.setAccelerator(KeyStroke.getKeyStroke("control D"));
-	  commentMenuItem.addActionListener(this);
-	  editMenu.add(commentMenuItem);
-
-	  JMenuItem uncommentMenuItem = new JMenuItem("Uncomment");
-	  uncommentMenuItem.setActionCommand("uncomment");
-	  uncommentMenuItem.setMnemonic('u');
-	  uncommentMenuItem.setAccelerator(KeyStroke.getKeyStroke("control shift D"));
-	  uncommentMenuItem.addActionListener(this);
-	  editMenu.add(uncommentMenuItem);
-
+	  editMenu.add(createMenuItem("Comment", "comment", 'o'));
+	  editMenu.add(createMenuItem("Uncomment", "uncomment", 'u'));
 	  editMenu.addSeparator();
-
-    JMenuItem diffMenuItem = new JMenuItem("Diff");
-    diffMenuItem.setActionCommand("diff");
-	  diffMenuItem.setMnemonic('D');
-    diffMenuItem.setAccelerator(KeyStroke.getKeyStroke("alt D"));
-    diffMenuItem.addActionListener(this);
-    editMenu.add(diffMenuItem);
+	  editMenu.add(createMenuItem("Diff", "diff", 'D'));
 
     JMenu buildMenu = new JMenu("Build");
 	  buildMenu.setMnemonic('B');
     menuBar.add(buildMenu);
 
-    JMenuItem pdfMenuItem = new JMenuItem("pdf");
-    pdfMenuItem.setActionCommand("pdf");
-    pdfMenuItem.setAccelerator(KeyStroke.getKeyStroke("alt 1"));
-    pdfMenuItem.addActionListener(this);
-    buildMenu.add(pdfMenuItem);
-
-    JMenuItem dviMenuItem = new JMenuItem("dvi");
-    dviMenuItem.setActionCommand("dvi");
-    dviMenuItem.setAccelerator(KeyStroke.getKeyStroke("alt 2"));
-    dviMenuItem.addActionListener(this);
-    buildMenu.add(dviMenuItem);
-
-    JMenuItem dvipsMenuItem = new JMenuItem("dvi + ps");
-    dvipsMenuItem.setActionCommand("dvi + ps");
-    dvipsMenuItem.setAccelerator(KeyStroke.getKeyStroke("alt 3"));
-    dvipsMenuItem.addActionListener(this);
-    buildMenu.add(dvipsMenuItem);
-
-    JMenuItem dvipspdfMenuItem = new JMenuItem("dvi + ps + pdf");
-    dvipspdfMenuItem.setActionCommand("dvi + ps + pdf");
-    dvipspdfMenuItem.setAccelerator(KeyStroke.getKeyStroke("alt 4"));
-    dvipspdfMenuItem.addActionListener(this);
-    buildMenu.add(dvipspdfMenuItem);
+	  buildMenu.add(createMenuItem("pdf", "pdf", null));
+	  buildMenu.add(createMenuItem("dvi", "dvi", null));
+	  buildMenu.add(createMenuItem("dvi + ps", "dvi + ps", null));
+	  buildMenu.add(createMenuItem("dvi + ps + pdf", "dvi + ps + pdf", null));
 
     JMenu vcMenu = new JMenu("Version Control");
 	  vcMenu.setMnemonic('V');
     menuBar.add(vcMenu);
 
-    JMenuItem svnMenuItem = new JMenuItem("SVN update");
-    svnMenuItem.setActionCommand("svn update");
-	  svnMenuItem.setMnemonic('u');
-    svnMenuItem.setAccelerator(KeyStroke.getKeyStroke("alt U"));
-    svnMenuItem.addActionListener(this);
-    vcMenu.add(svnMenuItem);
-
-    JMenuItem svnCommitItem = new JMenuItem("SVN commit");
-    svnCommitItem.setActionCommand("svn commit");
-	  svnCommitItem.setMnemonic('c');
-    svnCommitItem.setAccelerator(KeyStroke.getKeyStroke("alt C"));
-    svnCommitItem.addActionListener(this);
-    vcMenu.add(svnCommitItem);
+	  vcMenu.add(createMenuItem("SVN update", "svn update", 'u'));
+	  vcMenu.add(createMenuItem("SVN commit", "svn commit", 'c'));
 
     JMenu settingsMenu = new JMenu("Settings");
     settingsMenu.setMnemonic('S');
     menuBar.add(settingsMenu);
 
-    JMenuItem fontMenuItem = new JMenuItem("Font");
-	  fontMenuItem.setActionCommand("font");
-    fontMenuItem.setMnemonic('F');
-    fontMenuItem.addActionListener(this);
-    settingsMenu.add(fontMenuItem);  
-
-	  JMenuItem globalSettings = new JMenuItem("Global Settings");
-		globalSettings.setActionCommand("global settings");
-	  globalSettings.setMnemonic('G');
-	  globalSettings.setAccelerator(KeyStroke.getKeyStroke("control alt S"));
-	  globalSettings.addActionListener(this);
-	  settingsMenu.add(globalSettings);
+	  settingsMenu.add(createMenuItem("Font", "font", 'F'));
+	  settingsMenu.add(createMenuItem("Global Settings", "global settings", 'G'));
 
 	  JMenu helpMenu = new JMenu("Help");
 	  helpMenu.setMnemonic('H');
 	  menuBar.add(helpMenu);
 
-	  JMenuItem updateMenuItem = new JMenuItem("Check for update");
-	  updateMenuItem.setActionCommand("update");
-	  updateMenuItem.setMnemonic('u');
-	  //updateMenuItem.setAccelerator(KeyStroke.getKeyStroke("alt u"));
-	  updateMenuItem.addActionListener(this);
+	  JMenuItem updateMenuItem = createMenuItem("Check for update", "update", 'u');
 	  if (devVersion) updateMenuItem.setVisible(false);
 	  helpMenu.add(updateMenuItem);
-
-	  JMenuItem aboutCommitItem = new JMenuItem("About");
-	  aboutCommitItem.setActionCommand("about");
-	  aboutCommitItem.setMnemonic('A');
-	  //aboutCommitItem.setAccelerator(KeyStroke.getKeyStroke(""));
-	  aboutCommitItem.addActionListener(this);
-	  helpMenu.add(aboutCommitItem);
+	  helpMenu.add(createMenuItem("About", "about", 'A'));
 	  
     // error messages
     toolsTab = new JTabbedPane();
@@ -398,6 +248,20 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     backgroundParser = new BackgroundParser(this);
     backgroundParser.start();
   }
+
+	private JMenuItem createMenuItem(String label, String command, Character mnemonic) {
+		JMenuItem newMenuItem = new JMenuItem(label);
+		newMenuItem.setActionCommand(command);
+		if (mnemonic != null) {
+			newMenuItem.setMnemonic(mnemonic);
+		}
+		String shorcutString = GProperties.getString("shortcut." + command);
+		if (shorcutString != null && !shorcutString.equals("")) {
+			newMenuItem.setAccelerator(KeyStroke.getKeyStroke(shorcutString));
+		}
+		newMenuItem.addActionListener(this);
+		return newMenuItem;
+	}
 
 	private void initFileChooser() {
 		openDialog.addChoosableFileFilter(new FileNameExtensionFilter(

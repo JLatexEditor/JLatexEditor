@@ -180,13 +180,13 @@ public class GPropertiesSyntaxHighlighting extends SyntaxHighlighting implements
 		    String key = matcher.group(1);
 		    String value = matcher.group(2);
 
-		    Def def = GProperties.getDef(key);
+		    Def def = GProperties.getDef(key.replaceAll("\\\\(.)", "$1"));
 		    if (def == null) {
 			    // mark invalid key
 			    markError(row, matcher.start(1), key.length());
 		    } else {
 			    // check value
-			    if (!def.getRange().isValid(value)) {
+			    if (!def.getRange().isValid(value.replaceAll("\\\\(.)", "$1"))) {
 				    markError(row, matcher.start(2), value.length());
 			    }
 		    }

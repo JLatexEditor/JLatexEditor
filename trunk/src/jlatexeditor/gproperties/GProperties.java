@@ -37,6 +37,7 @@ public class GProperties {
 	public static final Range DOUBLE  = BetterProperties2.DOUBLE;
 	public static final Range BOOLEAN = BetterProperties2.BOOLEAN;
 	public static final Range STRING  = BetterProperties2.STRING;
+	public static final Range SHORTCUT = BetterProperties2.STRING;
 
 	private static final String EDITOR_FONT_NAME = "editor.font.name";
 	private static final String EDITOR_FONT_SIZE = "editor.font.size";
@@ -91,7 +92,41 @@ public class GProperties {
 	  properties.addEntry(new Def(EDITOR_FONT_ANTIALIASING, new PSet(TEXT_ANTIALIAS_KEYS), "Off"));
 	  properties.addEntry(new Comment(" Spell checker settings"));
 	  properties.addEntry(new Def(ASPELL_LANG, new PSet(aspellDicts), "en_GB"));
+		properties.addEntry(new Comment("\n Shortcuts"));
 	  //properties.addEntry(new Def("xwinfo", STRING, null, "xwinfo/xwinfo"));
+
+		properties.addEntry(new Comment(" File menu"));
+		properties.addEntry(new Def("shortcut.new", SHORTCUT, "control N"));
+		properties.addEntry(new Def("shortcut.open", SHORTCUT, "control O"));
+		properties.addEntry(new Def("shortcut.save", SHORTCUT, "control S"));
+		properties.addEntry(new Def("shortcut.close", SHORTCUT, "control W"));
+		properties.addEntry(new Def("shortcut.exit", SHORTCUT, ""));
+		properties.addEntry(new Comment(" Edit menu"));
+		properties.addEntry(new Def("shortcut.undo", SHORTCUT, "control Z"));
+		properties.addEntry(new Def("shortcut.redo", SHORTCUT, "control shift Z"));
+		properties.addEntry(new Def("shortcut.find", SHORTCUT, "control F"));
+		properties.addEntry(new Def("shortcut.replace", SHORTCUT, "control R"));
+		properties.addEntry(new Def("shortcut.find next", SHORTCUT, "F3"));
+		properties.addEntry(new Def("shortcut.find previous", SHORTCUT, "shift F3"));
+		properties.addEntry(new Def("shortcut.cut", SHORTCUT, "control X"));
+		properties.addEntry(new Def("shortcut.copy", SHORTCUT, "control C"));
+		properties.addEntry(new Def("shortcut.paste", SHORTCUT, "control V"));
+		properties.addEntry(new Def("shortcut.comment", SHORTCUT, "control D"));
+		properties.addEntry(new Def("shortcut.uncomment", SHORTCUT, "control shift D"));
+		properties.addEntry(new Def("shortcut.diff", SHORTCUT, "alt D"));
+		properties.addEntry(new Comment(" Build menu"));
+		properties.addEntry(new Def("shortcut.pdf", SHORTCUT, "alt 1"));
+		properties.addEntry(new Def("shortcut.dvi", SHORTCUT, "alt 2"));
+		properties.addEntry(new Def("shortcut.dvi + ps", SHORTCUT, "alt 3"));
+		properties.addEntry(new Def("shortcut.dvi + ps + pdf", SHORTCUT, "alt 4"));
+		properties.addEntry(new Comment(" Version control menu"));
+		properties.addEntry(new Def("shortcut.svn update", SHORTCUT, "alt U"));
+		properties.addEntry(new Def("shortcut.svn commit", SHORTCUT, "alt C"));
+		properties.addEntry(new Def("shortcut.font", SHORTCUT, ""));
+		properties.addEntry(new Def("shortcut.global settings", SHORTCUT, "control alt S"));
+		properties.addEntry(new Comment(" Update"));
+		properties.addEntry(new Def("shortcut.update", SHORTCUT, ""));
+		properties.addEntry(new Def("shortcut.about", SHORTCUT, ""));
 
 		load();
 		save();
@@ -165,5 +200,9 @@ public class GProperties {
 
 	public static String getAspellLang() {
 		return properties.getString(ASPELL_LANG);
+	}
+
+	public static String getString(String key) {
+		return properties.getString(key);
 	}
 }
