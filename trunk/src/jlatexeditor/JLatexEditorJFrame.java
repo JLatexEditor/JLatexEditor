@@ -24,6 +24,7 @@ import jlatexeditor.tools.SVN;
 import sce.codehelper.CombinedCodeHelper;
 import sce.component.*;
 import sce.syntaxhighlighting.SyntaxHighlighting;
+import util.Pair;
 import util.StreamUtils;
 import util.filechooser.SCEFileChooser;
 
@@ -696,12 +697,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
                           null,
                           "");
       if(message != null) {
-        boolean committed = SVN.getInstance().commit(getMainEditor().getFile().getParentFile(), message);
-        if(committed) {
-          statusBar.showMessage("SVN commit", "SVN commit succeeded");
-        } else {
-          statusBar.showMessage("SVN commit failed", "SVN commit failed");
-        }
+        Pair<Boolean,String> result = SVN.getInstance().commit(getMainEditor().getFile().getParentFile(), message);
+        statusBar.showMessage("SVN commit", "<html>SVN commit:<br><br>" + result.second + "</html>");
       }
     } else
 
