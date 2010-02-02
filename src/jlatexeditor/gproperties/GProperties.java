@@ -5,6 +5,7 @@ import de.endrullis.utils.BetterProperties2.Comment;
 import de.endrullis.utils.BetterProperties2.Def;
 import de.endrullis.utils.BetterProperties2.Range;
 import de.endrullis.utils.BetterProperties2.PSet;
+import util.Aspell;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -12,8 +13,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
+import java.util.List;
 
 /**
  * Global properties for the editor.
@@ -23,7 +24,7 @@ public class GProperties {
   public static HashMap<String,Object> TEXT_ANTIALIAS_MAP = new HashMap<String, Object>();
   public static String[] TEXT_ANTIALIAS_KEYS;
 
-  private static ArrayList<String> MONOSPACE_FONTS = new ArrayList<String>();
+  private static ArrayList<String> monospaceFonts = new ArrayList<String>();
 
 	private static BetterProperties2 properties = new BetterProperties2();
 	
@@ -40,6 +41,8 @@ public class GProperties {
 	private static final String EDITOR_FONT_NAME = "editor.font.name";
 	private static final String EDITOR_FONT_SIZE = "editor.font.size";
 	private static final String EDITOR_FONT_ANTIALIASING = "editor.font.antialiasing";
+
+	private static final String ASPELL_LANG = "aspell.lang";
 
 	static {
     // text anti-aliasing
@@ -65,18 +68,29 @@ public class GProperties {
       double widthW = fontMetrics.getStringBounds("W", graphics).getWidth();
       double widthi = fontMetrics.getStringBounds("i", graphics).getWidth();
       if(widthi == widthW) {
-        MONOSPACE_FONTS.add(fontName);
+        monospaceFonts.add(fontName);
       }
     }
 
-		String[] MONOSPACE_FONTS_ARRAY = new String[MONOSPACE_FONTS.size()];
-		MONOSPACE_FONTS.toArray(MONOSPACE_FONTS_ARRAY);
+		String[] MONOSPACE_FONTS_ARRAY = new String[monospaceFonts.size()];
+		monospaceFonts.toArray(MONOSPACE_FONTS_ARRAY);
+
+		List<String> dictList;
+		try {
+			dictList = Aspell.availableDicts();
+		} catch (IOException e) {
+			dictList = new ArrayList<String>();
+		}
+		String[] aspellDicts = new String[dictList.size()];
+		dictList.toArray(aspellDicts);
 
 	  // set default for the properties file
 	  properties.addEntry(new Comment(" Font settings"));
 	  properties.addEntry(new Def(EDITOR_FONT_NAME, new PSet(MONOSPACE_FONTS_ARRAY), "Monospaced"));
 	  properties.addEntry(new Def(EDITOR_FONT_SIZE, INT_GT0, "13"));
 	  properties.addEntry(new Def(EDITOR_FONT_ANTIALIASING, new PSet(TEXT_ANTIALIAS_KEYS), "Off"));
+	  properties.addEntry(new Comment(" Spell checker settings"));
+	  properties.addEntry(new Def(ASPELL_LANG, new PSet(aspellDicts), "en_GB"));
 	  //properties.addEntry(new Def("xwinfo", STRING, null, "xwinfo/xwinfo"));
 
 		load();
@@ -125,7 +139,7 @@ public class GProperties {
 
 
   public static ArrayList<String> getMonospaceFonts() {
-    return MONOSPACE_FONTS;
+    return monospaceFonts;
   }
 
   public static Object getTextAntiAliasing() {
@@ -148,4 +162,8 @@ public class GProperties {
 	  properties.setProperty(EDITOR_FONT_SIZE, "" + editorFont.getSize());
 	  save();
   }
+
+	public static String getAspellLang() {
+		return properties.getString(ASPELL_LANG);
+	}
 }
