@@ -1,0 +1,122 @@
+<html>
+<head>
+<title>Help On LaTeX \stackrel and \mathop</title>
+<link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
+</head>
+<body>
+
+<h3>Hypertext Help with LaTeX</h3>
+
+<h2>\stackrel</h2>
+
+<p>This can be used to stack something above something else;
+used in math mode.</p>
+
+<pre>
+  <tt>\stackrel{top}{bot}</tt>
+</pre>
+
+<p>The first argument, <tt>top</tt>, is typset immediately above
+the second argument, <tt>bot</tt>; the former is set in the same
+math style as a superscript.</p>
+
+<p>For example</p>
+
+<pre>
+  <tt>H$_2$CO$_3$ $\stackrel{<a href="ltx-304.html">\rm</a> heat}
+     {<a href="ltx-406.html">\longrightarrow}</a>$ H$_2$O + CO$_2$</tt>
+</pre>
+
+<p>will produce something like</p>
+
+<pre><tt>
+          heat
+  H CO   ------>  H O  +  CO 
+   2  3            2        2
+</tt></pre>
+
+<p>Note that the the <tt><a href="ltx-304.html">\rm</a></tt>
+declaration is used so that "heat" is set in Roman face and not
+math italics.</p>
+
+<h2><a name="mathop">\mathop</a></h2>
+
+<p>This command does not seem to be well documented but appears
+to work, at least in current versions of LaTeX 2.09.</p>
+
+<p>The argument is considered to be a single
+<a href="ltx-408.html">variable sized math symbol</a> for
+purposes of placing limits below 
+(<a href="ltx-179.html">subscripts</a>) and above
+(<a href="ltx-180.html">superscripts</a>) in
+<a href="mathfonts.html">display math</a> style. For example,</p>
+
+<pre>
+  <tt>\mathop{\sum \sum}_{i,j=1}^{N} a_i a_j</tt>
+</pre>
+
+<p>would produce something like</p>
+
+<pre>
+            N
+         ---  ---
+         \    \    
+         /    /    a  a
+         ---  ---   i  j
+           i,j
+</pre>
+
+<p>It is possible to create <strong>two rows</strong> of
+"subscripts" by using a similar construction: The first row is
+created as subscripts of the symbol in the usual way and a lower
+row is created by placing this whole construct as the argument
+of a <tt>\mathop</tt> command with its own subscript.  For example</p>
+
+<pre>
+  <tt>\mathop{\sum_{i,j=1}^{N}}_{i&gt;j}</tt>
+</pre>
+
+<p>would produce something like</p>
+
+<pre>
+          N
+         ---  
+         \        
+         /    
+         ---  
+         i,j=1
+         i&gt;j
+</pre>
+ 
+<hr noshade="noshade" size="1">
+
+<p>Related topics</p>
+
+<ul>
+  <li><a href="ltx-115.html">Math Formulas</a>
+    and <a href="ltx-117.html">Math Symbols</a></li>
+  <li><a href="ltx-406.html">Arrows</a></li>
+  <li><a href="ltx-404.html">Binary and relational opertors</a> </li>
+  <li><a href="ltx-223.html">Eqnarray Environment</a></li>
+  <li><a href="ltx-224.html">Equation Environment</a></li>
+  <li><a href="ltx-421.html">Displaymath Environment</a></li>
+  <li><a href="mathfonts.html">Math Fonts and Styles</a></li>
+</ul>
+
+<ul>
+  <li><tt><a href="ltx-287.html">\overbrace</a></tt></li>
+  <li><tt><a href="ltx-288.html">\overline</a></tt></li>
+  <li><tt><a href="ltx-335.html">\underbrace</a></tt></li>
+  <li><tt><a href="ltx-336.html">\underline</a></tt></li>
+</ul>
+
+<p>
+Return to <a href="ltx-2.html">LaTeX Table of Contents</a>
+</p>
+
+<hr noshade="noshade" size="1">
+<address>
+Revised 15 Aug 1995.
+</address>
+</body>
+</html>
