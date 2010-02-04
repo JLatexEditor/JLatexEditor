@@ -97,8 +97,7 @@ public class SCEMarkerBar extends JPanel implements SCEDocumentListener, MouseMo
   private void updateLayout() {
     rowsCount = editor.getVirtualLines();
     width = getWidth() - 2;
-    heightOffset = 18;
-    heightFactor = (getHeight() - 2*heightOffset) / Math.max(1, rowsCount);
+    heightFactor = (getHeight() - 3*heightOffset) / Math.max(1, rowsCount);
   }
 
   private int getPosition(int row) {
