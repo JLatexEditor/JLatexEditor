@@ -9,6 +9,8 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.util.ArrayList;
@@ -16,15 +18,16 @@ import java.util.ArrayList;
 /**
  * StatusBar.
  */
-public class StatusBar extends JPanel implements ActionListener {
+public class StatusBar extends JPanel implements ActionListener, MouseListener {
   private JLatexEditorJFrame jLatexEditor;
 
   private JPanel right = new JPanel();
   private JPanel center = new JPanel();
   private JPanel left = new JPanel();
 
-  private boolean checkForUpdates = true;
+  private boolean hadException = false;
   private JLabel updatesAvailable = new JLabel("SVN updates are available.");
+  private CheckForUpdates updateChecker = new CheckForUpdates();
 
   private ArrayList<String> messges = new ArrayList<String>();
 
@@ -44,12 +47,13 @@ public class StatusBar extends JPanel implements ActionListener {
     updatesAvailable.setBackground(new Color(192, 255, 192)); //131, 255, 131
     updatesAvailable.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createEmptyBorder(1,3,1,3)));
     updatesAvailable.setVisible(false);
+    updatesAvailable.addMouseListener(this);
     center.add(updatesAvailable);
 
     right.add(new MemoryUsage());
     setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 
-    new CheckForUpdates().start();
+    updateChecker.start();
   }
 
   public synchronized void showMessage(String shortMessage, String message) {
@@ -57,26 +61,29 @@ public class StatusBar extends JPanel implements ActionListener {
     new MessagePopup(message, jLatexEditor);
   }
 
-  public synchronized void checkForUpdates() {
-    if(!checkForUpdates) return;
+  public void checkForUpdates() {
+    updateChecker.check();
+  }
 
+  private synchronized void checkForUpdates_() {
     boolean hasUpdates = false;
 
     File file = jLatexEditor.getActiveEditor().getFile();
     if(!file.exists()) return;
     File dir = file.getParentFile();
+    if(!new File(dir, ".svn").exists()) return;
+    
     try {
       ArrayList<SVN.StatusResult> results = SVN.getInstance().status(dir);
       for(SVN.StatusResult result : results) {
         if(result.getServerStatus() == SVN.StatusResult.SERVER_OUTDATED) hasUpdates = true;
       }
     } catch (Exception e) {
-      e.printStackTrace();
-      checkForUpdates = false;
+      if(!hadException) e.printStackTrace();
+      hadException = true;
     }
 
-    System.out.println(hasUpdates);
-    updatesAvailable.setVisible(hasUpdates);
+    setUpdatesAvailableVisible(hasUpdates);
   }
 
   public void setUpdatesAvailableVisible(boolean v) {
@@ -85,6 +92,23 @@ public class StatusBar extends JPanel implements ActionListener {
 
   public void actionPerformed(ActionEvent e) {
     checkForUpdates();
+  }
+
+  public void mouseClicked(MouseEvent e) {
+  }
+
+  public void mousePressed(MouseEvent e) {
+    setUpdatesAvailableVisible(false);
+    jLatexEditor.actionPerformed(new ActionEvent(this, 0, "svn update"));
+  }
+
+  public void mouseReleased(MouseEvent e) {
+  }
+
+  public void mouseEntered(MouseEvent e) {
+  }
+
+  public void mouseExited(MouseEvent e) {
   }
 
   public static class MemoryUsage extends JPanel implements ActionListener {
@@ -126,12 +150,18 @@ public class StatusBar extends JPanel implements ActionListener {
       setPriority(Thread.MIN_PRIORITY);
     }
 
-    public void run() {
-      checkForUpdates();
+    public synchronized void check() {
+      notifyAll();
+    }
 
-      try {
-        synchronized (this) { wait(120000); }
-      } catch (InterruptedException e) { }
+    public void run() {
+      while(true) {
+        checkForUpdates_();
+
+        try {
+          synchronized (this) { wait(120000); }
+        } catch (InterruptedException e) { }
+      }
     }
   }
 }
