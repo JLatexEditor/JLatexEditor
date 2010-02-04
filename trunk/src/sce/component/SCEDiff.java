@@ -230,7 +230,7 @@ public class SCEDiff extends JPanel implements ComponentListener {
       switch (modification.getType()) {
         case Modification.TYPE_ADD : markerType = SCEMarkerBar.TYPE_SVN_ADD; break;
         case Modification.TYPE_REMOVE : markerType = SCEMarkerBar.TYPE_SVN_REMOVE; break;
-        default : markerType = SCEMarkerBar.TYPE_SVN_CHAGE;
+        default : markerType = SCEMarkerBar.TYPE_SVN_CHANGE;
       }
 
       int centerLine = preferredLines + changeMax/2;
