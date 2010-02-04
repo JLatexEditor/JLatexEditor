@@ -45,11 +45,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 	private static String version = "*Bleeding Edge*";
 	private static boolean devVersion = true;
+	private static String windowTitleSuffix;
 	static {
 		try {
 			version = StreamUtils.readFile("version.txt");
 			devVersion = false;
 		} catch (IOException ignored) {}
+		windowTitleSuffix = "JLatexEditor " + version;
 	}
 
   private JMenuBar menuBar = null;
@@ -82,7 +84,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   // background parser
   private BackgroundParser backgroundParser;
 
-  public static void main(String args[]){
+	public static void main(String args[]){
     /*
     try {
       //System.setProperty("swing.aatext", "true");
@@ -125,7 +127,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   }
 
   public JLatexEditorJFrame(String args[]){
-	  super("JLatexEditor " + version);
+	  super(windowTitleSuffix);
     this.args = args;
     addWindowListener(this);
 
@@ -362,6 +364,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		} else {
 			editor = createLatexSourceCodeEditor();
 		}
+		editor.setResource(resource);
 		tabbedPane.removeChangeListener(this);
 		tabbedPane.addTab(resource.getName(), editor);
 		tabbedPane.addChangeListener(this);
@@ -396,9 +399,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		    lastModified.put(fileDoc.file, fileDoc.file.lastModified());
 	    }
 
-      errorHighlighting.detach();
-      errorHighlighting.attach(editor, errorView);
-      errorHighlighting.update();
+	    editorChanged();
       return editor;
     } catch(IOException exc){
       System.out.println("Error opening file");
@@ -878,12 +879,41 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
   public void stateChanged(ChangeEvent e) {
     if(e.getSource() == tabbedPane) {
-      errorHighlighting.detach();
-      errorHighlighting.attach(getEditor(tabbedPane.getSelectedIndex()), errorView);
+	    // document tab has been changed
+	    editorChanged();
     }
   }
 
-  public void mouseDragged(MouseEvent e) {
+	private void editorChanged() {
+		// reattach error highlighter
+		errorHighlighting.detach();
+		SourceCodeEditor editor = getEditor(tabbedPane.getSelectedIndex());
+		errorHighlighting.attach(editor, errorView);
+		errorHighlighting.update();
+
+		// update window title
+		AbstractResource resource = editor.getResource();
+		String fileName = resource.toString();
+		if (resource instanceof FileDoc) {
+			FileDoc fileDoc = (FileDoc) resource;
+			File file = fileDoc.getFile();
+			fileName = file.getName();
+			for (int i=0; i<2; i++) {
+				file = file.getParentFile();
+				if (file != null) {
+					fileName = file.getName() + "/" + fileName;
+				} else {
+					break;
+				}
+			}
+			if (file != null) {
+				fileName = ".../" + fileName;
+			}
+		}
+		setTitle(fileName + "  -  " + windowTitleSuffix);
+	}
+
+	public void mouseDragged(MouseEvent e) {
   }
 
   public void mouseMoved(MouseEvent e) {
@@ -904,8 +934,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	}
 
 	public void keyPressed(KeyEvent e) {
-		// alt left/right
 		if (e.getModifiers() == KeyEvent.ALT_MASK) {
+			// alt+left
 			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 				// select the left tab
 				int index = tabbedPane.getSelectedIndex() - 1;
@@ -914,6 +944,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 				e.consume();
 			}
+			// alt+right
 			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 				// select the right tab
 				int index = tabbedPane.getSelectedIndex() + 1;
@@ -931,7 +962,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   public void changeFont(String fontName, int fontSize) {
     GProperties.setEditorFont(new Font(fontName, Font.PLAIN, fontSize));
 
-    SourceCodeEditor editor = getEditor(tabbedPane.getSelectedIndex());
+    SourceCodeEditor editor = getActiveEditor();
     SCEPane pane = editor.getTextPane();
     pane.setFont(GProperties.getEditorFont());
     LatexStyles.load();
