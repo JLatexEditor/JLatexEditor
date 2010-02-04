@@ -21,7 +21,8 @@ public class SCEMarkerBar extends JPanel implements SCEDocumentListener, MouseMo
 
   public static Color COLORS[] = new Color[] {
           Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN,
-          SCEDiff.COLOR_ADD, SCEDiff.COLOR_REMOVE, SCEDiff.COLOR_CHANGE };
+          SCEDiff.COLOR_ADD, SCEDiff.COLOR_REMOVE, SCEDiff.COLOR_CHANGE,
+          Color.BLUE };
   private ArrayList<ArrayList<Marker>> markers;
 
   // rows count
