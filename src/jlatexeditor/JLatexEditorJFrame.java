@@ -17,6 +17,7 @@ import jlatexeditor.gproperties.GPropertiesSyntaxHighlighting;
 import jlatexeditor.gui.AboutDialog;
 import jlatexeditor.gui.LocalHistory;
 import jlatexeditor.gui.StatusBar;
+import jlatexeditor.gui.SymbolsPanel;
 import jlatexeditor.quickhelp.LatexQuickHelp;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
@@ -225,6 +226,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     textToolsSplit.setResizeWeight(.85);
 
     statusBar = new StatusBar(this);
+
+    // symbols panel
+    new SymbolsPanel();
 
     cp.add(textToolsSplit, BorderLayout.CENTER);
     cp.add(statusBar, BorderLayout.SOUTH);
