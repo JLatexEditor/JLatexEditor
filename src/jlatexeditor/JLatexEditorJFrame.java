@@ -696,6 +696,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
       checkExternalModification(false);
       statusBar.showMessage("SVN update", builder.toString());
+      statusBar.setUpdatesAvailableVisible(false);
     } else
     // svn commit
     if(action.equals("svn commit")){
@@ -1020,6 +1021,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         label.setForeground(Color.RED);
 
         backgroundParser.parse();
+        statusBar.checkForUpdates();
       }
       if(closeIcon.contains(e.getX() - closeIcon.getX(), e.getY() - closeIcon.getY())) {
         closeTab(getTab(resource));
