@@ -33,6 +33,8 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
+import javax.swing.plaf.metal.MetalSplitPaneUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -224,15 +226,25 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  } catch (IOException ignored) {}
 
     // symbols panel
-    SymbolsPanel symbolsPanel = new SymbolsPanel();
+    final SymbolsPanel symbolsPanel = new SymbolsPanel();
+    symbolsPanel.setVisible(false);
     JSplitPane symbolsTextSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, symbolsPanel, tabbedPane);
-    symbolsTextSplit.setOneTouchExpandable(true);
+    symbolsTextSplit.setContinuousLayout(false);
     symbolsTextSplit.setDividerLocation(0);
+    symbolsTextSplit.setOneTouchExpandable(true);
+    ((BasicSplitPaneUI) symbolsTextSplit.getUI()).getDivider().addMouseListener(new MouseListener() {
+      public void mouseClicked(MouseEvent e) { }
+      public void mousePressed(MouseEvent e) {
+        symbolsPanel.setVisible(true);
+      }
+      public void mouseReleased(MouseEvent e) { }
+      public void mouseEntered(MouseEvent e) { }
+      public void mouseExited(MouseEvent e) { }
+    });
 
 	  textToolsSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, symbolsTextSplit, toolsTab);
     textToolsSplit.setOneTouchExpandable(true);
     textToolsSplit.setResizeWeight(.85);
-    textToolsSplit.setOneTouchExpandable(true);
 
     statusBar = new StatusBar(this);
 
