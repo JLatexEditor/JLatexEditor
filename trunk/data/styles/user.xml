@@ -29,6 +29,10 @@
     <foreground><color r="96" g="96" b="0"/></foreground>
   </element>
 
+	<element name="todo" style="bold,italic">
+	  <foreground><color r="0" g="0" b="255"/></foreground>
+	</element>
+
   <element name="error" style="plain">
     <foreground><color r="255" g="0" b="0"/></foreground>
   </element>

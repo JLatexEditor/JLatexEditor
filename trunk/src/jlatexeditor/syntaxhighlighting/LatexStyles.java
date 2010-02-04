@@ -29,7 +29,9 @@ public class LatexStyles{
   public static final byte MATH = 5;
   public static final byte MATH_COMMAND = 6;
 
-  public static final byte ERROR = 7;
+  public static final byte TODO = 7;
+
+  public static final byte ERROR = 8;
 
   public static final byte USER = 50;
 
@@ -56,6 +58,7 @@ public class LatexStyles{
     name2Id.put("number", NUMBER);
     name2Id.put("math", MATH);
     name2Id.put("math_command", MATH_COMMAND);
+    name2Id.put("todo", TODO);
     name2Id.put("error", ERROR);
 
     for(int i = 0; i < stylesMap.length; i++) stylesMap[i] = null;
@@ -147,10 +150,13 @@ public class LatexStyles{
     Font font = GProperties.getEditorFont();
     Font fontBold = GProperties.getEditorFont().deriveFont(Font.BOLD);
     Font fontItalic = GProperties.getEditorFont().deriveFont(Font.ITALIC);
+    Font fontBoldItalic = GProperties.getEditorFont().deriveFont(Font.BOLD | Font.ITALIC);
 
     style.put(TextAttribute.FONT, font);
     if(styleElement.getAttribute("style").equals("bold")) style.put(TextAttribute.FONT, fontBold);
     if(styleElement.getAttribute("style").equals("italic")) style.put(TextAttribute.FONT, fontItalic);
+    if(styleElement.getAttribute("style").equals("bold,italic") ||
+		   styleElement.getAttribute("style").equals("italic,bold")) style.put(TextAttribute.FONT, fontBoldItalic);
 
     XMLElement foreground = styleElement.getChildElement("foreground");
     if(foreground != null) {
