@@ -223,14 +223,18 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		  addTab(new UntitledDoc());
 	  } catch (IOException ignored) {}
 
-	  textToolsSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, tabbedPane, toolsTab);
+    // symbols panel
+    SymbolsPanel symbolsPanel = new SymbolsPanel();
+    JSplitPane symbolsTextSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, symbolsPanel, tabbedPane);
+    symbolsTextSplit.setOneTouchExpandable(true);
+    symbolsTextSplit.setDividerLocation(200);
+
+	  textToolsSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, symbolsTextSplit, toolsTab);
     textToolsSplit.setOneTouchExpandable(true);
     textToolsSplit.setResizeWeight(.85);
+    textToolsSplit.setOneTouchExpandable(true);
 
     statusBar = new StatusBar(this);
-
-    // symbols panel
-    new SymbolsPanel();
 
     cp.add(textToolsSplit, BorderLayout.CENTER);
     cp.add(statusBar, BorderLayout.SOUTH);
