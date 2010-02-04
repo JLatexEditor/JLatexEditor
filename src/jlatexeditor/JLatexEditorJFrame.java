@@ -226,7 +226,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  } catch (IOException ignored) {}
 
     // symbols panel
-    final SymbolsPanel symbolsPanel = new SymbolsPanel();
+    final SymbolsPanel symbolsPanel = new SymbolsPanel(this);
     symbolsPanel.setVisible(false);
     JSplitPane symbolsTextSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, symbolsPanel, tabbedPane);
     symbolsTextSplit.setContinuousLayout(false);

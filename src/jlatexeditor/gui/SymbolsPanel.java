@@ -1,10 +1,14 @@
 package jlatexeditor.gui;
 
+import jlatexeditor.JLatexEditorJFrame;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import sce.component.ImageButton;
+import sce.component.SCECaret;
+import sce.component.SCEDocument;
+import sce.component.SCEPane;
 import util.gui.FlowingLayout;
 import util.gui.SCETabbedPaneUI;
 
@@ -12,12 +16,18 @@ import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class SymbolsPanel extends JScrollPane {
-  JPanel panel = new JPanel();
+  private JLatexEditorJFrame jLatexEditor;
 
-  public SymbolsPanel() {
+  private JPanel panel = new JPanel();
+
+  public SymbolsPanel(JLatexEditorJFrame jLatexEditor) {
+    this.jLatexEditor = jLatexEditor;
+
     panel.setLayout(new FlowingLayout());
     panel.setBackground(Color.WHITE);
     panel.setOpaque(true);
@@ -70,7 +80,9 @@ public class SymbolsPanel extends JScrollPane {
         }
 
         ImageIcon icon = new ImageIcon(getClass().getResource("/images/symbols/" + collection + "/img" + toString(imageNr+1) + collection + ".png"));
-        panel.add(new ImageButton(icon, icon, icon));
+        ImageButton button = new ImageButton(icon, icon, icon);
+        panel.add(button);
+        button.addActionListener(new SymbolHandler(latexCommand));
       }
     } catch (Exception ignored) {
       ignored.printStackTrace();
@@ -81,5 +93,21 @@ public class SymbolsPanel extends JScrollPane {
     String s = imageNr + "";
     while(s.length() < 3) s = "0" + s;
     return s;
+  }
+
+  private class SymbolHandler implements ActionListener {
+    private String command;
+
+    private SymbolHandler(String command) {
+      this.command = command;
+    }
+
+    public void actionPerformed(ActionEvent e) {
+      SCEPane pane = jLatexEditor.getActiveEditor().getTextPane();
+      SCEDocument document = pane.getDocument();
+      pane.clearSelection();
+      SCECaret caret = pane.getCaret();
+      document.insert(command, caret.getRow(), caret.getColumn());
+    }
   }
 }
