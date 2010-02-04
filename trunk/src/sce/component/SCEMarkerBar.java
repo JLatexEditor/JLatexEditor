@@ -18,6 +18,7 @@ public class SCEMarkerBar extends JPanel implements SCEDocumentListener, MouseMo
   public static final int TYPE_SVN_ADD    = 4;
   public static final int TYPE_SVN_REMOVE = 5;
   public static final int TYPE_SVN_CHANGE = 6;
+  public static final int TYPE_TODO       = 7;
 
   public static Color COLORS[] = new Color[] {
           Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN,
