@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDocumentListener{
 	private static final Pattern TERM_PATTERN = Pattern.compile("(\\\\?[\\wäöüÄÖÜß_\\-\\^]+)");
 	private static final Pattern BAD_TERM_CHARS = Pattern.compile("[\\\\\\d_\\-\\^]");
+	private static final Pattern TODO_PATTERN = Pattern.compile("\\btodo\\b");
 
   // text pane and document
   private SCEPane pane = null;
@@ -209,7 +210,15 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
         // search for '%' (comment)
         if(c == '%'){
           byte commentStyle = stateStyles[LatexStyles.COMMENT];
-          while(char_nr < row.length) chars[char_nr++].style = commentStyle;
+	        Matcher matcher = TODO_PATTERN.matcher(row.toString().substring(char_nr).toLowerCase());
+	        if (matcher.find()) {
+		        int todoIndex = char_nr + matcher.start();
+		        while(char_nr < todoIndex) chars[char_nr++].style = commentStyle;
+		        byte todoStyle = stateStyles[LatexStyles.TODO];
+		        while(char_nr < row.length) chars[char_nr++].style = todoStyle;
+	        } else {
+		        while(char_nr < row.length) chars[char_nr++].style = commentStyle;
+	        }
           continue;
         }
 
