@@ -227,7 +227,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     SymbolsPanel symbolsPanel = new SymbolsPanel();
     JSplitPane symbolsTextSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, symbolsPanel, tabbedPane);
     symbolsTextSplit.setOneTouchExpandable(true);
-    symbolsTextSplit.setDividerLocation(200);
+    symbolsTextSplit.setDividerLocation(0);
 
 	  textToolsSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, symbolsTextSplit, toolsTab);
     textToolsSplit.setOneTouchExpandable(true);
@@ -677,7 +677,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // svn update
     if(action.equals("svn update")){
       saveAll();
-      ArrayList<SVN.Result> results = null;
+      ArrayList<SVN.UpdateResult> results = null;
       try {
         results = SVN.getInstance().update(getMainEditor().getFile().getParentFile());
       } catch (Exception exception) {
@@ -688,10 +688,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       builder.append("<html>");
       builder.append("SVN update: " + (results.size() == 0 ? "All Quiet on the Western Front" : "<br>"));
       builder.append("<br>");
-      svnList("Updated/Merged:", builder, results, new int[] { SVN.Result.TYPE_UPDATE, SVN.Result.TYPE_MERGED });
-      svnList("Added:", builder, results, new int[] { SVN.Result.TYPE_ADD });
-      svnList("Deleted:", builder, results, new int[] { SVN.Result.TYPE_DELETE });
-      svnList("Conflicts:", builder, results, new int[] { SVN.Result.TYPE_CONFLICT });
+      svnList("Updated/Merged:", builder, results, new int[] { SVN.UpdateResult.TYPE_UPDATE, SVN.UpdateResult.TYPE_MERGED });
+      svnList("Added:", builder, results, new int[] { SVN.UpdateResult.TYPE_ADD });
+      svnList("Deleted:", builder, results, new int[] { SVN.UpdateResult.TYPE_DELETE });
+      svnList("Conflicts:", builder, results, new int[] { SVN.UpdateResult.TYPE_CONFLICT });
       builder.append("</html>");
 
       checkExternalModification(false);
@@ -742,9 +742,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     }
   }
 
-  private void svnList(String message, StringBuilder builder, ArrayList<SVN.Result> results, int[] types) {
+  private void svnList(String message, StringBuilder builder, ArrayList<SVN.UpdateResult> results, int[] types) {
     boolean first = true;
-    for(SVN.Result result : results) {
+    for(SVN.UpdateResult result : results) {
       for(int type : types) {
         if(result.getType() == type) {
           if(first) {
