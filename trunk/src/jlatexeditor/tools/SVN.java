@@ -20,8 +20,8 @@ public class SVN {
     return instance;
   }
 
-  public synchronized ArrayList<Result> update(File dir) throws Exception {
-    ArrayList<Result> results = new ArrayList<Result>();
+  public synchronized ArrayList<UpdateResult> update(File dir) throws Exception {
+    ArrayList<UpdateResult> results = new ArrayList<UpdateResult>();
 
     Process svn;
     try{
@@ -39,11 +39,11 @@ public class SVN {
         String fileName = line.substring(1).trim();
         File file = new File(dir, fileName);
         switch (c) {
-          case('A') : results.add(new Result(file, Result.TYPE_ADD)); break;
-          case('D') : results.add(new Result(file, Result.TYPE_DELETE)); break;
-          case('U') : results.add(new Result(file, Result.TYPE_UPDATE));break;
-          case('G') : results.add(new Result(file, Result.TYPE_MERGED)); break;
-          case('C') : results.add(new Result(file, Result.TYPE_CONFLICT)); break;
+          case('A') : results.add(new UpdateResult(file, UpdateResult.TYPE_ADD)); break;
+          case('D') : results.add(new UpdateResult(file, UpdateResult.TYPE_DELETE)); break;
+          case('U') : results.add(new UpdateResult(file, UpdateResult.TYPE_UPDATE));break;
+          case('G') : results.add(new UpdateResult(file, UpdateResult.TYPE_MERGED)); break;
+          case('C') : results.add(new UpdateResult(file, UpdateResult.TYPE_CONFLICT)); break;
           default: throw new Exception("Parsing SVN output failed: " + line + ".");
         }
       }
@@ -89,6 +89,42 @@ public class SVN {
     return new Pair<Boolean,String>(success, builder.toString());
   }
 
+  public synchronized ArrayList<StatusResult> status(File dir) throws Exception {
+    ArrayList<StatusResult> results = new ArrayList<StatusResult>();
+
+    Process svn;
+    try{
+      svn = ProcessUtil.exec(new String[] {"svn", "--show-updates", "status"}, dir);
+    } catch(Exception e){
+      e.printStackTrace();
+      throw new Exception("SVN status failed!");
+    }
+
+    BufferedReader in = new BufferedReader(new InputStreamReader(svn.getInputStream()), 100000);
+    String line;
+    while((line = in.readLine()) != null){
+      char c = line.charAt(0);
+      if(line.charAt(1) == ' ') {
+        int serverStatus = line.charAt(7) == '*' ? StatusResult.SERVER_OUTDATED : StatusResult.SERVER_UP_TO_DATE;
+
+        String revisionAndFile = line.substring(8).trim();
+        int spaceIndex = revisionAndFile.indexOf(' ');
+        String fileName = spaceIndex == -1 ? revisionAndFile : revisionAndFile.substring(spaceIndex).trim();
+        File file = new File(dir, fileName);
+        switch (c) {
+          case('A') : results.add(new StatusResult(file, StatusResult.LOCAL_ADD, serverStatus)); break;
+          case('D') : results.add(new StatusResult(file, StatusResult.LOCAL_DELETE, serverStatus)); break;
+          case('M') : results.add(new StatusResult(file, StatusResult.LOCAL_MODIFIED, serverStatus));break;
+          case('C') : results.add(new StatusResult(file, StatusResult.LOCAL_CONFLICT, serverStatus)); break;
+          case('?') : results.add(new StatusResult(file, StatusResult.LOCAL_NOT_SVN, serverStatus)); break;
+          case(' ') : results.add(new StatusResult(file, StatusResult.LOCAL_UNCHANGED, serverStatus)); break;
+        }
+      }
+    }
+
+    return results;
+  }
+
   public synchronized void resolved(File file) {
     Process svn = null;
     try{
@@ -99,7 +135,7 @@ public class SVN {
     }
   }
 
-  public static class Result {
+  public static class UpdateResult {
     public static final int TYPE_UPDATE   = 0;
     public static final int TYPE_MERGED   = 1;
     public static final int TYPE_ADD      = 2;
@@ -109,7 +145,7 @@ public class SVN {
     private File file;
     private int type;
 
-    public Result(File file, int type) {
+    public UpdateResult(File file, int type) {
       this.file = file;
       this.type = type;
     }
@@ -120,6 +156,40 @@ public class SVN {
 
     public int getType() {
       return type;
+    }
+  }
+
+  public static class StatusResult {
+    public static final int LOCAL_ADD       = 0;
+    public static final int LOCAL_DELETE    = 1;
+    public static final int LOCAL_MODIFIED  = 2;
+    public static final int LOCAL_CONFLICT  = 3;
+    public static final int LOCAL_UNCHANGED = 4;
+    public static final int LOCAL_NOT_SVN   = 5;
+
+    public static final int SERVER_UP_TO_DATE = 0;
+    public static final int SERVER_OUTDATED   = 1;
+
+    private File file;
+    private int localStatus;
+    private int serverStatus;
+
+    public StatusResult(File file, int localStatus, int serverStatus) {
+      this.file = file;
+      this.localStatus = localStatus;
+      this.serverStatus = serverStatus;
+    }
+
+    public File getFile() {
+      return file;
+    }
+
+    public int getLocalStatus() {
+      return localStatus;
+    }
+
+    public int getServerStatus() {
+      return serverStatus;
     }
   }
 }

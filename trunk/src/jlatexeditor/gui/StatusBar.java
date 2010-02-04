@@ -1,37 +1,90 @@
 package jlatexeditor.gui;
 
 import jlatexeditor.JLatexEditorJFrame;
+import jlatexeditor.tools.SVN;
 import util.ColorUtil;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
+import java.io.File;
 import java.util.ArrayList;
 
 /**
  * StatusBar.
  */
-public class StatusBar extends JPanel {
+public class StatusBar extends JPanel implements ActionListener {
   private JLatexEditorJFrame jLatexEditor;
+
+  private JPanel right = new JPanel();
+  private JPanel center = new JPanel();
+  private JPanel left = new JPanel();
+
+  private boolean checkForUpdates = true;
+  private JLabel updatesAvailable = new JLabel("SVN updates are available.");
 
   private ArrayList<String> messges = new ArrayList<String>();
 
   public StatusBar(JLatexEditorJFrame jLatexEditor) {
     this.jLatexEditor = jLatexEditor;
 
-    setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+    right.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+    center.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 0));
+    left.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
 
-    add(new MemoryUsage());
+    setLayout(new BorderLayout());
+    add(right, BorderLayout.EAST);
+    add(center, BorderLayout.CENTER);
+    add(left, BorderLayout.WEST);
+
+    updatesAvailable.setOpaque(true);
+    updatesAvailable.setBackground(new Color(192, 255, 192)); //131, 255, 131
+    updatesAvailable.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createEmptyBorder(1,3,1,3)));
+    updatesAvailable.setVisible(false);
+    center.add(updatesAvailable);
+
+    right.add(new MemoryUsage());
     setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+
+    new CheckForUpdates().start();
   }
 
   public synchronized void showMessage(String shortMessage, String message) {
     messges.add(message);
     new MessagePopup(message, jLatexEditor);
+  }
+
+  public synchronized void checkForUpdates() {
+    if(!checkForUpdates) return;
+
+    boolean hasUpdates = false;
+
+    File file = jLatexEditor.getActiveEditor().getFile();
+    if(!file.exists()) return;
+    File dir = file.getParentFile();
+    try {
+      ArrayList<SVN.StatusResult> results = SVN.getInstance().status(dir);
+      for(SVN.StatusResult result : results) {
+        if(result.getServerStatus() == SVN.StatusResult.SERVER_OUTDATED) hasUpdates = true;
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      checkForUpdates = false;
+    }
+
+    System.out.println(hasUpdates);
+    updatesAvailable.setVisible(hasUpdates);
+  }
+
+  public void setUpdatesAvailableVisible(boolean v) {
+    updatesAvailable.setVisible(v);
+  }
+
+  public void actionPerformed(ActionEvent e) {
+    checkForUpdates();
   }
 
   public static class MemoryUsage extends JPanel implements ActionListener {
@@ -65,6 +118,20 @@ public class StatusBar extends JPanel {
 
     public void actionPerformed(ActionEvent e) {
       repaint();
+    }
+  }
+
+  private class CheckForUpdates extends Thread {
+    private CheckForUpdates() {
+      setPriority(Thread.MIN_PRIORITY);
+    }
+
+    public void run() {
+      checkForUpdates();
+
+      try {
+        synchronized (this) { wait(120000); }
+      } catch (InterruptedException e) { }
     }
   }
 }
