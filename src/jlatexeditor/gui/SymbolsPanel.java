@@ -22,6 +22,7 @@ public class SymbolsPanel extends JScrollPane {
     panel.setBackground(Color.WHITE);
     panel.setOpaque(true);
     setViewportView(panel);
+    getVerticalScrollBar().setUnitIncrement(30);
 
     read(panel, "Relation", "relation");
     read(panel, "Operators", "operators");

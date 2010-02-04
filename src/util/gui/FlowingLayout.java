@@ -1,5 +1,6 @@
 package util.gui;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -19,6 +20,7 @@ public class FlowingLayout implements LayoutManager {
   }
 
   public Dimension preferredLayoutSize(Container parent) {
+    layoutContainer(parent);
     return preferred;
   }
 
@@ -36,7 +38,7 @@ public class FlowingLayout implements LayoutManager {
       Dimension preferred = component.getPreferredSize();
       component.setSize(preferred);
 
-      if(x + preferred.width + hgap > width || component instanceof NewLine) {
+      if((x + preferred.width + hgap > width && x > hgap) || component instanceof NewLine) {
         x = hgap;
         y = y + maxHeight + vgap;
         maxHeight = 0;
