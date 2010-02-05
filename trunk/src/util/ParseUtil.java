@@ -29,12 +29,12 @@ public class ParseUtil {
     int index = 0, lastIndex = 0;
     while((index = string.indexOf(' ', index)) != -1) {
       if(lastIndex < index-1) {
-        parts.add(string.substring(lastIndex, index));
+        parts.add(string.substring(lastIndex, index).toLowerCase());
       }
       index++;
       lastIndex = index;
     }
-    if(lastIndex < string.length()) parts.add(string.substring(lastIndex));
+    if(lastIndex < string.length()) parts.add(string.substring(lastIndex).toLowerCase());
     return parts;
   }
 }
