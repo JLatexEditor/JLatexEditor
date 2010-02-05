@@ -9,6 +9,8 @@ import util.Aspell;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -27,6 +29,7 @@ public class GProperties {
   private static ArrayList<String> monospaceFonts = new ArrayList<String>();
 
 	private static BetterProperties2 properties = new BetterProperties2();
+	private static HashMap<String,Set<PropertyChangeListener>> changeListeners = new HashMap<String, Set<PropertyChangeListener>>();
 	
   // properties
   private static Font editorFont;
@@ -141,6 +144,8 @@ public class GProperties {
 	}
 
 	public static void load() {
+		Hashtable<Object,Object> oldMap = (Hashtable<Object, Object>) properties.clone();
+
 		if (CONFIG_FILE.exists()) {
 			try {
 				properties.load(new FileReader(CONFIG_FILE));
@@ -153,6 +158,17 @@ public class GProperties {
 		}
 
 		extractProperties();
+
+		// check what values have been changed and inform listeners
+		for (String key : changeListeners.keySet()) {
+			Object oldValue = oldMap.get(key);
+			Object newValue = properties.get(key);
+			if (!newValue.equals(oldValue)) {
+				for (PropertyChangeListener propertyChangeListener : changeListeners.get(key)) {
+					propertyChangeListener.propertyChange(new PropertyChangeEvent(CONFIG_FILE, key, oldValue, newValue));
+				}
+			}
+		}
 	}
 
 	private static void extractProperties() {
@@ -204,5 +220,21 @@ public class GProperties {
 
 	public static String getString(String key) {
 		return properties.getString(key);
+	}
+
+	public static void addPropertyChangeListener(String key, PropertyChangeListener listener) {
+		Set<PropertyChangeListener> listeners = changeListeners.get(key);
+		if (listeners == null) {
+			listeners = new HashSet<PropertyChangeListener>();
+		}
+		listeners.add(listener);
+		changeListeners.put(key, listeners);
+	}
+
+	public static void removePropertyChangeListener(String key, PropertyChangeListener listener) {
+		Set<PropertyChangeListener> listeners = changeListeners.get(key);
+		if (listeners != null) {
+			listeners.remove(listener);
+		}
 	}
 }

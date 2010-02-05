@@ -37,6 +37,8 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
 import javax.swing.plaf.metal.MetalSplitPaneUI;
 import java.awt.*;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -273,17 +275,21 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   }
 
 	private JMenuItem createMenuItem(String label, String command, Character mnemonic) {
-		JMenuItem newMenuItem = new JMenuItem(label);
-		newMenuItem.setActionCommand(command);
+		JMenuItem menuItem = new JMenuItem(label);
+		menuItem.setActionCommand(command);
 		if (mnemonic != null) {
-			newMenuItem.setMnemonic(mnemonic);
+			menuItem.setMnemonic(mnemonic);
 		}
 		String shorcutString = GProperties.getString("shortcut." + command);
 		if (shorcutString != null && !shorcutString.equals("")) {
-			newMenuItem.setAccelerator(KeyStroke.getKeyStroke(shorcutString));
+			menuItem.setAccelerator(KeyStroke.getKeyStroke(shorcutString));
 		}
-		newMenuItem.addActionListener(this);
-		return newMenuItem;
+		menuItem.addActionListener(this);
+
+		// add shortcut change listener
+		GProperties.addPropertyChangeListener("shortcut." + command, new ShortcutChangeListener(menuItem));
+
+		return menuItem;
 	}
 
 	private void initFileChooser() {
@@ -988,6 +994,25 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     editor.repaint();
   }
 
+	public static class ShortcutChangeListener implements PropertyChangeListener {
+		private JMenuItem menuItem;
+
+		public ShortcutChangeListener(JMenuItem menuItem) {
+			this.menuItem = menuItem;
+		}
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+
+			String shortcut = (String) evt.getNewValue();
+			System.out.println(shortcut);
+			if (shortcut == null) {
+				shortcut = "";
+			}
+			menuItem.setAccelerator(KeyStroke.getKeyStroke(shortcut));
+		}
+	}
+	
   private class TabLabel extends JPanel implements MouseListener, SCEModificationStateListener {
     private AbstractResource resource;
     private JLabel label;
