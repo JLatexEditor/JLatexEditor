@@ -272,6 +272,15 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // background parser
     backgroundParser = new BackgroundParser(this);
     backgroundParser.start();
+
+	  PropertyChangeListener fontChangeListener = new PropertyChangeListener() {
+		  @Override
+		  public void propertyChange(PropertyChangeEvent evt) {
+			  changeFont(GProperties.getString("editor.font.name"), GProperties.getInt("editor.font.size"));
+		  }
+	  };
+	  GProperties.addPropertyChangeListener("editor.font.name", fontChangeListener);
+	  GProperties.addPropertyChangeListener("editor.font.size", fontChangeListener);
   }
 
 	private JMenuItem createMenuItem(String label, String command, Character mnemonic) {

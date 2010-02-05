@@ -222,6 +222,14 @@ public class GProperties {
 		return properties.getString(key);
 	}
 
+	public static int getInt(String key) {
+		return properties.getInt(key);
+	}
+
+	public static double getDouble(String key) {
+		return properties.getDouble(key);
+	}
+
 	public static void addPropertyChangeListener(String key, PropertyChangeListener listener) {
 		Set<PropertyChangeListener> listeners = changeListeners.get(key);
 		if (listeners == null) {
