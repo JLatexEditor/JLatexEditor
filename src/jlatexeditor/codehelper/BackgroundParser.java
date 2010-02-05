@@ -153,7 +153,7 @@ public class BackgroundParser extends Thread {
     for(BibEntry entry : bibEntries) {
       boolean all = true;
       for(String key : keys) {
-        if(entry.getText().indexOf(key) == -1) { all = false; break; }
+        if(entry.getText().toLowerCase().indexOf(key) == -1) { all = false; break; }
       }
       if(all) entries.add(entry);
     }
