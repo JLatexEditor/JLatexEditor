@@ -11,16 +11,20 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Parsing files in background.
  */
 public class BackgroundParser extends Thread {
+	private Pattern wordPattern = Pattern.compile("[a-zA-ZäöüÄÖÜß]*");
   private JLatexEditorJFrame jle;
 
   private long bibModified = 0;
   private ArrayList<BibEntry> bibEntries = new ArrayList<BibEntry>();
 
+	private Trie words = new Trie();
   private Trie commands = new Trie();
   private Trie labels = new Trie();
 
@@ -33,7 +37,11 @@ public class BackgroundParser extends Thread {
     return bibEntries;
   }
 
-  public Trie getCommands() {
+	public Trie getWords() {
+		return words;
+	}
+
+	public Trie getCommands() {
     return commands;
   }
 
@@ -52,7 +60,7 @@ public class BackgroundParser extends Thread {
 
       Trie commands = new Trie();
       Trie labels = new Trie();
-      parseTex(directory, file.getName(), commands, labels, new HashSet<String>());
+      parseTex(directory, file.getName(), words, commands, labels, new HashSet<String>());
 
       this.commands = commands;
       this.labels = labels;
@@ -67,7 +75,7 @@ public class BackgroundParser extends Thread {
     notify();
   }
 
-  private void parseTex(File directory, String fileName, Trie commands, Trie labels, HashSet<String> done) {
+  private void parseTex(File directory, String fileName, Trie words, Trie commands, Trie labels, HashSet<String> done) {
     if(done.contains(fileName)) return; else done.add(fileName);
 
     File file = new File(directory, fileName);
@@ -117,9 +125,15 @@ public class BackgroundParser extends Thread {
         if(command.equals("bibliography")) {
           parseBib(directory, argument);
         } else {
-          parseTex(directory, argument, commands, labels, done);
+          parseTex(directory, argument, words, commands, labels, done);
         }
       }
+    }
+
+	  // collect words
+	  Matcher matcher = wordPattern.matcher(tex);
+    while (matcher.find()) {
+	    words.add(matcher.group());
     }
   }
 
