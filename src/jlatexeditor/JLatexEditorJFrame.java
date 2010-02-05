@@ -281,6 +281,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  };
 	  GProperties.addPropertyChangeListener("editor.font.name", fontChangeListener);
 	  GProperties.addPropertyChangeListener("editor.font.size", fontChangeListener);
+	  GProperties.addPropertyChangeListener("editor.font.antialiasing", fontChangeListener);
   }
 
 	private JMenuItem createMenuItem(String label, String command, Character mnemonic) {
