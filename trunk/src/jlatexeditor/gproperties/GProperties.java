@@ -163,7 +163,11 @@ public class GProperties {
 		for (String key : changeListeners.keySet()) {
 			Object oldValue = oldMap.get(key);
 			Object newValue = properties.get(key);
-			if (!newValue.equals(oldValue)) {
+			if (newValue == null && oldValue == null) continue;
+
+			if ((newValue == null && oldValue != null) ||
+					(newValue != null && oldValue == null) ||
+					!newValue.equals(oldValue)) {
 				for (PropertyChangeListener propertyChangeListener : changeListeners.get(key)) {
 					propertyChangeListener.propertyChange(new PropertyChangeEvent(CONFIG_FILE, key, oldValue, newValue));
 				}
