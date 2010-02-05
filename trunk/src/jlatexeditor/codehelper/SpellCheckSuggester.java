@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  * @author Stefan Endrullis
  */
 public class SpellCheckSuggester implements CodeAssistant, SCEPopup.ItemHandler {
-	private final PatternPair wordPattern = new PatternPair("([a-zA-ZäöüÄÖÜß]*)", "([a-zA-ZäöüÄÖÜß]*)");
+	public static final PatternPair wordPattern = new PatternPair("([a-zA-ZäöüÄÖÜß]*)", "([a-zA-ZäöüÄÖÜß]*)");
 
 	static final Action addToDictionary = new Action("<add to dictionary>");
 	static final Action removeFromDictionary = new Action("<remove from dictionary>");
@@ -77,27 +77,6 @@ public class SpellCheckSuggester implements CodeAssistant, SCEPopup.ItemHandler 
 
 		return false;
 	}
-
-	/**
-	 * Searches for a command at the given position.
-	 *
-	 * @param line row content
-	 * @param row row
-	 * @param column column
-	 * @return word
-	 */
-	/*
-	public WordWithPos findWord(String line, int row, int column){
-		Matcher startMatcher = wordStartPattern.matcher(line.substring(0, column));
-		Matcher endMatcher = wordEndPattern.matcher(line.substring(column, line.length()));
-
-		if (startMatcher.find() && endMatcher.find()) {
-			return new WordWithPos(startMatcher.group(1) + endMatcher.group(1), row, startMatcher.start(1));
-		}
-
-		return null;
-	}
-	*/
 
 	public void perform(Object item) {
 		if (item instanceof Action) {
