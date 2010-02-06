@@ -26,6 +26,9 @@ public final class Aspell {
 	/** Words in the personal dictionary. */
 	private HashSet<String> personalWords = new HashSet<String>();
 
+  /** Windows is fucking shit! Step over to a real operating system. */
+  private boolean fuckWindows = false;
+
 	public static void main(String[] args) throws IOException {
 		// print all available dictionaries
 		System.out.println("available dictionaries");
@@ -105,6 +108,8 @@ public final class Aspell {
 		// read version line
 		String version = aspellOut.readLine();
     if(version == null) throw new IOException("Aspell failed to start: " + aspellErr.readLine());
+
+    if(version.indexOf("Aspell 0.5") != -1) fuckWindows = false;
 
 		personalWords.clear();
 		personalWords.addAll(Arrays.asList(getPersonalWordList()));
