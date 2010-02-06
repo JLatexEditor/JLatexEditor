@@ -584,8 +584,9 @@ public class BetterProperties2 extends Properties {
 	}
 
 	public static final Range INT      = new PInt();
-	public static final Range INT_GT0  = new PInt(0);
+	public static final Range INT_GT_0 = new PInt(0);
 	public static final Range DOUBLE   = new PDouble();
+	public static final Range DOUBLE_0_TO_1 = new PDouble(0, 1);
 	public static final Range BOOLEAN  = new PBoolean();
 	public static final Range STRING   = new PString();
 	public static final Range SHORTCUT = new PShortcut();

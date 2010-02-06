@@ -63,6 +63,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private JSplitPane textToolsSplit = null;
   private JTabbedPane toolsTab = null;
   private ErrorView errorView = null;
+	private SymbolsPanel symbolsPanel;
+	private JSplitPane symbolsTextSplit;
 
   private StatusBar statusBar = null;
 
@@ -183,6 +185,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  editMenu.addSeparator();
 	  editMenu.add(createMenuItem("Diff", "diff", 'D'));
 
+	  JMenu viewMenu = new JMenu("View");
+		viewMenu.setMnemonic('V');
+	  menuBar.add(viewMenu);
+
+		viewMenu.add(createMenuItem("Symbols", "symbols", 'y'));
+		viewMenu.add(createMenuItem("Status Bar", "status bar", 'S'));
+
     JMenu buildMenu = new JMenu("Build");
 	  buildMenu.setMnemonic('B');
     menuBar.add(buildMenu);
@@ -228,20 +237,16 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  } catch (IOException ignored) {}
 
     // symbols panel
-    final SymbolsPanel symbolsPanel = new SymbolsPanel(this);
+    symbolsPanel = new SymbolsPanel(this);
     symbolsPanel.setVisible(false);
-    JSplitPane symbolsTextSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, symbolsPanel, tabbedPane);
+    symbolsTextSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, symbolsPanel, tabbedPane);
     symbolsTextSplit.setContinuousLayout(false);
     symbolsTextSplit.setDividerLocation(0);
     symbolsTextSplit.setOneTouchExpandable(true);
-    ((BasicSplitPaneUI) symbolsTextSplit.getUI()).getDivider().addMouseListener(new MouseListener() {
-      public void mouseClicked(MouseEvent e) { }
+    ((BasicSplitPaneUI) symbolsTextSplit.getUI()).getDivider().addMouseListener(new MouseAdapter() {
       public void mousePressed(MouseEvent e) {
         symbolsPanel.setVisible(true);
       }
-      public void mouseReleased(MouseEvent e) { }
-      public void mouseEntered(MouseEvent e) { }
-      public void mouseExited(MouseEvent e) { }
     });
 
 	  textToolsSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, symbolsTextSplit, toolsTab);
@@ -684,6 +689,16 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 			getEditor(tabbedPane.getSelectedIndex()).lineUncomment("% ");
 		} else
 
+		// show/hide symbols
+		if(action.equals("symbols")){
+			symbolsPanel.setVisible(!symbolsPanel.isVisible());
+			symbolsTextSplit.setDividerLocation(symbolsPanel.isVisible() ? GProperties.getDouble("symbols_panel.width") : 0);
+		} else
+		// show/hide status bar
+		if(action.equals("status bar")){
+			statusBar.setVisible(!statusBar.isVisible());
+		} else
+
     // diff
     if(action.equals("diff")){
       openDialog.showDialog(this, "Diff View");
@@ -706,7 +721,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // svn update
     if(action.equals("svn update")){
       saveAll();
-      ArrayList<SVN.UpdateResult> results = null;
+      ArrayList<SVN.UpdateResult> results;
       try {
         results = SVN.getInstance().update(getMainEditor().getFile().getParentFile());
       } catch (Exception exception) {

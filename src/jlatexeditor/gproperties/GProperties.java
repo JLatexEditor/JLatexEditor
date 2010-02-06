@@ -36,8 +36,9 @@ public class GProperties {
   private static Object textAntiAliasing = RenderingHints.VALUE_TEXT_ANTIALIAS_OFF;
 
 	public static final Range INT     = BetterProperties2.INT;
-	public static final Range INT_GT0 = BetterProperties2.INT_GT0;
+	public static final Range INT_GT_0 = BetterProperties2.INT_GT_0;
 	public static final Range DOUBLE  = BetterProperties2.DOUBLE;
+	public static final Range DOUBLE_0_TO_1  = BetterProperties2.DOUBLE_0_TO_1;
 	public static final Range BOOLEAN = BetterProperties2.BOOLEAN;
 	public static final Range STRING  = BetterProperties2.STRING;
 	public static final Range SHORTCUT = BetterProperties2.SHORTCUT;
@@ -91,10 +92,12 @@ public class GProperties {
 	  // set default for the properties file
 	  properties.addEntry(new Comment(" Font settings"));
 	  properties.addEntry(new Def(EDITOR_FONT_NAME, new PSet(MONOSPACE_FONTS_ARRAY), "Monospaced"));
-	  properties.addEntry(new Def(EDITOR_FONT_SIZE, INT_GT0, "13"));
+	  properties.addEntry(new Def(EDITOR_FONT_SIZE, INT_GT_0, "13"));
 	  properties.addEntry(new Def(EDITOR_FONT_ANTIALIASING, new PSet(TEXT_ANTIALIAS_KEYS), "Off"));
 	  properties.addEntry(new Comment(" Spell checker settings"));
 	  properties.addEntry(new Def(ASPELL_LANG, new PSet(aspellDicts), "en_GB"));
+	  properties.addEntry(new Comment(" Width of the symbols panel as part of the main window"));
+	  properties.addEntry(new Def("symbols_panel.width", DOUBLE_0_TO_1, "0.25"));
 		properties.addEntry(new Comment("\n## Shortcuts"));
 	  //properties.addEntry(new Def("xwinfo", STRING, null, "xwinfo/xwinfo"));
 
@@ -117,6 +120,9 @@ public class GProperties {
 		properties.addEntry(new Def("shortcut.comment", SHORTCUT, "control D"));
 		properties.addEntry(new Def("shortcut.uncomment", SHORTCUT, "control shift D"));
 		properties.addEntry(new Def("shortcut.diff", SHORTCUT, "alt D"));
+		properties.addEntry(new Comment(" View"));
+		properties.addEntry(new Def("shortcut.symbols", SHORTCUT, "alt Y"));
+		properties.addEntry(new Def("shortcut.status bar", SHORTCUT, ""));
 		properties.addEntry(new Comment(" Build menu"));
 		properties.addEntry(new Def("shortcut.pdf", SHORTCUT, "alt 1"));
 		properties.addEntry(new Def("shortcut.dvi", SHORTCUT, "alt 2"));
