@@ -14,6 +14,8 @@ import java.util.regex.Pattern;
  * @author Stefan Endrullis
  */
 public final class Aspell {
+	public static String ASPELL_EXECUTABLE = "aspell";
+
 	private static final Matcher masterDictMatcher = Pattern.compile("/([^/\\.]+)\\.multi").matcher("");
 
   private static boolean instanceFailed = false;
@@ -86,7 +88,7 @@ public final class Aspell {
 
 	private void startAspell(String lang, String langTag) throws IOException {
 		String[] aspellCommand = new String[]{
-			"aspell",
+			ASPELL_EXECUTABLE,
 			"-a",
 			"--lang=" + lang,
 			"--language-tag=" + langTag
@@ -293,7 +295,7 @@ public final class Aspell {
 	 */
 	public static List<String> availableDicts() throws IOException {
 		Process process = Runtime.getRuntime().exec(new String[]{
-			"aspell",
+				ASPELL_EXECUTABLE,
 			"dump",
 			"dicts"
 		});
