@@ -227,6 +227,9 @@ public final class Aspell {
 	}
 
 	public String[] getPersonalWordList() throws IOException {
+		if (fuckWindows) {
+			return new String[]{};
+		}
 		String listString = call("$$pp");
 		listString = listString.substring(listString.indexOf(':')+1).trim();
 		return listString.split(", ");
