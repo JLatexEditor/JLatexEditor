@@ -10,7 +10,7 @@ public class BibCodeHelper extends PatternHelper {
 
   public BibCodeHelper(BackgroundParser backgroundParser) {
     this.backgroundParser = backgroundParser;
-	  pattern = new PatternPair("\\\\cite\\{([^{},]+,)?([^{},]*)");
+	  pattern = new PatternPair("\\\\cite\\{([^{},]+,)*([^{},]*)");
   }
 
 	@Override

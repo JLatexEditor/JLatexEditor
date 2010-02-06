@@ -58,7 +58,7 @@ public class BibEntry extends CHCommand {
   }
 
   public String getUsage() {
-    return entryName + "}";
+    return entryName;
   }
 
   public String getName() {

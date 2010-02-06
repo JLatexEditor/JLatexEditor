@@ -103,7 +103,10 @@ public final class Aspell {
 		aspellErr = new BufferedReader(new InputStreamReader(aspellProcess.getErrorStream()));
 
 		// read version line
-		aspellOut.readLine();
+		String version = aspellOut.readLine();
+    if(version.indexOf("Error") != -1) {
+      throw new IOException("Aspell failed to start: " + version);
+    }
 
 		personalWords.clear();
 		personalWords.addAll(Arrays.asList(getPersonalWordList()));
