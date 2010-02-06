@@ -191,6 +191,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 		viewMenu.add(createMenuItem("Symbols", "symbols", 'y'));
 		viewMenu.add(createMenuItem("Status Bar", "status bar", 'S'));
+		viewMenu.add(createMenuItem("Compile", "compile", 'S'));
+		viewMenu.add(createMenuItem("Local Version History", "local version history", 'S'));
 
     JMenu buildMenu = new JMenu("Build");
 	  buildMenu.setMnemonic('B');
@@ -251,7 +253,12 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 	  textToolsSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, symbolsTextSplit, toolsTab);
     textToolsSplit.setOneTouchExpandable(true);
-    textToolsSplit.setResizeWeight(.85);
+    textToolsSplit.setResizeWeight(1 - GProperties.getDouble("tools_panel.height"));
+	  ((BasicSplitPaneUI) textToolsSplit.getUI()).getDivider().addMouseListener(new MouseAdapter() {
+	    public void mousePressed(MouseEvent e) {
+		    toolsTab.setVisible(true);
+	    }
+	  });
 
     statusBar = new StatusBar(this);
 
@@ -698,6 +705,14 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		if(action.equals("status bar")){
 			statusBar.setVisible(!statusBar.isVisible());
 		} else
+		// show/hide compile
+		if(action.equals("compile")){
+			toggleTool(0);
+		} else
+		// show/hide status bar
+		if(action.equals("local version history")){
+			toggleTool(1);
+		} else
 
     // diff
     if(action.equals("diff")){
@@ -777,8 +792,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  if(action.equals("about")){
 		  AboutDialog aboutDialog = new AboutDialog(version);
 		  aboutDialog.showIt();
-
-			//JOptionPane.showMessageDialog(this, "<html><h2>JLatexEditor</h2><p>TODO</p></html>", "JLatexEditor", JOptionPane.INFORMATION_MESSAGE);
 	  } else
 
     // timer
@@ -787,7 +800,23 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     }
   }
 
-  private void svnList(String message, StringBuilder builder, ArrayList<SVN.UpdateResult> results, int[] types) {
+	private void toggleTool(int tab) {
+		if (toolsTab.isVisible()) {
+			if (toolsTab.getSelectedIndex() == tab) {
+				toolsTab.setVisible(false);
+			} else {
+				toolsTab.setSelectedIndex(tab);
+			}
+		} else {
+			toolsTab.setSelectedIndex(tab);
+			toolsTab.setVisible(true);
+			textToolsSplit.setResizeWeight(1 - GProperties.getDouble("tools_panel.height"));
+			textToolsSplit.resetToPreferredSizes();
+			toolsTab.getSelectedComponent().requestFocus();
+		}
+	}
+
+	private void svnList(String message, StringBuilder builder, ArrayList<SVN.UpdateResult> results, int[] types) {
     boolean first = true;
     for(SVN.UpdateResult result : results) {
       for(int type : types) {

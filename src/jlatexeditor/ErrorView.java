@@ -154,7 +154,12 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     editor.moveTo(rowStart, column);
   }
 
-  private class ErrorComponent extends JLabel {
+	@Override
+	public void requestFocus() {
+		tree.requestFocus();
+	}
+
+	private class ErrorComponent extends JLabel {
     private LatexCompileError error;
     private boolean isSelected = false;
 

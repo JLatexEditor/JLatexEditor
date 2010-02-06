@@ -98,6 +98,8 @@ public class GProperties {
 	  properties.addEntry(new Def(ASPELL_LANG, new PSet(aspellDicts), "en_GB"));
 	  properties.addEntry(new Comment(" Width of the symbols panel as part of the main window"));
 	  properties.addEntry(new Def("symbols_panel.width", DOUBLE_0_TO_1, "0.25"));
+		properties.addEntry(new Comment(" Height of the tools panel as part of the main window"));
+		properties.addEntry(new Def("tools_panel.height", DOUBLE_0_TO_1, "0.15"));
 		properties.addEntry(new Comment("\n## Shortcuts"));
 	  //properties.addEntry(new Def("xwinfo", STRING, null, "xwinfo/xwinfo"));
 
