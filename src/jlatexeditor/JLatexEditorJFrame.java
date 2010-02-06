@@ -81,7 +81,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private LatexErrorHighlighting errorHighlighting = new LatexErrorHighlighting();
 
   // file changed time
-  private boolean modificationTimerPause = false;
   private Timer modificationTimer = new Timer(2000, this);
   private HashMap<File,Long> lastModified = new HashMap<File, Long>();
 
@@ -472,7 +471,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	 *
 	 * @return true if the process of saving the documents has NOT been canceled
 	 */
-  public boolean saveAll() {
+  public synchronized boolean saveAll() {
     boolean all = true;
     for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
       SourceCodeEditor editor = (SourceCodeEditor) tabbedPane.getComponentAt(tab);
@@ -491,9 +490,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	 * @param editor editor containing the document to save
 	 * @return true if saving the document has NOT been canceled
 	 */
-  private boolean save(SourceCodeEditor editor) {
+  private synchronized boolean save(SourceCodeEditor editor) {
 		if (!editor.getTextPane().getDocument().isModified()) return true;
-    modificationTimerPause = true;
 
 		AbstractResource resource = editor.getResource();
 
@@ -503,9 +501,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		if (resource instanceof UntitledDoc) {
       openDialog.setDialogTitle("Save " + resource.getName());
       openDialog.setDialogType(JFileChooser.SAVE_DIALOG);
-      if(openDialog.showDialog(this, "Save") != JFileChooser.APPROVE_OPTION) { modificationTimerPause = false; return false; }
+      if(openDialog.showDialog(this, "Save") != JFileChooser.APPROVE_OPTION) return false;
       file = openDialog.getSelectedFile();
-      if(file == null) { modificationTimerPause = false; return false; }
+      if(file == null) return false;
 
       if(file.exists()) {
         int choice = JOptionPane.showOptionDialog(
@@ -518,7 +516,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
                 new Object[] {"Overwrite", "Cancel"},
                 2
         );
-        if(choice == 1) { modificationTimerPause = false; return false; }
+        if(choice == 1) return false;
       }
 
       TabLabel tabLabel = (TabLabel) tabbedPane.getTabComponentAt(getTab(resource));
@@ -585,7 +583,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       ex.printStackTrace();
     }
 
-    modificationTimerPause = false;
 		return true;
   }
 
@@ -839,9 +836,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     if(!first) builder.append("</ul>");
   }
 
-  private void checkExternalModification(boolean showPopup) {
-    if(modificationTimerPause) return;
-    
+  private synchronized void checkExternalModification(boolean showPopup) {
     ArrayList<String> reloaded = new ArrayList<String>();
     for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
       SourceCodeEditor editor = getEditor(tab);
