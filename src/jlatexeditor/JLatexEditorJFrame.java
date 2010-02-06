@@ -286,7 +286,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     backgroundParser.start();
 
 	  PropertyChangeListener fontChangeListener = new PropertyChangeListener() {
-		  @Override
 		  public void propertyChange(PropertyChangeEvent evt) {
 			  changeFont(GProperties.getString("editor.font.name"), GProperties.getInt("editor.font.size"));
 		  }
@@ -570,8 +569,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         history_writer.write(text);
         history_writer.close();
       }
-
-      lastModified.put(file, file.lastModified());
+      
+      lastModified.put(file, new File(file.getCanonicalPath()).lastModified());
       editor.getTextPane().getDocument().setModified(false);
 
 	    if (gPropertiesSaved) {
@@ -1056,9 +1055,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 			this.menuItem = menuItem;
 		}
 
-		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
-
 			String shortcut = (String) evt.getNewValue();
 			System.out.println(shortcut);
 			if (shortcut == null) {
