@@ -543,10 +543,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       writer.write(text);
       writer.close();
 
-      try {
-        if(history) {
-          PrintWriter diff_writer = new PrintWriter(new FileOutputStream(file_revisions, true));
+      if(history) {
+        PrintWriter diff_writer = new PrintWriter(new FileOutputStream(file_revisions, true));
 
+        try {
           if(file_backup.exists()) {
             Process process = Runtime.getRuntime().exec(new String[]{
               "diff",
@@ -561,16 +561,16 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
             reader.close();
             process.destroy();
           }
-
-          diff_writer.println(LocalHistory.REVISION + Calendar.getInstance().getTime());
-          diff_writer.close();
-
-          PrintWriter history_writer = new PrintWriter(new FileOutputStream(file_backup));
-          history_writer.write(text);
-          history_writer.close();
+        } catch(Exception diffException) {
+          System.err.println("Local history, error starting diff: " + diffException.getMessage());
         }
-      } catch(Exception diffException) {
-        System.err.println("Local history, error starting diff: " + diffException.getMessage());
+
+        diff_writer.println(LocalHistory.REVISION + Calendar.getInstance().getTime());
+        diff_writer.close();
+
+        PrintWriter history_writer = new PrintWriter(new FileOutputStream(file_backup));
+        history_writer.write(text);
+        history_writer.close();
       }
 
       lastModified.put(file, new File(file.getCanonicalPath()).lastModified());
