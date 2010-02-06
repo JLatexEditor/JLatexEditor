@@ -295,7 +295,7 @@ public final class Aspell {
 	 */
 	public static List<String> availableDicts() throws IOException {
 		Process process = Runtime.getRuntime().exec(new String[]{
-				ASPELL_EXECUTABLE,
+			ASPELL_EXECUTABLE,
 			"dump",
 			"dicts"
 		});
