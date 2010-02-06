@@ -571,6 +571,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       }
       
       lastModified.put(file, new File(file.getCanonicalPath()).lastModified());
+      System.out.println("changed: " + lastModified.get(file));
       editor.getTextPane().getDocument().setModified(false);
 
 	    if (gPropertiesSaved) {
@@ -848,6 +849,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
       Long oldModified = lastModified.get(file);
       Long newModified = file.lastModified();
+      System.out.println("old: " + oldModified);
+      System.out.println("new: " + newModified);
       // has the file been changed?
       if(!oldModified.equals(newModified)) {
         boolean reload = false;
