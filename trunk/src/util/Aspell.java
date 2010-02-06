@@ -109,7 +109,7 @@ public final class Aspell {
 		String version = aspellOut.readLine();
     if(version == null) throw new IOException("Aspell failed to start: " + aspellErr.readLine());
 
-    if(version.indexOf("Aspell 0.5") != -1) fuckWindows = false;
+    if(version.indexOf("Aspell 0.5") != -1) fuckWindows = true;
 
 		personalWords.clear();
 		personalWords.addAll(Arrays.asList(getPersonalWordList()));
