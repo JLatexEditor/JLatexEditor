@@ -192,7 +192,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		viewMenu.add(createMenuItem("Symbols", "symbols", 'y'));
 		viewMenu.add(createMenuItem("Status Bar", "status bar", 'S'));
 		viewMenu.add(createMenuItem("Compile", "compile", 'S'));
-		viewMenu.add(createMenuItem("Local Version History", "local version history", 'S'));
+		viewMenu.add(createMenuItem("Local History", "local history", 'S'));
 
     JMenu buildMenu = new JMenu("Build");
 	  buildMenu.setMnemonic('B');
@@ -710,7 +710,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 			toggleTool(0);
 		} else
 		// show/hide status bar
-		if(action.equals("local version history")){
+		if(action.equals("local history")){
 			toggleTool(1);
 		} else
 
@@ -804,6 +804,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		if (toolsTab.isVisible()) {
 			if (toolsTab.getSelectedIndex() == tab) {
 				toolsTab.setVisible(false);
+				getActiveEditor().requestFocus();
 			} else {
 				toolsTab.setSelectedIndex(tab);
 			}

@@ -267,4 +267,9 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
   public void actionPerformed(ActionEvent e) {
     closeDiffView();
   }
+
+	@Override
+	public void requestFocus() {
+		getFocusedPane().requestFocus();
+	}
 }

@@ -157,6 +157,9 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
 	@Override
 	public void requestFocus() {
 		tree.requestFocus();
+		if (tree.getSelectionCount() == 0) {
+			tree.setSelectionRow(1);
+		}
 	}
 
 	private class ErrorComponent extends JLabel {

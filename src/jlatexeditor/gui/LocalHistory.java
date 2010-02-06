@@ -131,7 +131,16 @@ public class LocalHistory extends JPanel implements ComponentListener, ListSelec
     latexEditor.getActiveEditor().diffView(historyEntry.toString(), stringBuilder.toString());
   }
 
-  private static class HistoryEntry {
+	@Override
+	public void requestFocus() {
+		list.requestFocus();
+		System.out.println(list.getSelectedIndex());
+		if (list.getSelectedIndex() == -1) {
+			list.setSelectedIndex(0);
+		}
+	}
+
+	private static class HistoryEntry {
     private int revisionNr;
     private String revision;
     private List<Modification<String>> diff;
