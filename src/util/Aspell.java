@@ -270,6 +270,7 @@ public final class Aspell {
 			} catch (IOException e) {
 			  instanceFailed = true;
 			  System.err.println("Warning: spell checker not available. Please install aspell!");
+			  System.err.println("  " + e.getMessage());
 			}
 		}
 
