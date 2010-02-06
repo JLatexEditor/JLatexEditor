@@ -34,7 +34,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
-import javax.swing.plaf.metal.MetalSplitPaneUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
@@ -82,7 +81,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private LatexErrorHighlighting errorHighlighting = new LatexErrorHighlighting();
 
   // file changed time
-  private Timer timer = new Timer(2000, this);
+  private boolean modificationTimerPause = false;
+  private Timer modificationTimer = new Timer(2000, this);
   private HashMap<File,Long> lastModified = new HashMap<File, Long>();
 
 	private final ProgramUpdater updater = new ProgramUpdater("JLatexEditor update", "http://endrullis.de/JLatexEditor/update/");
@@ -269,8 +269,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     errorHighlighting.attach(getEditor(0), errorView);
 
     // file changed timer
-    timer.setActionCommand("timer");
-    timer.start();
+    modificationTimer.setActionCommand("timer");
+    modificationTimer.start();
 
 	  // search for updates in the background
 	  if (!devVersion) {
@@ -493,6 +493,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	 */
   private boolean save(SourceCodeEditor editor) {
 		if (!editor.getTextPane().getDocument().isModified()) return true;
+    modificationTimerPause = true;
 
 		AbstractResource resource = editor.getResource();
 
@@ -502,9 +503,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		if (resource instanceof UntitledDoc) {
       openDialog.setDialogTitle("Save " + resource.getName());
       openDialog.setDialogType(JFileChooser.SAVE_DIALOG);
-      if(openDialog.showDialog(this, "Save") != JFileChooser.APPROVE_OPTION) return false;
+      if(openDialog.showDialog(this, "Save") != JFileChooser.APPROVE_OPTION) { modificationTimerPause = false; return false; }
       file = openDialog.getSelectedFile();
-      if(file == null) return false;
+      if(file == null) { modificationTimerPause = false; return false; }
 
       if(file.exists()) {
         int choice = JOptionPane.showOptionDialog(
@@ -517,7 +518,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
                 new Object[] {"Overwrite", "Cancel"},
                 2
         );
-        if(choice == 1) return false;
+        if(choice == 1) { modificationTimerPause = false; return false; }
       }
 
       TabLabel tabLabel = (TabLabel) tabbedPane.getTabComponentAt(getTab(resource));
@@ -544,34 +545,37 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       writer.write(text);
       writer.close();
 
-      if(history) {
-        PrintWriter diff_writer = new PrintWriter(new FileOutputStream(file_revisions, true));
+      try {
+        if(history) {
+          PrintWriter diff_writer = new PrintWriter(new FileOutputStream(file_revisions, true));
 
-        if(file_backup.exists()) {
-          Process process = Runtime.getRuntime().exec(new String[]{
-            "diff",
-            file.getCanonicalPath(),
-            file_backup.getCanonicalPath()
-          });
-          BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+          if(file_backup.exists()) {
+            Process process = Runtime.getRuntime().exec(new String[]{
+              "diff",
+              file.getCanonicalPath(),
+              file_backup.getCanonicalPath()
+            });
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
-          String line;
-          while((line = reader.readLine()) != null) diff_writer.println(line);
+            String line;
+            while((line = reader.readLine()) != null) diff_writer.println(line);
 
-          reader.close();
-          process.destroy();
+            reader.close();
+            process.destroy();
+          }
+
+          diff_writer.println(LocalHistory.REVISION + Calendar.getInstance().getTime());
+          diff_writer.close();
+
+          PrintWriter history_writer = new PrintWriter(new FileOutputStream(file_backup));
+          history_writer.write(text);
+          history_writer.close();
         }
-
-        diff_writer.println(LocalHistory.REVISION + Calendar.getInstance().getTime());
-        diff_writer.close();
-
-        PrintWriter history_writer = new PrintWriter(new FileOutputStream(file_backup));
-        history_writer.write(text);
-        history_writer.close();
+      } catch(Exception diffException) {
+        System.err.println("Local history, error starting diff: " + diffException.getMessage());
       }
-      
+
       lastModified.put(file, new File(file.getCanonicalPath()).lastModified());
-      System.out.println("changed: " + lastModified.get(file));
       editor.getTextPane().getDocument().setModified(false);
 
 	    if (gPropertiesSaved) {
@@ -581,6 +585,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       ex.printStackTrace();
     }
 
+    modificationTimerPause = false;
 		return true;
   }
 
@@ -835,6 +840,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   }
 
   private void checkExternalModification(boolean showPopup) {
+    if(modificationTimerPause) return;
+    
     ArrayList<String> reloaded = new ArrayList<String>();
     for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
       SourceCodeEditor editor = getEditor(tab);
@@ -849,8 +856,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
       Long oldModified = lastModified.get(file);
       Long newModified = file.lastModified();
-      System.out.println("old: " + oldModified);
-      System.out.println("new: " + newModified);
       // has the file been changed?
       if(!oldModified.equals(newModified)) {
         boolean reload = false;
