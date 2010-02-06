@@ -203,7 +203,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  buildMenu.add(createMenuItem("dvi + ps + pdf", "dvi + ps + pdf", null));
 
     JMenu vcMenu = new JMenu("Version Control");
-	  vcMenu.setMnemonic('V');
+	  vcMenu.setMnemonic('C');
     menuBar.add(vcMenu);
 
 	  vcMenu.add(createMenuItem("SVN update", "svn update", 'u'));
@@ -899,6 +899,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 
   private void checkForUpdates(boolean startup) {
+	  if (startup && !GProperties.getBoolean("check_for_updates")) return;
+
 		// check for new version
 		if (updater.isNewVersionAvailable()) {
 			// ask user if (s)he wants to update
@@ -978,8 +980,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		if (resource instanceof FileDoc) {
 			FileDoc fileDoc = (FileDoc) resource;
 			File file = fileDoc.getFile();
+			String fileWithPath = file.getPath();
 			fileName = file.getName();
-			for (int i=0; i<2; i++) {
+			for (int i=0; i<GProperties.getInt("window.title.number_of_parent_dirs_shown"); i++) {
 				file = file.getParentFile();
 				if (file != null) {
 					fileName = file.getName() + "/" + fileName;
@@ -988,7 +991,12 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 				}
 			}
 			if (file != null) {
-				fileName = ".../" + fileName;
+				if (file.getParentFile() == null ||
+						file.getParentFile() != null && file.getParentFile().getParentFile() == null) {
+					fileName = fileDoc.getFile().getAbsolutePath();
+				} else {
+					fileName = ".../" + fileName;
+				}
 			}
 		}
 		setTitle(fileName + "  -  " + windowTitleSuffix);

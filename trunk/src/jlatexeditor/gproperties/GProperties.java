@@ -90,6 +90,8 @@ public class GProperties {
 		dictList.toArray(aspellDicts);
 
 	  // set default for the properties file
+	  properties.addEntry(new Comment(" Check for updates"));
+		properties.addEntry(new Def("check_for_updates", BOOLEAN, "true"));
 	  properties.addEntry(new Comment(" Font settings"));
 	  properties.addEntry(new Def(EDITOR_FONT_NAME, new PSet(MONOSPACE_FONTS_ARRAY), "Monospaced"));
 	  properties.addEntry(new Def(EDITOR_FONT_SIZE, INT_GT_0, "13"));
@@ -100,9 +102,10 @@ public class GProperties {
 	  properties.addEntry(new Def("symbols_panel.width", DOUBLE_0_TO_1, "0.25"));
 		properties.addEntry(new Comment(" Height of the tools panel as part of the main window"));
 		properties.addEntry(new Def("tools_panel.height", DOUBLE_0_TO_1, "0.15"));
-		properties.addEntry(new Comment("\n## Shortcuts"));
-	  //properties.addEntry(new Def("xwinfo", STRING, null, "xwinfo/xwinfo"));
+		properties.addEntry(new Comment(" Number of parent directories of the open file shown in the window title"));
+		properties.addEntry(new Def("window.title.number_of_parent_dirs_shown", INT_GT_0, "2"));
 
+		properties.addEntry(new Comment("\n## Shortcuts"));
 		properties.addEntry(new Comment(" File menu"));
 		properties.addEntry(new Def("shortcut.new", SHORTCUT, "control N"));
 		properties.addEntry(new Def("shortcut.open", SHORTCUT, "control O"));
@@ -235,6 +238,10 @@ public class GProperties {
 
 	public static String getString(String key) {
 		return properties.getString(key);
+	}
+
+	public static boolean getBoolean(String key) {
+		return properties.getBoolean(key);
 	}
 
 	public static int getInt(String key) {
