@@ -104,9 +104,7 @@ public final class Aspell {
 
 		// read version line
 		String version = aspellOut.readLine();
-    if(version.indexOf("Error") != -1) {
-      throw new IOException("Aspell failed to start: " + version);
-    }
+    if(version == null) throw new IOException("Aspell failed to start: " + version);
 
 		personalWords.clear();
 		personalWords.addAll(Arrays.asList(getPersonalWordList()));
