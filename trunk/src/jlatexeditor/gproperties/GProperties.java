@@ -232,6 +232,11 @@ public class GProperties {
 	  save();
   }
 
+  public static void set(String key, String value) {
+    properties.setProperty(key, value);
+    save();
+  }
+
 	public static String getAspellLang() {
 		return properties.getString(ASPELL_LANG);
 	}
