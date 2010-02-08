@@ -139,8 +139,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   public JLatexEditorJFrame(String args[]){
 	  super(windowTitleSuffix);
     this.args = args;
-    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     addWindowListener(this);
+    Runtime.getRuntime().addShutdownHook(new ShutdownHook());
 
 	  initFileChooser();
 
@@ -1020,21 +1021,25 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     });
   }
 
+  private class ShutdownHook extends Thread {
+    public void run() {
+      try {
+        PrintWriter writerLast = new PrintWriter(new FileWriter(FILE_LAST_SESSION));
+        for(int tabNr = 0; tabNr < tabbedPane.getTabCount(); tabNr++) {
+          SourceCodeEditor editor = getEditor(tabNr);
+          if(!(editor.getResource() instanceof FileDoc)) continue;
+          writerLast.println(editor.getFile().getCanonicalPath() + ":" + editor.getTextPane().getCaret().getRow());
+        }
+        writerLast.close();
+
+        PrintWriter writerRecent = new PrintWriter(new FileWriter(FILE_RECENT));
+        for(String name : recentFiles) writerRecent.println(name);
+        writerRecent.close();
+      } catch (IOException ignored) {}
+    }
+  }
+  
   public void windowClosing(WindowEvent e) {
-    try {
-      PrintWriter writerLast = new PrintWriter(new FileWriter(FILE_LAST_SESSION));
-      for(int tabNr = 0; tabNr < tabbedPane.getTabCount(); tabNr++) {
-        SourceCodeEditor editor = getEditor(tabNr);
-        if(!(editor.getResource() instanceof FileDoc)) continue;
-        writerLast.println(editor.getFile().getCanonicalPath() + ":" + editor.getTextPane().getCaret().getRow());
-      }
-      writerLast.close();
-
-      PrintWriter writerRecent = new PrintWriter(new FileWriter(FILE_RECENT));
-      for(String name : recentFiles) writerRecent.println(name);
-      writerRecent.close();
-    } catch (IOException ignored) {}
-
     System.exit(0);
   }
 
