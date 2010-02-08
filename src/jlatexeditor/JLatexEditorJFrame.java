@@ -139,6 +139,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   public JLatexEditorJFrame(String args[]){
 	  super(windowTitleSuffix);
     this.args = args;
+    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     addWindowListener(this);
 
 	  initFileChooser();
