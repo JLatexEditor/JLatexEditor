@@ -44,6 +44,11 @@ import java.util.Calendar;
 import java.util.HashMap;
 
 public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener, KeyListener {
+  public static final File FILE_LAST_SESSION = new File(System.getProperty("user.home") + "/.jlatexeditor/last.session");
+  public static final File FILE_RECENT = new File(System.getProperty("user.home") + "/.jlatexeditor/recent");
+  private JMenu recentFilesMenu;
+  private ArrayList<String> recentFiles = new ArrayList<String>();
+
   private static String UNTITLED = "Untitled";
 
 	private static String version = "*Bleeding Edge*";
@@ -148,7 +153,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // set Layout
     Container cp = getContentPane();
     cp.setLayout(new BorderLayout());
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     // create menu
     menuBar = new JMenuBar();
@@ -160,6 +164,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 	  fileMenu.add(createMenuItem("New", "new", 'N'));
 	  fileMenu.add(createMenuItem("Open", "open", 'O'));
+    recentFilesMenu = new JMenu("Open Recent");
+    recentFilesMenu.setMnemonic('R');
+    fileMenu.add(recentFilesMenu);
 	  fileMenu.add(createMenuItem("Save", "save", 'S'));
 	  fileMenu.add(createMenuItem("Close", "close", 'C'));
 	  fileMenu.add(createMenuItem("Exit", "exit", 'E'));
@@ -233,9 +240,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
     // tabs for the files
     tabbedPane = new JTabbedPane();
-	  try {
-		  addTab(new UntitledDoc());
-	  } catch (IOException ignored) {}
+    try {
+      addTab(new UntitledDoc());
+    } catch (IOException ignored) {}
 
     // symbols panel
     symbolsPanel = new SymbolsPanel(this);
@@ -292,6 +299,61 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  GProperties.addPropertyChangeListener("editor.font.name", fontChangeListener);
 	  GProperties.addPropertyChangeListener("editor.font.size", fontChangeListener);
 	  GProperties.addPropertyChangeListener("editor.font.antialiasing", fontChangeListener);
+  }
+
+  /**
+   * Reopen the files that were open the last time.
+   */
+  private void reopenLast() {
+    try {
+      BufferedReader reader = new BufferedReader(new FileReader(FILE_LAST_SESSION));
+      String line;
+      while((line = reader.readLine()) != null) {
+        int colon = line.indexOf(':');
+        if(colon == -1) colon = line.length();
+
+        File file = new File(line.substring(0, colon));
+        int lineNr = colon >= line.length() ? 0 : Integer.parseInt(line.substring(colon+1));
+
+        if(file.exists() && file.isFile()) {
+          SourceCodeEditor editor = open(new FileDoc(file));
+          editor.getTextPane().getCaret().moveTo(lineNr, 0);
+        }
+      }
+      reader.close();
+    } catch (IOException ignored) {}
+  }
+
+  private void loadRecent() {
+    recentFiles.clear();
+    try {
+      BufferedReader reader = new BufferedReader(new FileReader(FILE_RECENT));
+      String line;
+      while((line = reader.readLine()) != null) recentFiles.add(line);
+      reader.close();
+    } catch (IOException ignored) {}
+  }
+
+  private void addRecent(File file) {
+    try {
+      String fileName = file.getCanonicalPath();
+      recentFiles.remove(fileName);
+      recentFiles.add(0, fileName);
+      if(recentFiles.size() > 20) recentFiles.remove(20);
+    } catch (IOException ignored) { }
+    updateRecentMenu();
+  }
+
+  private void updateRecentMenu() {
+    recentFilesMenu.removeAll();
+    for(String name : recentFiles) {
+      JMenuItem item = new JMenuItem(name);
+      item.setActionCommand("open recent:" + name);
+      item.addActionListener(this);
+      recentFilesMenu.add(item);
+    }
+    recentFilesMenu.addSeparator();
+    recentFilesMenu.add(createMenuItem("Clear List", "clear recent", 'C'));
   }
 
 	private JMenuItem createMenuItem(String label, String command, Character mnemonic) {
@@ -436,10 +498,11 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	    SourceCodeEditor editor = addTab(resource);
 	    if (closeFirstTab) closeTab(0);
 
-
 	    if (resource instanceof FileDoc) {
 	      FileDoc fileDoc = (FileDoc) resource;
 		    lastModified.put(fileDoc.file, fileDoc.file.lastModified());
+        
+        addRecent(((FileDoc) resource).getFile());
 	    }
 
 	    editorChanged();
@@ -633,6 +696,14 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       if(openDialog.getSelectedFile() == null) return;
 
       open(new FileDoc(openDialog.getSelectedFile()));
+    } else
+    // recent files list
+    if(action.startsWith("open recent:")){
+      open(new FileDoc(new File(action.substring("open recent:".length()))));
+    } else
+    if(action.equals("clear recent")){
+      recentFiles.clear();
+      updateRecentMenu();
     } else
     // save a file
     if(action.equals("save")){
@@ -930,6 +1001,12 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	public void windowOpened(WindowEvent e) {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
+        // recent files
+        loadRecent();
+
+        // reopen last files
+        reopenLast();
+
         // open files given in command line
         for(String arg : args) { open(new FileDoc(new File(arg))); }
         openDialog.setDialogTitle("Open");
@@ -943,6 +1020,21 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   }
 
   public void windowClosing(WindowEvent e) {
+    try {
+      PrintWriter writerLast = new PrintWriter(new FileWriter(FILE_LAST_SESSION));
+      for(int tabNr = 0; tabNr < tabbedPane.getTabCount(); tabNr++) {
+        SourceCodeEditor editor = getEditor(tabNr);
+        if(!(editor.getResource() instanceof FileDoc)) continue;
+        writerLast.println(editor.getFile().getCanonicalPath() + ":" + editor.getTextPane().getCaret().getRow());
+      }
+      writerLast.close();
+
+      PrintWriter writerRecent = new PrintWriter(new FileWriter(FILE_RECENT));
+      for(String name : recentFiles) writerRecent.println(name);
+      writerRecent.close();
+    } catch (IOException ignored) {}
+
+    System.exit(0);
   }
 
   public void windowClosed(WindowEvent e) {
