@@ -29,6 +29,7 @@ public class BackgroundParser extends Thread {
   private Trie commands = new Trie();
   private Trie labels = new Trie();
 
+
 	private ArrayList<TODO> todos = new ArrayList<TODO>();
 
   public BackgroundParser(JLatexEditorJFrame jle) {
@@ -112,7 +113,7 @@ public class BackgroundParser extends Thread {
       }
 
 	    // newline?
-	    if(c == '\n') { line++; continue; }
+	    if(c == '\n') { line++; }
       
       // starting of commands?
       if(c != '\\') { index++; continue; }
@@ -177,7 +178,7 @@ public class BackgroundParser extends Thread {
     return entries;
   }
 
-	private static class TODO {
+	public static class TODO {
 		private String msg;
 		private File file;
 		private int line;
