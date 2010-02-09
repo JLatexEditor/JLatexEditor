@@ -18,7 +18,8 @@ import java.util.regex.Pattern;
  * Parsing files in background.
  */
 public class BackgroundParser extends Thread {
-	private Pattern wordPattern = Pattern.compile("[a-zA-ZäöüÄÖÜß]*");
+	private static final Pattern WORD_PATTERN = Pattern.compile("[a-zA-ZäöüÄÖÜß]*");
+	private static final Pattern TODO_PATTERN = Pattern.compile("\\btodo\\b");
   private JLatexEditorJFrame jle;
 
   private long bibModified = 0;
@@ -27,6 +28,8 @@ public class BackgroundParser extends Thread {
 	private Trie words = new Trie();
   private Trie commands = new Trie();
   private Trie labels = new Trie();
+
+	private ArrayList<TODO> todos = new ArrayList<TODO>();
 
   public BackgroundParser(JLatexEditorJFrame jle) {
     this.jle = jle;
@@ -88,15 +91,28 @@ public class BackgroundParser extends Thread {
     } catch (IOException e) { return; }
 
     int index = 0;
+	  int line = 0;
     while(index < tex.length()) {
       char c = tex.charAt(index);
 
       // skip comments
       if(c == '%') {
+	      int startIndex = index;
         while(index < tex.length() && tex.charAt(index) != '\n') index++;
+	      line++;
         index++;
+	      String commentString = tex.substring(startIndex+1, index-1);
+	      Matcher matcher = TODO_PATTERN.matcher(commentString.toLowerCase());
+	      if (matcher.find()) {
+		      // found a "todo"
+		      String todoMsg = commentString.substring(matcher.start() + 5);
+		      todos.add(new TODO(todoMsg, file, line));
+	      }
         continue;
       }
+
+	    // newline?
+	    if(c == '\n') { line++; continue; }
       
       // starting of commands?
       if(c != '\\') { index++; continue; }
@@ -131,7 +147,7 @@ public class BackgroundParser extends Thread {
     }
 
 	  // collect words
-	  Matcher matcher = wordPattern.matcher(tex);
+	  Matcher matcher = WORD_PATTERN.matcher(tex);
     while (matcher.find()) {
 	    words.add(matcher.group());
     }
@@ -160,4 +176,16 @@ public class BackgroundParser extends Thread {
 
     return entries;
   }
+
+	private static class TODO {
+		private String msg;
+		private File file;
+		private int line;
+
+		private TODO(String msg, File file, int line) {
+			this.msg = msg;
+			this.file = file;
+			this.line = line;
+		}
+	}
 }
