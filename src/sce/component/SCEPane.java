@@ -93,6 +93,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   public SCEPane(SourceCodeEditor sourceCodeEditor){
 	  this.sourceCodeEditor = sourceCodeEditor;
 
+    setOpaque(true);
     setBackground(Color.WHITE);
 
     // create the underlying document
