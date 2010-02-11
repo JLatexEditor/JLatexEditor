@@ -161,7 +161,8 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    */
   public void paint(Graphics g){
     Rectangle r = g.getClipBounds();
-    g.clearRect(r.x, r.y, r.width, r.height);
+    g.setColor(Color.WHITE);
+    g.fillRect(r.x, r.y, r.width, r.height);
     //super.paint(g); // does not work for java version "1.6.0_06"
 
     Graphics2D g2D = (Graphics2D) g;
