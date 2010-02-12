@@ -30,7 +30,6 @@ public class SCETabbedPaneUI extends BasicTabbedPaneUI {
     UIManager.put("TabbedPane.tabAreaInsets", new Insets(0, 0, 0, 0));
     UIManager.put("TabbedPane.tabInsets", new Insets(0, 0, 0, 0));
     tabbedPane.setOpaque(true);
-    tabbedPane.setBackground(Color.WHITE);
 
     try {
       image_active_left = new ImageIcon(getClass().getResource("/images/tabbedPane/tab_active_left.png"));
