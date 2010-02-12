@@ -670,7 +670,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     }
 
     if(latexCompiler != null) latexCompiler.halt();
-    latexCompiler = new LatexCompiler(type, editor, errorView);
+    latexCompiler = LatexCompiler.createInstance(type, editor, errorView);
 
     errorHighlighting.clear();
     latexCompiler.addLatexCompileListener(errorHighlighting);
