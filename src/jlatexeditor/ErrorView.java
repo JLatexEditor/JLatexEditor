@@ -43,6 +43,8 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
   private JScrollPane scrollHbox = new JScrollPane(listHbox);
   private JScrollPane scrollWarning = new JScrollPane(listWarning);
 
+  private JLabel working;
+
   public ErrorView(JLatexEditorJFrame latexEditor) {
     this.latexEditor = latexEditor;
 
@@ -72,7 +74,16 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
       list.addListSelectionListener(this);
     }
 
-    setLeftComponent(tree);
+    JPanel treePanel = new JPanel();
+    treePanel.setBackground(Color.WHITE);
+    treePanel.setLayout(new BorderLayout());
+    treePanel.add(tree, BorderLayout.NORTH);
+
+    working = new JLabel(new ImageIcon(getClass().getResource("/images/working32.gif")));
+    working.setVisible(false);
+    treePanel.add(working, BorderLayout.CENTER);
+
+    setLeftComponent(treePanel);
     setRightComponent(scrollOutput);
 
     setResizeWeight(0);
@@ -88,6 +99,15 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     repaint();
   }
 
+  public void compileStarted(String text) {
+    working.setText(text);
+    working.setVisible(true);
+  }
+
+  public void compileFinished() {
+    working.setVisible(false);
+  }
+  
   public void update() {
     nodeError.setUserObject("<html><font color=\"" + (lmError.getSize() > 0 ? "red" : "gray") + "\">errors (" + lmError.getSize() + ")</font></html>");
     nodeHbox.setUserObject("<html><font color=\"" + (lmHbox.getSize() > 0 ? "black" : "gray") + "\">overfull hboxes (" + lmHbox.getSize() + ")</font></html>");

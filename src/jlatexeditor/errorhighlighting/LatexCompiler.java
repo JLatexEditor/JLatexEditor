@@ -35,10 +35,22 @@ public class LatexCompiler extends Thread {
 
   private static Pattern fileLineError = Pattern.compile("([^:]+):([\\d]+):(.*)");
 
-  public LatexCompiler(int type, SourceCodeEditor editor, ErrorView errorView){
+  // instance
+  private static LatexCompiler instance = null;
+  // compile process
+  private Process latexCompiler = null;
+  private Process bibtex = null;
+
+  private LatexCompiler(int type, SourceCodeEditor editor, ErrorView errorView){
     this.type = type;
     this.editor = editor;
     this.errorView = errorView;
+  }
+
+  public static synchronized LatexCompiler createInstance(int type, SourceCodeEditor editor, ErrorView errorView) {
+    if(instance != null) instance.halt();
+    instance = new LatexCompiler(type, editor, errorView);
+    return instance;
   }
 
   public void run(){
@@ -58,12 +70,13 @@ public class LatexCompiler extends Thread {
     baseName = baseName.substring(0, baseName.lastIndexOf(".tex"));
 
     // Command line shell
-    Process latexCompiler = null;
     try{
       if(type == TYPE_PDF) {
         latexCompiler = ProcessUtil.exec(new String[] {"pdflatex", "-file-line-error", "-interaction=nonstopmode", baseName + ".tex"}, file.getParentFile());
+        errorView.compileStarted("pdflatex");
       } else {
         latexCompiler = ProcessUtil.exec(new String[] {"latex", "-file-line-error", "-interaction=nonstopmode", "-output-format=dvi", baseName + ".tex"}, file.getParentFile());
+        errorView.compileStarted("latex");
       }
     } catch(Exception e){
       e.printStackTrace();
@@ -233,7 +246,8 @@ public class LatexCompiler extends Thread {
     }
 
     try {
-      Process bibtex = ProcessUtil.exec(new String[] {"bibtex", baseName}, file.getParentFile());
+      errorView.compileStarted("bibtex");
+      bibtex = ProcessUtil.exec(new String[] {"bibtex", baseName}, file.getParentFile());
       bibtex.waitFor();
 
       if(type == TYPE_DVI_PS || type == TYPE_DVI_PS_PDF) {
@@ -249,9 +263,16 @@ public class LatexCompiler extends Thread {
     }
 
     compileEnd();
+    errorView.compileFinished();
   }
 
   public void halt() {
+    try {
+      if(latexCompiler != null) latexCompiler.destroy();
+    } catch(Exception ignore) {}
+    try {
+      if(bibtex != null) bibtex.destroy();
+    } catch(Exception ignore) {}
     stop();
   }
 
