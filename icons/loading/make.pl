@@ -11,5 +11,6 @@ for($i = 0; $i < 18; $i++) {
   $ani = $ani."main$i.png ";
 }
 
-system("convert -delay 9 -loop 0 $ani animated.gif");
+system("convert -delay 9 -loop 0 $ani -resize 32x32 animated32.gif");
+system("convert -delay 9 -loop 0 $ani -resize 20x20 animated20.gif");
 system("rm main*");
