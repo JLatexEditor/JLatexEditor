@@ -39,6 +39,8 @@ import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -93,7 +95,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
   // background parser
   private BackgroundParser backgroundParser;
-  private HashMap<String,Doc> docMap = new HashMap<String,Doc>();
+  private HashMap<URI,Doc> docMap = new HashMap<URI,Doc>();
 
 	public static void main(String args[]){
     /*
@@ -489,7 +491,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	    if (docMap.containsKey(doc.getName())) {
 		    doc = docMap.get(doc.getName());
 	    } else {
-		    docMap.put(doc.getName(), doc);
+		    docMap.put(doc.getUri(), doc);
 	    }
 
       // already open?
@@ -593,9 +595,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       }
 
       TabLabel tabLabel = (TabLabel) tabbedPane.getTabComponentAt(getTab(doc));
-			docMap.remove(doc.getName());
+			docMap.remove(doc.getUri());
       doc = new FileDoc(file);
-			docMap.put(doc.getName(), doc);
+			docMap.put(doc.getUri(), doc);
       tabLabel.setDoc(doc);
       editor.setResource(doc);
 		} else
@@ -1304,6 +1306,11 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		}
 
 		public String getName() { return file.getName(); }
+
+		public URI getUri() {
+			return file.toURI();
+		}
+
 		public String toString() { return file.toString(); }
 	}
 
@@ -1334,6 +1341,16 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 		public String getContent() { return ""; }
 		public String getName() { return name; }
+
+		public URI getUri() {
+			try {
+				return new URI("unsaved:" + name);
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+
 		public String toString() { return name; }
 	}
 }
