@@ -94,7 +94,7 @@
 	</target>
 	
 	<!-- Build all files needed for deployment. -->
-	<target name="create_release" depends="jar">
+	<target name="create_release" depends="clean,jar">
 		<mkdir dir="${releases}"/>
 		
 		<exec executable="scripts/create_release">
