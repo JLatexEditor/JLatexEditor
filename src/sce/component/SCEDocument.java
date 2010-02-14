@@ -257,6 +257,13 @@ public class SCEDocument{
     selectionChanged();
   }
 
+	/**
+	 * Clears the selection.
+	 */
+	public void clearSelection() {
+		setSelectionRange(null, null);
+	}
+
   /**
    * Checks, if there is a selection.
    *
