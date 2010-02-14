@@ -202,7 +202,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 		viewMenu.add(createMenuItem("Symbols", "symbols", 'y'));
 		viewMenu.add(createMenuItem("Status Bar", "status bar", 'S'));
-		viewMenu.add(createMenuItem("Compile", "compile", 'S'));
+		viewMenu.add(createMenuItem("Compile", "compile", 'C'));
 		viewMenu.add(createMenuItem("Local History", "local history", 'S'));
 
     JMenu buildMenu = new JMenu("Build");
