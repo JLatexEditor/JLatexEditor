@@ -219,7 +219,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
         selection = null;
       } else {
         selection = new SCEDocumentRange(selectionStart, selectionEnd);
-        document.setSelectionRange(null, null);
+        document.clearSelection();
       }
     } else {
       results.clear();
@@ -502,15 +502,17 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
             markerBar.addMarker(new SCEMarkerBar.Marker(SCEMarkerBar.TYPE_SEARCH, rowStart, columnEnd, ""));
           }
         }
+      } else {
+	      document.clearSelection();
       }
 
       markerBar.repaint();
       pane.repaint();
 
+	    results = resultsTemp;
+	    
       if(move && moveCaret) next();
       if(length > 0 && resultsTemp.size() == 0) input.setBackground(new Color(255, 204, 204));
-
-      results = resultsTemp;
     }
 
     private boolean filter(SCEDocumentPosition start, SCEDocumentPosition end) {
