@@ -280,17 +280,36 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
       matcher.find();
 
       String replaceBy = replace.getText();
-      Pattern groupPattern = Pattern.compile("\\\\(\\d)");
-      Matcher groupMatcher = groupPattern.matcher(replaceBy);
-
-      StringBuilder builder = new StringBuilder();
-      int index = 0;
-      while(groupMatcher.find()) {
-        builder.append(replaceBy.substring(index, groupMatcher.start()));
-        builder.append(matcher.group(Integer.parseInt(groupMatcher.group(1))));
-        index = groupMatcher.end();
-      }
-      builder.append(replaceBy.substring(index));
+	    StringBuilder builder = new StringBuilder();
+	    // handle escaped characters and groups
+	    boolean escape = false;
+	    for (char c : replaceBy.toCharArray()) {
+		    if (escape) {
+			    if ('1' <= c && c <= '9') {
+				    int groupNr = c - '0';
+				    if (groupNr <= matcher.groupCount()) {
+				      builder.append(matcher.group(groupNr));
+				    }
+			    } else
+			    if (c == 'n') {
+				    builder.append('\n');
+			    } else
+			    if (c == 'r') {
+			    } else
+			    if (c == 't') {
+				    builder.append("  ");
+			    } else {
+				    builder.append(c);
+			    }
+			    escape = false;
+		    } else {
+			    if (c == '\\') {
+				    escape = true;
+			    } else {
+				    builder.append(c);
+			    }
+		    }
+	    }
 
       document.replace(start, end, builder.toString());
     }
