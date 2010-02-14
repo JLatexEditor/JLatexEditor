@@ -106,7 +106,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 
     replace.setColumns(40);
     add(replace);
-    replace.setToolTipText("For regexp groups use #{1}, #{2}, ...");
+    replace.setToolTipText("For regexp groups use \\1, \\2, ...");
     replace.addKeyListener(this);
     add(buttonReplace);
     buttonReplace.addActionListener(this);
@@ -280,7 +280,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
       matcher.find();
 
       String replaceBy = replace.getText();
-      Pattern groupPattern = Pattern.compile("\\#\\{(\\d)\\}");
+      Pattern groupPattern = Pattern.compile("\\\\(\\d)");
       Matcher groupMatcher = groupPattern.matcher(replaceBy);
 
       StringBuilder builder = new StringBuilder();
