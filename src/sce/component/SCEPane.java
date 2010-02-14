@@ -63,6 +63,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   public static Color currentLineHighlightColor = new Color(255, 255, 200); //new Color(255, 255, 220);
 
   public static Color selectionHighlightColor = new Color(82, 109, 165);
+  public static Color nonSelectionHighlightColor = new Color(196, 196, 196);
   public static Color selectionHighlightColorLight = new Color(255 - (255 - 82)/3, 255 - (255 -109)/3, 255);
   private SCETextHighlight selectionHighlight = new SCETextHighlight(this, null, null, selectionHighlightColor);
 

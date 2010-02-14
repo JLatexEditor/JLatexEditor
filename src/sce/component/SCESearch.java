@@ -201,7 +201,11 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     SCEPane pane = editor.getTextPane();
     pane.removeAllTextHighlights();
     if(highlightSelection && selection != null) {
-      pane.addTextHighlight(new SCETextHighlight(pane, selection.getStartPosition(), selection.getEndPosition(), SCEPane.selectionHighlightColorLight));
+	    int rows = pane.getDocument().getRowsCount();
+	    SCEDocumentPosition endDocPos = new SCEDocumentPosition(rows, 0);
+      pane.addTextHighlight(new SCETextHighlight(pane, new SCEDocumentPosition(0,0), selection.getStartPosition(), SCEPane.nonSelectionHighlightColor));
+      //pane.addTextHighlight(new SCETextHighlight(pane, selection.getStartPosition(), selection.getEndPosition(), SCEPane.selectionHighlightColorLight));
+      pane.addTextHighlight(new SCETextHighlight(pane, selection.getEndPosition(), endDocPos, SCEPane.nonSelectionHighlightColor));
     }
   }
 
