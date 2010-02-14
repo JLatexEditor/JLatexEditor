@@ -192,7 +192,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
   }
 
   public void focus() {
-    input.grabFocus();
+	  input.requestFocusInWindow();
   }
 
   private void clearHighlights(boolean highlightSelection) {
