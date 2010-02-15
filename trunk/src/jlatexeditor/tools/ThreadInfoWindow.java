@@ -59,6 +59,7 @@ public class ThreadInfoWindow extends JFrame implements Runnable {
     for(int nr = 0; nr < ids.length; nr++) {
       ThreadCPUInfo threadCPUInfo = threadCPUInfos[nr];
       ThreadInfo info = threadCPUInfo.getThreadInfo();
+      if(info == null) continue;
       long cpuTime = threadCPUInfo.getCpuTime();
 
       builder.append("Thread name: " + info.getThreadName() + "\n");
