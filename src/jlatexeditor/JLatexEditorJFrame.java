@@ -22,6 +22,7 @@ import jlatexeditor.quickhelp.LatexQuickHelp;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
 import jlatexeditor.tools.SVN;
+import jlatexeditor.tools.ThreadInfoWindow;
 import sce.codehelper.CombinedCodeHelper;
 import sce.component.*;
 import sce.syntaxhighlighting.SyntaxHighlighting;
@@ -39,11 +40,14 @@ import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Map;
 
 public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener, KeyListener {
   public static final File FILE_LAST_SESSION = new File(System.getProperty("user.home") + "/.jlatexeditor/last.session");
@@ -215,7 +219,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  buildMenu.add(createMenuItem("dvi + ps + pdf", "dvi + ps + pdf", null));
 
     JMenu vcMenu = new JMenu("Version Control");
-	  vcMenu.setMnemonic('C');
+	  vcMenu.setMnemonic('o');
     menuBar.add(vcMenu);
 
 	  vcMenu.add(createMenuItem("SVN update", "svn update", 'u'));
@@ -231,6 +235,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  JMenu helpMenu = new JMenu("Help");
 	  helpMenu.setMnemonic('H');
 	  menuBar.add(helpMenu);
+    helpMenu.add(createMenuItem("Stack Trace", "stack trace", 'S'));
 
 	  JMenuItem updateMenuItem = createMenuItem("Check for update", "update", 'u');
 	  if (devVersion) updateMenuItem.setVisible(false);
@@ -880,6 +885,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		  AboutDialog aboutDialog = new AboutDialog(version);
 		  aboutDialog.showIt();
 	  } else
+
+    if(action.equals("stack trace")){
+      new ThreadInfoWindow();
+    } else
 
     // timer
     if(action.equals("timer")){
