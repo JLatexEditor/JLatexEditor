@@ -235,7 +235,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  JMenu helpMenu = new JMenu("Help");
 	  helpMenu.setMnemonic('H');
 	  menuBar.add(helpMenu);
-    helpMenu.add(createMenuItem("Stack Trace", "stack trace", 'S'));
+    helpMenu.add(createMenuItem("Debug", "stack trace", 'S'));
+    helpMenu.addSeparator();
 
 	  JMenuItem updateMenuItem = createMenuItem("Check for update", "update", 'u');
 	  if (devVersion) updateMenuItem.setVisible(false);

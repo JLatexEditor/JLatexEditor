@@ -10,6 +10,7 @@ import java.util.Arrays;
 public class ThreadInfoWindow extends JFrame implements Runnable {
   private JTextArea info = new JTextArea();
   private JLabel working;
+  private JLabel message = new JLabel("<html>If you experience problems, please send include this stack trace in your bug report.</html>");
 
   public ThreadInfoWindow() {
     super("Stack Trace");
@@ -27,6 +28,11 @@ public class ThreadInfoWindow extends JFrame implements Runnable {
     working.setText("collecting CPU usage information...");
     cp.add(working, BorderLayout.NORTH);
 
+    message.setHorizontalAlignment(JLabel.CENTER);
+    message.setHorizontalTextPosition(JLabel.CENTER);
+    message.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+    cp.add(message, BorderLayout.SOUTH);
+    
     setVisible(true);
     pack();
 
