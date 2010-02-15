@@ -1,6 +1,6 @@
 package jlatexeditor.codehelper;
 
-import jlatexeditor.JLatexEditorJFrame.FileDoc;
+import jlatexeditor.Doc;
 import sce.codehelper.CHCommand;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
@@ -23,8 +23,8 @@ public class IncludeCodeHelper extends PatternHelper {
 		if (super.matches()) {
 			// determine dir where this file is located
 			AbstractResource resource = pane.getSourceCodeEditor().getResource();
-			if (resource instanceof FileDoc) {
-				FileDoc fileDoc = (FileDoc) resource;
+			if (resource instanceof Doc.FileDoc) {
+				Doc.FileDoc fileDoc = (Doc.FileDoc) resource;
 				path = fileDoc.getFile().getParentFile();
 			}
 

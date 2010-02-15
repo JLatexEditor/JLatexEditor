@@ -1,6 +1,6 @@
 package jlatexeditor.performance;
 
-import jlatexeditor.JLatexEditorJFrame;
+import jlatexeditor.Doc;
 import jlatexeditor.codehelper.LatexCommandCodeHelper;
 import jlatexeditor.codehelper.SpellCheckSuggester;
 import jlatexeditor.quickhelp.LatexQuickHelp;
@@ -24,7 +24,7 @@ import java.util.Random;
 public class Performance {
   public static void main(String[] args) throws IOException, FileNotFoundException {
     File file = new File("./src/jlatexeditor/performance/test.tex");
-    SourceCodeEditor editor = new SourceCodeEditor(new JLatexEditorJFrame.FileDoc(file));
+    SourceCodeEditor editor = new SourceCodeEditor(new Doc.FileDoc(file));
 
     editor.setText(StreamUtils.readFile(file.toString()));
     SCEPane pane = editor.getTextPane();

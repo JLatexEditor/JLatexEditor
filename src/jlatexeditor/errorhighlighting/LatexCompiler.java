@@ -1,7 +1,7 @@
 package jlatexeditor.errorhighlighting;
 
+import jlatexeditor.Doc;
 import jlatexeditor.ErrorView;
-import jlatexeditor.JLatexEditorJFrame;
 import sce.component.AbstractResource;
 import sce.component.SourceCodeEditor;
 import util.ProcessUtil;
@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,8 +55,8 @@ public class LatexCompiler extends Thread {
   public void run(){
 	  File file;
 	  AbstractResource resource = editor.getResource();
-	  if (resource instanceof JLatexEditorJFrame.FileDoc) {
-	    JLatexEditorJFrame.FileDoc fileDoc = (JLatexEditorJFrame.FileDoc) resource;
+	  if (resource instanceof Doc.FileDoc) {
+	    Doc.FileDoc fileDoc = (Doc.FileDoc) resource;
 	    file = fileDoc.getFile();
 	  } else {
 		  return;

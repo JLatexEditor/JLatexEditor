@@ -161,7 +161,7 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     ErrorComponent errorComponent = (ErrorComponent) model.getElementAt(index);
     LatexCompileError error = errorComponent.getError();
 
-    SourceCodeEditor editor = latexEditor.open(new JLatexEditorJFrame.FileDoc(error.getFile()));
+    SourceCodeEditor editor = latexEditor.open(new Doc.FileDoc(error.getFile()));
     SCEPane pane = editor.getTextPane();
 
     int column = 0;

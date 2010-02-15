@@ -1,7 +1,8 @@
 package jlatexeditor.codehelper;
 
+import jlatexeditor.Doc;
 import jlatexeditor.JLatexEditorJFrame;
-import jlatexeditor.JLatexEditorJFrame.FileDoc;
+import jlatexeditor.Doc.FileDoc;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
 import sce.component.SCEDocumentPosition;
@@ -52,7 +53,7 @@ public class JumpTo implements KeyListener, MouseListener {
 			WordWithPos word = words.get(0);
 			
 			if (editor.getResource() instanceof FileDoc) {
-			  FileDoc fileDoc = (FileDoc) editor.getResource();
+			  FileDoc fileDoc = (Doc.FileDoc) editor.getResource();
 				String thisFileName = fileDoc.getFile().getName();
 				File dir = fileDoc.getFile().getParentFile();
 
@@ -62,7 +63,7 @@ public class JumpTo implements KeyListener, MouseListener {
 					File fileUnderCaret = new File (dir, thatFileName);
 
 					if (fileUnderCaret.exists() && fileUnderCaret.isFile()) {
-						jLatexEditorJFrame.open(new FileDoc(fileUnderCaret));
+						jLatexEditorJFrame.open(new Doc.FileDoc(fileUnderCaret));
 						e.consume();
 						return;
 					}
