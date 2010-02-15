@@ -4,8 +4,8 @@
 
 package jlatexeditor.errorhighlighting;
 
+import jlatexeditor.Doc;
 import jlatexeditor.ErrorView;
-import jlatexeditor.JLatexEditorJFrame;
 import sce.component.*;
 
 import java.awt.*;
@@ -53,8 +53,8 @@ public class LatexErrorHighlighting implements LatexCompileListener {
 	  if(errorView == null || editor == null) return;
 
 	  File file;
-	  if (editor.getResource() instanceof JLatexEditorJFrame.FileDoc) {
-		  file = ((JLatexEditorJFrame.FileDoc) editor.getResource()).getFile();
+	  if (editor.getResource() instanceof Doc.FileDoc) {
+		  file = ((Doc.FileDoc) editor.getResource()).getFile();
 	  } else {
 		  return;
 	  }

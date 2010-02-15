@@ -2,10 +2,14 @@ package jlatexeditor.tools;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.Arrays;
 
 public class ThreadInfoWindow extends JFrame implements Runnable {
@@ -78,7 +82,22 @@ public class ThreadInfoWindow extends JFrame implements Runnable {
       builder.append("\n");
     }
 
-    info.setText(builder.toString());
+	  /*
+	  try {
+		  String desc = URLEncoder.encode(builder.toString(), "UTF-8");
+		  String url = "https://jlatexeditor.endrullis.de/trac/JLatexEditor/newticket?type=defect&summary=sum&description=" + desc;
+		  System.out.println(url);
+		  Desktop.getDesktop().browse(new URI(url));
+	  } catch (UnsupportedEncodingException e) {
+		  e.printStackTrace();
+	  } catch (URISyntaxException e) {
+		  e.printStackTrace();
+	  } catch (IOException e) {
+		  e.printStackTrace();
+	  }
+	  */
+
+	  info.setText(builder.toString());
     working.setVisible(false);
   }
 

@@ -1,5 +1,6 @@
 package jlatexeditor.codehelper;
 
+import jlatexeditor.Doc;
 import jlatexeditor.JLatexEditorJFrame;
 import sce.component.AbstractResource;
 import sce.component.SourceCodeEditor;
@@ -57,9 +58,9 @@ public class BackgroundParser extends Thread {
     while(true) {
       SourceCodeEditor editor = jle.getMainEditor();
       AbstractResource resource = editor.getResource();
-      if(!(resource instanceof JLatexEditorJFrame.FileDoc)) continue;
+      if(!(resource instanceof Doc.FileDoc)) continue;
 
-      File file = ((JLatexEditorJFrame.FileDoc) resource).getFile();
+      File file = ((Doc.FileDoc) resource).getFile();
       File directory = file.getParentFile();
 
       Trie commands = new Trie();

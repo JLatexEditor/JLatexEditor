@@ -43,7 +43,6 @@ import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -54,8 +53,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   public static final File FILE_RECENT = new File(System.getProperty("user.home") + "/.jlatexeditor/recent");
   private JMenu recentFilesMenu;
   private ArrayList<String> recentFiles = new ArrayList<String>();
-
-  private static String UNTITLED = "Untitled";
 
 	private static String version = "*Bleeding Edge*";
 	private static boolean devVersion = true;
@@ -235,7 +232,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  JMenu helpMenu = new JMenu("Help");
 	  helpMenu.setMnemonic('H');
 	  menuBar.add(helpMenu);
-    helpMenu.add(createMenuItem("Debug", "stack trace", 'S'));
+    helpMenu.add(createMenuItem("Debug", "stack trace", 'D'));
     helpMenu.addSeparator();
 
 	  JMenuItem updateMenuItem = createMenuItem("Check for update", "update", 'u');
@@ -252,7 +249,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // tabs for the files
     tabbedPane = new JTabbedPane();
     try {
-      addTab(new UntitledDoc());
+      addTab(new Doc.UntitledDoc());
     } catch (IOException ignored) {}
 
     // symbols panel
@@ -327,7 +324,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         int lineNr = colon >= line.length() ? 0 : Integer.parseInt(line.substring(colon+1));
 
         if(file.exists() && file.isFile()) {
-          SourceCodeEditor editor = open(new FileDoc(file));
+          SourceCodeEditor editor = open(new Doc.FileDoc(file));
           editor.getTextPane().getCaret().moveTo(lineNr, 0);
         }
       }
@@ -508,7 +505,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	    boolean closeFirstTab = false;
       if(tabbedPane.getTabCount() == 1) {
 	      SourceCodeEditor firstEditor = getEditor(0);
-	      if (firstEditor.getResource() instanceof UntitledDoc && !firstEditor.getTextPane().getDocument().isModified()) {
+	      if (firstEditor.getResource() instanceof Doc.UntitledDoc && !firstEditor.getTextPane().getDocument().isModified()) {
 		      closeFirstTab = true;
 	      }
       }
@@ -516,11 +513,12 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	    SourceCodeEditor editor = addTab(doc);
 	    if (closeFirstTab) closeTab(0);
 
-	    if (doc instanceof FileDoc) {
-	      FileDoc fileDoc = (FileDoc) doc;
-		    lastModified.put(fileDoc.file, fileDoc.file.lastModified());
+	    if (doc instanceof Doc.FileDoc) {
+	      Doc.FileDoc fileDoc = (Doc.FileDoc) doc;
+		    File file = fileDoc.getFile();
+		    lastModified.put(file, file.lastModified());
         
-        addRecent(fileDoc.getFile());
+        addRecent(file);
 	    }
 
 	    editorChanged();
@@ -557,7 +555,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     for(int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
       SourceCodeEditor editor = (SourceCodeEditor) tabbedPane.getComponentAt(tab);
       AbstractResource resource = editor.getResource();
-      boolean save = (!(resource instanceof UntitledDoc)) || tab == tabbedPane.getSelectedIndex();
+      boolean save = (!(resource instanceof Doc.UntitledDoc)) || tab == tabbedPane.getSelectedIndex();
       if(save) { if (!save(editor)) all = false; }
     }
 
@@ -579,7 +577,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		boolean gPropertiesSaved = false;
 
 		File file = null;
-		if (doc instanceof UntitledDoc) {
+		if (doc instanceof Doc.UntitledDoc) {
       openDialog.setDialogTitle("Save " + doc.getName());
       openDialog.setDialogType(JFileChooser.SAVE_DIALOG);
       if(openDialog.showDialog(this, "Save") != JFileChooser.APPROVE_OPTION) return false;
@@ -602,13 +600,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
       TabLabel tabLabel = (TabLabel) tabbedPane.getTabComponentAt(getTab(doc));
 			docMap.remove(doc.getUri());
-      doc = new FileDoc(file);
+      doc = new Doc.FileDoc(file);
 			docMap.put(doc.getUri(), doc);
       tabLabel.setDoc(doc);
       editor.setResource(doc);
 		} else
-		if (doc instanceof FileDoc) {
-		  FileDoc fileDoc = (FileDoc) doc;
+		if (doc instanceof Doc.FileDoc) {
+		  Doc.FileDoc fileDoc = (Doc.FileDoc) doc;
 		  file = fileDoc.getFile();
 			gPropertiesSaved = file.equals(GProperties.CONFIG_FILE);
 		}
@@ -690,7 +688,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		  tabbedPane.removeTabAt(tab);
 	  } else {
 		  try {
-			  addTab(new UntitledDoc());
+			  addTab(new Doc.UntitledDoc());
 		  } catch (IOException ignored) {}
 		  tabbedPane.removeTabAt(tab);
 	  }
@@ -704,7 +702,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // new file
 	  if(action.equals("new")){
 		  try {
-			  addTab(new UntitledDoc());
+			  addTab(new Doc.UntitledDoc());
 		  } catch (IOException ignored) {}
 	  } else
 
@@ -715,11 +713,11 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       if(openDialog.showDialog(this, "Open") != JFileChooser.APPROVE_OPTION) return;
       if(openDialog.getSelectedFile() == null) return;
 
-      open(new FileDoc(openDialog.getSelectedFile()));
+      open(new Doc.FileDoc(openDialog.getSelectedFile()));
     } else
     // recent files list
     if(action.startsWith("open recent:")){
-      open(new FileDoc(new File(action.substring("open recent:".length()))));
+      open(new Doc.FileDoc(new File(action.substring("open recent:".length()))));
     } else
     if(action.equals("clear recent")){
       recentFiles.clear();
@@ -876,7 +874,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       changeFont(fontDialog.getFontName(), fontDialog.getFontSize());
     } else
     if(action.equals("global settings")){
-	    open(new FileDoc(GProperties.CONFIG_FILE));
+	    open(new Doc.FileDoc(GProperties.CONFIG_FILE));
     } else
     if(action.equals("update")){
 		  checkForUpdates(false);
@@ -937,8 +935,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       SourceCodeEditor editor = getEditor(tab);
 
       File file;
-      if (editor.getResource() instanceof FileDoc) {
-        FileDoc fileDoc = (FileDoc) editor.getResource();
+      if (editor.getResource() instanceof Doc.FileDoc) {
+        Doc.FileDoc fileDoc = (Doc.FileDoc) editor.getResource();
         file = fileDoc.getFile();
       } else {
         continue;
@@ -1032,7 +1030,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         reopenLast();
 
         // open files given in command line
-        for(String arg : args) { open(new FileDoc(new File(arg))); }
+        for(String arg : args) { open(new Doc.FileDoc(new File(arg))); }
         openDialog.setDialogTitle("Open");
         if(args.length > 0) {
           openDialog.setCurrentDirectory(new File(new File(args[0]).getParent()));
@@ -1049,7 +1047,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         PrintWriter writerLast = new PrintWriter(new FileWriter(FILE_LAST_SESSION));
         for(int tabNr = 0; tabNr < tabbedPane.getTabCount(); tabNr++) {
           SourceCodeEditor editor = getEditor(tabNr);
-          if(!(editor.getResource() instanceof FileDoc)) continue;
+          if(!(editor.getResource() instanceof Doc.FileDoc)) continue;
           writerLast.println(editor.getFile().getCanonicalPath() + ":" + editor.getTextPane().getCaret().getRow());
         }
         writerLast.close();
@@ -1097,8 +1095,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		// update window title
 		AbstractResource resource = editor.getResource();
 		String fileName = resource.toString();
-		if (resource instanceof FileDoc) {
-			FileDoc fileDoc = (FileDoc) resource;
+		if (resource instanceof Doc.FileDoc) {
+			Doc.FileDoc fileDoc = (Doc.FileDoc) resource;
 			File file = fileDoc.getFile();
 			String fileWithPath = file.getPath();
 			fileName = file.getName();
@@ -1272,95 +1270,4 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  }
   }
 
-	/**
-	 * Abstract document.
-	 */
-	public static interface Doc extends AbstractResource {}
-
-	/**
-	 * Document read from file.
-	 */
-	public static class FileDoc implements Doc {
-		private File file;
-		private String id;
-
-		public FileDoc(File file) {
-			this.file = file;
-			try {
-				this.id = file.getCanonicalPath();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		@Override
-		public int hashCode() {
-			return id.hashCode();
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (obj instanceof FileDoc) {
-			  FileDoc that = (FileDoc) obj;
-			  return this.id.equals(that.id);
-			}
-			return false;
-		}
-
-		public File getFile() {
-			return file;
-		}
-
-		public String getContent() throws IOException {
-			return StreamUtils.readFile(file.getAbsolutePath());
-		}
-
-		public String getName() { return file.getName(); }
-
-		public URI getUri() {
-			return file.toURI();
-		}
-
-		public String toString() { return file.toString(); }
-	}
-
-	/**
-	 * Unsaved document.
-	 */
-	public static class UntitledDoc implements Doc {
-		private static int untitledNr = 1;
-		private String name;
-
-		public UntitledDoc() {
-			name = UNTITLED + " " + untitledNr++;
-		}
-
-		@Override
-		public int hashCode() {
-			return name.hashCode();
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (obj instanceof UntitledDoc) {
-				UntitledDoc that = (UntitledDoc) obj;
-				return this.name.equals(that.name);
-			}
-			return false;
-		}
-
-		public String getContent() { return ""; }
-		public String getName() { return name; }
-
-		public URI getUri() {
-			try {
-				return new URI("unsaved:" + name);
-			} catch (URISyntaxException e) {
-				e.printStackTrace();
-				return null;
-			}
-		}
-
-		public String toString() { return name; }
-	}
 }
