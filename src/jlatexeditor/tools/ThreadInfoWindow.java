@@ -5,6 +5,7 @@ import java.awt.*;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
+import java.net.URI;
 import java.util.Arrays;
 
 public class ThreadInfoWindow extends JFrame implements Runnable {
@@ -68,7 +69,7 @@ public class ThreadInfoWindow extends JFrame implements Runnable {
       if(info == null) continue;
       long cpuTime = threadCPUInfo.getCpuTime();
 
-      builder.append("Thread name: " + info.getThreadName() + "\n");
+      builder.append("Thread: " + info.getThreadName() + " (" + info.getThreadId() + ") " + info.getThreadState() + "\n");
       builder.append("CPU time: " + (cpuTime >= 0 ? cpuTime/ 2000000000. : "thread has died already") + "\n");
 
       builder.append("Stack trace:\n");
