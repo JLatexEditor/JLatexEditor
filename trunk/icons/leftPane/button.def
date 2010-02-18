@@ -18,7 +18,7 @@
 \definecolor{mblue}{RGB}{163,201,247}
 \definecolor{background}{RGB}{238,238,238}
 
-\newcommand{\button}[2]{
+\newcommand{\button}[1]{
   \begin{scope}[rounded corners=3mm]
   \fill [#1] (0mm,0mm) rectangle (6mm,\nwidth);
   \begin{scope}
@@ -29,5 +29,5 @@
   \draw [#1!50!black,yshift=0.1mm] (0mm,0mm) rectangle (6mm,\nwidth);
   \end{scope}
 
-  \node at (3mm,0.5\nwidth) [rotate=90] {#2};
+  \node at (3mm,0.5\nwidth) [rotate=90] {\name};
 }
