@@ -22,6 +22,10 @@ public class ImageButton extends JPanel implements MouseListener {
   private ArrayList<ActionListener> listeners = new ArrayList<ActionListener>();
   private String actionCommand = "clicked";
 
+  public ImageButton(ImageIcon icon) {
+    this(icon,icon,icon);
+  }
+
   public ImageButton(ImageIcon icon, ImageIcon over, ImageIcon press) {
     this.icon = icon;
     this.over = over;

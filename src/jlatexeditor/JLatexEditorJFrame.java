@@ -14,10 +14,7 @@ import jlatexeditor.gproperties.GProperties;
 import jlatexeditor.gproperties.GPropertiesCodeHelper;
 import jlatexeditor.gproperties.GPropertiesStyles;
 import jlatexeditor.gproperties.GPropertiesSyntaxHighlighting;
-import jlatexeditor.gui.AboutDialog;
-import jlatexeditor.gui.LocalHistory;
-import jlatexeditor.gui.StatusBar;
-import jlatexeditor.gui.SymbolsPanel;
+import jlatexeditor.gui.*;
 import jlatexeditor.quickhelp.LatexQuickHelp;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
@@ -71,7 +68,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private JTabbedPane toolsTab = null;
   private ErrorView errorView = null;
 	private SymbolsPanel symbolsPanel;
-	private JSplitPane symbolsTextSplit;
 
   private StatusBar statusBar = null;
 
@@ -254,18 +250,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
     // symbols panel
     symbolsPanel = new SymbolsPanel(this);
-    symbolsPanel.setVisible(false);
-    symbolsTextSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, symbolsPanel, tabbedPane);
-    symbolsTextSplit.setContinuousLayout(false);
-    symbolsTextSplit.setDividerLocation(0);
-    symbolsTextSplit.setOneTouchExpandable(true);
-    ((BasicSplitPaneUI) symbolsTextSplit.getUI()).getDivider().addMouseListener(new MouseAdapter() {
-      public void mousePressed(MouseEvent e) {
-        symbolsPanel.setVisible(true);
-      }
-    });
 
-	  textToolsSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, symbolsTextSplit, toolsTab);
+    LeftPane leftPane = new LeftPane(tabbedPane, symbolsPanel);
+
+	  textToolsSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, leftPane, toolsTab);
     textToolsSplit.setOneTouchExpandable(true);
     textToolsSplit.setResizeWeight(1 - GProperties.getDouble("tools_panel.height"));
 	  ((BasicSplitPaneUI) textToolsSplit.getUI()).getDivider().addMouseListener(new MouseAdapter() {
@@ -789,8 +777,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 		// show/hide symbols
 		if(action.equals("symbols")){
-			symbolsPanel.setVisible(!symbolsPanel.isVisible());
-			symbolsTextSplit.setDividerLocation(symbolsPanel.isVisible() ? GProperties.getDouble("symbols_panel.width") : 0);
+      // TODO 
+			//symbolsPanel.setVisible(!symbolsPanel.isVisible());
+			//symbolsTextSplit.setDividerLocation(symbolsPanel.isVisible() ? GProperties.getDouble("symbols_panel.width") : 0);
 		} else
 		// show/hide status bar
 		if(action.equals("status bar")){

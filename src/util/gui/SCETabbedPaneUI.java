@@ -7,6 +7,7 @@ import java.awt.*;
 
 public class SCETabbedPaneUI extends BasicTabbedPaneUI {
   public static Color BLUE = new Color(163, 201, 247);
+  public static Color BORDER = new Color(90, 110, 133);
 
   private ImageIcon image_active_left;
   private ImageIcon image_active;
@@ -20,6 +21,9 @@ public class SCETabbedPaneUI extends BasicTabbedPaneUI {
 
   private JTabbedPane tabbedPane;
 
+  private int acitveX = 0;
+  private int acitveWidth = 0;
+
   public SCETabbedPaneUI(JTabbedPane tabbedPane) {
     this.tabbedPane = tabbedPane;
     UIManager.put("TabbedPane.contentAreaColor", Color.WHITE);
@@ -27,7 +31,7 @@ public class SCETabbedPaneUI extends BasicTabbedPaneUI {
     UIManager.put("TabbedPane.tabAreaBackground", new Color(238, 238, 238));
     UIManager.put("TabbedPane.contentBorderInsets", new Insets(0, 0, 0, 0));
     UIManager.put("TabbedPane.selectedTabPadInsets", new Insets(0, 0, 0, 0));
-    UIManager.put("TabbedPane.tabAreaInsets", new Insets(0, 0, 0, 0));
+    UIManager.put("TabbedPane.tabAreaInsets", new Insets(0, 0, 3, 0));
     UIManager.put("TabbedPane.tabInsets", new Insets(0, 0, 0, 0));
     tabbedPane.setOpaque(true);
 
@@ -63,9 +67,12 @@ public class SCETabbedPaneUI extends BasicTabbedPaneUI {
   protected void paintTabBackground(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h, boolean isSelected) {
     Rectangle area = new Rectangle(x, y, w, h);
 
-    g.setColor(Color.green);
-    g.fillRect(area.x, area.y, area.width, area.height);
-
+    if(isSelected) {
+      acitveX = x-5;
+      acitveWidth = w+2;
+      if(tabIndex == 0) { acitveX += 7; acitveWidth -= 7; }
+      if(tabIndex != tabbedPane.getTabCount()-1) acitveWidth += 9;
+    }
     // background
     {
       ImageIcon image = isSelected ? image_active : image_inactive;
@@ -98,7 +105,23 @@ public class SCETabbedPaneUI extends BasicTabbedPaneUI {
   protected void paintFocusIndicator(Graphics g, int tabPlacement, Rectangle[] rects, int tabIndex, Rectangle iconRect, Rectangle textRect, boolean isSelected) {
   }
 
-  protected void paintContentBorder(Graphics g, int tabPlacement, int selectedIndex) {
+  protected void paintContentBorderBottomEdge(Graphics g, int tabPlacement, int selectedIndex, int x, int y, int w, int h) {
+    g.setColor(BLUE);
+    g.fillRect(0, y-3, 2000, 3);
+
+    g.setColor(BORDER);
+    g.drawLine(0, y-4, 2000, y-4);
+    g.setColor(BLUE);
+    g.drawLine(acitveX, y-4, acitveX+acitveWidth, y-4);
+  }
+
+  protected void paintContentBorderTopEdge(Graphics g, int tabPlacement, int selectedIndex, int x, int y, int w, int h) {
+  }
+
+  protected void paintContentBorderLeftEdge(Graphics g, int tabPlacement, int selectedIndex, int x, int y, int w, int h) {
+  }
+
+  protected void paintContentBorderRightEdge(Graphics g, int tabPlacement, int selectedIndex, int x, int y, int w, int h) {
   }
 
   protected LayoutManager createLayoutManager() {
