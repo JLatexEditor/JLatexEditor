@@ -29,7 +29,7 @@ clean:
 tabs: pngs
 	convert tabs.png +repage -crop 20x26+0+0 tab_active_left.png
 	convert tabs.png +repage -crop 1x26+25+0 tab_active.png
-	convert tabs.png +repage -crop 20x26+48+0 tab_active_right.png
+	convert tabs.png +repage -crop 20x26+46+0 tab_active_right.png
 	convert tabs.png +repage -crop 20x26+74+0 tab_inactive_left.png
 	convert tabs.png +repage -crop 1x26+115+0 tab_inactive.png
 	convert tabs.png +repage -crop 20x26+122+0 tab_inactive_right.png
