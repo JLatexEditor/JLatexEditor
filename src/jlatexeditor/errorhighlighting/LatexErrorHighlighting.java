@@ -64,7 +64,7 @@ public class LatexErrorHighlighting implements LatexCompileListener {
     SCEMarkerBar markerBar = editor.getMarkerBar();
     try {
       String canonicalFile = file.getCanonicalPath();
-      for(LatexCompileError error : errorView.getErrors()) {
+      for(LatexCompileError error : (ArrayList<LatexCompileError>) errorView.getErrors().clone()) {
         if(!canonicalFile.equals(error.getFile().getCanonicalPath())) continue;
 
         // add error highlights

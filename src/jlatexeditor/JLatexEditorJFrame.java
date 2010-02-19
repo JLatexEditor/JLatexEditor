@@ -931,6 +931,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         continue;
       }
 
+      // check that the file exists
+      if(!file.exists()) continue;
+
       Long oldModified = lastModified.get(file);
       Long newModified = file.lastModified();
       // has the file been changed?
