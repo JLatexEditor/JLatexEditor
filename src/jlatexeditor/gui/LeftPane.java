@@ -1,5 +1,6 @@
 package jlatexeditor.gui;
 
+import jlatexeditor.gproperties.GProperties;
 import sce.component.ImageButton;
 
 import javax.swing.*;
@@ -24,7 +25,7 @@ public class LeftPane extends JPanel implements ActionListener {
 
   // currently shown component
   private JComponent view = null;
-  private int dividerLocation = 220;
+  private int dividerLocation = GProperties.getInt("symbols_panel.width");
 
   public LeftPane(JComponent main, JComponent symbolsPanel, JComponent structureView) {
     this.main = main;
@@ -84,10 +85,11 @@ public class LeftPane extends JPanel implements ActionListener {
   }
 
   public void actionPerformed(ActionEvent e) {
-    JComponent nview = null;
-    if(e.getSource() == buttonSymbols) nview = symbolsPanel;
-    if(e.getSource() == buttonStructure) nview = structureView;
+    if(e.getSource() == buttonSymbols) changeView(symbolsPanel);
+    if(e.getSource() == buttonStructure) changeView(structureView);
+  }
 
+  public void changeView(JComponent nview) {
     if(nview == view) nview = null;
 
     if(view != null && nview == null) {
@@ -98,7 +100,6 @@ public class LeftPane extends JPanel implements ActionListener {
     if(view == null && nview != null) {
       remove(main);
       add(splitPane, BorderLayout.CENTER);
-      splitPane.setDividerLocation(dividerLocation);
     }
 
     if(nview != null) {
@@ -108,10 +109,11 @@ public class LeftPane extends JPanel implements ActionListener {
       splitPane.setLeftComponent(null);
       splitPane.setRightComponent(null);
     }
-
+    splitPane.setDividerLocation(dividerLocation);
 
     invalidate();
     revalidate();
     view = nview;
+
   }
 }
