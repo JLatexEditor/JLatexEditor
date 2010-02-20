@@ -141,8 +141,12 @@ public class GProperties {
 		properties.addEntry(new Def("shortcut.svn commit", SHORTCUT, "alt C"));
 		properties.addEntry(new Def("shortcut.font", SHORTCUT, ""));
 		properties.addEntry(new Def("shortcut.global settings", SHORTCUT, "control alt S"));
-		properties.addEntry(new Comment(" Update"));
+		properties.addEntry(new Comment(" Next/previous tab"));
+		properties.addEntry(new Def("shortcut.next tab", SHORTCUT, "alt RIGHT"));
+		properties.addEntry(new Def("shortcut.previous tab", SHORTCUT, "alt LEFT"));
+		properties.addEntry(new Comment(" Initiate update"));
 		properties.addEntry(new Def("shortcut.update", SHORTCUT, ""));
+		properties.addEntry(new Comment(" About screen"));
 		properties.addEntry(new Def("shortcut.about", SHORTCUT, ""));
 
 		load();

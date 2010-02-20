@@ -45,7 +45,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener, KeyListener {
+public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener {
   public static final File FILE_LAST_SESSION = new File(System.getProperty("user.home") + "/.jlatexeditor/last.session");
   public static final File FILE_RECENT = new File(System.getProperty("user.home") + "/.jlatexeditor/recent");
   private JMenu recentFilesMenu;
@@ -218,6 +218,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 	  vcMenu.add(createMenuItem("SVN update", "svn update", 'u'));
 	  vcMenu.add(createMenuItem("SVN commit", "svn commit", 'c'));
+
+	  JMenu windowMenu = new JMenu("Editors");
+		vcMenu.setMnemonic('E');
+	  menuBar.add(windowMenu);
+
+		windowMenu.add(createMenuItem("Next tab", "next tab", 'n'));
+		windowMenu.add(createMenuItem("Previous tab", "previous tab", 'p'));
 
     JMenu settingsMenu = new JMenu("Settings");
     settingsMenu.setMnemonic('S');
@@ -410,8 +417,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 	  new JumpTo(editor, this);
 
-	  scePane.addKeyListener(this);
-
 	  return editor;
   }
 
@@ -433,8 +438,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		CombinedCodeHelper codeHelper = new CombinedCodeHelper();
 		codeHelper.addPatternHelper(new GPropertiesCodeHelper());
 	  scePane.setCodeHelper(codeHelper);
-
-	  scePane.addKeyListener(this);
 
 	  return editor;
   }
@@ -859,6 +862,19 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       }
     } else
 
+    if(action.equals("next tab")){
+	    // select the right tab
+	    int index = tabbedPane.getSelectedIndex() + 1;
+	    if (index >= tabbedPane.getTabCount()) index = 0;
+	    tabbedPane.setSelectedIndex(index);
+    } else
+	  if(action.equals("previous tab")){
+		  // select the left tab
+		  int index = tabbedPane.getSelectedIndex() - 1;
+		  if (index < 0) index = tabbedPane.getTabCount() - 1;
+		  tabbedPane.setSelectedIndex(index);
+	  } else
+
 	  if(action.equals("font")){
 		  SCEFontWindow fontDialog = new SCEFontWindow(GProperties.getEditorFont().getFamily(), GProperties.getEditorFont().getSize(), this);
 		  fontDialog.setVisible(true);
@@ -1132,36 +1148,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     LatexStyles.addStyles(pane.getDocument());
     editor.repaint();
   }
-
-	// KeyListener
-	public void keyTyped(KeyEvent e) {
-	}
-
-	public void keyPressed(KeyEvent e) {
-		if (e.getModifiers() == KeyEvent.ALT_MASK) {
-			// alt+left
-			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-				// select the left tab
-				int index = tabbedPane.getSelectedIndex() - 1;
-				if (index < 0) index = tabbedPane.getTabCount() - 1;
-				tabbedPane.setSelectedIndex(index);
-
-				e.consume();
-			}
-			// alt+right
-			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-				// select the right tab
-				int index = tabbedPane.getSelectedIndex() + 1;
-				if (index >= tabbedPane.getTabCount()) index = 0;
-				tabbedPane.setSelectedIndex(index);
-
-				e.consume();
-			}
-		}
-	}
-
-	public void keyReleased(KeyEvent e) {
-	}
 
   public void changeFont(String fontName, int fontSize) {
     GProperties.setEditorFont(new Font(fontName, Font.PLAIN, fontSize));
