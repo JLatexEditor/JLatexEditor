@@ -8,10 +8,15 @@ import util.ParseUtil;
 import util.StreamUtils;
 import util.Trie;
 
+import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,6 +35,7 @@ public class BackgroundParser extends Thread {
   private Trie commands = new Trie();
   private Trie labels = new Trie();
 
+  private DefaultTreeModel structure = new DefaultTreeModel(new DefaultMutableTreeNode());
 
 	private ArrayList<TODO> todos = new ArrayList<TODO>();
 
@@ -65,10 +71,15 @@ public class BackgroundParser extends Thread {
 
       Trie commands = new Trie();
       Trie labels = new Trie();
-      parseTex(directory, file.getName(), words, commands, labels, new HashSet<String>());
+
+      ArrayList<StructureEntry> structureStack = new ArrayList<StructureEntry>();
+      structureStack.add(new StructureEntry("root", 0));
+
+      parseTex(directory, file.getName(), words, commands, labels, structureStack, new HashSet<String>());
 
       this.commands = commands;
       this.labels = labels;
+      structure.setRoot(structureStack.get(0));
 
       try {
         synchronized (this) { wait(); }
@@ -80,7 +91,7 @@ public class BackgroundParser extends Thread {
     notify();
   }
 
-  private void parseTex(File directory, String fileName, Trie words, Trie commands, Trie labels, HashSet<String> done) {
+  private void parseTex(File directory, String fileName, Trie words, Trie commands, Trie labels, ArrayList<StructureEntry> structure, HashSet<String> done) {
     if(done.contains(fileName)) return; else done.add(fileName);
 
     File file = new File(directory, fileName);
@@ -135,16 +146,33 @@ public class BackgroundParser extends Thread {
       if(command.equals("label") || command.equals("bibliography") || command.equals("input") || command.equals("include")) {
         int closing = tex.indexOf('}', index);
         if(closing == -1) continue;
-
         String argument = tex.substring(index+1,closing);
+
         if(command.equals("label")) {
           labels.add(argument);
         } else
         if(command.equals("bibliography")) {
           parseBib(directory, argument);
         } else {
-          parseTex(directory, argument, words, commands, labels, done);
+          parseTex(directory, argument, words, commands, labels, structure, done);
         }
+      } else
+      if(command.equals("section") || command.equals("subsection") || command.equals("subsubsection")) {
+        int depth = 0;
+        if(command.equals("section")) depth = 1;
+        else if(command.equals("subsection")) depth = 2;
+        else if(command.equals("subsubsection")) depth = 3;
+
+        String name = "";
+        if(depth <= 3) {
+          int closing = tex.indexOf('}', index);
+          if(closing != -1) name = tex.substring(index+1,closing);
+        }
+
+        while(structure.get(structure.size()-1).getDepth() >= depth) structure.remove(structure.size()-1);
+
+        StructureEntry parent = structure.get(structure.size()-1);
+        parent.add(new StructureEntry(name, depth));
       }
     }
 
@@ -179,7 +207,11 @@ public class BackgroundParser extends Thread {
     return entries;
   }
 
-	public static class TODO {
+  public DefaultTreeModel getStructure() {
+    return structure;
+  }
+
+  public static class TODO {
 		private String msg;
 		private File file;
 		private int line;
@@ -190,4 +222,24 @@ public class BackgroundParser extends Thread {
 			this.line = line;
 		}
 	}
+
+  public static class StructureEntry extends DefaultMutableTreeNode {
+    private String name;
+    private int depth;
+
+    public StructureEntry(String name, int depth) {
+      super(name);
+
+      this.name = name;
+      this.depth = depth;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public int getDepth() {
+      return depth;
+    }
+  }
 }

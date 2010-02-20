@@ -18,6 +18,7 @@ public class LeftPane extends JPanel implements ActionListener {
 
   private JComponent main;
   private JComponent symbolsPanel;
+  private JComponent structureView;
 
   private JSplitPane splitPane;
 
@@ -25,10 +26,11 @@ public class LeftPane extends JPanel implements ActionListener {
   private JComponent view = null;
   private int dividerLocation = 220;
 
-  public LeftPane(JComponent main, JComponent symbolsPanel) {
+  public LeftPane(JComponent main, JComponent symbolsPanel, JComponent structureView) {
     this.main = main;
     this.symbolsPanel = symbolsPanel;
-    
+    this.structureView = structureView;
+
     setLayout(new BorderLayout());
 
     createLeftPanel();
@@ -84,6 +86,7 @@ public class LeftPane extends JPanel implements ActionListener {
   public void actionPerformed(ActionEvent e) {
     JComponent nview = null;
     if(e.getSource() == buttonSymbols) nview = symbolsPanel;
+    if(e.getSource() == buttonStructure) nview = structureView;
 
     if(nview == view) nview = null;
 
