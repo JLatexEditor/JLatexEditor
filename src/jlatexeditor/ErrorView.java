@@ -129,7 +129,7 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
   }
 
   public ArrayList<LatexCompileError> getErrors() {
-    return errors;
+    return (ArrayList<LatexCompileError>) errors.clone();
   }
 
   public void setText(String text) {

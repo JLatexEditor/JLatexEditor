@@ -67,7 +67,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private JSplitPane textToolsSplit = null;
   private JTabbedPane toolsTab = null;
   private ErrorView errorView = null;
-	private SymbolsPanel symbolsPanel;
+	private SymbolsPanel symbolsPanel = null;
+	private JTree structureTree = null;
 
   private StatusBar statusBar = null;
 
@@ -250,8 +251,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
     // symbols panel
     symbolsPanel = new SymbolsPanel(this);
+    // structure view
+    structureTree = new JTree();
 
-    LeftPane leftPane = new LeftPane(tabbedPane, symbolsPanel);
+    LeftPane leftPane = new LeftPane(tabbedPane, symbolsPanel, new JScrollPane(structureTree));
 
 	  textToolsSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, leftPane, toolsTab);
     textToolsSplit.setOneTouchExpandable(true);
@@ -286,6 +289,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // background parser
     backgroundParser = new BackgroundParser(this);
     backgroundParser.start();
+    
+    structureTree.setModel(backgroundParser.getStructure());
 
 	  PropertyChangeListener fontChangeListener = new PropertyChangeListener() {
 		  public void propertyChange(PropertyChangeEvent evt) {
