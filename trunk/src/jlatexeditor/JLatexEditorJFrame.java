@@ -67,6 +67,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private JSplitPane textToolsSplit = null;
   private JTabbedPane toolsTab = null;
   private ErrorView errorView = null;
+  private LeftPane leftPane = null;
 	private SymbolsPanel symbolsPanel = null;
 	private JTree structureTree = null;
 
@@ -261,7 +262,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // structure view
     structureTree = new JTree();
 
-    LeftPane leftPane = new LeftPane(tabbedPane, symbolsPanel, new JScrollPane(structureTree));
+    leftPane = new LeftPane(tabbedPane, symbolsPanel, new JScrollPane(structureTree));
 
 	  textToolsSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, leftPane, toolsTab);
     textToolsSplit.setOneTouchExpandable(true);
@@ -785,9 +786,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 		// show/hide symbols
 		if(action.equals("symbols")){
-      // TODO 
-			//symbolsPanel.setVisible(!symbolsPanel.isVisible());
-			//symbolsTextSplit.setDividerLocation(symbolsPanel.isVisible() ? GProperties.getDouble("symbols_panel.width") : 0);
+			leftPane.changeView(symbolsPanel);
 		} else
 		// show/hide status bar
 		if(action.equals("status bar")){
