@@ -486,10 +486,13 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
           Matcher matcher = pattern.matcher(text);
           while(matcher.find()) {
             int startIndex = matcher.start();
+            int endIndex = matcher.end();
+            // skip maches of length 0
+            if(startIndex == endIndex) continue;
+
             int rowStart = text2row[startIndex];
             int columnStart = text2column[startIndex];
 
-            int endIndex = matcher.end();
             int rowEnd = text2row[endIndex];
             int columnEnd = text2column[endIndex];
 
@@ -514,7 +517,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
       pane.repaint();
 
 	    results = resultsTemp;
-	    
+
       if(move && moveCaret) next();
       if(length > 0 && resultsTemp.size() == 0) input.setBackground(new Color(255, 204, 204));
     }
