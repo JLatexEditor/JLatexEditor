@@ -482,7 +482,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
           }
         } else {
           // regexp search
-          Pattern pattern = Pattern.compile(search, Pattern.MULTILINE | (caseSensitive.isSelected() ? Pattern.CASE_INSENSITIVE : 0));
+          Pattern pattern = Pattern.compile(search, Pattern.MULTILINE | (caseSensitive.isSelected() ? 0 : Pattern.CASE_INSENSITIVE));
           Matcher matcher = pattern.matcher(text);
           while(matcher.find()) {
             int startIndex = matcher.start();
