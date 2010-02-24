@@ -112,6 +112,11 @@
   <command name="\centering" hint="corresponds to the center environment">
   </command>
 
+	<command name="\chapter" usage="\chapter{@title@}" hint="starts a new chapter in the document structure">
+	  <argument name="title">
+	  </argument>
+	</command>
+
   <command name="\circle" usage="\circle[@*@]{@diameter@}" hint="produces a circle of the specified diameter">
     <argument name="*" hint="solid circle"/>
     <argument name="diameter"/>
@@ -467,6 +472,16 @@
   <command name="\par" hint="equivalent to a blank line">
   </command>
 
+	<command name="\paragraph" usage="\paragraph{@title@}" hint="starts a new paragraph in the document structure">
+	  <argument name="title">
+	  </argument>
+	</command>
+
+	<command name="\part" usage="\part{@title@}" hint="starts a new part in the document structure">
+	  <argument name="title">
+	  </argument>
+	</command>
+
   <command name="\parbox" usage="\parbox[@position@]{@width@}{@text@}" hint="creates a box whose contents are created in paragraph mode">
     <argument name="position">
       <argumentValue value="t" hint="moves the item to the top of the rectangle"/>
@@ -571,6 +586,11 @@
   <command name="\scriptsize" hint="second smallest of 10 typefaces available">
   </command>
 
+  <command name="\section" usage="\section{@title@}" hint="starts a new section in the document structure">
+    <argument name="title">
+    </argument>
+  </command>
+
   <command name="\setcounter" usage="\setcounter{@counter@}{@value@}" hint="sets the value of the specified counter">
     <argument name="counter">
     </argument>
@@ -643,6 +663,21 @@
     <argument name="bot">
     </argument>
   </command>
+
+	<command name="\subparagraph" usage="\subparagraph{@title@}" hint="starts a new subparagraph in the document structure">
+	  <argument name="title">
+	  </argument>
+	</command>
+
+	<command name="\subsection" usage="\subsection{@title@}" hint="starts a new subsection in the document structure">
+	  <argument name="title">
+	  </argument>
+	</command>
+
+	<command name="\subsubsection" usage="\subsubsection{@title@}" hint="starts a new subsubsection in the document structure">
+	  <argument name="title">
+	  </argument>
+	</command>
 
   <command name="\tableofcontents" hint="produces a table of contents">
   </command>
