@@ -226,7 +226,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     // draw the border
     g2D.setColor(Color.lightGray);
     g2D.drawLine(lineNumberSpacer - 1, y, lineNumberSpacer - 1, y + height);
-    g2D.drawLine(lineNumberSpacer + 80 * characterWidth, y, lineNumberSpacer + 80 * characterWidth, y + height);
+    g2D.drawLine(lineNumberSpacer + 2 + 80 * characterWidth, y, lineNumberSpacer + 2 + 80 * characterWidth, y + height);
 
     // draw the line numbers
     g2D.setFont(fontLineNumbers);
