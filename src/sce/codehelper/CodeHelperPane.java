@@ -424,32 +424,33 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
       setVisible(false);
     }
 
-    // up and down
-    if(e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN){
-      int direction = e.getKeyCode() == KeyEvent.VK_UP ? -1 : 1;
-      int size = model.getSize();
-      int index = list.getSelectedIndex() + direction;
-      if(index >= 0 && index < size){
-        list.setSelectedIndex(index);
-        Rectangle scrollRect = list.getCellBounds(Math.max(index-2, 0), Math.min(index+2, size-1));
-        list.scrollRectToVisible(scrollRect);
-      }
+	  // up and down
+	  if(e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN){
+	    int direction = e.getKeyCode() == KeyEvent.VK_UP ? -1 : 1;
+		  int index = list.getSelectedIndex() + direction;
+		  select(index);
 
-      e.consume();
-    }
+	    e.consume();
+	  }
+	  // page up and down
+	  if(e.getKeyCode() == KeyEvent.VK_PAGE_UP || e.getKeyCode() == KeyEvent.VK_PAGE_DOWN){
+	    int direction = e.getKeyCode() == KeyEvent.VK_PAGE_UP ? -1 : 1;
+	    direction *= list.getLastVisibleIndex() - list.getFirstVisibleIndex();
+	    int index = list.getSelectedIndex() + direction;
+		  select(index);
 
-    // page up and down
-    if(e.getKeyCode() == KeyEvent.VK_PAGE_UP || e.getKeyCode() == KeyEvent.VK_PAGE_DOWN){
-      int direction = e.getKeyCode() == KeyEvent.VK_PAGE_UP ? -1 : 1;
-      direction *= list.getLastVisibleIndex() - list.getFirstVisibleIndex();
-      int size = model.getSize();
-      int index = list.getSelectedIndex() + direction;
-      if(index < 0) index = 0;
-      if(index > size - 1) index = size - 1;
-      list.setSelectedIndex(index);
-
-      e.consume();
-    }
+	    e.consume();
+	  }
+	  // home
+	  if(e.getKeyCode() == KeyEvent.VK_HOME){
+		  select(0);
+	    e.consume();
+	  }
+	  // end
+	  if(e.getKeyCode() == KeyEvent.VK_END){
+		  select(list.getModel().getSize() - 1);
+	    e.consume();
+	  }
 
     // enter
     if(e.getKeyCode() == KeyEvent.VK_ENTER){
@@ -457,7 +458,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
 	    WordWithPos oldWord = wordPos;
 	    setVisible(false);
-	    
+
       // remove the current text and then start the template
       CHCommand command = (CHCommand) list.getSelectedValue();
 
@@ -469,6 +470,16 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     }
   }
 
+	private void select(int index) {
+		int size = model.getSize();
+		if(index < 0) index = 0;
+		if(index > size - 1) index = size - 1;
+
+		list.setSelectedIndex(index);
+		Rectangle scrollRect = list.getCellBounds(Math.max(index-2, 0), Math.min(index+2, size-1));
+		list.scrollRectToVisible(scrollRect);
+	}
+	
   public void keyReleased(KeyEvent e){
   }
 
