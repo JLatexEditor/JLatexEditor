@@ -85,6 +85,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 
 	/** Code assistants that are informed about alt+enter events. */
 	private ArrayList<CodeAssistant> codeAssistants = new ArrayList<CodeAssistant>();
+	private int columnsPerRow = 80;
 
 
 	/**
@@ -226,7 +227,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     // draw the border
     g2D.setColor(Color.lightGray);
     g2D.drawLine(lineNumberSpacer - 1, y, lineNumberSpacer - 1, y + height);
-    g2D.drawLine(lineNumberSpacer + 2 + 80 * characterWidth, y, lineNumberSpacer + 2 + 80 * characterWidth, y + height);
+	  g2D.drawLine(lineNumberSpacer + 2 + columnsPerRow * characterWidth, y, lineNumberSpacer + 2 + columnsPerRow * characterWidth, y + height);
 
     // draw the line numbers
     g2D.setFont(fontLineNumbers);
@@ -746,4 +747,12 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   public void getFocusBack(){
     focusBack = true;
   }
+
+	public int getColumnsPerRow() {
+		return columnsPerRow;
+	}
+
+	public void setColumnsPerRow(int columnsPerRow) {
+		this.columnsPerRow = columnsPerRow;
+	}
 }

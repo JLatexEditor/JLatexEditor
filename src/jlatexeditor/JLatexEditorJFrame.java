@@ -392,6 +392,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     SourceCodeEditor<Doc> editor = new SourceCodeEditor<Doc>(null);
 
     SCEPane scePane = editor.getTextPane();
+		setPaneProperties(scePane);
     SCEDocument document = scePane.getDocument();
 
     // add some styles to the document
@@ -425,6 +426,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     SourceCodeEditor<Doc> editor = new SourceCodeEditor<Doc>(null);
 
     SCEPane scePane = editor.getTextPane();
+		setPaneProperties(scePane);
     SCEDocument document = scePane.getDocument();
 
 		// TODO: user other styles
@@ -442,6 +444,16 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 	  return editor;
   }
+
+	private void setPaneProperties(final SCEPane pane) {
+		pane.setColumnsPerRow(GProperties.getInt("editor.columns_per_row"));
+		GProperties.addPropertyChangeListener("editor.columns_per_row", new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				pane.setColumnsPerRow(GProperties.getInt("editor.columns_per_row"));
+			}
+		});
+	}
 
   public BackgroundParser getBackgroundParser() {
     return backgroundParser;
