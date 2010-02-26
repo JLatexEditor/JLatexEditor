@@ -7,41 +7,16 @@ import sce.component.SCERange;
  *
 * @author Stefan Endrullis
 */
-public class WordWithPos implements SCERange {
+public class WordWithPos extends SCERange {
 	public String word;
-	public int row;
-	public int startColumn;
-	public int endColumn;
 
 	public WordWithPos(String word, int row, int startColumn) {
+		super(row, startColumn, row, startColumn + (word == null ? 0 : word.length()));
 		this.word = word;
-		this.row = row;
-		this.startColumn = startColumn;
-		this.endColumn = startColumn + (word == null ? 0 : word.length());
-	}
-
-	@Override
-	public int getStartRow() {
-		return row;
-	}
-
-	@Override
-	public int getStartCol() {
-		return startColumn;
-	}
-
-	@Override
-	public int getEndRow() {
-		return row;
-	}
-
-	@Override
-	public int getEndCol() {
-		return endColumn;
 	}
 
 	@Override
 	public String toString() {
-		return word + " @(" + row + "," + startColumn + ")";
+		return word + " @(" + startRow + "," + startCol + ")";
 	}
 }

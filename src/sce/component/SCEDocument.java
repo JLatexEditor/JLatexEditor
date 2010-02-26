@@ -233,6 +233,15 @@ public class SCEDocument{
     position.setPosition(rows[row_nr].chars[column_nr]);
   }
 
+	/**
+	 * Updates the selection range of the document.
+	 *
+	 * @param range selection range
+	 */
+	public void setSelectionRange(SCERange range){
+		setSelectionRange(range.getStartPos(), range.getEndPos());
+	}
+
   /**
    * Updates the selection range of the document.
    *
