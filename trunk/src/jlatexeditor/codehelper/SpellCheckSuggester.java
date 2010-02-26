@@ -83,7 +83,7 @@ public class SpellCheckSuggester implements CodeAssistant, SCEPopup.ItemHandler 
 			if (item == addToDictionary) {
 				aspell.addToPersonalDict(wordUnderCaret.word);
 				// replace the word for reparsing
-				document.replace(wordUnderCaret.row, wordUnderCaret.startColumn, wordUnderCaret.row, wordUnderCaret.endColumn, wordUnderCaret.word);
+				document.replace(wordUnderCaret.getStartPos(), wordUnderCaret.getEndPos(), wordUnderCaret.word);
 			}
 			if (item == removeFromDictionary) {
 				try {
@@ -92,12 +92,12 @@ public class SpellCheckSuggester implements CodeAssistant, SCEPopup.ItemHandler 
 					e.printStackTrace();
 				}
 				// replace the word for reparsing
-				document.replace(wordUnderCaret.row, wordUnderCaret.startColumn, wordUnderCaret.row, wordUnderCaret.endColumn, wordUnderCaret.word);
+				document.replace(wordUnderCaret.getStartPos(), wordUnderCaret.getEndPos(), wordUnderCaret.word);
 			}
 		} else
 		if (item instanceof Suggestion) {
 			Suggestion suggestion = (Suggestion) item;
-			document.replace(wordUnderCaret.row, wordUnderCaret.startColumn, wordUnderCaret.row, wordUnderCaret.endColumn, suggestion.word);
+			document.replace(wordUnderCaret.getStartPos(), wordUnderCaret.getEndPos(), suggestion.word);
 		}
 	}
 

@@ -1,5 +1,7 @@
 package sce.component;
 
+import sce.codehelper.WordWithPos;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -462,6 +464,8 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
       String search = input.getText();
       int length = search.length();
 
+	    SCERange selectionRange = null;
+
       if(length != 0) {
         if(!regExp.isSelected()) {
           // normal search
@@ -478,7 +482,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 
             if(caret.getRow() == rowNr && caret.getColumn() == columnNr) {
               moveCaret = false;
-              document.setSelectionRange(start,end);
+              selectionRange = new SCERange(rowNr, columnNr, rowNr, columnNr+length);
             }
             resultsTemp.add(new SCEDocumentRange(start,end));
             pane.addTextHighlight(new SCETextHighlight(pane, start, end, Color.YELLOW));
@@ -521,6 +525,11 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
       pane.repaint();
 
 	    results = resultsTemp;
+
+	    // set the selection
+	    if (selectionRange != null) {
+	      document.setSelectionRange(selectionRange);
+	    }
 
       if(move && moveCaret) next(false);
       if(length > 0 && resultsTemp.size() == 0) input.setBackground(new Color(255, 204, 204));

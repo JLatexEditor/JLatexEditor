@@ -181,7 +181,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
    * @param replacement replacement
    */
   private void replace(WordWithPos word, String replacement){
-	  document.replace(word.row, word.startColumn, word.row, word.endColumn, replacement);
+	  document.replace(word.getStartPos(), word.getEndPos(), replacement);
   }
 
   /**
@@ -334,7 +334,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 		    if (replacement != null) {
 					replace(wordPos, replacement);
 
-					Point wordPoint = pane.modelToView(wordPos.row, wordPos.startColumn);
+					Point wordPoint = pane.modelToView(wordPos.getStartRow(), wordPos.getStartCol());
 
 					setVisible(true);
 					popup.show(pane, wordPoint.x, wordPoint.y + pane.getLineHeight());
@@ -406,8 +406,8 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 		    for (CHCommand command : tabCompletion.getCompletions()) {
 			    if(wordToReplace.word.equals(command.getName())) {
 				    SCECaret caret = pane.getCaret();
-				    document.remove(wordToReplace.row, wordToReplace.startColumn, caret.getRow(), caret.getColumn());
-				    startTemplate(command.getUsage(), command.getArguments(), wordToReplace.row, wordToReplace.startColumn);
+				    document.remove(wordToReplace.getStartPos(), caret);
+				    startTemplate(command.getUsage(), command.getArguments(), wordToReplace.getStartRow(), wordToReplace.getStartCol());
 
 				    e.consume();
 				    return;
@@ -463,8 +463,8 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
       CHCommand command = (CHCommand) list.getSelectedValue();
 
 	    SCECaret caret = pane.getCaret();
-	    document.remove(oldWord.row, oldWord.startColumn, caret.getRow(), caret.getColumn());
-      startTemplate(command.getUsage(), command.getArguments(), oldWord.row, oldWord.startColumn);
+	    document.remove(oldWord.getStartPos(), caret);
+      startTemplate(command.getUsage(), command.getArguments(), oldWord.getStartRow(), oldWord.getStartCol());
 
       e.consume();
     }
