@@ -45,8 +45,9 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 
   private GroupLayout.Group groupHorizontal;
   private GroupLayout.Group groupVertical;
+	private static final Color ERROR_COLOR = new Color(255, 204, 204);
 
-  public SCESearch(SourceCodeEditor editor) {
+	public SCESearch(SourceCodeEditor editor) {
     this.editor = editor;
     setBackground(new Color(233, 244, 255));
 
@@ -372,7 +373,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 
   public void selectionChanged(SCEDocument sender, SCEDocumentPosition start, SCEDocumentPosition end) {
     if(start == null || end == null) {
-      buttonReplace.setEnabled(false);
+      replaceEnabled(false);
       return;
     }
 
@@ -381,15 +382,20 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
       SCEDocumentPosition rend = result.getEndPosition();
 
       if(start.equals(rstart) && end.equals(rend)) {
-        buttonReplace.setEnabled(true);
-        return;
+	      replaceEnabled(true);
+	      return;
       }
     }
 
-    buttonReplace.setEnabled(false);
+    replaceEnabled(false);
   }
 
-  private class UpdateThread extends Thread {
+	private void replaceEnabled(boolean enabled) {
+		buttonReplace.setEnabled(enabled);
+		buttonReplaceAll.setEnabled(enabled);
+	}
+
+	private class UpdateThread extends Thread {
     private boolean searchChanged = true;
     private boolean documentChanged = true;
 
@@ -521,18 +527,22 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 	      document.clearSelection();
       }
 
-      markerBar.repaint();
-      pane.repaint();
-
 	    results = resultsTemp;
 
-	    // set the selection
-	    if (selectionRange != null) {
-	      document.setSelectionRange(selectionRange);
+	    if(length > 0 && resultsTemp.size() == 0) {
+		    input.setBackground(ERROR_COLOR);
+		    document.clearSelection();
+	    } else {
+				// set the selection
+				if (selectionRange != null) {
+					document.setSelectionRange(selectionRange);
+				}
+
+				if(move && moveCaret) next(false);
 	    }
 
-      if(move && moveCaret) next(false);
-      if(length > 0 && resultsTemp.size() == 0) input.setBackground(new Color(255, 204, 204));
+	    markerBar.repaint();
+	    pane.repaint();
     }
 
     private boolean filter(SCEDocumentPosition start, SCEDocumentPosition end) {
