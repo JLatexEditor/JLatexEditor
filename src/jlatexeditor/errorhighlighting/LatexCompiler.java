@@ -5,6 +5,7 @@ import jlatexeditor.ErrorView;
 import sce.component.AbstractResource;
 import sce.component.SourceCodeEditor;
 import util.ProcessUtil;
+import util.SystemUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -96,11 +97,11 @@ public class LatexCompiler extends Thread {
           error.setType(LatexCompileError.TYPE_ERROR);
           if(line.startsWith("!")) {
             String fileName = fileStack.get(fileStack.size() - 1);
-            error.setFile(new File(file.getParentFile(), fileName), fileName);
+            error.setFile(SystemUtils.newFile(file.getParentFile(), fileName), fileName);
             error.setMessage(line.substring(1).trim());
           } else {
             String fileName = errorMatcher.group(1);
-            error.setFile(new File(file.getParentFile(), fileName), fileName);
+            error.setFile(SystemUtils.newFile(file.getParentFile(), fileName), fileName);
             error.setLine(Integer.parseInt(errorMatcher.group(2)));
             error.setMessage(errorMatcher.group(3).trim());
 

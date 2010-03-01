@@ -1,9 +1,14 @@
 package util;
 
+import java.io.File;
+import java.util.regex.Pattern;
+
 /**
  * SystemUtils includes some special system functions.
  */
 public class SystemUtils {
+  private static Pattern absoluteFile = Pattern.compile("(?:/)|(?:[A-Z]:)");
+
   /**
    * Return the name of the operating system.
    *
@@ -29,5 +34,10 @@ public class SystemUtils {
    */
   public static String getSimpleOSType() {
     return isWinOS() ? "windows" : "unix";
+  }
+
+  public static File newFile(File parent, String fileName) {
+    if(absoluteFile.matcher(fileName).matches()) return new File(fileName);
+    return new File(parent, fileName);
   }
 }
