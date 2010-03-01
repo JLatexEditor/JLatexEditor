@@ -448,7 +448,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	private void setPaneProperties(final SCEPane pane) {
 		pane.setColumnsPerRow(GProperties.getInt("editor.columns_per_row"));
 		GProperties.addPropertyChangeListener("editor.columns_per_row", new PropertyChangeListener() {
-			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				pane.setColumnsPerRow(GProperties.getInt("editor.columns_per_row"));
 			}
