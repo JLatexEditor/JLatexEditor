@@ -32,7 +32,7 @@ public class LatexCompiler extends Thread {
   // The listeners
   private ArrayList<LatexCompileListener> compileListeners = new ArrayList<LatexCompileListener>();
 
-  private static Pattern fileLineError = Pattern.compile("([^:]+):([\\d]+):(.*)");
+  private static Pattern fileLineError = Pattern.compile("((?:[A-Z]:)?[^:]+):([\\d]+):(.*)");
 
   // instance
   private static LatexCompiler instance = null;
