@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
  * SystemUtils includes some special system functions.
  */
 public class SystemUtils {
-  private static Pattern absoluteFile = Pattern.compile("(?:/)|(?:[A-Z]:)");
+  private static Pattern absoluteFile = Pattern.compile("^(?:/|[A-Z]:).*");
 
   /**
    * Return the name of the operating system.
