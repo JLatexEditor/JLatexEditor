@@ -57,7 +57,6 @@ public abstract class Doc implements AbstractResource, SCEDocumentListener {
 		public FileDoc(File file) {
 			this.file = file;
 			try {
-        System.err.println(file);
 				this.id = file.getCanonicalPath();
 			} catch (IOException e) {
 				e.printStackTrace();
