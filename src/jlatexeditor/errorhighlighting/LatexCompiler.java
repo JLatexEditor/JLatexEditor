@@ -150,7 +150,7 @@ public class LatexCompiler extends Thread {
           error = new LatexCompileError();
           error.setType(LatexCompileError.TYPE_WARNING);
           String fileName = fileStack.get(fileStack.size() - 1);
-          error.setFile(new File(file.getParentFile(), fileName), fileName);
+          error.setFile(SystemUtils.newFile(file.getParentFile(), fileName), fileName);
 
           int linePos = line.indexOf("on input line ");
           if(linePos != -1) {
@@ -176,7 +176,7 @@ public class LatexCompiler extends Thread {
           error = new LatexCompileError();
           error.setType(LatexCompileError.TYPE_OVERFULL_HBOX);
           String fileName = fileStack.get(fileStack.size() - 1);
-          error.setFile(new File(file.getParentFile(), fileName), fileName);
+          error.setFile(SystemUtils.newFile(file.getParentFile(), fileName), fileName);
           error.setMessage(line);
 
           while(!line.trim().equals("")) {
