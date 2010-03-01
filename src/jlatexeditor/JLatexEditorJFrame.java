@@ -318,7 +318,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       BufferedReader reader = new BufferedReader(new FileReader(FILE_LAST_SESSION));
       String line;
       while((line = reader.readLine()) != null) {
-        int colon = line.indexOf(':');
+        int colon = line.lastIndexOf(':');
         if(colon == -1) colon = line.length();
 
         File file = new File(line.substring(0, colon));
