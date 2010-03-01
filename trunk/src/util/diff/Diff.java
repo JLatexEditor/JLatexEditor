@@ -20,8 +20,8 @@ public class Diff {
     int length1 = list1.length;
     int length2 = list2.length;
 
-    if(length1 == 0) return length2;
-    if(length2 == 0) return length1;
+    if (length1 == 0) return length2;
+    if (length2 == 0) return length1;
 
     int[] previousCosts = new int[length1 + 1];
     int[] currentCosts = new int[length1 + 1];
@@ -38,7 +38,7 @@ public class Diff {
         int distance = object1.getDistance(object2, COST_CHANGE);
         int remove = currentCosts[index1 - 1] + COST_REMOVE;
         int add = previousCosts[index1] + COST_ADD;
-        int change = previousCosts[index1-1] + distance;
+        int change = previousCosts[index1 - 1] + distance;
 
         currentCosts[index1] = Math.min(remove, Math.min(add, change));
       }
@@ -69,9 +69,10 @@ public class Diff {
     Cost[] currentCosts = new Cost[length1 + 1];
 
     previousCosts[0] = createCost(Cost.TYPE_UNCHANGED, 0, null);
-    for(int i = 1; i <= length1; i++) previousCosts[i] = createCost(Cost.TYPE_REMOVE, COST_REMOVE, previousCosts[i - 1]);
+    for (int i = 1; i <= length1; i++)
+      previousCosts[i] = createCost(Cost.TYPE_REMOVE, COST_REMOVE, previousCosts[i - 1]);
 
-    for(int index2 = 1; index2 <= length2; index2++) {
+    for (int index2 = 1; index2 <= length2; index2++) {
       T object2 = list2[index2 - 1];
       currentCosts[0] = createCost(Cost.TYPE_ADD, COST_ADD, previousCosts[0]);
 
@@ -81,11 +82,11 @@ public class Diff {
         int distance = object1.getDistance(object2, COST_CHANGE);
         int remove = currentCosts[index1 - 1].getCosts() + COST_REMOVE;
         int add = previousCosts[index1].getCosts() + COST_ADD;
-        int change = previousCosts[index1-1].getCosts() + distance;
+        int change = previousCosts[index1 - 1].getCosts() + distance;
 
-        if(remove <= add && remove <= change) {
+        if (remove <= add && remove <= change) {
           currentCosts[index1] = createCost(Cost.TYPE_REMOVE, COST_REMOVE, currentCosts[index1 - 1]);
-        } else if(change <= add) {
+        } else if (change <= add) {
           currentCosts[index1] = createCost(distance == 0 ? Cost.TYPE_UNCHANGED : Cost.TYPE_CHANGE, distance, previousCosts[index1 - 1]);
         } else {
           currentCosts[index1] = createCost(Cost.TYPE_ADD, COST_ADD, previousCosts[index1]);
@@ -93,7 +94,7 @@ public class Diff {
       }
 
       // garbage collect
-      for(Cost cost : previousCosts) cost.referencesDecrease();
+      for (Cost cost : previousCosts) cost.referencesDecrease();
 
       Cost[] swap = previousCosts;
       previousCosts = currentCosts;
@@ -101,38 +102,36 @@ public class Diff {
     }
 
     // create list of changes
-    ArrayList<Cost> costs = new ArrayList<Cost>(length1*2);
+    ArrayList<Cost> costs = new ArrayList<Cost>(length1 * 2);
     Cost cost = previousCosts[length1];
-    while(cost.getParent() != null) {
+    while (cost.getParent() != null) {
       costs.add(cost);
       cost = cost.getParent();
     }
 
     int index1 = 0;
     int index2 = 0;
-    for(int i = costs.size() - 1; i >= 0; i--) {
+    for (int i = costs.size() - 1; i >= 0; i--) {
       cost = costs.get(i);
-      if(cost.type == Cost.TYPE_UNCHANGED) {
+      if (cost.type == Cost.TYPE_UNCHANGED) {
         index1++;
         index2++;
         continue;
       }
 
       int count = 1;
-      while(i >= 1 && costs.get(i-1).type == cost.type) {
+      while (i >= 1 && costs.get(i - 1).type == cost.type) {
         i--;
         count++;
       }
 
-      if(cost.getType() == Cost.TYPE_ADD) {
+      if (cost.getType() == Cost.TYPE_ADD) {
         modifications.add(new Modification<T>(Modification.TYPE_ADD, index1, Arrays.copyOfRange(list1, index1, 0), index2, Arrays.copyOfRange(list2, index2, count)));
         index2 += count;
-      } else
-      if(cost.getType() == Cost.TYPE_REMOVE) {
+      } else if (cost.getType() == Cost.TYPE_REMOVE) {
         modifications.add(new Modification<T>(Modification.TYPE_REMOVE, index1, Arrays.copyOfRange(list1, index1, count), index2, Arrays.copyOfRange(list2, index2, 0)));
         index1 += count;
-      } else
-      if(cost.getType() == Cost.TYPE_CHANGE) {
+      } else if (cost.getType() == Cost.TYPE_CHANGE) {
         modifications.add(new Modification<T>(Modification.TYPE_CHANGED, index1, Arrays.copyOfRange(list1, index1, count), index2, Arrays.copyOfRange(list2, index2, count)));
         index1 += count;
         index2 += count;
@@ -193,8 +192,8 @@ public class Diff {
 
     public void referencesDecrease() {
       references--;
-      if(references == 0) {
-        if(this.parent != null) this.parent.referencesDecrease();
+      if (references == 0) {
+        if (this.parent != null) this.parent.referencesDecrease();
         garbage.add(this);
       }
     }

@@ -8,8 +8,8 @@ import java.util.List;
  * Diff modifications.
  */
 public class Modification<T> {
-  public static final int TYPE_ADD     = 0;
-  public static final int TYPE_REMOVE  = 1;
+  public static final int TYPE_ADD = 0;
+  public static final int TYPE_REMOVE = 1;
   public static final int TYPE_CHANGED = 2;
 
   private int type;
@@ -70,7 +70,7 @@ public class Modification<T> {
     ArrayList<T> modified = new ArrayList<T>(document.size());
 
     int index = 0;
-    for(Modification<T> modification : modifications) {
+    for (Modification<T> modification : modifications) {
       modified.addAll(document.subList(index, modification.getSourceStartIndex()));
       modified.addAll(modification.getTargetLines());
       index = modification.getSourceStartIndex() + modification.getSourceLength();
