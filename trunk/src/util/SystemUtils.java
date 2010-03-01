@@ -37,7 +37,6 @@ public class SystemUtils {
   }
 
   public static File newFile(File parent, String fileName) {
-    System.out.println(fileName + " ?? " + absoluteFile.matcher(fileName).matches());
     if(absoluteFile.matcher(fileName).matches()) return new File(fileName);
     return new File(parent, fileName);
   }
