@@ -25,15 +25,15 @@ public class SystemDiff {
       writer2.close();
 
       Process process = Runtime.getRuntime().exec(new String[]{
-        "diff",
-        "-w",
-        file1.getCanonicalPath(),
-        file2.getCanonicalPath()
+              "diff",
+              "-w",
+              file1.getCanonicalPath(),
+              file2.getCanonicalPath()
       });
 
       BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
       String line;
-      while((line = reader.readLine()) != null) lines.add(line);
+      while ((line = reader.readLine()) != null) lines.add(line);
       reader.close();
     } catch (IOException e) {
       e.printStackTrace();
@@ -46,20 +46,20 @@ public class SystemDiff {
 
     ArrayList<String> sourceLines = new ArrayList<String>();
     ArrayList<String> targetLines = new ArrayList<String>();
-    for(int lineNr = 0; lineNr < lines.size(); lineNr++) {
+    for (int lineNr = 0; lineNr < lines.size(); lineNr++) {
       String line = lines.get(lineNr);
 
       int typePos = Math.max(line.indexOf('a'), Math.max(line.indexOf('d'), line.indexOf('c')));
       char type = line.charAt(typePos);
       String sourceRange = line.substring(0, typePos);
-      String targetRange = line.substring(typePos+1);
+      String targetRange = line.substring(typePos + 1);
 
       int sourceStart;
       int sourceLength;
       int sourceComma = sourceRange.indexOf(',');
-      if(sourceComma != -1) {
+      if (sourceComma != -1) {
         sourceStart = Integer.parseInt(sourceRange.substring(0, sourceComma));
-        sourceLength = Integer.parseInt(sourceRange.substring(sourceComma+1)) - sourceStart + 1;
+        sourceLength = Integer.parseInt(sourceRange.substring(sourceComma + 1)) - sourceStart + 1;
       } else {
         sourceStart = Integer.parseInt(sourceRange);
         sourceLength = type == 'a' ? 0 : 1;
@@ -68,29 +68,30 @@ public class SystemDiff {
       int targetStart;
       int targetLength;
       int targetComma = targetRange.indexOf(',');
-      if(targetComma != -1) {
+      if (targetComma != -1) {
         targetStart = Integer.parseInt(targetRange.substring(0, targetComma));
-        targetLength = Integer.parseInt(targetRange.substring(targetComma+1)) - targetStart + 1;
+        targetLength = Integer.parseInt(targetRange.substring(targetComma + 1)) - targetStart + 1;
       } else {
         targetStart = Integer.parseInt(targetRange);
         targetLength = type == 'd' ? 0 : 1;
       }
-      if(type != 'a') sourceStart--;
-      if(type != 'd') targetStart--;
+      if (type != 'a') sourceStart--;
+      if (type != 'd') targetStart--;
 
       // parse < ... --- > ...
       boolean inSource = type != 'a';
       lineNr++;
-      for(; lineNr < lines.size(); lineNr++) {
+      for (; lineNr < lines.size(); lineNr++) {
         line = lines.get(lineNr);
         // "\ No newline at end of file"
-        if(line.startsWith("\\")) continue;
+        if (line.startsWith("\\")) continue;
 
-        if(line.startsWith("<") || line.startsWith(">")) {
-          if(inSource) sourceLines.add(line.substring(2)); else targetLines.add(line.substring(2));
+        if (line.startsWith("<") || line.startsWith(">")) {
+          if (inSource) sourceLines.add(line.substring(2));
+          else targetLines.add(line.substring(2));
           continue;
         }
-        if(line.startsWith("---")) {
+        if (line.startsWith("---")) {
           inSource = false;
           continue;
         }
@@ -99,7 +100,7 @@ public class SystemDiff {
       }
 
       // diff gives faulty output?
-      if(sourceLength != sourceLines.size() || targetLength != targetLines.size()) {
+      if (sourceLength != sourceLines.size() || targetLength != targetLines.size()) {
         throw new RuntimeException("SystemDiff: I don't understand the diff output.");
       }
 
