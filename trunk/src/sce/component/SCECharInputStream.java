@@ -7,12 +7,12 @@ package sce.component;
 import java.io.IOException;
 import java.io.InputStream;
 
-public interface SCECharInputStream{
+public interface SCECharInputStream {
 
   public SCEDocumentChar read() throws IOException;
 
   // from document
-  public class FromDocument implements SCECharInputStream{
+  public class FromDocument implements SCECharInputStream {
     // the associated document
     SCEDocumentRow rows[] = null;
 
@@ -24,11 +24,11 @@ public interface SCECharInputStream{
     // special characters
     SCEDocumentChar newLine = null;
 
-    public FromDocument(SCEDocument document){
+    public FromDocument(SCEDocument document) {
       this(document.getRows(), document.getRowsCount(), 0, 0);
     }
 
-    public FromDocument(SCEDocumentRow rows[], int rows_count, int row_nr, int column_nr){
+    public FromDocument(SCEDocumentRow rows[], int rows_count, int row_nr, int column_nr) {
       this.rows_count = rows_count;
       this.rows = rows;
 
@@ -39,10 +39,10 @@ public interface SCECharInputStream{
       newLine.character = '\n';
     }
 
-    public SCEDocumentChar read() throws IOException{
+    public SCEDocumentChar read() throws IOException {
       // read from a document
-      if(row_nr >= rows_count) throw new IOException("Exception: end of document stream reached.");
-      if(column_nr >= rows[row_nr].length){
+      if (row_nr >= rows_count) throw new IOException("Exception: end of document stream reached.");
+      if (column_nr >= rows[row_nr].length) {
         column_nr = 0;
         row_nr++;
         return newLine;
@@ -55,18 +55,18 @@ public interface SCECharInputStream{
   }
 
   // from input stream
-  public class FromInputStream implements SCECharInputStream{
+  public class FromInputStream implements SCECharInputStream {
     // input stream
     InputStream in;
 
-    public FromInputStream(InputStream in){
+    public FromInputStream(InputStream in) {
       this.in = in;
     }
 
-    public SCEDocumentChar read() throws IOException{
+    public SCEDocumentChar read() throws IOException {
       // read from a input stream
       int read = in.read();
-      if(read == -1) throw new IOException("Exception: end of input stream reached.");
+      if (read == -1) throw new IOException("Exception: end of input stream reached.");
       SCEDocumentChar character = new SCEDocumentChar();
       character.character = (char) read;
 

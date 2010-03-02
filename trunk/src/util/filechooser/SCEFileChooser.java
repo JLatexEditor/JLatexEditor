@@ -18,10 +18,10 @@ public class SCEFileChooser extends JFileChooser {
         new java.util.Timer().schedule(
                 new TimerTask() {
                   public void run() {
-                    if(list == null) findList(component, 5);
-                    if(list != null && list.isVisible()) {
+                    if (list == null) findList(component, 5);
+                    if (list != null && list.isVisible()) {
                       list.requestFocus();
-                      if(list.getSelectedIndex() < 0) list.setSelectedIndex(0);
+                      if (list.getSelectedIndex() < 0) list.setSelectedIndex(0);
                     }
                   }
                 }, 100
@@ -31,16 +31,16 @@ public class SCEFileChooser extends JFileChooser {
   }
 
   private void findList(Container component, int depth) {
-    if(depth == 0) return;
-    if(!component.isVisible()) return;
-    if(list != null) return;
+    if (depth == 0) return;
+    if (!component.isVisible()) return;
+    if (list != null) return;
 
-    for(Component c : component.getComponents()) {
-      if(c instanceof JList) {
+    for (Component c : component.getComponents()) {
+      if (c instanceof JList) {
         list = (JList) c;
         return;
       }
-      if(c instanceof Container) findList((Container) c, depth-1);
+      if (c instanceof Container) findList((Container) c, depth - 1);
     }
   }
 }

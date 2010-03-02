@@ -14,54 +14,54 @@ import java.util.ArrayList;
  * @author Stefan Endrullis
  */
 public class CombinedCodeHelper extends PatternHelper {
-	private ArrayList<PatternHelper> patternHelpers = new ArrayList<PatternHelper>();
-	private PatternHelper currentPatternHelper = null;
+  private ArrayList<PatternHelper> patternHelpers = new ArrayList<PatternHelper>();
+  private PatternHelper currentPatternHelper = null;
 
-	@Override
-	public boolean matches() {
-		for (PatternHelper patternHelper : patternHelpers) {
-			if (patternHelper.matches()) {
-				currentPatternHelper = patternHelper;
-				return true;
-			}
-		}
-		return false;
-	}
+  @Override
+  public boolean matches() {
+    for (PatternHelper patternHelper : patternHelpers) {
+      if (patternHelper.matches()) {
+        currentPatternHelper = patternHelper;
+        return true;
+      }
+    }
+    return false;
+  }
 
-	@Override
-	public boolean documentChanged() {
-		return currentPatternHelper.documentChanged();
-	}
+  @Override
+  public boolean documentChanged() {
+    return currentPatternHelper.documentChanged();
+  }
 
-	@Override
-	public WordWithPos getWordToReplace() {
-		return currentPatternHelper.getWordToReplace();
-	}
+  @Override
+  public WordWithPos getWordToReplace() {
+    return currentPatternHelper.getWordToReplace();
+  }
 
-	@Override
-	public Iterable<? extends CHCommand> getCompletions() {
-		return currentPatternHelper.getCompletions();
-	}
+  @Override
+  public Iterable<? extends CHCommand> getCompletions() {
+    return currentPatternHelper.getCompletions();
+  }
 
-	@Override
-	public String getMaxCommonPrefix() {
-		return currentPatternHelper.getMaxCommonPrefix();
-	}
+  @Override
+  public String getMaxCommonPrefix() {
+    return currentPatternHelper.getMaxCommonPrefix();
+  }
 
-	/**
-	 * Adds a code helper to this code helper collection.
-	 *
-	 * @param patternHelper code helper to add
-	 */
-	public void addPatternHelper(PatternHelper patternHelper) {
-		patternHelpers.add(patternHelper);
-	}
+  /**
+   * Adds a code helper to this code helper collection.
+   *
+   * @param patternHelper code helper to add
+   */
+  public void addPatternHelper(PatternHelper patternHelper) {
+    patternHelpers.add(patternHelper);
+  }
 
-	@Override
-	public void setSCEPane(SCEPane pane) {
-		super.setSCEPane(pane);
-		for (PatternHelper patternHelper : patternHelpers) {
-			patternHelper.setSCEPane(pane);
-		}
-	}
+  @Override
+  public void setSCEPane(SCEPane pane) {
+    super.setSCEPane(pane);
+    for (PatternHelper patternHelper : patternHelpers) {
+      patternHelper.setSCEPane(pane);
+    }
+  }
 }

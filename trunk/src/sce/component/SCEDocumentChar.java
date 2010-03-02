@@ -4,7 +4,7 @@
 
 package sce.component;
 
-public class SCEDocumentChar{
+public class SCEDocumentChar {
   // the character and style
   public char character = ' ';
   public byte style = 0;

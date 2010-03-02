@@ -1,4 +1,3 @@
-
 /**
  * @author Jörg Endrullis
  */
@@ -10,7 +9,7 @@ import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.metal.MetalScrollBarUI;
 import java.awt.*;
 
-public class QaquaScrollBarUI extends MetalScrollBarUI{
+public class QaquaScrollBarUI extends MetalScrollBarUI {
   // images for the scrollbar
   private Image thumbTop = null;
   private Image thumbMiddle = null;
@@ -27,11 +26,11 @@ public class QaquaScrollBarUI extends MetalScrollBarUI{
   private Image buttonDecrease = null;
   private Image buttonDecreaseDown = null;
 
-  public static ComponentUI createUI(JComponent c){
+  public static ComponentUI createUI(JComponent c) {
     return new QaquaScrollBarUI();
   }
 
-  public void installUI(JComponent c){
+  public void installUI(JComponent c) {
     super.installUI(c);
 
     // load images
@@ -50,45 +49,45 @@ public class QaquaScrollBarUI extends MetalScrollBarUI{
    * @param name the image name
    * @return the image
    */
-  private Image loadImage(String name){
+  private Image loadImage(String name) {
     return loadImage(name, scrollbar.getOrientation());
   }
 
   /**
    * Loads the images (and rotates them if orientation == horizontal).
    *
-   * @param name the image name
+   * @param name        the image name
    * @param orientation the orientation
    * @return the image
    */
-  private Image loadImage(String name, int orientation){
+  private Image loadImage(String name, int orientation) {
     Image image = QaquaLookAndFeel.loadImage(name);
     return orientation == JScrollBar.VERTICAL ? image : QaquaLookAndFeel.rotateImage90(image);
   }
 
-  protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds){
-    if(scrollbar.getOrientation() == JScrollBar.VERTICAL){
+  protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) {
+    if (scrollbar.getOrientation() == JScrollBar.VERTICAL) {
       int x = thumbBounds.x + 1;
       int middleStart = thumbBounds.y + thumbTop.getHeight(null);
       int middleEnd = thumbBounds.y + thumbBounds.height - thumbBottom.getHeight(null);
       int middleIncrement = thumbMiddle.getHeight(null);
 
       int y = middleStart;
-      for(; y < middleEnd - middleIncrement; y += middleIncrement){
+      for (; y < middleEnd - middleIncrement; y += middleIncrement) {
         g.drawImage(thumbMiddle, x, y, null);
       }
       g.drawImage(thumbMiddle, x, y, thumbMiddle.getWidth(null), middleEnd - y, null);
 
       g.drawImage(thumbTop, x, thumbBounds.y, null);
       g.drawImage(thumbBottom, x, middleEnd, null);
-    }else{
+    } else {
       int y = thumbBounds.y + 1;
       int middleStart = thumbBounds.x + thumbTop.getWidth(null);
       int middleEnd = thumbBounds.x + thumbBounds.width - thumbBottom.getWidth(null);
       int middleIncrement = thumbMiddle.getWidth(null);
 
       int x = middleStart;
-      for(; x < middleEnd - middleIncrement; x += middleIncrement){
+      for (; x < middleEnd - middleIncrement; x += middleIncrement) {
         g.drawImage(thumbMiddle, x, y, null);
       }
       g.drawImage(thumbMiddle, x, y, middleEnd - x, thumbMiddle.getHeight(null), null);
@@ -98,24 +97,24 @@ public class QaquaScrollBarUI extends MetalScrollBarUI{
     }
   }
 
-  protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds){
-    if(scrollbar.getOrientation() == JScrollBar.VERTICAL){
+  protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {
+    if (scrollbar.getOrientation() == JScrollBar.VERTICAL) {
       int start = trackBounds.y;
       int end = trackBounds.y + trackBounds.height;
       int increment = track.getHeight(null);
 
-      for(int y = start; y < end; y += increment){
+      for (int y = start; y < end; y += increment) {
         g.drawImage(track, trackBounds.x, y, null);
       }
 
       g.drawImage(trackTop, trackBounds.x, start, null);
       g.drawImage(trackBottom, trackBounds.x, end - trackBottom.getHeight(null), null);
-    }else{
+    } else {
       int start = trackBounds.x;
       int end = trackBounds.x + trackBounds.width;
       int increment = track.getWidth(null);
 
-      for(int x = start; x < end; x += increment){
+      for (int x = start; x < end; x += increment) {
         g.drawImage(track, x, trackBounds.y, null);
       }
 
@@ -124,14 +123,14 @@ public class QaquaScrollBarUI extends MetalScrollBarUI{
     }
   }
 
-  protected JButton createIncreaseButton(int orientation){
+  protected JButton createIncreaseButton(int orientation) {
     buttonIncrease = loadImage("images/scrollbar/buttonBottom.gif");
     buttonIncreaseDown = loadImage("images/scrollbar/buttonBottomDown.gif");
 
     return new QaquaButton(buttonIncrease, buttonIncreaseDown);
   }
 
-  protected JButton createDecreaseButton(int orientation){
+  protected JButton createDecreaseButton(int orientation) {
     buttonDecrease = loadImage("images/scrollbar/buttonTop.gif", orientation);
     buttonDecreaseDown = loadImage("images/scrollbar/buttonTopDown.gif", orientation);
 

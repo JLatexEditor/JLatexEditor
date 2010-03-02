@@ -4,7 +4,7 @@
 
 package sce.component;
 
-public class SCEDocumentRange{
+public class SCEDocumentRange {
   // start and end position
   private SCEDocumentPosition startPosition = null;
   private SCEDocumentPosition endPosition = null;
@@ -13,9 +13,9 @@ public class SCEDocumentRange{
    * Creates a document range with the given start and end positions.
    *
    * @param startPosition the beginning of the range
-   * @param endPosition the end of the range
+   * @param endPosition   the end of the range
    */
-  public SCEDocumentRange(SCEDocumentPosition startPosition, SCEDocumentPosition endPosition){
+  public SCEDocumentRange(SCEDocumentPosition startPosition, SCEDocumentPosition endPosition) {
     this.startPosition = startPosition;
     this.endPosition = endPosition;
   }
@@ -25,7 +25,7 @@ public class SCEDocumentRange{
    *
    * @return start position
    */
-  public SCEDocumentPosition getStartPosition(){
+  public SCEDocumentPosition getStartPosition() {
     return startPosition;
   }
 
@@ -34,7 +34,7 @@ public class SCEDocumentRange{
    *
    * @return end position
    */
-  public SCEDocumentPosition getEndPosition(){
+  public SCEDocumentPosition getEndPosition() {
     return endPosition;
   }
 }

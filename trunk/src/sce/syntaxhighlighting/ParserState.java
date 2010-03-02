@@ -1,4 +1,3 @@
-
 /**
  * @author Jörg Endrullis
  */
@@ -6,7 +5,7 @@
 package sce.syntaxhighlighting;
 
 public interface ParserState {
-	public ParserState copy();
+  public ParserState copy();
 
   public byte[] getStyles();
 }

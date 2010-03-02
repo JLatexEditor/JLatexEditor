@@ -6,49 +6,49 @@ package sce.component;
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 public class SCERange {
-	protected int startRow;
-	protected int startCol;
-	protected int endRow;
-	protected int endCol;
+  protected int startRow;
+  protected int startCol;
+  protected int endRow;
+  protected int endCol;
 
-	protected SCERange(int startRow, int startCol, int endRow, int endCol) {
-		this.startRow = startRow;
-		this.startCol = startCol;
-		this.endRow = endRow;
-		this.endCol = endCol;
-	}
+  protected SCERange(int startRow, int startCol, int endRow, int endCol) {
+    this.startRow = startRow;
+    this.startCol = startCol;
+    this.endRow = endRow;
+    this.endCol = endCol;
+  }
 
-	public int getStartRow() {
-		return startRow;
-	}
+  public int getStartRow() {
+    return startRow;
+  }
 
-	public int getStartCol() {
-		return startCol;
-	}
+  public int getStartCol() {
+    return startCol;
+  }
 
-	public int getEndRow() {
-		return endRow;
-	}
+  public int getEndRow() {
+    return endRow;
+  }
 
-	public int getEndCol() {
-		return endCol;
-	}
+  public int getEndCol() {
+    return endCol;
+  }
 
-	public SCEDocumentPosition getStartPos() {
-		return new SCEDocumentPosition(getStartRow(), getStartCol());
-	}
+  public SCEDocumentPosition getStartPos() {
+    return new SCEDocumentPosition(getStartRow(), getStartCol());
+  }
 
-	public SCEDocumentPosition getEndPos() {
-		return new SCEDocumentPosition(getEndRow(), getEndCol());
-	}
+  public SCEDocumentPosition getEndPos() {
+    return new SCEDocumentPosition(getEndRow(), getEndCol());
+  }
 
-	@Override
-	public String toString() {
-		return "SCERange{" +
-				"startRow=" + startRow +
-				", startCol=" + startCol +
-				", endRow=" + endRow +
-				", endCol=" + endCol +
-				'}';
-	}
+  @Override
+  public String toString() {
+    return "SCERange{" +
+            "startRow=" + startRow +
+            ", startCol=" + startCol +
+            ", endRow=" + endRow +
+            ", endCol=" + endCol +
+            '}';
+  }
 }

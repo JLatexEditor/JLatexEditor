@@ -1,4 +1,3 @@
-
 /**
  * @author Jörg Endrullis
  */
@@ -17,8 +16,10 @@ import java.io.File;
 import java.io.IOException;
 
 public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implements ActionListener {
-  /** The resource that has been opened in this editor. */
-	private Rs resource = null;
+  /**
+   * The resource that has been opened in this editor.
+   */
+  private Rs resource = null;
 
   // The source code pane
   private SCEPane textPane = null;
@@ -29,7 +30,7 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
   // diff
   private SCEDiff diff = null;
 
-  public SourceCodeEditor(Rs resource){
+  public SourceCodeEditor(Rs resource) {
     this.resource = resource;
 
     // Change scoll bar colors to nice blue
@@ -56,6 +57,7 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
 
   /**
    * Returns the resource associated to this editor.
+   *
    * @return resource
    */
   public Rs getResource() {
@@ -64,6 +66,7 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
 
   /**
    * Sets the resource associated with this editor.
+   *
    * @param resource resource
    */
   public void setResource(Rs resource) {
@@ -71,10 +74,10 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
   }
 
   public static String readFile(String fileName) throws IOException {
-	  return makeEditorConform(StreamUtils.readFile(fileName));
+    return makeEditorConform(StreamUtils.readFile(fileName));
   }
 
-	private static String makeEditorConform(String text) {
+  private static String makeEditorConform(String text) {
     text = text.replaceAll("\n\r", "\n");
     text = text.replaceAll("\t", "  ");
 
@@ -83,6 +86,7 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
 
   /**
    * Opens the given resource.
+   *
    * @param resource resource
    */
   public void open(Rs resource) throws IOException {
@@ -90,7 +94,7 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
     this.resource = resource;
 
     textPane.setText(text);
-    textPane.getCaret().moveTo(0,0);
+    textPane.getCaret().moveTo(0, 0);
     textPane.getUndoManager().clear();
     textPane.getDocument().setModified(false);
   }
@@ -100,7 +104,7 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
   }
 
   public void reload() throws IOException {
-	  String text = makeEditorConform(resource.getContent());
+    String text = makeEditorConform(resource.getContent());
     textPane.setText(text);
     textPane.getDocument().setModified(false);
   }
@@ -110,7 +114,7 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
   }
 
   public void diffView(String title, String text) {
-    if(!isDiffView()) {
+    if (!isDiffView()) {
       remove(scrollPane);
 
       diff = new SCEDiff(getResource().getName(), textPane, title, text, getMarkerBar());
@@ -130,7 +134,7 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
   }
 
   public void closeDiffView() {
-    if(!isDiffView()) return;
+    if (!isDiffView()) return;
 
     ImageButton buttonClose = markerBar.getButtonClose();
     buttonClose.removeActionListener(this);
@@ -153,27 +157,30 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
 
   /**
    * Returns the sce.component.SCEPane.
+   *
    * @return the text pane
    */
-  public SCEPane getTextPane(){
+  public SCEPane getTextPane() {
     return textPane;
   }
 
   /**
    * Returns the current text of the SourceCodePane.
+   *
    * @return the text/ source code
    */
-  public String getText(){
+  public String getText() {
     return textPane.getText();
   }
 
   /**
-	 * Sets the text of the SourceCodePane.
-	 * @param text text of the SourceCodePane
-	 */
-	public void setText(String text) {
-		textPane.setText(text);
-	}
+   * Sets the text of the SourceCodePane.
+   *
+   * @param text text of the SourceCodePane
+   */
+  public void setText(String text) {
+    textPane.setText(text);
+  }
 
   /**
    * Search.
@@ -196,17 +203,18 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
     this.markerBar = markerBar;
   }
 
-	/**
+  /**
    * Enable/ disable editing within the SourceCodePane.
+   *
    * @param editable true, if the TextPane should be editable
    */
-  public void setEditable(boolean editable){
+  public void setEditable(boolean editable) {
     textPane.getDocument().setEditable(editable);
   }
 
   public void moveTo(int row, int column) {
     Point pos = textPane.modelToView(row, column);
-    scrollPane.scrollRectToVisible(new Rectangle(pos.x-150, pos.y - 300, 300, pos.y - pos.y + 300));
+    scrollPane.scrollRectToVisible(new Rectangle(pos.x - 150, pos.y - 300, 300, pos.y - pos.y + 300));
     textPane.getCaret().moveTo(row, column);
   }
 
@@ -214,12 +222,12 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
     return diff != null && diff.getDiffPane() != null && diff.getDiffPane().hasFocus();
   }
 
-	public SCEPane getFocusedPane() {
-		return hasDiffFocus() ? diff.getDiffPane() : textPane;
-	}
+  public SCEPane getFocusedPane() {
+    return hasDiffFocus() ? diff.getDiffPane() : textPane;
+  }
 
   public int getVirtualLines() {
-    if(isDiffView()) {
+    if (isDiffView()) {
       return diff.getVirtualLines();
     } else {
       return textPane.getDocument().getRowsCount();
@@ -227,23 +235,24 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
   }
 
   public void copy() {
-	  getFocusedPane().copy();
+    getFocusedPane().copy();
   }
 
   public void cut() {
-	  getFocusedPane().cut();
+    getFocusedPane().cut();
   }
 
   public void paste() {
-	  getFocusedPane().paste();
+    getFocusedPane().paste();
   }
 
-	public void lineComment(String commentPrefix) {
-	  getFocusedPane().lineComment(commentPrefix);
-	}
-	public void lineUncomment(String commentPrefix) {
-		getFocusedPane().lineUncomment(commentPrefix);
-	}
+  public void lineComment(String commentPrefix) {
+    getFocusedPane().lineComment(commentPrefix);
+  }
+
+  public void lineUncomment(String commentPrefix) {
+    getFocusedPane().lineUncomment(commentPrefix);
+  }
 
   /**
    * Show search field.
@@ -268,8 +277,8 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
     closeDiffView();
   }
 
-	@Override
-	public void requestFocus() {
-		getFocusedPane().requestFocus();
+  @Override
+  public void requestFocus() {
+    getFocusedPane().requestFocus();
 	}
 }

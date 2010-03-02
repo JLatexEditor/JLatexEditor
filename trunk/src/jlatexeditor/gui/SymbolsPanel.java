@@ -70,16 +70,16 @@ public class SymbolsPanel extends JScrollPane {
       doc.getDocumentElement().normalize();
 
       NodeList commands = doc.getElementsByTagName("commandDefinition");
-      for(int imageNr = 0; imageNr < commands.getLength(); imageNr++) {
+      for (int imageNr = 0; imageNr < commands.getLength(); imageNr++) {
         Node command = commands.item(imageNr);
         NodeList children = command.getChildNodes();
         String latexCommand = null;
-        for(int childNr = 0; childNr < children.getLength(); childNr++) {
+        for (int childNr = 0; childNr < children.getLength(); childNr++) {
           Node child = children.item(childNr);
-          if(child.getNodeName().equals("latexCommand")) latexCommand = child.getTextContent();
+          if (child.getNodeName().equals("latexCommand")) latexCommand = child.getTextContent();
         }
 
-        ImageIcon icon = new ImageIcon(getClass().getResource("/images/symbols/" + collection + "/img" + toString(imageNr+1) + collection + ".png"));
+        ImageIcon icon = new ImageIcon(getClass().getResource("/images/symbols/" + collection + "/img" + toString(imageNr + 1) + collection + ".png"));
         ImageButton button = new ImageButton(icon, icon, icon);
         panel.add(button);
         button.addActionListener(new SymbolHandler(latexCommand));
@@ -91,7 +91,7 @@ public class SymbolsPanel extends JScrollPane {
 
   private String toString(int imageNr) {
     String s = imageNr + "";
-    while(s.length() < 3) s = "0" + s;
+    while (s.length() < 3) s = "0" + s;
     return s;
   }
 

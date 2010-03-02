@@ -52,7 +52,7 @@ public class LeftPane extends JPanel implements ActionListener {
     leftPanel.setBorder(
             BorderFactory.createCompoundBorder(
                     BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
-                    BorderFactory.createEmptyBorder(1,1,2,2)
+                    BorderFactory.createEmptyBorder(1, 1, 2, 2)
             ));
 
     buttonSymbols = new ImageButton(new ImageIcon(getClass().getResource("/images/leftPane/symbols.png")));
@@ -69,40 +69,39 @@ public class LeftPane extends JPanel implements ActionListener {
     leftPanel.add(buttonStructure);
 
     GroupLayout.Group groupHorizontal =
-      layout.createParallelGroup()
-        .addComponent(buttonSymbols)
-        .addComponent(buttonStructure);
+            layout.createParallelGroup()
+                    .addComponent(buttonSymbols)
+                    .addComponent(buttonStructure);
 
     GroupLayout.Group groupVertical =
-      layout.createSequentialGroup()
-        .addGap(5)
-        .addComponent(buttonSymbols)
-        .addComponent(buttonStructure)
-        .addGap(5);
+            layout.createSequentialGroup()
+                    .addGap(5)
+                    .addComponent(buttonSymbols)
+                    .addComponent(buttonStructure)
+                    .addGap(5);
 
     layout.setHorizontalGroup(groupHorizontal);
     layout.setVerticalGroup(groupVertical);
   }
 
   public void actionPerformed(ActionEvent e) {
-    if(e.getSource() == buttonSymbols) changeView(symbolsPanel);
-    if(e.getSource() == buttonStructure) changeView(structureView);
+    if (e.getSource() == buttonSymbols) changeView(symbolsPanel);
+    if (e.getSource() == buttonStructure) changeView(structureView);
   }
 
   public void changeView(JComponent nview) {
-    if(nview == view) nview = null;
+    if (nview == view) nview = null;
 
-    if(view != null && nview == null) {
+    if (view != null && nview == null) {
       dividerLocation = splitPane.getDividerLocation();
       remove(splitPane);
       add(main, BorderLayout.CENTER);
-    } else
-    if(view == null && nview != null) {
+    } else if (view == null && nview != null) {
       remove(main);
       add(splitPane, BorderLayout.CENTER);
     }
 
-    if(nview != null) {
+    if (nview != null) {
       splitPane.setLeftComponent(nview);
       splitPane.setRightComponent(main);
     } else {

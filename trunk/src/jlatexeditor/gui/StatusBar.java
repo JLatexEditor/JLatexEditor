@@ -45,7 +45,7 @@ public class StatusBar extends JPanel implements ActionListener, MouseListener {
 
     updatesAvailable.setOpaque(true);
     updatesAvailable.setBackground(new Color(192, 255, 192)); //131, 255, 131
-    updatesAvailable.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createEmptyBorder(1,3,1,3)));
+    updatesAvailable.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createEmptyBorder(1, 3, 1, 3)));
     updatesAvailable.setVisible(false);
     updatesAvailable.addMouseListener(this);
     center.add(updatesAvailable);
@@ -69,17 +69,17 @@ public class StatusBar extends JPanel implements ActionListener, MouseListener {
     boolean hasUpdates = false;
 
     File file = jLatexEditor.getActiveEditor().getFile();
-    if(!file.exists()) return;
+    if (!file.exists()) return;
     File dir = file.getParentFile();
-    if(!new File(dir, ".svn").exists()) return;
-    
+    if (!new File(dir, ".svn").exists()) return;
+
     try {
       ArrayList<SVN.StatusResult> results = SVN.getInstance().status(dir);
-      for(SVN.StatusResult result : results) {
-        if(result.getServerStatus() == SVN.StatusResult.SERVER_OUTDATED) hasUpdates = true;
+      for (SVN.StatusResult result : results) {
+        if (result.getServerStatus() == SVN.StatusResult.SERVER_OUTDATED) hasUpdates = true;
       }
     } catch (Exception e) {
-      if(!hadException) e.printStackTrace();
+      if (!hadException) e.printStackTrace();
       hadException = true;
     }
 
@@ -121,7 +121,7 @@ public class StatusBar extends JPanel implements ActionListener, MouseListener {
       timer.start();
 
       setBackground(COLOR_BACKGROUND);
-      setPreferredSize(new Dimension(100,20));
+      setPreferredSize(new Dimension(100, 20));
     }
 
     public void paint(Graphics g) {
@@ -134,10 +134,10 @@ public class StatusBar extends JPanel implements ActionListener, MouseListener {
       g.setColor(COLOR_BAR);
       g.fillRect(0, 0, (int) (getWidth() * used / total), getHeight());
 
-      String string = (used / (1024*1024)) + "M of " + (total / (1024*1024)) + "M";
+      String string = (used / (1024 * 1024)) + "M of " + (total / (1024 * 1024)) + "M";
       Rectangle2D stringRect = g.getFontMetrics().getStringBounds(string, g);
       g.setColor(Color.BLACK);
-      g.drawString(string, (int) (getWidth() - stringRect.getWidth())/2, (int) (getHeight() + stringRect.getHeight())/2 - 2);
+      g.drawString(string, (int) (getWidth() - stringRect.getWidth()) / 2, (int) (getHeight() + stringRect.getHeight()) / 2 - 2);
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -155,12 +155,15 @@ public class StatusBar extends JPanel implements ActionListener, MouseListener {
     }
 
     public void run() {
-      while(true) {
+      while (true) {
         checkForUpdates_();
 
         try {
-          synchronized (this) { wait(120000); }
-        } catch (InterruptedException e) { }
+          synchronized (this) {
+            wait(120000);
+          }
+        } catch (InterruptedException e) {
+        }
       }
     }
   }

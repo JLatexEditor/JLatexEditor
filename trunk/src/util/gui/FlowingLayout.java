@@ -11,7 +11,7 @@ public class FlowingLayout implements LayoutManager {
   private int hgap = 10;
   private int vgap = 10;
 
-  private Dimension preferred = new Dimension(100,100);
+  private Dimension preferred = new Dimension(100, 100);
 
   public void addLayoutComponent(String name, Component comp) {
   }
@@ -25,7 +25,7 @@ public class FlowingLayout implements LayoutManager {
   }
 
   public Dimension minimumLayoutSize(Container parent) {
-    return new Dimension(10,10);
+    return new Dimension(10, 10);
   }
 
   public void layoutContainer(Container parent) {
@@ -34,17 +34,17 @@ public class FlowingLayout implements LayoutManager {
     int x = hgap;
     int y = vgap;
     int maxHeight = 0;
-    for(Component component : parent.getComponents()) {
+    for (Component component : parent.getComponents()) {
       Dimension preferred = component.getPreferredSize();
       component.setSize(preferred);
 
-      if((x + preferred.width + hgap > width && x > hgap) || component instanceof NewLine) {
+      if ((x + preferred.width + hgap > width && x > hgap) || component instanceof NewLine) {
         x = hgap;
         y = y + maxHeight + vgap;
         maxHeight = 0;
       }
-      if(component instanceof NewLine) continue;
-      component.setLocation(x,y);
+      if (component instanceof NewLine) continue;
+      component.setLocation(x, y);
       x = x + preferred.width + hgap;
       maxHeight = Math.max(maxHeight, (int) preferred.getHeight());
     }

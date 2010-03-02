@@ -11,9 +11,9 @@ import java.awt.*;
 public class ScrollPaneLayoutLeft extends ScrollPaneLayout {
   public void layoutContainer(Container container) {
     super.layoutContainer(container);
-    
+
     Rectangle viewport = this.viewport.getBounds();
-		
+
     Insets insets = container.getInsets();
     int expectedWidth = container.getBounds().width - insets.left - insets.right;
 

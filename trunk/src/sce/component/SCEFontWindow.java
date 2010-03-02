@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 
 /**
  * Window for choosing a font for displaying the latex source text.
+ *
  * @author Rena
  */
 public class SCEFontWindow extends JFrame implements ListSelectionListener, ActionListener {
@@ -20,11 +21,11 @@ public class SCEFontWindow extends JFrame implements ListSelectionListener, Acti
   private JList sizeList;
   private int fontSize;
   private int prevFontSize;
-	private boolean init = true;
+  private boolean init = true;
 
   private ActionListener actionListener;
 
-  public static void main(String[] args){
+  public static void main(String[] args) {
     JFrame frame = new SCEFontWindow("Monospaced", 12, null);
     frame.setVisible(true);
   }
@@ -49,7 +50,7 @@ public class SCEFontWindow extends JFrame implements ListSelectionListener, Acti
     fontList.getSelectionModel().addListSelectionListener(this);
 
     JScrollPane fontScroller = new JScrollPane(fontList);
-    fontScroller.setPreferredSize(new Dimension(250,225));
+    fontScroller.setPreferredSize(new Dimension(250, 225));
     fontScroller.setAlignmentX(LEFT_ALIGNMENT);
 
     DefaultListModel sizeModel = new DefaultListModel();
@@ -57,7 +58,7 @@ public class SCEFontWindow extends JFrame implements ListSelectionListener, Acti
     sizeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     sizeList.setLayoutOrientation(JList.VERTICAL);
     sizeList.setVisibleRowCount(-1);
-    for(int size = 6; size <= 48; size++) {
+    for (int size = 6; size <= 48; size++) {
       sizeModel.addElement(size + "");
     }
     sizeList.getSelectionModel().addListSelectionListener(this);
@@ -67,11 +68,11 @@ public class SCEFontWindow extends JFrame implements ListSelectionListener, Acti
 
     DefaultComboBoxModel aaModel = new DefaultComboBoxModel();
     JComboBox aaList = new JComboBox(aaModel);
-    for(String key : GProperties.TEXT_ANTIALIAS_KEYS) {
+    for (String key : GProperties.TEXT_ANTIALIAS_KEYS) {
       aaModel.addElement(key);
     }
     aaList.addActionListener(this);
-    
+
 
     JLabel fontLabel = new JLabel("Font");
     fontLabel.setLabelFor(fontList);
@@ -110,70 +111,69 @@ public class SCEFontWindow extends JFrame implements ListSelectionListener, Acti
     cp.add(sizeScroller, constraints);
     constraints.weighty = 0;
     constraints.gridwidth = 1;
-    constraints.gridy ++ ;
+    constraints.gridy++;
     cp.add(antiasLabel, constraints);
-    constraints.gridx ++ ;
+    constraints.gridx++;
     cp.add(aaList, constraints);
     //constraints.gridx = 0;
     constraints.gridy++;
     constraints.gridx--;
     cp.add(ok, constraints);
-    constraints.gridx ++;
+    constraints.gridx++;
     cp.add(cancel, constraints);
 
     pack();
     setVisible(true);
 
-	  // select the current font and size
-	  int nr = 0;
-	  fontList.setSelectedValue(fontName, true);
-	  /*
-	  for (String aFontName : GProperties.getMonospaceFonts()) {
-		  if (((String) aFontName).equals(fontName)) {
-			  fontList.setSelectedIndex(nr);
-			  System.out.println(nr);
-		  }
-		  nr++;
-	  }
-	  */
-	  sizeList.setSelectedIndex(GProperties.getEditorFont().getSize() - 6);
-	  
-	  init = false;
+    // select the current font and size
+    int nr = 0;
+    fontList.setSelectedValue(fontName, true);
+    /*
+      for (String aFontName : GProperties.getMonospaceFonts()) {
+        if (((String) aFontName).equals(fontName)) {
+          fontList.setSelectedIndex(nr);
+          System.out.println(nr);
+        }
+        nr++;
+      }
+      */
+    sizeList.setSelectedIndex(GProperties.getEditorFont().getSize() - 6);
+
+    init = false;
   }
 
   public void valueChanged(ListSelectionEvent e) {
-	  if (init) return;
+    if (init) return;
 
-    if(e.getSource() == fontList.getSelectionModel()) {
+    if (e.getSource() == fontList.getSelectionModel()) {
       fontName = fontList.getSelectedValue().toString();
     }
-    if(e.getSource() == sizeList.getSelectionModel()) {
+    if (e.getSource() == sizeList.getSelectionModel()) {
       fontSize = Integer.parseInt(sizeList.getSelectedValue().toString());
     }
-    if(actionListener != null) 
+    if (actionListener != null)
       actionListener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "font window"));
   }
 
 
   public void actionPerformed(ActionEvent e) {
-    if(e.getActionCommand().equals("okFont")){
+    if (e.getActionCommand().equals("okFont")) {
       dispose();
-    } else
-    if (e.getActionCommand().equals("cancelFont")) {
+    } else if (e.getActionCommand().equals("cancelFont")) {
       fontName = prevFontName;
       fontSize = prevFontSize;
-      if(actionListener != null)
+      if (actionListener != null)
         actionListener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "font window cancel"));
       dispose();
     }
   }
 
-  public String getFontName(){
-   return this.fontName;
+  public String getFontName() {
+    return this.fontName;
   }
 
-  public int getFontSize (){
+  public int getFontSize() {
     return this.fontSize;
   }
-  
+
 }

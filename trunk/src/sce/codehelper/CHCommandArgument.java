@@ -1,4 +1,3 @@
-
 /**
  * @author Jörg Endrullis
  */
@@ -25,7 +24,7 @@ public class CHCommandArgument {
    *
    * @param name the name
    */
-  public CHCommandArgument(String name, boolean optional){
+  public CHCommandArgument(String name, boolean optional) {
     this.name = name;
     this.optional = optional;
   }
@@ -35,7 +34,7 @@ public class CHCommandArgument {
    *
    * @return the name
    */
-  public String getName(){
+  public String getName() {
     return name;
   }
 
@@ -44,7 +43,7 @@ public class CHCommandArgument {
    *
    * @return true if optional
    */
-  public boolean isOptional(){
+  public boolean isOptional() {
     return optional;
   }
 
@@ -71,7 +70,7 @@ public class CHCommandArgument {
    *
    * @return true if there are predifined values
    */
-  public boolean hasSuggestion(){
+  public boolean hasSuggestion() {
     return values.size() != 0;
   }
 
@@ -80,7 +79,7 @@ public class CHCommandArgument {
    *
    * @return list of suggested values (every value is a String)
    */
-  public ArrayList getValues(){
+  public ArrayList getValues() {
     return values;
   }
 
@@ -89,8 +88,8 @@ public class CHCommandArgument {
    *
    * @param value the value to add
    */
-  public void addValue(String value){
-    if(value == null) return;
+  public void addValue(String value) {
+    if (value == null) return;
     values.add(value);
   }
 
@@ -99,7 +98,7 @@ public class CHCommandArgument {
    *
    * @return the value
    */
-  public String getValue(){
+  public String getValue() {
     return value;
   }
 
@@ -108,7 +107,7 @@ public class CHCommandArgument {
    *
    * @param value the value
    */
-  public void setValue(String value){
+  public void setValue(String value) {
     this.value = value;
   }
 
@@ -117,7 +116,7 @@ public class CHCommandArgument {
    *
    * @return occurences of the argument
    */
-  public ArrayList getOccurrences(){
+  public ArrayList getOccurrences() {
     return occurences;
   }
 
@@ -126,7 +125,7 @@ public class CHCommandArgument {
    *
    * @param occurences the occurences
    */
-  public void setOccurrences(ArrayList occurences){
+  public void setOccurrences(ArrayList occurences) {
     this.occurences = occurences;
   }
 }

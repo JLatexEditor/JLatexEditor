@@ -3,8 +3,8 @@ package jlatexeditor.codehelper;
 import sce.codehelper.CHCommand;
 
 /**
-* BibEntry.
-*/
+ * BibEntry.
+ */
 public class BibEntry extends CHCommand {
   private String entryName = "";
   private String title = "";

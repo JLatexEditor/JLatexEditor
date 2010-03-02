@@ -1,4 +1,3 @@
-
 /**
  * @author Jörg Endrullis
  */
@@ -9,8 +8,8 @@ import javax.swing.*;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicListUI;
 
-public class QaquaListUI extends BasicListUI{
-  public static ComponentUI createUI(JComponent x){
+public class QaquaListUI extends BasicListUI {
+  public static ComponentUI createUI(JComponent x) {
     return new QaquaListUI();
   }
 }

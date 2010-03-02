@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 /**
  * BetterProperties2 is an improved implementation of {@link de.endrullis.utils.BetterProperties} and
  * {@link java.util.Properties}.
- *
+ * <p/>
  * It allows you to
  * <ul>
  * <li>define the order of properties used when writing the properties file</li>
@@ -21,12 +21,14 @@ import java.util.regex.Pattern;
  * @author Stefan Endrullis
  */
 public class BetterProperties2 extends Properties {
-  /** Default values. */
+  /**
+   * Default values.
+   */
   private ArrayList<Entry> entries = new ArrayList<Entry>();
-	private HashMap<String,Def> defMap = new HashMap<String, Def>();
-	private boolean ensureValidRanges = true;
+  private HashMap<String, Def> defMap = new HashMap<String, Def>();
+  private boolean ensureValidRanges = true;
 
-	public BetterProperties2() {
+  public BetterProperties2() {
     super();
   }
 
@@ -41,21 +43,21 @@ public class BetterProperties2 extends Properties {
    */
   public void addEntry(Entry entry) {
     entries.add(entry);
-	  if (entry instanceof Def) {
-			Def def = (Def) entry;
-			defMap.put(def.key, def);
-		}
+    if (entry instanceof Def) {
+      Def def = (Def) entry;
+      defMap.put(def.key, def);
+    }
   }
 
-	public ArrayList<Entry> getEntries() {
-		return entries;
-	}
+  public ArrayList<Entry> getEntries() {
+    return entries;
+  }
 
-	public HashMap<String, Def> getDefMap() {
-		return defMap;
-	}
+  public HashMap<String, Def> getDefMap() {
+    return defMap;
+  }
 
-	@Override
+  @Override
   public String setProperty(String s, String s1) {
     return (String) put(s, s1);
   }
@@ -69,23 +71,23 @@ public class BetterProperties2 extends Properties {
   }
 
   public void loadDefaults() {
-	  for (Def def : defMap.values()) {
-		  if (def.getValue() != null) {
-		    put(def.getKey(), def.getValue());
-		  }
-	  }
+    for (Def def : defMap.values()) {
+      if (def.getValue() != null) {
+        put(def.getKey(), def.getValue());
+      }
+    }
   }
 
-	private void checkRanges() {
-		if (ensureValidRanges) {
-			for (Def def : defMap.values()) {
-				// if user value is not valid -> reset to default
-				if (!def.range.isValid(getString(def.key))) {
-					put(def.getKey(), def.getValue());
-				}
-			}
-		}
-	}
+  private void checkRanges() {
+    if (ensureValidRanges) {
+      for (Def def : defMap.values()) {
+        // if user value is not valid -> reset to default
+        if (!def.range.isValid(getString(def.key))) {
+          put(def.getKey(), def.getValue());
+        }
+      }
+    }
+  }
 
   @Override
   public void load(InputStream inputStream) throws IOException {
@@ -94,13 +96,13 @@ public class BetterProperties2 extends Properties {
 
     super.load(inputStream);
 
-	  checkRanges();
+    checkRanges();
   }
 
-	@Override
+  @Override
   public void store(Writer writer, String comments) throws IOException {
     store0((writer instanceof BufferedWriter) ? (BufferedWriter) writer : new BufferedWriter(writer),
-        comments, false);
+            comments, false);
   }
 
   @Override
@@ -115,7 +117,7 @@ public class BetterProperties2 extends Properties {
 
     super.loadFromXML(inputStream);
 
-	  checkRanges();
+    checkRanges();
   }
 
   @Override
@@ -274,7 +276,7 @@ public class BetterProperties2 extends Properties {
   }
 
   protected static void writeComments(BufferedWriter bw, String comments)
-      throws IOException {
+          throws IOException {
     int len = comments.length();
     int current = 0;
     int last = 0;
@@ -309,13 +311,13 @@ public class BetterProperties2 extends Properties {
         } else {
           bw.newLine();
           if (c == '\r' &&
-              current != len - 1 &&
-              comments.charAt(current + 1) == '\n') {
+                  current != len - 1 &&
+                  comments.charAt(current + 1) == '\n') {
             current++;
           }
           if (current != len - 1 &&
-              (comments.charAt(current + 1) != '#' &&
-                  comments.charAt(current + 1) != '!'))
+                  (comments.charAt(current + 1) != '#' &&
+                          comments.charAt(current + 1) != '!'))
             bw.write("#");
         }
         last = current + 1;
@@ -341,9 +343,8 @@ public class BetterProperties2 extends Properties {
    * A table of hex digits
    */
   protected static final char[] hexDigit = {
-      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
+          '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
   };
-
 
 
   /*********************
@@ -411,11 +412,12 @@ public class BetterProperties2 extends Properties {
   }
 
 
-
-  /*****************
+  /**
+   * **************
    * inner classes *
-   *****************/
-   
+   * ***************
+   */
+
   public static interface Entry {
   }
 
@@ -439,13 +441,13 @@ public class BetterProperties2 extends Properties {
 
     public Def(String key, Range range, String value) {
       this.key = key;
-	    this.range = range;
+      this.range = range;
       this.value = value;
     }
 
     public Def(String key, Range range, String value, String altValue) {
       this.key = key;
-	    this.range = range;
+      this.range = range;
       this.value = value;
       this.altValue = altValue;
     }
@@ -454,11 +456,11 @@ public class BetterProperties2 extends Properties {
       return key;
     }
 
-	  public Range getRange() {
-		  return range;
-	  }
+    public Range getRange() {
+      return range;
+    }
 
-	  public String getValue() {
+    public String getValue() {
       return value;
     }
 
@@ -467,127 +469,135 @@ public class BetterProperties2 extends Properties {
     }
   }
 
-	public static interface Range {
-		public boolean isValid(String s);
-		public String description();
-	}
-	
-	public static class PInt implements Range {
-		private int min = Integer.MIN_VALUE;
-		private int max = Integer.MAX_VALUE;
+  public static interface Range {
+    public boolean isValid(String s);
 
-		public PInt() {
-		}
-		public PInt(int min) {
-			this.min = min;
-		}
-		public PInt(int min, int max) {
-			this.min = min;
-			this.max = max;
-		}
+    public String description();
+  }
 
-		@Override
-		public boolean isValid(String s) {
-			try {
-				int value = Integer.parseInt(s);
-				return value >= min && value <= max;
-			} catch (Exception e) {
-				return false;
-			}
-		}
-		@Override
-		public String description() {
-			return "integer value between " + min + " and " + max;
-		}
-	}
+  public static class PInt implements Range {
+    private int min = Integer.MIN_VALUE;
+    private int max = Integer.MAX_VALUE;
 
-	public static class PDouble implements Range {
-		private double min = Double.MIN_VALUE;
-		private double max = Double.MAX_VALUE;
+    public PInt() {
+    }
 
-		public PDouble() {
-		}
-		public PDouble(double min) {
-			this.min = min;
-		}
-		public PDouble(double min, double max) {
-			this.min = min;
-			this.max = max;
-		}
+    public PInt(int min) {
+      this.min = min;
+    }
 
-		@Override
-		public boolean isValid(String s) {
-			try {
-				double value = Double.parseDouble(s);
-				return value >= min && value <= max;
-			} catch (Exception e) {
-				return false;
-			}
-		}
+    public PInt(int min, int max) {
+      this.min = min;
+      this.max = max;
+    }
 
-		@Override
-		public String description() {
-			return "double value between " + min + " and " + max;
-		}
-	}
+    @Override
+    public boolean isValid(String s) {
+      try {
+        int value = Integer.parseInt(s);
+        return value >= min && value <= max;
+      } catch (Exception e) {
+        return false;
+      }
+    }
 
-	public static class PSet implements Range {
-		public LinkedHashSet<String> content = new LinkedHashSet<String>();
-		public PSet (String... items) {
-			for (String item : items) {
-				content.add(item);
-			}
-		}
-		@Override
-		public boolean isValid(String s) {
-			return content.contains(s);
-		}
+    @Override
+    public String description() {
+      return "integer value between " + min + " and " + max;
+    }
+  }
 
-		@Override
-		public String description() {
-			return "values out of (" + CollectionUtils.join(content, ", ") + ")";
-		}
-	}
+  public static class PDouble implements Range {
+    private double min = Double.MIN_VALUE;
+    private double max = Double.MAX_VALUE;
 
-	public static class PBoolean extends PSet {
-		public PBoolean () {
-			super("true", "false");
-		}
-	}
+    public PDouble() {
+    }
 
-	public static class PString implements Range {
-		@Override
-		public boolean isValid(String s) {
-			return true;
-		}
+    public PDouble(double min) {
+      this.min = min;
+    }
 
-		@Override
-		public String description() {
-			return "arbitrary string";
-		}
-	}
+    public PDouble(double min, double max) {
+      this.min = min;
+      this.max = max;
+    }
 
-	public static class PShortcut implements Range {
-		@Override
-		public boolean isValid(String s) {
-			try {
-				return KeyStroke.getKeyStroke(s).getKeyCode() >= 0;
-			} catch (Exception e) {
-				return false;
-			}
-		}
+    @Override
+    public boolean isValid(String s) {
+      try {
+        double value = Double.parseDouble(s);
+        return value >= min && value <= max;
+      } catch (Exception e) {
+        return false;
+      }
+    }
 
-		@Override
-		public String description() {
-			return "Java shortcut";
-		}
-	}
+    @Override
+    public String description() {
+      return "double value between " + min + " and " + max;
+    }
+  }
 
-	public static final Range INT      = new PInt();
-	public static final Range INT_GT_0 = new PInt(0);
-	public static final Range DOUBLE   = new PDouble();
-	public static final Range DOUBLE_0_TO_1 = new PDouble(0, 1);
-	public static final Range BOOLEAN  = new PBoolean();
-	public static final Range STRING   = new PString();
-	public static final Range SHORTCUT = new PShortcut();
+  public static class PSet implements Range {
+    public LinkedHashSet<String> content = new LinkedHashSet<String>();
+
+    public PSet(String... items) {
+      for (String item : items) {
+        content.add(item);
+      }
+    }
+
+    @Override
+    public boolean isValid(String s) {
+      return content.contains(s);
+    }
+
+    @Override
+    public String description() {
+      return "values out of (" + CollectionUtils.join(content, ", ") + ")";
+    }
+  }
+
+  public static class PBoolean extends PSet {
+    public PBoolean() {
+      super("true", "false");
+    }
+  }
+
+  public static class PString implements Range {
+    @Override
+    public boolean isValid(String s) {
+      return true;
+    }
+
+    @Override
+    public String description() {
+      return "arbitrary string";
+    }
+  }
+
+  public static class PShortcut implements Range {
+    @Override
+    public boolean isValid(String s) {
+      try {
+        return KeyStroke.getKeyStroke(s).getKeyCode() >= 0;
+      } catch (Exception e) {
+        return false;
+      }
+    }
+
+    @Override
+    public String description() {
+      return "Java shortcut";
+    }
+  }
+
+  public static final Range INT = new PInt();
+  public static final Range INT_GT_0 = new PInt(0);
+  public static final Range DOUBLE = new PDouble();
+  public static final Range DOUBLE_0_TO_1 = new PDouble(0, 1);
+  public static final Range BOOLEAN = new PBoolean();
+  public static final Range STRING = new PString();
+  public static final Range SHORTCUT = new PShortcut();
 }

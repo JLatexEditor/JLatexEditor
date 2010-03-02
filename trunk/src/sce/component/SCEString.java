@@ -1,37 +1,36 @@
-
 /**
  * @author Jörg Endrullis
  */
 
 package sce.component;
 
-public class SCEString{
+public class SCEString {
   private SCEDocumentChar characters[] = null;
 
-  public SCEString(SCEDocumentChar characters[]){
+  public SCEString(SCEDocumentChar characters[]) {
     this.characters = characters;
   }
 
-  public SCEString(SCEDocumentChar characters[], int offset, int length){
+  public SCEString(SCEDocumentChar characters[], int offset, int length) {
     this.characters = new SCEDocumentChar[length];
     System.arraycopy(characters, offset, this.characters, 0, length);
   }
 
-  public SCEDocumentChar[] getCharacters(){
+  public SCEDocumentChar[] getCharacters() {
     return characters;
   }
 
-  public int length(){
+  public int length() {
     return characters.length;
   }
 
-  public SCEDocumentChar charAt(int i){
+  public SCEDocumentChar charAt(int i) {
     return characters[i];
   }
 
-  public String toString(){
+  public String toString() {
     char buffer[] = new char[characters.length];
-    for(int char_nr = 0; char_nr < characters.length; char_nr++){
+    for (int char_nr = 0; char_nr < characters.length; char_nr++) {
       buffer[char_nr] = characters[char_nr].character;
     }
     return new String(buffer);

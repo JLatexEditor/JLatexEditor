@@ -7,340 +7,358 @@ import java.util.regex.Pattern;
 
 /**
  * Java API for the command line tool aspell.
- *
+ * <p/>
  * A documentation about aspell can be found here:
  * http://aspell.net/man-html/Through-A-Pipe.html#Through-A-Pipe
  *
  * @author Stefan Endrullis
  */
 public final class Aspell {
-	public static String ASPELL_EXECUTABLE = "aspell";
+  public static String ASPELL_EXECUTABLE = "aspell";
 
-	private static final Matcher masterDictMatcher = Pattern.compile("/([^/\\.]+)\\.multi").matcher("");
+  private static final Matcher masterDictMatcher = Pattern.compile("/([^/\\.]+)\\.multi").matcher("");
 
   private static boolean instanceFailed = false;
-	private static HashMap<String,Aspell> instances = new HashMap<String, Aspell>();
+  private static HashMap<String, Aspell> instances = new HashMap<String, Aspell>();
 
-	private PrintStream aspellIn;
-	private BufferedReader aspellOut;
-	private BufferedReader aspellErr;
-	private InputStream out;
-	/** Words in the personal dictionary. */
-	private HashSet<String> personalWords = new HashSet<String>();
+  private PrintStream aspellIn;
+  private BufferedReader aspellOut;
+  private BufferedReader aspellErr;
+  private InputStream out;
+  /**
+   * Words in the personal dictionary.
+   */
+  private HashSet<String> personalWords = new HashSet<String>();
 
-  /** Windows is fucking shit! Step over to a real operating system. */
+  /**
+   * Windows is fucking shit! Step over to a real operating system.
+   */
   private boolean fuckWindows = false;
 
-	public static void main(String[] args) throws IOException {
-		// print all available dictionaries
-		System.out.println("available dictionaries");
-		for (String dict: availableDicts()) {
-			System.out.println(dict);
-		}
+  public static void main(String[] args) throws IOException {
+    // print all available dictionaries
+    System.out.println("available dictionaries");
+    for (String dict : availableDicts()) {
+      System.out.println(dict);
+    }
 
-		// start aspell with language "en" / "en_GB"
-		Aspell aspell = new Aspell("en_GB");
-		// test some words
-		System.out.println("\ntest some words");
-		System.out.println(aspell.check("the"));
-		System.out.println(aspell.check("bla"));
-		System.out.println(aspell.check("teh"));
-		System.out.println(aspell.check("linebreak"));
-		aspell.shutdown();
+    // start aspell with language "en" / "en_GB"
+    Aspell aspell = new Aspell("en_GB");
+    // test some words
+    System.out.println("\ntest some words");
+    System.out.println(aspell.check("the"));
+    System.out.println(aspell.check("bla"));
+    System.out.println(aspell.check("teh"));
+    System.out.println(aspell.check("linebreak"));
+    aspell.shutdown();
 
-		aspell = new Aspell("de_DE");
-		// test some words
-		System.out.println("\ntest some words");
-		System.out.println(aspell.check("Eingabemaske"));
-		System.out.println(aspell.check("Eingabemenge"));
-		aspell.shutdown();
-	}
+    aspell = new Aspell("de_DE");
+    // test some words
+    System.out.println("\ntest some words");
+    System.out.println(aspell.check("Eingabemaske"));
+    System.out.println(aspell.check("Eingabemenge"));
+    aspell.shutdown();
+  }
 
-	/**
-	 * Starts aspell with language "en" and language tag "en_GB".
-	 *
-	 * @throws IOException if aspell could not be started
-	 */
-	public Aspell() throws IOException {
-		this ("en_GB");
-	}
+  /**
+   * Starts aspell with language "en" and language tag "en_GB".
+   *
+   * @throws IOException if aspell could not be started
+   */
+  public Aspell() throws IOException {
+    this("en_GB");
+  }
 
-	/**
-	 * Creates the aspell wrapper that runs aspell in background.
-	 *
-	 * @param lang language, e.g. "en" or "en_GB"
-	 * @throws IOException if aspell could not be started
-	 */
-	public Aspell(String lang) throws IOException {
-		startAspell(lang, lang);
-	}
+  /**
+   * Creates the aspell wrapper that runs aspell in background.
+   *
+   * @param lang language, e.g. "en" or "en_GB"
+   * @throws IOException if aspell could not be started
+   */
+  public Aspell(String lang) throws IOException {
+    startAspell(lang, lang);
+  }
 
-	/**
-	 * Creates the aspell wrapper that runs aspell in background.
-	 *
-	 * @param lang language, e.g. "en"
-	 * @param langTag language tag, e.g. "en_GB"
-	 * @throws IOException if aspell could not be started
-	 */
-	public Aspell(String lang, String langTag) throws IOException {
-		startAspell(lang, langTag);
-	}
+  /**
+   * Creates the aspell wrapper that runs aspell in background.
+   *
+   * @param lang    language, e.g. "en"
+   * @param langTag language tag, e.g. "en_GB"
+   * @throws IOException if aspell could not be started
+   */
+  public Aspell(String lang, String langTag) throws IOException {
+    startAspell(lang, langTag);
+  }
 
-	private void startAspell(String lang, String langTag) throws IOException {
-		String[] aspellCommand = new String[]{
-			ASPELL_EXECUTABLE,
-			"-a",
-			"--lang=" + lang,
-			"--language-tag=" + langTag
-		};
+  private void startAspell(String lang, String langTag) throws IOException {
+    String[] aspellCommand = new String[]{
+            ASPELL_EXECUTABLE,
+            "-a",
+            "--lang=" + lang,
+            "--language-tag=" + langTag
+    };
 
-		Process aspellProcess = Runtime.getRuntime().exec(aspellCommand);
+    Process aspellProcess = Runtime.getRuntime().exec(aspellCommand);
 
-		// see if aspell died
-		try {
-			int exitValue = aspellProcess.exitValue();
-			throw new IOException("Aspell failed to start / aborted with error code " + exitValue);
-		} catch (IllegalThreadStateException ignored) {}
+    // see if aspell died
+    try {
+      int exitValue = aspellProcess.exitValue();
+      throw new IOException("Aspell failed to start / aborted with error code " + exitValue);
+    } catch (IllegalThreadStateException ignored) {
+    }
 
-		aspellIn  = new PrintStream(new BufferedOutputStream(aspellProcess.getOutputStream()), true);
-		out = aspellProcess.getInputStream();
-		aspellOut = new BufferedReader(new InputStreamReader(out));
-		aspellErr = new BufferedReader(new InputStreamReader(aspellProcess.getErrorStream()));
+    aspellIn = new PrintStream(new BufferedOutputStream(aspellProcess.getOutputStream()), true);
+    out = aspellProcess.getInputStream();
+    aspellOut = new BufferedReader(new InputStreamReader(out));
+    aspellErr = new BufferedReader(new InputStreamReader(aspellProcess.getErrorStream()));
 
-		// read version line
-		String version = aspellOut.readLine();
-    if(version == null) throw new IOException("Aspell failed to start: " + aspellErr.readLine());
+    // read version line
+    String version = aspellOut.readLine();
+    if (version == null) throw new IOException("Aspell failed to start: " + aspellErr.readLine());
 
-    if(version.indexOf("Aspell 0.5") != -1) fuckWindows = true;
+    if (version.indexOf("Aspell 0.5") != -1) fuckWindows = true;
 
-		personalWords.clear();
-		personalWords.addAll(Arrays.asList(getPersonalWordList()));
-	}
+    personalWords.clear();
+    personalWords.addAll(Arrays.asList(getPersonalWordList()));
+  }
 
-	/**
-	 * Check spelling of the word using aspell.
-	 *
-	 * @param word word to check
-	 * @return aspell result
-	 * @throws IOException thrown if execution of aspell failed
-	 */
-	public synchronized Result check(String word) throws IOException {
-		flushOut();
-		aspellIn.println(word);
-		aspellIn.flush();
+  /**
+   * Check spelling of the word using aspell.
+   *
+   * @param word word to check
+   * @return aspell result
+   * @throws IOException thrown if execution of aspell failed
+   */
+  public synchronized Result check(String word) throws IOException {
+    flushOut();
+    aspellIn.println(word);
+    aspellIn.flush();
 
     String line = aspellOut.readLine();
 
-		if (line.equals("*")) {
-			aspellOut.readLine();
-			return new Result();
-		} else
-		if (line.startsWith("#")) {
-			aspellOut.readLine();
-			return new Result(new ArrayList<String>(0));
-		} else
-		if (line.startsWith("&")) {
-			aspellOut.readLine();
-			return new Result(Arrays.asList(line.split(": ")[1].split(", ")));
-		} else {
-			throw new RuntimeException("unknown aspell answer: " + line);
-		}
-	}
+    if (line.equals("*")) {
+      aspellOut.readLine();
+      return new Result();
+    } else if (line.startsWith("#")) {
+      aspellOut.readLine();
+      return new Result(new ArrayList<String>(0));
+    } else if (line.startsWith("&")) {
+      aspellOut.readLine();
+      return new Result(Arrays.asList(line.split(": ")[1].split(", ")));
+    } else {
+      throw new RuntimeException("unknown aspell answer: " + line);
+    }
+  }
 
-	/**
-	 * Adds the word to the aspell user dictionary.
-	 *
-	 * @param word word to add
-	 */
-	public synchronized void addToPersonalDict(String word) {
-		aspellIn.println("*" + word);
-		aspellIn.println("#");
-		aspellIn.flush();
+  /**
+   * Adds the word to the aspell user dictionary.
+   *
+   * @param word word to add
+   */
+  public synchronized void addToPersonalDict(String word) {
+    aspellIn.println("*" + word);
+    aspellIn.println("#");
+    aspellIn.flush();
 
-		personalWords.add(word);
-	}
+    personalWords.add(word);
+  }
 
-	public synchronized void removeFromPersonalDict(String word) throws IOException {
-		// remove word from personal dict
-		File homeDir = new File(System.getProperty("user.home"));
-		String personalDictName = getOption("personal");
-		File personalDict = new File(homeDir, personalDictName);
-		File newPersonalDict = new File(homeDir, personalDictName + "_new");
-		BufferedReader r = new BufferedReader(new FileReader(personalDict));
-		PrintStream w = new PrintStream(new FileOutputStream(newPersonalDict));
+  public synchronized void removeFromPersonalDict(String word) throws IOException {
+    // remove word from personal dict
+    File homeDir = new File(System.getProperty("user.home"));
+    String personalDictName = getOption("personal");
+    File personalDict = new File(homeDir, personalDictName);
+    File newPersonalDict = new File(homeDir, personalDictName + "_new");
+    BufferedReader r = new BufferedReader(new FileReader(personalDict));
+    PrintStream w = new PrintStream(new FileOutputStream(newPersonalDict));
 
-		String line;
-		while ((line = r.readLine()) != null) {
-			if (!line.equals(word)) {
-				w.println(line);
-			}
-		}
+    String line;
+    while ((line = r.readLine()) != null) {
+      if (!line.equals(word)) {
+        w.println(line);
+      }
+    }
 
-		newPersonalDict.renameTo(personalDict);
+    newPersonalDict.renameTo(personalDict);
 
-		String masterLang = getMasterLang();
-		shutdown();
-		startAspell(masterLang, masterLang);
+    String masterLang = getMasterLang();
+    shutdown();
+    startAspell(masterLang, masterLang);
 
-		personalWords.remove(word);
-	}
+    personalWords.remove(word);
+  }
 
-	/**
-	 * Returns the value of the given option.
-	 * For a list of aspell options see
-	 * <a href="http://aspell.net/man-html/The-Options.html#The-Options">http://aspell.net/man-html/The-Options.html#The-Options</a>.
-	 * 
-	 * @param option option name
-	 * @return value
-	 * @throws IOException
-	 */
-	public synchronized String getOption(String option) throws IOException {
-		return call("$$cr " + option);
-	}
+  /**
+   * Returns the value of the given option.
+   * For a list of aspell options see
+   * <a href="http://aspell.net/man-html/The-Options.html#The-Options">http://aspell.net/man-html/The-Options.html#The-Options</a>.
+   *
+   * @param option option name
+   * @return value
+   * @throws IOException
+   */
+  public synchronized String getOption(String option) throws IOException {
+    return call("$$cr " + option);
+  }
 
-	/**
-	 * Sets the value of the given option.
-	 * For a list of aspell options see
-	 * <a href="http://aspell.net/man-html/The-Options.html#The-Options">http://aspell.net/man-html/The-Options.html#The-Options</a>.
-	 *
-	 * @param option option name
-	 * @param value value
-	 */
-	public synchronized void setOption(String option, String value) {
-		aspellIn.println("$$cs " + option + "," + value);
-		aspellIn.flush();
-	}
+  /**
+   * Sets the value of the given option.
+   * For a list of aspell options see
+   * <a href="http://aspell.net/man-html/The-Options.html#The-Options">http://aspell.net/man-html/The-Options.html#The-Options</a>.
+   *
+   * @param option option name
+   * @param value  value
+   */
+  public synchronized void setOption(String option, String value) {
+    aspellIn.println("$$cs " + option + "," + value);
+    aspellIn.flush();
+  }
 
-	public void   setLang(String lang) { setOption("lang", lang);	}
-	public String getLang() throws IOException { return getOption("lang"); }
-	
-	public void   setLanguageTag(String languageTag) { setOption("language-tag", languageTag); }
-	public String getLanguageTag() throws IOException { return getOption("language-tag"); }
+  public void setLang(String lang) {
+    setOption("lang", lang);
+  }
 
-	public String getMasterLang() throws IOException {
-		masterDictMatcher.reset(getOption("master"));
-		masterDictMatcher.find();
-		return masterDictMatcher.group(1);
-	}
+  public String getLang() throws IOException {
+    return getOption("lang");
+  }
 
-	public void addReplacement(String misspelling, String correction) {
-		aspellIn.println("$$ra " + misspelling + "," + correction);
-		aspellIn.flush();
-	}
+  public void setLanguageTag(String languageTag) {
+    setOption("language-tag", languageTag);
+  }
 
-	public String[] getPersonalWordList() throws IOException {
-		if (fuckWindows) {
-			return new String[]{};
-		}
-		String listString = call("$$pp");
-		listString = listString.substring(listString.indexOf(':')+1).trim();
-		return listString.split(", ");
-	}
+  public String getLanguageTag() throws IOException {
+    return getOption("language-tag");
+  }
 
-	public String[] getSessionWordList() throws IOException {
-		String listString = call("$$ps");
-		listString = listString.substring(listString.indexOf(':')+1).trim();
-		return listString.split(", ");
-	}
+  public String getMasterLang() throws IOException {
+    masterDictMatcher.reset(getOption("master"));
+    masterDictMatcher.find();
+    return masterDictMatcher.group(1);
+  }
 
-	private String call(String input) throws IOException {
-		flushOut();
-		aspellIn.println(input);
-		aspellIn.flush();
-		return aspellOut.readLine();
-	}
+  public void addReplacement(String misspelling, String correction) {
+    aspellIn.println("$$ra " + misspelling + "," + correction);
+    aspellIn.flush();
+  }
 
-	private void flushOut() throws IOException {
-		while (out.available() > 0) aspellOut.readLine();
-	}
+  public String[] getPersonalWordList() throws IOException {
+    if (fuckWindows) {
+      return new String[]{};
+    }
+    String listString = call("$$pp");
+    listString = listString.substring(listString.indexOf(':') + 1).trim();
+    return listString.split(", ");
+  }
 
-	public HashSet<String> getPersonalWords() {
-		return personalWords;
-	}
+  public String[] getSessionWordList() throws IOException {
+    String listString = call("$$ps");
+    listString = listString.substring(listString.indexOf(':') + 1).trim();
+    return listString.split(", ");
+  }
 
-	/**
-	 * Shutdown aspell.
-	 */
-	public void shutdown() {
-		try {
-			aspellIn.close();
-			aspellOut.close();
-			aspellErr.close();
-		} catch (Exception ignored) {}
-	}
+  private String call(String input) throws IOException {
+    flushOut();
+    aspellIn.println(input);
+    aspellIn.flush();
+    return aspellOut.readLine();
+  }
 
-	public static Aspell getInstance(String lang) {
-		if (instanceFailed) return null;
+  private void flushOut() throws IOException {
+    while (out.available() > 0) aspellOut.readLine();
+  }
 
-		Aspell instance = instances.get(lang);
-		if (instance == null) {
-			try {
-			  instance = new Aspell(lang);
-				instances.put(lang, instance);
-			} catch (IOException e) {
-			  instanceFailed = true;
-			  System.err.println("Warning: spell checker not available. Please install aspell!");
-			  System.err.println("  " + e.getMessage());
-			}
-		}
+  public HashSet<String> getPersonalWords() {
+    return personalWords;
+  }
 
-		return instance;
-	}
+  /**
+   * Shutdown aspell.
+   */
+  public void shutdown() {
+    try {
+      aspellIn.close();
+      aspellOut.close();
+      aspellErr.close();
+    } catch (Exception ignored) {
+    }
+  }
 
-	/**
-	 * Returns the available dictionaries provided by aspell.
-	 *
-	 * @return list of dictionaries provided by aspell
-	 * @throws IOException thrown if execution of aspell failed
-	 */
-	public static List<String> availableDicts() throws IOException {
-		Process process = Runtime.getRuntime().exec(new String[]{
-			ASPELL_EXECUTABLE,
-			"dump",
-			"dicts"
-		});
-		BufferedReader r = new BufferedReader(new InputStreamReader(process.getInputStream()));
+  public static Aspell getInstance(String lang) {
+    if (instanceFailed) return null;
 
-		List<String> dicts = new ArrayList<String>();
-		String line;
-		while ((line = r.readLine()) != null) dicts.add(line);
+    Aspell instance = instances.get(lang);
+    if (instance == null) {
+      try {
+        instance = new Aspell(lang);
+        instances.put(lang, instance);
+      } catch (IOException e) {
+        instanceFailed = true;
+        System.err.println("Warning: spell checker not available. Please install aspell!");
+        System.err.println("  " + e.getMessage());
+      }
+    }
 
-		return dicts;
-	}
+    return instance;
+  }
 
-	/**
-	 * Aspell result.
-	 */
-	public static class Result {
-		private boolean correct;
-		private List<String> suggestions;
+  /**
+   * Returns the available dictionaries provided by aspell.
+   *
+   * @return list of dictionaries provided by aspell
+   * @throws IOException thrown if execution of aspell failed
+   */
+  public static List<String> availableDicts() throws IOException {
+    Process process = Runtime.getRuntime().exec(new String[]{
+            ASPELL_EXECUTABLE,
+            "dump",
+            "dicts"
+    });
+    BufferedReader r = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
-		/** Creates a correct result. */
-		public Result() {
-			correct = true;
-		}
+    List<String> dicts = new ArrayList<String>();
+    String line;
+    while ((line = r.readLine()) != null) dicts.add(line);
 
-		/** Creates a result with suggestions.
-		 * @param suggestions list of suggestions
-		 */
-		public Result(List<String> suggestions) {
-			this.suggestions = suggestions;
-			correct = false;
-		}
+    return dicts;
+  }
 
-		public boolean isCorrect() {
-			return correct;
-		}
+  /**
+   * Aspell result.
+   */
+  public static class Result {
+    private boolean correct;
+    private List<String> suggestions;
 
-		public List<String> getSuggestions() {
-			return suggestions;
-		}
+    /**
+     * Creates a correct result.
+     */
+    public Result() {
+      correct = true;
+    }
 
-		@Override
-		public String toString() {
-			return correct ?
-				"correct" :
-				"misspelled; suggestions: " + suggestions;
+    /**
+     * Creates a result with suggestions.
+     *
+     * @param suggestions list of suggestions
+     */
+    public Result(List<String> suggestions) {
+      this.suggestions = suggestions;
+      correct = false;
+    }
+
+    public boolean isCorrect() {
+      return correct;
+    }
+
+    public List<String> getSuggestions() {
+      return suggestions;
+    }
+
+    @Override
+    public String toString() {
+      return correct ?
+              "correct" :
+              "misspelled; suggestions: " + suggestions;
 		}
 	}
 }

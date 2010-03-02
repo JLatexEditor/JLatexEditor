@@ -6,7 +6,7 @@
 
 package my.XML;
 
-public class XMLDocument{
+public class XMLDocument {
   /* die Standardwerte für Version und Encoding */
   private String xmlVersion = "1.0";
   private String xmlEncoding = "UTF-8";
@@ -15,33 +15,33 @@ public class XMLDocument{
   private XMLElement rootElement = null;
 
   /* Eigenschaften des XMLDokuments auslesen */
-  public XMLElement getRootElement(){
+  public XMLElement getRootElement() {
     return rootElement;
   }
 
-  public String getXMLEncoding(){
+  public String getXMLEncoding() {
     return xmlEncoding;
   }
 
-  public String getXMLVersion(){
+  public String getXMLVersion() {
     return xmlVersion;
   }
 
   /* Eigenschaften des XMLDokuments setzen */
-  public void setRootElement(XMLElement element){
+  public void setRootElement(XMLElement element) {
     rootElement = element;
   }
 
-  public void setXMLEncoding(String encoding){
+  public void setXMLEncoding(String encoding) {
     xmlEncoding = encoding;
   }
 
-  public void setXMLVerion(String version){
+  public void setXMLVerion(String version) {
     xmlVersion = version;
   }
 
   /* das XMLDokument in einen String wandeln (ohne Zeilenumbrüche) */
-  public String toString(){
+  public String toString() {
     String xmlString = "";
 
     /* die XML-Typ Definition einfügen */

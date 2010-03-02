@@ -65,7 +65,7 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     tree.getSelectionModel().addTreeSelectionListener(this);
     tree.setCellRenderer(new ErrorTreeCellRenderer());
 
-    for(JList list : new JList[] {listError, listHbox, listWarning}) {
+    for (JList list : new JList[]{listError, listHbox, listWarning}) {
       list.setCellRenderer(new ErrorListCellRenderer());
       DefaultListSelectionModel selectionModel = new DefaultListSelectionModel();
       selectionModel.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
@@ -107,7 +107,7 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
   public void compileFinished() {
     working.setVisible(false);
   }
-  
+
   public void update() {
     nodeError.setUserObject("<html><font color=\"" + (lmError.getSize() > 0 ? "red" : "gray") + "\">errors (" + lmError.getSize() + ")</font></html>");
     nodeHbox.setUserObject("<html><font color=\"" + (lmHbox.getSize() > 0 ? "black" : "gray") + "\">overfull hboxes (" + lmHbox.getSize() + ")</font></html>");
@@ -145,10 +145,18 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     listError.clearSelection();
     listHbox.clearSelection();
     listWarning.clearSelection();
-    if (node == nodeError) { setRightComponent(scrollError); }
-    if (node == nodeHbox) { setRightComponent(scrollHbox); }
-    if (node == nodeWarning) { setRightComponent(scrollWarning); }
-    if (node == nodeOutput) { setRightComponent(scrollOutput); }
+    if (node == nodeError) {
+      setRightComponent(scrollError);
+    }
+    if (node == nodeHbox) {
+      setRightComponent(scrollHbox);
+    }
+    if (node == nodeWarning) {
+      setRightComponent(scrollWarning);
+    }
+    if (node == nodeOutput) {
+      setRightComponent(scrollOutput);
+    }
   }
 
   public void valueChanged(ListSelectionEvent e) {
@@ -156,8 +164,8 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     DefaultListModel model = (DefaultListModel) list.getModel();
     DefaultListSelectionModel selectionModel = (DefaultListSelectionModel) list.getSelectionModel();
     int index = selectionModel.getLeadSelectionIndex();
-    if(index < 0 || index >= model.size()) return;
-    
+    if (index < 0 || index >= model.size()) return;
+
     ErrorComponent errorComponent = (ErrorComponent) model.getElementAt(index);
     LatexCompileError error = errorComponent.getError();
 
@@ -165,24 +173,24 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     SCEPane pane = editor.getTextPane();
 
     int column = 0;
-    if(error.getTextBefore() != null) {
+    if (error.getTextBefore() != null) {
       String line = pane.getDocument().getRow(error.getLineStart());
       column = Math.max(0, line.indexOf(error.getTextBefore()));
     }
 
-    int rowStart = Math.max(0, error.getLineStart()-1);
+    int rowStart = Math.max(0, error.getLineStart() - 1);
     editor.moveTo(rowStart, column);
   }
 
-	@Override
-	public void requestFocus() {
-		tree.requestFocus();
-		if (tree.getSelectionCount() == 0) {
-			tree.setSelectionRow(1);
-		}
-	}
+  @Override
+  public void requestFocus() {
+    tree.requestFocus();
+    if (tree.getSelectionCount() == 0) {
+      tree.setSelectionRow(1);
+    }
+  }
 
-	private class ErrorComponent extends JLabel {
+  private class ErrorComponent extends JLabel {
     private LatexCompileError error;
     private boolean isSelected = false;
 
@@ -204,16 +212,16 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     }
 
     public void paint(Graphics g) {
-      if(isSelected) {
+      if (isSelected) {
         g.setColor(SELECTION_BACKGROUND);
-        g.fillRect(0,0,getWidth(),getHeight());
+        g.fillRect(0, 0, getWidth(), getHeight());
       }
       super.paint(g);
 
-      if(isSelected) {
+      if (isSelected) {
         g.setColor(SELECTION_BORDER);
-        g.drawLine(0,0,getWidth(),0);
-        g.drawLine(0,getHeight()-1,getWidth(),getHeight()-1);
+        g.drawLine(0, 0, getWidth(), 0);
+        g.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1);
       }
     }
   }
@@ -234,7 +242,7 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
       Component component = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
       Dimension dimension = component.getPreferredSize();
-      component.setPreferredSize(new Dimension(Math.max(dimension.width,150),dimension.height));
+      component.setPreferredSize(new Dimension(Math.max(dimension.width, 150), dimension.height));
 
       return component;
     }

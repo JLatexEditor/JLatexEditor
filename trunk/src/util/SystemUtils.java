@@ -37,7 +37,7 @@ public class SystemUtils {
   }
 
   public static File newFile(File parent, String fileName) {
-    if(absoluteFile.matcher(fileName).matches()) return new File(fileName);
+    if (absoluteFile.matcher(fileName).matches()) return new File(fileName);
     return new File(parent, fileName);
   }
 }

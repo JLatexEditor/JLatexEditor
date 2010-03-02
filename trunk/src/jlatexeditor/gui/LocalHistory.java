@@ -68,19 +68,19 @@ public class LocalHistory extends JPanel implements ComponentListener, ListSelec
     model.clear();
 
     try {
-      if(!file_backup.exists()) return;
+      if (!file_backup.exists()) return;
       backup = StreamUtils.readLines(file_backup.getCanonicalPath());
 
-      if(file_revisions.exists()) {
+      if (file_revisions.exists()) {
         int revisionNr = 1;
         String revision = null;
         ArrayList<String> diff = new ArrayList<String>();
 
         BufferedReader reader = new BufferedReader(new FileReader(file_revisions));
         String line;
-        while((line = reader.readLine()) != null) {
-          if(line.startsWith(REVISION)) {
-            if(revision != null) {
+        while ((line = reader.readLine()) != null) {
+          if (line.startsWith(REVISION)) {
+            if (revision != null) {
               model.add(0, new HistoryEntry(revisionNr++, revision, SystemDiff.parse(diff)));
             }
             revision = line.substring(REVISION.length());
@@ -112,35 +112,35 @@ public class LocalHistory extends JPanel implements ComponentListener, ListSelec
   }
 
   public void valueChanged(ListSelectionEvent e) {
-    if(list.getSelectedIndex() == -1) {
+    if (list.getSelectedIndex() == -1) {
       latexEditor.getActiveEditor().closeDiffView();
       return;
     }
 
     List<String> document = (ArrayList<String>) backup.clone();
-    for(int changeNr = 0; changeNr <= list.getSelectedIndex(); changeNr++) {
+    for (int changeNr = 0; changeNr <= list.getSelectedIndex(); changeNr++) {
       HistoryEntry historyEntry = (HistoryEntry) model.getElementAt(changeNr);
       document = Modification.apply(document, historyEntry.getDiff());
     }
     HistoryEntry historyEntry = (HistoryEntry) model.getElementAt(list.getSelectedIndex());
 
     StringBuilder stringBuilder = new StringBuilder();
-    for(String line : document) {
+    for (String line : document) {
       stringBuilder.append(line).append('\n');
     }
     latexEditor.getActiveEditor().diffView(historyEntry.toString(), stringBuilder.toString());
   }
 
-	@Override
-	public void requestFocus() {
-		list.requestFocus();
-		System.out.println(list.getSelectedIndex());
-		if (list.getSelectedIndex() == -1) {
-			list.setSelectedIndex(0);
-		}
-	}
+  @Override
+  public void requestFocus() {
+    list.requestFocus();
+    System.out.println(list.getSelectedIndex());
+    if (list.getSelectedIndex() == -1) {
+      list.setSelectedIndex(0);
+    }
+  }
 
-	private static class HistoryEntry {
+  private static class HistoryEntry {
     private int revisionNr;
     private String revision;
     private List<Modification<String>> diff;

@@ -22,25 +22,37 @@ import java.util.ArrayList;
  * @author Jörg Endrullis
  * @author Stefan Endrullis
  */
-public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretListener, FocusListener{
-	SourceCodeEditor sourceCodeEditor;
-  /** Document. */
+public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretListener, FocusListener {
+  SourceCodeEditor sourceCodeEditor;
+  /**
+   * Document.
+   */
   SCEDocument document = null;
-	/** Code Helper (code completion). */
+  /**
+   * Code Helper (code completion).
+   */
   CodeHelper codeHelper = null;
   CodeHelper tabCompletion = null;
-	/** Quick help. */
-	QuickHelp quickHelp = null;
-  /** Undo manager. */
+  /**
+   * Quick help.
+   */
+  QuickHelp quickHelp = null;
+  /**
+   * Undo manager.
+   */
   SCEUndoManager undoManager = null;
-	/** General SCE Popup. */
-	SCEPopup popup = null;
+  /**
+   * General SCE Popup.
+   */
+  SCEPopup popup = null;
 
   // some text properties
   private int lineHeight = 0;
   private int lineAscent = 0;
   private int characterWidth = 0;
-  /** Spacer for line numbers. */
+  /**
+   * Spacer for line numbers.
+   */
   private int lineNumberSpacer = 30;
   private final int SPACE_LEFT = 3;
 
@@ -54,7 +66,9 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   private Font fontText = null;
   private Font fontLineNumbers = null;
 
-  /** Caret in the document. */
+  /**
+   * Caret in the document.
+   */
   private SCECaret caret = null;
   private boolean freezeCaret = false;
 
@@ -64,10 +78,10 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 
   public static Color selectionHighlightColor = new Color(82, 109, 165);
   public static Color nonSelectionHighlightColor = new Color(196, 196, 196);
-  public static Color selectionHighlightColorLight = new Color(255 - (255 - 82)/3, 255 - (255 -109)/3, 255);
+  public static Color selectionHighlightColorLight = new Color(255 - (255 - 82) / 3, 255 - (255 - 109) / 3, 255);
   private SCETextHighlight selectionHighlight = new SCETextHighlight(this, null, null, selectionHighlightColor);
 
-  public static Color editRangeHighlightColor = new Color(155, 0,0);
+  public static Color editRangeHighlightColor = new Color(155, 0, 0);
   private SCETextHighlight editRangeHighlight = new SCEEditRangeHighlight(this, null, null, editRangeHighlightColor);
 
   // highlights
@@ -83,17 +97,20 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   // some characters
   private String splitterChars = " ,;.:!\"§$%&/()=?{[]}\\'´`+-*^°";
 
-	/** Code assistants that are informed about alt+enter events. */
-	private ArrayList<CodeAssistant> codeAssistants = new ArrayList<CodeAssistant>();
-	private int columnsPerRow = 80;
+  /**
+   * Code assistants that are informed about alt+enter events.
+   */
+  private ArrayList<CodeAssistant> codeAssistants = new ArrayList<CodeAssistant>();
+  private int columnsPerRow = 80;
 
 
-	/**
+  /**
    * Creates a SCEPane (a text pane for editing source code).
+   *
    * @param sourceCodeEditor source code editor
    */
-  public SCEPane(SourceCodeEditor sourceCodeEditor){
-	  this.sourceCodeEditor = sourceCodeEditor;
+  public SCEPane(SourceCodeEditor sourceCodeEditor) {
+    this.sourceCodeEditor = sourceCodeEditor;
 
     setOpaque(true);
     setBackground(Color.WHITE);
@@ -109,8 +126,8 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     caret = new SCECaret(this);
     caret.addSCECaretListener(this);
 
-	  // create popup
-	  popup = new SCEPopup(this);
+    // create popup
+    popup = new SCEPopup(this);
 
     // normal text font
     fontText = GProperties.getEditorFont();
@@ -131,16 +148,16 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   /**
    * If this pane is added to a container.
    */
-  public void addNotify(){
+  public void addNotify() {
     super.addNotify();
 
-    if(ui != null) return;
-    
+    if (ui != null) return;
+
     // create the UI
     ui = new SCEPaneUI(this);
-	  ui.setCodeHelper(codeHelper);
-	  ui.setTabCompletion(tabCompletion);
-	  ui.setQuickHelp(quickHelp);
+    ui.setCodeHelper(codeHelper);
+    ui.setTabCompletion(tabCompletion);
+    ui.setQuickHelp(quickHelp);
 
     // get font properties
     Graphics g2D = getGraphics();
@@ -156,12 +173,13 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   }
 
   boolean o = false;
+
   /**
    * Paint the component.
    *
    * @param g the graphics to paint on
    */
-  public void paint(Graphics g){
+  public void paint(Graphics g) {
     Rectangle r = g.getClipBounds();
     g.setColor(Color.WHITE);
     g.fillRect(r.x, r.y, r.width, r.height);
@@ -169,7 +187,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 
     Graphics2D g2D = (Graphics2D) g;
     g2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, GProperties.getTextAntiAliasing());
-    
+
     // clip bounds
     int x = g2D.getClipBounds().x;
     int y = g2D.getClipBounds().y;
@@ -181,9 +199,9 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     SCEDocumentPosition lowerRight = viewToModel(x + width, y + height);
     int startRow = upperLeft.getRow();
     int endRow = lowerRight.getRow() + 1;
-    int startCol = Math.max(0, upperLeft.getColumn()-1);
+    int startCol = Math.max(0, upperLeft.getColumn() - 1);
     int endCol = lowerRight.getColumn() + 1;
-    int charWidth = g2D.getFontMetrics(GProperties.getEditorFont()).charsWidth(new char[] {' '}, 0, 1);
+    int charWidth = g2D.getFontMetrics(GProperties.getEditorFont()).charsWidth(new char[]{' '}, 0, 1);
 
     // highlight the current line
     g2D.setColor(currentLineHighlightColor);
@@ -191,34 +209,37 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     g2D.fillRect(lineNumberSpacer, caretPos.y, getWidth(), lineHeight);
 
     // draw row highlights
-    synchronized(rowHighlights) {
-	  for (SCERowHighlight rowHighlight : rowHighlights) {
-      int row = rowHighlight.getPosition().getRow();
-      if(row < startRow || row > endRow) continue;
-		  rowHighlight.paint(g2D, this);
-	  }}
+    synchronized (rowHighlights) {
+      for (SCERowHighlight rowHighlight : rowHighlights) {
+        int row = rowHighlight.getPosition().getRow();
+        if (row < startRow || row > endRow) continue;
+        rowHighlight.paint(g2D, this);
+      }
+    }
 
     // draw text highlights
-    synchronized(textHighlights) {
-	  for (SCETextHighlight textHighlight : textHighlights) {
-      if(textHighlight.getEndPosition().getRow() < startRow || textHighlight.getStartPosition().getRow() > endRow) continue;
-			textHighlight.paint(g2D, this);
-	  }}
-
-    // draw the selection
-    if(document.hasSelection()){
-      selectionHighlight.paint(g2D, this, document.getSelectionStart(),  document.getSelectionEnd());
+    synchronized (textHighlights) {
+      for (SCETextHighlight textHighlight : textHighlights) {
+        if (textHighlight.getEndPosition().getRow() < startRow || textHighlight.getStartPosition().getRow() > endRow)
+          continue;
+        textHighlight.paint(g2D, this);
+      }
     }
 
     // draw the selection
-    if(document.hasEditRange()){
-      editRangeHighlight.paint(g2D, this, document.getEditRangeStart(),  document.getEditRangeEnd());
+    if (document.hasSelection()) {
+      selectionHighlight.paint(g2D, this, document.getSelectionStart(), document.getSelectionEnd());
+    }
+
+    // draw the selection
+    if (document.hasEditRange()) {
+      editRangeHighlight.paint(g2D, this, document.getEditRangeStart(), document.getEditRangeEnd());
     }
 
     // draw the text
-    for(int line = startRow; line < endRow; line++){
+    for (int line = startRow; line < endRow; line++) {
       AttributedString attributedString = document.getRowAttributed(line, startCol, endCol);
-      if(attributedString == null) continue;
+      if (attributedString == null) continue;
       int posx = lineNumberSpacer + SPACE_LEFT + startCol * charWidth;
       int posy = line * lineHeight + lineAscent - 1;
       g2D.drawString(attributedString.getIterator(), posx, posy);
@@ -227,13 +248,13 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     // draw the border
     g2D.setColor(Color.lightGray);
     g2D.drawLine(lineNumberSpacer - 1, y, lineNumberSpacer - 1, y + height);
-	  if (columnsPerRow > 0)
-	    g2D.drawLine(lineNumberSpacer + 2 + columnsPerRow * characterWidth, y, lineNumberSpacer + 2 + columnsPerRow * characterWidth, y + height);
+    if (columnsPerRow > 0)
+      g2D.drawLine(lineNumberSpacer + 2 + columnsPerRow * characterWidth, y, lineNumberSpacer + 2 + columnsPerRow * characterWidth, y + height);
 
     // draw the line numbers
     g2D.setFont(fontLineNumbers);
     FontMetrics fm = g2D.getFontMetrics(fontLineNumbers);
-    for(int line = startRow; line < endRow; line++){
+    for (int line = startRow; line < endRow; line++) {
       String lineString = (line + 1) + "";
       int posx = lineNumberSpacer - fm.stringWidth(lineString) - 2;
       int posy = line * lineHeight + lineAscent - 1;
@@ -241,7 +262,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     }
 
     // draw the caret
-    if(hasFocus()) caret.paint(g);
+    if (hasFocus()) caret.paint(g);
   }
 
   /**
@@ -249,25 +270,25 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    *
    * @return preferred size of the component
    */
-  public Dimension getPreferredSize(){
+  public Dimension getPreferredSize() {
     return preferredSize;
   }
 
-	/**
-	 * Returns the source code editor.
-	 * 
-	 * @return source code editor
-	 */
-	public SourceCodeEditor getSourceCodeEditor() {
-		return sourceCodeEditor;
-	}
+  /**
+   * Returns the source code editor.
+   *
+   * @return source code editor
+   */
+  public SourceCodeEditor getSourceCodeEditor() {
+    return sourceCodeEditor;
+  }
 
-	/**
+  /**
    * Returns the underlying document.
    *
    * @return the document
    */
-  public SCEDocument getDocument(){
+  public SCEDocument getDocument() {
     return document;
   }
 
@@ -276,7 +297,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    *
    * @return the undo manager
    */
-  public SCEUndoManager getUndoManager(){
+  public SCEUndoManager getUndoManager() {
     return undoManager;
   }
 
@@ -285,7 +306,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    *
    * @return the caret
    */
-  public SCECaret getCaret(){
+  public SCECaret getCaret() {
     return caret;
   }
 
@@ -308,12 +329,12 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    */
   public void paste() {
     Transferable content = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
-    try{
+    try {
       String string = (String) content.getTransferData(DataFlavor.stringFlavor);
-	    string = string.replaceAll("\t", "  ");
-      if(document.hasSelection()) ui.removeSelection();
+      string = string.replaceAll("\t", "  ");
+      if (document.hasSelection()) ui.removeSelection();
       document.insert(string, caret.getRow(), caret.getColumn());
-    } catch(Exception ignored){
+    } catch (Exception ignored) {
     }
   }
 
@@ -321,126 +342,126 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    * Copy text to clipboard.
    */
   public void copy() {
-	  ensureSelection();
-	  StringSelection s = new StringSelection(document.getSelectedText());
+    ensureSelection();
+    StringSelection s = new StringSelection(document.getSelectedText());
     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(s, null);
   }
 
-	private void ensureSelection() {
-		if (document.getSelectedText() == null) {
-			document.setSelectionRange(new SCEDocumentPosition(caret.getRow(), 0), new SCEDocumentPosition(caret.getRow() + 1, 0));
-			repaint();
-		}
-	}
+  private void ensureSelection() {
+    if (document.getSelectedText() == null) {
+      document.setSelectionRange(new SCEDocumentPosition(caret.getRow(), 0), new SCEDocumentPosition(caret.getRow() + 1, 0));
+      repaint();
+    }
+  }
 
   public void clearSelection() {
     document.setSelectionRange(null, null);
     caret.removeSelectionMark();
   }
 
-	/**
+  /**
    * Cut text to clipboard.
    */
   public void cut() {
-		ensureSelection();
+    ensureSelection();
     StringSelection s = new StringSelection(document.getSelectedText());
     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(s, null);
     ui.removeSelection();
   }
 
-	/**
-	 * Comment the selected lines.
-	 * 
-	 * @param commentPrefix prefix used to mark a line as lineComment
-	 */
-	public void lineComment(String commentPrefix) {
-		if (!document.hasSelection()) {
-			int row = caret.getRow();
-			int col = caret.getColumn();
-			document.insert(commentPrefix, caret.getRow(), 0);
-			caret.moveTo(row, col+commentPrefix.length());
-			caret.removeSelectionMark();
-		} else {
-			SCEDocumentPosition startSel = document.getSelectionStart();
-			SCEDocumentPosition endSel = document.getSelectionEnd();
+  /**
+   * Comment the selected lines.
+   *
+   * @param commentPrefix prefix used to mark a line as lineComment
+   */
+  public void lineComment(String commentPrefix) {
+    if (!document.hasSelection()) {
+      int row = caret.getRow();
+      int col = caret.getColumn();
+      document.insert(commentPrefix, caret.getRow(), 0);
+      caret.moveTo(row, col + commentPrefix.length());
+      caret.removeSelectionMark();
+    } else {
+      SCEDocumentPosition startSel = document.getSelectionStart();
+      SCEDocumentPosition endSel = document.getSelectionEnd();
 
-		  int startRow = startSel.getRow();
-		  int endRow = endSel.getRow() - (endSel.getColumn() == 0 ? 1 : 0);
-		  for(int row = startRow; row <= endRow; row++){
-				document.insert("% ", row, 0);
-		  }
+      int startRow = startSel.getRow();
+      int endRow = endSel.getRow() - (endSel.getColumn() == 0 ? 1 : 0);
+      for (int row = startRow; row <= endRow; row++) {
+        document.insert("% ", row, 0);
+      }
 
-			int endCol = endSel.getColumn();
-			endCol = endCol == 0 ? endCol : endCol+2;
-			endSel = new SCEDocumentPosition(endSel.getRow(), endCol);
-			caret.moveTo(endSel.getRow(), endCol);
-			document.setSelectionRange(startSel, endSel);
-		}
-	}
-
-	/**
-	 * Uncomment the selected lines.
-	 *
-	 * @param commentPrefix prefix used to mark a line as lineComment
-	 */
-	public void lineUncomment(String commentPrefix) {
-		if (!document.hasSelection()) {
-			int row = caret.getRow();
-			int col = caret.getColumn();
-			if (removeComment(commentPrefix, caret.getRow())) {
-				caret.moveTo(row, Math.max(col-commentPrefix.length(), 0));
-			}
-			caret.removeSelectionMark();
-			repaint();
-		} else {
-			SCEDocumentPosition startSel = document.getSelectionStart();
-			SCEDocumentPosition endSel = document.getSelectionEnd();
-
-		  int startRow = startSel.getRow();
-		  int endRow = endSel.getRow() - (endSel.getColumn() == 0 ? 1 : 0);
-			boolean moveCaret = false;
-		  for(int row = startRow; row <= endRow; row++){
-			  if (removeComment(commentPrefix, row) && row == caret.getRow()) {
-				  moveCaret = true;
-			  }
-		  }
-
-			int endCol = endSel.getColumn();
-			endCol = Math.max(endCol, 0);
-			endSel = new SCEDocumentPosition(endSel.getRow(), endCol);
-			if (moveCaret) {
-				caret.moveTo(endSel.getRow(), endCol);
-			}
-			document.setSelectionRange(startSel, endSel);
-		}
-	}
-
-	private boolean removeComment(String commentPrefix, int row) {
-		String rowString = document.getRow(row);
-		if(rowString.startsWith(commentPrefix)){
-		  document.remove(row, 0, row, commentPrefix.length());
-			return true;
-		}
-		return false;
-	}
+      int endCol = endSel.getColumn();
+      endCol = endCol == 0 ? endCol : endCol + 2;
+      endSel = new SCEDocumentPosition(endSel.getRow(), endCol);
+      caret.moveTo(endSel.getRow(), endCol);
+      document.setSelectionRange(startSel, endSel);
+    }
+  }
 
   /**
-	 * Returns the popup for code assistants.
-	 *
-	 * @return popup for code assistants
-	 */
-	public SCEPopup getPopup() {
-		return popup;
-	}
+   * Uncomment the selected lines.
+   *
+   * @param commentPrefix prefix used to mark a line as lineComment
+   */
+  public void lineUncomment(String commentPrefix) {
+    if (!document.hasSelection()) {
+      int row = caret.getRow();
+      int col = caret.getColumn();
+      if (removeComment(commentPrefix, caret.getRow())) {
+        caret.moveTo(row, Math.max(col - commentPrefix.length(), 0));
+      }
+      caret.removeSelectionMark();
+      repaint();
+    } else {
+      SCEDocumentPosition startSel = document.getSelectionStart();
+      SCEDocumentPosition endSel = document.getSelectionEnd();
 
-	/**
+      int startRow = startSel.getRow();
+      int endRow = endSel.getRow() - (endSel.getColumn() == 0 ? 1 : 0);
+      boolean moveCaret = false;
+      for (int row = startRow; row <= endRow; row++) {
+        if (removeComment(commentPrefix, row) && row == caret.getRow()) {
+          moveCaret = true;
+        }
+      }
+
+      int endCol = endSel.getColumn();
+      endCol = Math.max(endCol, 0);
+      endSel = new SCEDocumentPosition(endSel.getRow(), endCol);
+      if (moveCaret) {
+        caret.moveTo(endSel.getRow(), endCol);
+      }
+      document.setSelectionRange(startSel, endSel);
+    }
+  }
+
+  private boolean removeComment(String commentPrefix, int row) {
+    String rowString = document.getRow(row);
+    if (rowString.startsWith(commentPrefix)) {
+      document.remove(row, 0, row, commentPrefix.length());
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Returns the popup for code assistants.
+   *
+   * @return popup for code assistants
+   */
+  public SCEPopup getPopup() {
+    return popup;
+  }
+
+  /**
    * Calculates the position on the screen.
    *
-   * @param row the row
+   * @param row    the row
    * @param column the column
    * @return position on the screen
    */
-  public Point modelToView(int row, int column){
+  public Point modelToView(int row, int column) {
     return new Point(lineNumberSpacer + SPACE_LEFT + column * characterWidth, row * lineHeight);
   }
 
@@ -451,7 +472,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    * @param y the y coordinate
    * @return the model coordinates
    */
-  public SCEDocumentPosition viewToModel(int x, int y){
+  public SCEDocumentPosition viewToModel(int x, int y) {
     int row = y / lineHeight;
     int column = Math.max((x + characterWidth / 2 - lineNumberSpacer - SPACE_LEFT) / characterWidth, 0);
     return new SCEDocumentPosition(row, column);
@@ -462,7 +483,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    *
    * @return character width
    */
-  public int getCharacterWidth(){
+  public int getCharacterWidth() {
     return characterWidth;
   }
 
@@ -471,7 +492,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    *
    * @return line height
    */
-  public int getLineHeight(){
+  public int getLineHeight() {
     return lineHeight;
   }
 
@@ -481,8 +502,8 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    * @param margin MARGIN_TOP/ MARGIN_BOTTOM/ MARGIN_LEFT/ MARGIN_RIGHT
    * @return margin of the text pane
    */
-  public int getMargin(int margin){
-    if(margin == MARGIN_LEFT) return lineNumberSpacer + SPACE_LEFT;
+  public int getMargin(int margin) {
+    if (margin == MARGIN_LEFT) return lineNumberSpacer + SPACE_LEFT;
     return 0;
   }
 
@@ -491,7 +512,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    *
    * @return visible rows
    */
-  public int getVisibleRowsCount(){
+  public int getVisibleRowsCount() {
     return (int) ((getVisibleRect().getHeight() / lineHeight) - 1);
   }
 
@@ -500,7 +521,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    *
    * @param text the text
    */
-  public void setText(String text){
+  public void setText(String text) {
     freezeCaret = true;
     document.setText(text);
     freezeCaret = false;
@@ -511,21 +532,21 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    *
    * @return the text
    */
-  public String getText(){
+  public String getText() {
     return document.getText();
   }
 
-	/**
-	 * Sets the code helper for the source code editor.
-	 *
-	 * @param codeHelper code helper
-	 */
-	public void setCodeHelper(CodeHelper codeHelper) {
-		this.codeHelper = codeHelper;
-		if (ui != null) {
-			ui.codeHelperPane.setCodeHelper(codeHelper);
-		}
-	}
+  /**
+   * Sets the code helper for the source code editor.
+   *
+   * @param codeHelper code helper
+   */
+  public void setCodeHelper(CodeHelper codeHelper) {
+    this.codeHelper = codeHelper;
+    if (ui != null) {
+      ui.codeHelperPane.setCodeHelper(codeHelper);
+    }
+  }
 
   /**
    * Sets the tab completion for the source code editor.
@@ -537,102 +558,104 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     if (ui != null) ui.setTabCompletion(tabCompletion);
   }
 
-	/**
-	 * Sets the code helper for the source code editor.
-	 *
-	 * @param quickHelp quick help
-	 */
-	public void setQuickHelp(QuickHelp quickHelp) {
-		this.quickHelp = quickHelp;
-		if (ui != null) ui.setCodeHelper(codeHelper);
-	}
+  /**
+   * Sets the code helper for the source code editor.
+   *
+   * @param quickHelp quick help
+   */
+  public void setQuickHelp(QuickHelp quickHelp) {
+    this.quickHelp = quickHelp;
+    if (ui != null) ui.setCodeHelper(codeHelper);
+  }
 
-	/**
-	 * Registers a code assistant in order to be informed about alt+enter events.
-	 *
-	 * @param codeAssistant code assistant which wants to be informed about alt+enter events
-	 */
-	public void addCodeAssistantListener(CodeAssistant codeAssistant){
-	  if(codeAssistants.contains(codeAssistant)) return;
-	  codeAssistants.add(codeAssistant);
-	}
+  /**
+   * Registers a code assistant in order to be informed about alt+enter events.
+   *
+   * @param codeAssistant code assistant which wants to be informed about alt+enter events
+   */
+  public void addCodeAssistantListener(CodeAssistant codeAssistant) {
+    if (codeAssistants.contains(codeAssistant)) return;
+    codeAssistants.add(codeAssistant);
+  }
 
-	/**
-	 * Unregisters a code assistant.
-	 *
-	 * @param codeAssistant code assistant to unregister
-	 */
-	public void removeCodeAssistantListener(CodeAssistant codeAssistant){
-	  codeAssistants.remove(codeAssistant);
-	}
+  /**
+   * Unregisters a code assistant.
+   *
+   * @param codeAssistant code assistant to unregister
+   */
+  public void removeCodeAssistantListener(CodeAssistant codeAssistant) {
+    codeAssistants.remove(codeAssistant);
+  }
 
-	/**
-	 * Informs the code assistants about alt+enter events.
-	 */
-	void callCodeAssistants() {
-	  for (CodeAssistant codeAssistant : codeAssistants) {
-	    if (codeAssistant.assistAt(this)) return;
-	  }
-	}
-	
+  /**
+   * Informs the code assistants about alt+enter events.
+   */
+  void callCodeAssistants() {
+    for (CodeAssistant codeAssistant : codeAssistants) {
+      if (codeAssistant.assistAt(this)) return;
+    }
+  }
+
   /**
    * Finds the next splitter in the given row and direction.
    *
-   * @param row row
-   * @param column column
+   * @param row       row
+   * @param column    column
    * @param direction -1 / 1
    * @return splitter column
    */
-  public int findSplitterInRow(int row, int column, int direction){
+  public int findSplitterInRow(int row, int column, int direction) {
     String text = document.getRow(row);
 
     int position = direction == -1 ? column - 1 : column;
-    if(position < 0) return 0;
-    if(position >= document.getRowLength(row)) return document.getRowLength(row);
+    if (position < 0) return 0;
+    if (position >= document.getRowLength(row)) return document.getRowLength(row);
 
     boolean splitter = splitterChars.indexOf(text.charAt(position)) != -1;
-    while(position >= 0 && position < document.getRowLength(row)){
-      if(splitter != (splitterChars.indexOf(text.charAt(position)) != -1)) break;
+    while (position >= 0 && position < document.getRowLength(row)) {
+      if (splitter != (splitterChars.indexOf(text.charAt(position)) != -1)) break;
       position += direction;
     }
-    if(direction == -1) position++;
+    if (direction == -1) position++;
 
     return position;
   }
 
-	/**
-	 * Finds the next splitter in the given direction.
-	 *
-	 * @param row row
-	 * @param column column
-	 * @param direction direction -1 / 1
-	 * @return splitter position
-	 */
-	public SCEPosition findSplitterPosition(int row, int column, int direction) {
-		switch (direction) {
-			case -1:
-				if (column == 0 && row > 0) {
-					return new SCEDocumentPosition(row-1, document.getRowLength(row-1));
-				} else {
-					return new SCEDocumentPosition(row, findSplitterInRow(row, column, -1));
-				}
-			case 1:
-				if (column == document.getRowLength(row) && row < document.getRowsCount()-1) {
-					return new SCEDocumentPosition(row+1, 0);
-				} else {
-					return new SCEDocumentPosition(row, findSplitterInRow(row, column, 1));
-				}
-		}
-		return null;
-	}
+  /**
+   * Finds the next splitter in the given direction.
+   *
+   * @param row       row
+   * @param column    column
+   * @param direction direction -1 / 1
+   * @return splitter position
+   */
+  public SCEPosition findSplitterPosition(int row, int column, int direction) {
+    switch (direction) {
+      case -1:
+        if (column == 0 && row > 0) {
+          return new SCEDocumentPosition(row - 1, document.getRowLength(row - 1));
+        } else {
+          return new SCEDocumentPosition(row, findSplitterInRow(row, column, -1));
+        }
+      case 1:
+        if (column == document.getRowLength(row) && row < document.getRowsCount() - 1) {
+          return new SCEDocumentPosition(row + 1, 0);
+        } else {
+          return new SCEDocumentPosition(row, findSplitterInRow(row, column, 1));
+        }
+    }
+    return null;
+  }
 
   /**
    * Adds a row highlight.
    *
    * @param highlight the highlight
    */
-  public void addRowHighlight(SCERowHighlight highlight){
-    synchronized(rowHighlights) { rowHighlights.add(highlight); }
+  public void addRowHighlight(SCERowHighlight highlight) {
+    synchronized (rowHighlights) {
+      rowHighlights.add(highlight);
+    }
     repaint();
   }
 
@@ -641,13 +664,17 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    *
    * @param highlight the highlight
    */
-  public void removeRowHighlight(SCERowHighlight highlight){
-    synchronized(rowHighlights) { rowHighlights.remove(highlight); }
+  public void removeRowHighlight(SCERowHighlight highlight) {
+    synchronized (rowHighlights) {
+      rowHighlights.remove(highlight);
+    }
     repaint();
   }
 
-  public void removeAllRowHighlights(){
-    synchronized(rowHighlights) { rowHighlights.clear(); }
+  public void removeAllRowHighlights() {
+    synchronized (rowHighlights) {
+      rowHighlights.clear();
+    }
     repaint();
   }
 
@@ -656,8 +683,10 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    *
    * @param highlight the highlight
    */
-  public void addTextHighlight(SCETextHighlight highlight){
-    synchronized(textHighlights) { textHighlights.add(highlight); }
+  public void addTextHighlight(SCETextHighlight highlight) {
+    synchronized (textHighlights) {
+      textHighlights.add(highlight);
+    }
     repaint();
   }
 
@@ -666,24 +695,29 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    *
    * @param highlight the highlight
    */
-  public void removeTextHighlight(SCETextHighlight highlight){
-    synchronized(textHighlights) { textHighlights.remove(highlight); }
+  public void removeTextHighlight(SCETextHighlight highlight) {
+    synchronized (textHighlights) {
+      textHighlights.remove(highlight);
+    }
     repaint();
   }
 
   public void removeAllTextHighlights() {
-    synchronized(textHighlights) { textHighlights.clear(); }
+    synchronized (textHighlights) {
+      textHighlights.clear();
+    }
   }
 
   // sce.component.SCEDocumentListener methods
-  public void documentChanged(SCEDocument sender, SCEDocumentEvent event){
+
+  public void documentChanged(SCEDocument sender, SCEDocumentEvent event) {
     SCEDocumentPosition start = event.getRangeStart();
     SCEDocumentPosition end = event.getRangeEnd();
 
     // update the component size
-    if(getParent() != null){
+    if (getParent() != null) {
       Dimension dimension = new Dimension();
-      for(int row_nr = 0; row_nr < document.getRowsCount(); row_nr++){
+      for (int row_nr = 0; row_nr < document.getRowsCount(); row_nr++) {
         dimension.width = Math.max(document.getRowLength(row_nr) * characterWidth + lineNumberSpacer + 30, dimension.width);
       }
       dimension.height = document.getRowsCount() * lineHeight + 30;
@@ -692,14 +726,14 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     }
 
     // update the caret position
-    if(event.isInsert() && !freezeCaret){
+    if (event.isInsert() && !freezeCaret) {
       caret.moveTo(end.getRow(), end.getColumn());
-      if(caret.getSelectionMark() != null){
+      if (caret.getSelectionMark() != null) {
         caret.removeSelectionMark();
         caret.setSelectionMark();
       }
     }
-    if(event.isRemove() && !freezeCaret){
+    if (event.isRemove() && !freezeCaret) {
       caret.moveTo(start.getRow(), start.getColumn());
     }
 
@@ -707,8 +741,9 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   }
 
   // sce.component.SCECaretListener methods
-  public void caretMoved(int row, int column, int lastRow, int lastColumn){
-    if(row != lastRow || document.hasSelection()){
+
+  public void caretMoved(int row, int column, int lastRow, int lastColumn) {
+    if (row != lastRow || document.hasSelection()) {
       Point ul = modelToView(row, 0);
       repaint(0, ul.y, getWidth(), lineHeight);
       ul = modelToView(lastRow, 0);
@@ -717,18 +752,22 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 
     // scroll to caret
     Point caretPos = modelToView(row, column);
-    scrollRectToVisible(new Rectangle(Math.max(0,caretPos.x - 30), Math.max(0, caretPos.y - 20), 60, lineHeight + 40));
+    scrollRectToVisible(new Rectangle(Math.max(0, caretPos.x - 30), Math.max(0, caretPos.y - 20), 60, lineHeight + 40));
   }
 
   // FocusListener methods
-  public void focusGained(FocusEvent e){
+
+  public void focusGained(FocusEvent e) {
   }
 
-  public void focusLost(FocusEvent e){
-    if(!focusBack) return;
+  public void focusLost(FocusEvent e) {
+    if (!focusBack) return;
 
-    synchronized(this){
-      try{ wait(100); } catch(InterruptedException ignored){ }
+    synchronized (this) {
+      try {
+        wait(100);
+      } catch (InterruptedException ignored) {
+      }
     }
 
     frameToFront(this);
@@ -737,23 +776,23 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     focusBack = false;
   }
 
-  private void frameToFront(Container component){
-    if(component instanceof JFrame){
+  private void frameToFront(Container component) {
+    if (component instanceof JFrame) {
       ((JFrame) component).toFront();
       return;
     }
     frameToFront(component.getParent());
   }
 
-  public void getFocusBack(){
+  public void getFocusBack() {
     focusBack = true;
   }
 
-	public int getColumnsPerRow() {
-		return columnsPerRow;
-	}
+  public int getColumnsPerRow() {
+    return columnsPerRow;
+  }
 
-	public void setColumnsPerRow(int columnsPerRow) {
-		this.columnsPerRow = columnsPerRow;
+  public void setColumnsPerRow(int columnsPerRow) {
+    this.columnsPerRow = columnsPerRow;
 	}
 }

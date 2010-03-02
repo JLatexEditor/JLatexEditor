@@ -29,12 +29,14 @@ public class SCEPopup extends JScrollPane implements KeyListener {
   private DefaultListModel model = null;
 
   // the position of the last popup
-	private int lastRow;
-	private int lastColumn;
-	/** Item handler. */
-	private ItemHandler itemHandler;
+  private int lastRow;
+  private int lastColumn;
+  /**
+   * Item handler.
+   */
+  private ItemHandler itemHandler;
 
-	public SCEPopup(SCEPane pane){
+  public SCEPopup(SCEPane pane) {
     this.pane = pane;
     document = pane.getDocument();
 
@@ -64,79 +66,79 @@ public class SCEPopup extends JScrollPane implements KeyListener {
     pane.addKeyListener(this);
   }
 
-  public void setVisible(boolean visible){
+  public void setVisible(boolean visible) {
     super.setVisible(visible);
     popup.setVisible(visible);
   }
 
-  public boolean isVisible(){
+  public boolean isVisible() {
     return popup.isVisible();
   }
 
-	/**
+  /**
    * Opens the popup at the current caret position.
    *
-	 * @param newContent new content of the popup
+   * @param newContent new content of the popup
    */
-  public void openPopup(List<?> newContent, ItemHandler itemHandler){
-		openPopup(pane.getCaret(), newContent, itemHandler);
+  public void openPopup(List<?> newContent, ItemHandler itemHandler) {
+    openPopup(pane.getCaret(), newContent, itemHandler);
   }
 
-	/**
-	 * Opens the popup at the given position.
+  /**
+   * Opens the popup at the given position.
    *
-   * @param pos position of the popup
-	 * @param newContent new content of the popup
-	 * @param itemHandler item handler
+   * @param pos         position of the popup
+   * @param newContent  new content of the popup
+   * @param itemHandler item handler
    */
-  public void openPopup(SCEPosition pos, List<?> newContent, ItemHandler itemHandler){
-		setContent(newContent, itemHandler);
-		showPopupAt(pos.getRow(), pos.getColumn());
+  public void openPopup(SCEPosition pos, List<?> newContent, ItemHandler itemHandler) {
+    setContent(newContent, itemHandler);
+    showPopupAt(pos.getRow(), pos.getColumn());
   }
 
-	/**
-	 * Opens the popup at the given position.
+  /**
+   * Opens the popup at the given position.
    *
-	 * @param row row of the popup position
-	 * @param column column of the popup position
-	 * @param newContent new content of the popup
-	 * @param itemHandler item handler
+   * @param row         row of the popup position
+   * @param column      column of the popup position
+   * @param newContent  new content of the popup
+   * @param itemHandler item handler
    */
-  public void openPopup(int row, int column, List<Object> newContent, ItemHandler itemHandler){
-		setContent(newContent, itemHandler);
-		showPopupAt(row, column);
+  public void openPopup(int row, int column, List<Object> newContent, ItemHandler itemHandler) {
+    setContent(newContent, itemHandler);
+    showPopupAt(row, column);
   }
 
-	private void showPopupAt(int row, int column) {
-		//if (lastRow == row && lastColumn == column && isVisible()) return;
+  private void showPopupAt(int row, int column) {
+    //if (lastRow == row && lastColumn == column && isVisible()) return;
 
-	  Point caretPos = pane.modelToView(row, column);
+    Point caretPos = pane.modelToView(row, column);
 
-	  setVisible(true);
-	  popup.show(pane, caretPos.x, caretPos.y + pane.getLineHeight());
+    setVisible(true);
+    popup.show(pane, caretPos.x, caretPos.y + pane.getLineHeight());
 
-	  setSize(getPreferredSize());
-	  popup.pack();
+    setSize(getPreferredSize());
+    popup.pack();
 
-		lastRow = row;
-		lastColumn = column;
-	}
+    lastRow = row;
+    lastColumn = column;
+  }
 
-	private void setContent(List<?> newContent, ItemHandler itemHandler) {
-		this.itemHandler = itemHandler;
+  private void setContent(List<?> newContent, ItemHandler itemHandler) {
+    this.itemHandler = itemHandler;
 
-		Object selectedValue = list.getSelectedValue();
+    Object selectedValue = list.getSelectedValue();
 
-		model.removeAllElements();
-		for (Object item : newContent) {
-			model.addElement(item);
-		}
+    model.removeAllElements();
+    for (Object item : newContent) {
+      model.addElement(item);
+    }
 
-		list.setSelectedValue(selectedValue, true);
-		if(selectedValue == null || !model.contains(selectedValue)) list.setSelectedIndex(0);
-	}
+    list.setSelectedValue(selectedValue, true);
+    if (selectedValue == null || !model.contains(selectedValue)) list.setSelectedIndex(0);
+  }
 
-  public Dimension getPreferredSize(){
+  public Dimension getPreferredSize() {
     Dimension dimension = list.getPreferredSize();
 
     dimension.width = Math.min(480, dimension.width + 30);
@@ -145,91 +147,93 @@ public class SCEPopup extends JScrollPane implements KeyListener {
     return dimension;
   }
 
-	public void destroy() {
-		pane.removeKeyListener(this);
-	}
-
-  // KeyListener methods
-  public void keyTyped(KeyEvent e){
+  public void destroy() {
+    pane.removeKeyListener(this);
   }
 
-  public void keyPressed(KeyEvent e){
-	  // continue only if the popup is visible
-	  if(!isVisible()) return;
+  // KeyListener methods
+
+  public void keyTyped(KeyEvent e) {
+  }
+
+  public void keyPressed(KeyEvent e) {
+    // continue only if the popup is visible
+    if (!isVisible()) return;
 
     // hide on escape
-    if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
       // hide popup
       setVisible(false);
     }
 
     // hide on cursor movement
-    if(e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT){
-	    // in future there could be sub menus that could be opened when pressing RIGHT
+    if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
+      // in future there could be sub menus that could be opened when pressing RIGHT
       setVisible(false);
     }
 
     // up and down
-    if(e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN){
+    if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
       int direction = e.getKeyCode() == KeyEvent.VK_UP ? -1 : 1;
-	    int index = list.getSelectedIndex() + direction;
-	    select(index);
+      int index = list.getSelectedIndex() + direction;
+      select(index);
 
       e.consume();
     }
     // page up and down
-    if(e.getKeyCode() == KeyEvent.VK_PAGE_UP || e.getKeyCode() == KeyEvent.VK_PAGE_DOWN){
+    if (e.getKeyCode() == KeyEvent.VK_PAGE_UP || e.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
       int direction = e.getKeyCode() == KeyEvent.VK_PAGE_UP ? -1 : 1;
       direction *= list.getLastVisibleIndex() - list.getFirstVisibleIndex();
       int index = list.getSelectedIndex() + direction;
-	    select(index);
+      select(index);
 
       e.consume();
     }
-	  // home
-	  if(e.getKeyCode() == KeyEvent.VK_HOME){
-		  select(0);
-	    e.consume();
-	  }
-	  // end
-	  if(e.getKeyCode() == KeyEvent.VK_END){
-		  select(list.getModel().getSize() - 1);
-	    e.consume();
-	  }
+    // home
+    if (e.getKeyCode() == KeyEvent.VK_HOME) {
+      select(0);
+      e.consume();
+    }
+    // end
+    if (e.getKeyCode() == KeyEvent.VK_END) {
+      select(list.getModel().getSize() - 1);
+      e.consume();
+    }
 
     // enter
-    if((e.getKeyCode() == KeyEvent.VK_ENTER || (e.getKeyCode() == KeyEvent.VK_SPACE) && !e.isControlDown())){
-      if(model.size() == 0) return;
+    if ((e.getKeyCode() == KeyEvent.VK_ENTER || (e.getKeyCode() == KeyEvent.VK_SPACE) && !e.isControlDown())) {
+      if (model.size() == 0) return;
 
-	    setVisible(false);
+      setVisible(false);
 
       // pass the selected item to the item handler
       Object item = list.getSelectedValue();
-	    itemHandler.perform(item);
+      itemHandler.perform(item);
       e.consume();
     }
 
-	  if (!e.isConsumed()) {
-		  setVisible(false);
-	  }
+    if (!e.isConsumed()) {
+      setVisible(false);
+    }
   }
 
-	private void select(int index) {
-		int size = model.getSize();
-		if(index < 0) index = 0;
-		if(index > size - 1) index = size - 1;
+  private void select(int index) {
+    int size = model.getSize();
+    if (index < 0) index = 0;
+    if (index > size - 1) index = size - 1;
 
-		list.setSelectedIndex(index);
-		Rectangle scrollRect = list.getCellBounds(Math.max(index-2, 0), Math.min(index+2, size-1));
-		list.scrollRectToVisible(scrollRect);
-	}
+    list.setSelectedIndex(index);
+    Rectangle scrollRect = list.getCellBounds(Math.max(index - 2, 0), Math.min(index + 2, size - 1));
+    list.scrollRectToVisible(scrollRect);
+  }
 
-	public void keyReleased(KeyEvent e){
+  public void keyReleased(KeyEvent e) {
   }
 
 
-	// inner classes
-	public static interface ItemHandler {
-		public void perform(Object item);
-	}
+  // inner classes
+
+  public static interface ItemHandler {
+    public void perform(Object item);
+  }
 }

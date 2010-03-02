@@ -7,8 +7,8 @@ package jlatexeditor.errorhighlighting;
 import java.io.File;
 
 public class LatexCompileError {
-  public static final int TYPE_ERROR         = 0;
-  public static final int TYPE_WARNING       = 1;
+  public static final int TYPE_ERROR = 0;
+  public static final int TYPE_WARNING = 1;
   public static final int TYPE_OVERFULL_HBOX = 2;
 
   public static int errorType2markerType(int type) {
@@ -49,15 +49,15 @@ public class LatexCompileError {
     this.fileName = fileName;
   }
 
-  public int getLineStart(){
+  public int getLineStart() {
     return lineStart;
   }
 
-  public int getLineEnd(){
+  public int getLineEnd() {
     return lineEnd;
   }
 
-  public void setLine(int line){
+  public void setLine(int line) {
     lineStart = line;
     lineEnd = line;
   }
@@ -70,11 +70,11 @@ public class LatexCompileError {
     this.lineEnd = lineEnd;
   }
 
-  public String getMessage(){
+  public String getMessage() {
     return message;
   }
 
-  public void setMessage(String error){
+  public void setMessage(String error) {
     this.message = error;
   }
 
@@ -86,31 +86,31 @@ public class LatexCompileError {
     this.command = command;
   }
 
-  public String getTextBefore(){
+  public String getTextBefore() {
     return textBefore;
   }
 
-  public void setTextBefore(String textBefore){
+  public void setTextBefore(String textBefore) {
     this.textBefore = textBefore;
   }
 
-  public String getTextAfter(){
+  public String getTextAfter() {
     return textAfter;
   }
 
-  public void setTextAfter(String textAfter){
+  public void setTextAfter(String textAfter) {
     this.textAfter = textAfter;
   }
 
-  public String toString(){
+  public String toString() {
     StringBuffer message = new StringBuffer(getFileName()).append(": ");
-    if(getLineStart() != -1) {
+    if (getLineStart() != -1) {
       message.append(getLineStart());
-      if(getLineStart() != getLineEnd()) message.append("--").append(getLineEnd());
+      if (getLineStart() != getLineEnd()) message.append("--").append(getLineEnd());
     }
     message.append("\n");
     message.append("  ").append(getMessage()).append("\n");
-    if(getTextBefore() != null) {
+    if (getTextBefore() != null) {
       message.append("  ").append(getTextBefore()).append("[ERROR]").append(getTextAfter()).append("\n");
     }
     return message.toString();
