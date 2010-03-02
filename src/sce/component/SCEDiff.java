@@ -39,7 +39,7 @@ public class SCEDiff extends JPanel implements ComponentListener {
 
   private SCEMarkerBar markerBar;
 
-	private KeyListener paneKeyListener, diffKeyListener;
+  private KeyListener paneKeyListener, diffKeyListener;
 
   private int preferredLines = 0;
   private Dimension preferredSize = new Dimension();
@@ -84,97 +84,97 @@ public class SCEDiff extends JPanel implements ComponentListener {
     right.getDocument().setModified(false);
     right.getDocument().setEditable(false);
 
-	  left.addKeyListener(paneKeyListener = new KeyAdapter() {
-		  @Override
-		  public void keyPressed(KeyEvent e) {
-			  if (e.getModifiers() == KeyEvent.ALT_MASK) {
-				  // alt+up
-				  if (e.getKeyCode() == KeyEvent.VK_UP) {
-					  jumpToPreviousTargetModification();
-					  e.consume();
-				  }
-				  // alt+down
-				  if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-					  jumpToNextTargetModification();
-					  e.consume();
-				  }
-			  }
-		  }
-	  });
-	  right.addKeyListener(diffKeyListener = new KeyAdapter() {
-		  @Override
-		  public void keyPressed(KeyEvent e) {
-			  if (e.getModifiers() == KeyEvent.ALT_MASK) {
-				  // alt+up
-				  if (e.getKeyCode() == KeyEvent.VK_UP) {
-					  jumpToPreviousSourceModification();
-					  e.consume();
-				  }
-				  // alt+down
-				  if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-					  jumpToNextSourceModification();
-					  e.consume();
-				  }
-			  }
-		  }
-	  });
+    left.addKeyListener(paneKeyListener = new KeyAdapter() {
+      @Override
+      public void keyPressed(KeyEvent e) {
+        if (e.getModifiers() == KeyEvent.ALT_MASK) {
+          // alt+up
+          if (e.getKeyCode() == KeyEvent.VK_UP) {
+            jumpToPreviousTargetModification();
+            e.consume();
+          }
+          // alt+down
+          if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+            jumpToNextTargetModification();
+            e.consume();
+          }
+        }
+      }
+    });
+    right.addKeyListener(diffKeyListener = new KeyAdapter() {
+      @Override
+      public void keyPressed(KeyEvent e) {
+        if (e.getModifiers() == KeyEvent.ALT_MASK) {
+          // alt+up
+          if (e.getKeyCode() == KeyEvent.VK_UP) {
+            jumpToPreviousSourceModification();
+            e.consume();
+          }
+          // alt+down
+          if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+            jumpToNextSourceModification();
+            e.consume();
+          }
+        }
+      }
+    });
   }
 
   public int getVirtualLines() {
     JViewport viewport = scrollPane.getViewport();
-    if(viewport == null) return 40;
+    if (viewport == null) return 40;
     Component view = viewport.getView();
-    if(view == null) return 40;
-    return view.getHeight() / Math.max(left.getLineHeight(),1);
+    if (view == null) return 40;
+    return view.getHeight() / Math.max(left.getLineHeight(), 1);
   }
 
-	public void jumpToPreviousTargetModification() {
-		SCECaret caret = left.getCaret();
-		int currRow = caret.getRow();
+  public void jumpToPreviousTargetModification() {
+    SCECaret caret = left.getCaret();
+    int currRow = caret.getRow();
 
-		for (int modi = modifications.size()-1; modi >= 0; modi--) {
-			if (modifications.get(modi).getTargetStartIndex() < currRow) {
-				left.getCaret().moveTo(modifications.get(modi).getTargetStartIndex(), 0);
-				break;
-			}
-		}
-	}
+    for (int modi = modifications.size() - 1; modi >= 0; modi--) {
+      if (modifications.get(modi).getTargetStartIndex() < currRow) {
+        left.getCaret().moveTo(modifications.get(modi).getTargetStartIndex(), 0);
+        break;
+      }
+    }
+  }
 
-	public void jumpToNextTargetModification() {
-		SCECaret caret = left.getCaret();
-		int currRow = caret.getRow();
+  public void jumpToNextTargetModification() {
+    SCECaret caret = left.getCaret();
+    int currRow = caret.getRow();
 
-		for (Modification modification : modifications) {
-			if (modification.getTargetStartIndex() > currRow) {
-				left.getCaret().moveTo(modification.getTargetStartIndex(), 0);
-				break;
-			}
-		}
-	}
+    for (Modification modification : modifications) {
+      if (modification.getTargetStartIndex() > currRow) {
+        left.getCaret().moveTo(modification.getTargetStartIndex(), 0);
+        break;
+      }
+    }
+  }
 
-	public void jumpToPreviousSourceModification() {
-		SCECaret caret = right.getCaret();
-		int currRow = caret.getRow();
+  public void jumpToPreviousSourceModification() {
+    SCECaret caret = right.getCaret();
+    int currRow = caret.getRow();
 
-		for (int modi = modifications.size()-1; modi >= 0; modi--) {
-			if (modifications.get(modi).getSourceStartIndex() < currRow) {
-				right.getCaret().moveTo(modifications.get(modi).getSourceStartIndex(), 0);
-				break;
-			}
-		}
-	}
+    for (int modi = modifications.size() - 1; modi >= 0; modi--) {
+      if (modifications.get(modi).getSourceStartIndex() < currRow) {
+        right.getCaret().moveTo(modifications.get(modi).getSourceStartIndex(), 0);
+        break;
+      }
+    }
+  }
 
-	public void jumpToNextSourceModification() {
-		SCECaret caret = right.getCaret();
-		int currRow = caret.getRow();
+  public void jumpToNextSourceModification() {
+    SCECaret caret = right.getCaret();
+    int currRow = caret.getRow();
 
-		for (Modification modification : modifications) {
-			if (modification.getSourceStartIndex() > currRow) {
-				right.getCaret().moveTo(modification.getSourceStartIndex(), 0);
-				break;
-			}
-		}
-	}
+    for (Modification modification : modifications) {
+      if (modification.getSourceStartIndex() > currRow) {
+        right.getCaret().moveTo(modification.getSourceStartIndex(), 0);
+        break;
+      }
+    }
+  }
 
   public void updateLayout() {
     splitPane.setDividerLocation((scrollPane.getVisibleRect().width - WIDTH) / 2);
@@ -207,7 +207,7 @@ public class SCEDiff extends JPanel implements ComponentListener {
     preferredLines = 0;
     line2Diff = new double[paneRows + diffRows];
     line2Pane = new double[paneRows + diffRows];
-    for(Modification modification : modifications) {
+    for (Modification modification : modifications) {
       while (diffLine < modification.getSourceStartIndex() && paneLine < modification.getTargetStartIndex()) {
         line2Diff[preferredLines] = diffLine;
         line2Pane[preferredLines] = paneLine;
@@ -228,14 +228,19 @@ public class SCEDiff extends JPanel implements ComponentListener {
 
       int markerType;
       switch (modification.getType()) {
-        case Modification.TYPE_ADD : markerType = SCEMarkerBar.TYPE_SVN_ADD; break;
-        case Modification.TYPE_REMOVE : markerType = SCEMarkerBar.TYPE_SVN_REMOVE; break;
-        default : markerType = SCEMarkerBar.TYPE_SVN_CHANGE;
+        case Modification.TYPE_ADD:
+          markerType = SCEMarkerBar.TYPE_SVN_ADD;
+          break;
+        case Modification.TYPE_REMOVE:
+          markerType = SCEMarkerBar.TYPE_SVN_REMOVE;
+          break;
+        default:
+          markerType = SCEMarkerBar.TYPE_SVN_CHANGE;
       }
 
-      int centerLine = preferredLines + changeMax/2;
-      final int visibleTop = (centerLine - left.getVisibleRowsCount()/2) *left.getLineHeight();
-      markerBar.addMarker(new SCEMarkerBar.Marker(markerType, preferredLines, preferredLines+changeMax,
+      int centerLine = preferredLines + changeMax / 2;
+      final int visibleTop = (centerLine - left.getVisibleRowsCount() / 2) * left.getLineHeight();
+      markerBar.addMarker(new SCEMarkerBar.Marker(markerType, preferredLines, preferredLines + changeMax,
               new Runnable() {
                 public void run() {
                   JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
@@ -256,25 +261,25 @@ public class SCEDiff extends JPanel implements ComponentListener {
 
     left.removeAllRowHighlights();
     right.removeAllRowHighlights();
-    for(Modification modification : modifications) {
+    for (Modification modification : modifications) {
       Color color = null;
-      if(modification.getType() == Modification.TYPE_ADD) color = COLOR_ADD;
-      if(modification.getType() == Modification.TYPE_REMOVE) color = COLOR_REMOVE;
-      if(modification.getType() == Modification.TYPE_CHANGED) color = COLOR_CHANGE;
-      
+      if (modification.getType() == Modification.TYPE_ADD) color = COLOR_ADD;
+      if (modification.getType() == Modification.TYPE_REMOVE) color = COLOR_REMOVE;
+      if (modification.getType() == Modification.TYPE_CHANGED) color = COLOR_CHANGE;
+
       int sourceStart = modification.getSourceStartIndex();
       int sourceEnd = sourceStart + modification.getSourceLength();
-      for(int line = sourceStart; line < sourceEnd; line++) {
+      for (int line = sourceStart; line < sourceEnd; line++) {
         right.addRowHighlight(new SCERowHighlight(right, line, color, false));
       }
-      if(sourceEnd == sourceStart) right.addRowHighlight(new SCERowHighlight(right, sourceStart, color, true));
+      if (sourceEnd == sourceStart) right.addRowHighlight(new SCERowHighlight(right, sourceStart, color, true));
 
       int targetStart = modification.getTargetStartIndex();
       int targetEnd = targetStart + modification.getTargetLength();
-      for(int line = targetStart; line < targetEnd; line++) {
+      for (int line = targetStart; line < targetEnd; line++) {
         left.addRowHighlight(new SCERowHighlight(left, line, color, false));
       }
-      if(targetEnd == targetStart) left.addRowHighlight(new SCERowHighlight(left, targetStart, color, true));
+      if (targetEnd == targetStart) left.addRowHighlight(new SCERowHighlight(left, targetStart, color, true));
     }
 
     invalidate();
@@ -362,8 +367,14 @@ public class SCEDiff extends JPanel implements ComponentListener {
         int paneYEnd = SCEDiff.this.left.modelToView(targetStart + targetLength, 0).y - paneOffsetY;
         int diffYStart = SCEDiff.this.left.modelToView(sourceStart, 0).y - diffOffsetY;
         int diffYEnd = SCEDiff.this.left.modelToView(sourceStart + sourceLength, 0).y - diffOffsetY;
-        if(targetLength == 0) { paneYStart--; paneYEnd += 2; }
-        if(sourceLength == 0) { diffYStart--; diffYEnd += 2; }
+        if (targetLength == 0) {
+          paneYStart--;
+          paneYEnd += 2;
+        }
+        if (sourceLength == 0) {
+          diffYStart--;
+          diffYEnd += 2;
+        }
         ypoints[0] = paneYStart;
         ypoints[1] = paneYStart;
         ypoints[2] = diffYStart;
@@ -400,12 +411,12 @@ public class SCEDiff extends JPanel implements ComponentListener {
     }
   }
 
-	/**
-	 * Closes the diff.
-	 */
-	public void close() {
-		left.removeKeyListener(paneKeyListener);
-		right.removeKeyListener(diffKeyListener);
+  /**
+   * Closes the diff.
+   */
+  public void close() {
+    left.removeKeyListener(paneKeyListener);
+    right.removeKeyListener(diffKeyListener);
     removeComponentListener(this);
 
     leftViewport.setView(null);
@@ -425,14 +436,14 @@ public class SCEDiff extends JPanel implements ComponentListener {
 
       int visibleHeight = scrollPane.getVisibleRect().height;
       int lineHeight = left.getLineHeight();
-      int halfLines = visibleHeight/2/lineHeight;
+      int halfLines = visibleHeight / 2 / lineHeight;
 
       int lineOffset = halfLines;
-      while(line2Pane[lineOffset] < halfLines && line2Diff[lineOffset] < halfLines) lineOffset++;
+      while (line2Pane[lineOffset] < halfLines && line2Diff[lineOffset] < halfLines) lineOffset++;
       int yCorrection = lineHeight * (int) Math.max(line2Pane[lineOffset], line2Diff[lineOffset]);
 
-      y = y - lineOffset*lineHeight;
-      int line = Math.max(0, -y/lineHeight);
+      y = y - lineOffset * lineHeight;
+      int line = Math.max(0, -y / lineHeight);
       double lineFraction = (-y - line * lineHeight) / (double) lineHeight;
 
       double paneLine = (1 - lineFraction) * line2Pane[line] + lineFraction * line2Pane[line + 1];
@@ -478,7 +489,7 @@ public class SCEDiff extends JPanel implements ComponentListener {
       viewPosition.y = p.y;
 
       Component view = getView();
-      if(view != null) view.setLocation(-viewPosition.x, -viewPosition.y);
+      if (view != null) view.setLocation(-viewPosition.x, -viewPosition.y);
     }
 
     public Point getViewPosition() {
@@ -499,16 +510,16 @@ public class SCEDiff extends JPanel implements ComponentListener {
       this.diffView = diffView;
       setLayout(new ViewportLayout() {
         public void layoutContainer(Container parent) {
-          JViewport vp = (JViewport)parent;
-          if(!getViewSize().equals(vp.getSize())) setViewSize(vp.getSize());
-          if(getViewPosition().x < 0) setViewPosition(new Point(0,0));
+          JViewport vp = (JViewport) parent;
+          if (!getViewSize().equals(vp.getSize())) setViewSize(vp.getSize());
+          if (getViewPosition().x < 0) setViewPosition(new Point(0, 0));
         }
       });
     }
 
     public void setView(Component view) {
       super.setView(view);
-      setViewPosition(new Point(-1,-1));
+      setViewPosition(new Point(-1, -1));
     }
 
     public void scrollRectToVisible(Rectangle rectangle) {
@@ -521,31 +532,31 @@ public class SCEDiff extends JPanel implements ComponentListener {
       double[] lineMap = diffView.getDiffPane().hasFocus() ? line2Diff : line2Pane;
 
       Rectangle visible = currentViewport.getVisibleRect();
-      if(visible.getY() > rectangle.getY() || visible.getY() + visible.getHeight() < rectangle.getY() + rectangle.getHeight()) {
+      if (visible.getY() > rectangle.getY() || visible.getY() + visible.getHeight() < rectangle.getY() + rectangle.getHeight()) {
         boolean up = rectangle.getY() < visible.getY();
         int lineHeight = currentPane.getLineHeight();
-        int line = -(location.y - (int) visible.getHeight()/2) / lineHeight;
+        int line = -(location.y - (int) visible.getHeight() / 2) / lineHeight;
 
         int nline = line;
-        if(up) {
+        if (up) {
           int distance = (int) (visible.getY() - rectangle.getY());
-          while(line >= 0 && (lineMap[line] - lineMap[nline]) * lineHeight < distance) nline--;
+          while (line >= 0 && (lineMap[line] - lineMap[nline]) * lineHeight < distance) nline--;
         } else {
           int distance = (int) (rectangle.getY() + rectangle.getHeight() - visible.getY() - visible.getHeight());
-          while(line < lineMap.length && (lineMap[nline] - lineMap[line]) * lineHeight < distance) nline++;
+          while (line < lineMap.length && (lineMap[nline] - lineMap[line]) * lineHeight < distance) nline++;
         }
         vbar.setValue(vbar.getValue() + (nline - line) * lineHeight);
       }
 
-      if(visible.getX() > rectangle.getX() || visible.getX() + visible.getWidth() < rectangle.getX() + rectangle.getWidth()) {
+      if (visible.getX() > rectangle.getX() || visible.getX() + visible.getWidth() < rectangle.getX() + rectangle.getWidth()) {
         boolean left = rectangle.getX() < visible.getX();
         int distance;
-        if(left) {
+        if (left) {
           distance = (int) (rectangle.getX() - visible.getX());
         } else {
           distance = (int) (rectangle.getX() + rectangle.getWidth() - visible.getX() - visible.getWidth());
         }
-        hbar.setValue(vbar.getValue() + (int) (distance*preferredWidthFactor));
+        hbar.setValue(vbar.getValue() + (int) (distance * preferredWidthFactor));
       }
     }
   }
@@ -554,8 +565,8 @@ public class SCEDiff extends JPanel implements ComponentListener {
     public void paint(Graphics g) {
       super.paint(g);
 
-      g.drawString(leftTitle, 5,15);
-      g.drawString(rightTitle, splitPane.getDividerLocation() + WIDTH + 5,15);
+      g.drawString(leftTitle, 5, 15);
+      g.drawString(rightTitle, splitPane.getDividerLocation() + WIDTH + 5, 15);
     }
 
     public Dimension getPreferredSize() {

@@ -1,4 +1,3 @@
-
 /**
  * @author Jörg Endrullis
  */
@@ -11,22 +10,22 @@ import java.awt.*;
 import java.awt.image.MemoryImageSource;
 import java.awt.image.PixelGrabber;
 
-public class QaquaLookAndFeel extends MetalLookAndFeel{
+public class QaquaLookAndFeel extends MetalLookAndFeel {
   // the package name
   private String quaquaPackageName = "qaqua.";
 
   // a component (needed to use media tracker)
   private static JComponent component = new JPanel();
 
-  public String getName(){
+  public String getName() {
     return "Quaqua 1.0";
   }
 
-  public String getID(){
+  public String getID() {
     return "Quaqua";
   }
 
-  public String getDescription(){
+  public String getDescription() {
     return "Quaqua";
   }
 
@@ -41,15 +40,15 @@ public class QaquaLookAndFeel extends MetalLookAndFeel{
    *
    * @param table the UIDefaults table
    */
-  public void addCustomDefaults(UIDefaults table){
+  public void addCustomDefaults(UIDefaults table) {
     table.put("ScrollBarUI", quaquaPackageName + "QaquaScrollBarUI");
     table.put("ListUI", quaquaPackageName + "QaquaListUI");
 
     table.put("PopupMenuUI", quaquaPackageName + "QaquaPopupMenuUI");
 
-    table.put("MenuBarUI",   quaquaPackageName + "QaquaMenuBarUI");
-    table.put("MenuUI",      quaquaPackageName + "QaquaMenuUI");
-    table.put("MenuItemUI",  quaquaPackageName + "QaquaMenuItemUI");
+    table.put("MenuBarUI", quaquaPackageName + "QaquaMenuBarUI");
+    table.put("MenuUI", quaquaPackageName + "QaquaMenuUI");
+    table.put("MenuItemUI", quaquaPackageName + "QaquaMenuItemUI");
     /*
  "CheckBoxMenuItemUI", basicPackageName + "BasicCheckBoxMenuItemUI",
     "RadioButtonMenuItemUI", basicPackageName + "BasicRadioButtonMenuItemUI",
@@ -62,14 +61,14 @@ public class QaquaLookAndFeel extends MetalLookAndFeel{
    * @param name the name of the image
    * @return the image
    */
-  public static Image loadImage(String name){
+  public static Image loadImage(String name) {
     Image image = Toolkit.getDefaultToolkit().getImage(QaquaLookAndFeel.class.getResource(name));
 
-    try{
+    try {
       MediaTracker mediaTracker = new MediaTracker(component);
       mediaTracker.addImage(image, 0);
       mediaTracker.waitForAll();
-    } catch(InterruptedException e){
+    } catch (InterruptedException e) {
       e.printStackTrace();
     }
 
@@ -82,13 +81,13 @@ public class QaquaLookAndFeel extends MetalLookAndFeel{
    * @param img the image
    * @return the pixel array
    */
-  public static int[] getPixelArrayFromImage(Image img){
+  public static int[] getPixelArrayFromImage(Image img) {
     int pix[];
     pix = new int[img.getWidth(null) * img.getHeight(null)];
     PixelGrabber pg = new PixelGrabber(img, 0, 0, img.getWidth(null), img.getHeight(null), pix, 0, img.getWidth(null));
-    try{
+    try {
       pg.grabPixels();
-    } catch(InterruptedException e){
+    } catch (InterruptedException e) {
       return null;
     }
     return pix;
@@ -97,12 +96,12 @@ public class QaquaLookAndFeel extends MetalLookAndFeel{
   /**
    * Creates an image from pixel array.
    *
-   * @param array the array
-   * @param width the width
+   * @param array  the array
+   * @param width  the width
    * @param height the height
    * @return the image
    */
-  public static Image getImageFromPixelArray(int array[], int width, int height){
+  public static Image getImageFromPixelArray(int array[], int width, int height) {
     // aus dem Array wieder ein Bild machen
     MemoryImageSource producer = new MemoryImageSource(width, height, array, 0, width);
     producer.setAnimated(false); // nur ein Bild, nicht animiert
@@ -111,16 +110,16 @@ public class QaquaLookAndFeel extends MetalLookAndFeel{
     return Toolkit.getDefaultToolkit().createImage(producer);
   }
 
-  public static Image rotateImage90(Image image){
+  public static Image rotateImage90(Image image) {
     int pixels[] = getPixelArrayFromImage(image);
     int rotatePixels[] = new int[pixels.length];
 
     // rotate the pixel array
     int width = image.getWidth(null);
     int height = image.getHeight(null);
-    for(int y = 0; y < height; y++){
-      for(int x = 0; x < width; x++){
-        rotatePixels[y + x*height] = pixels[x + y*width];
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        rotatePixels[y + x * height] = pixels[x + y * width];
       }
     }
 

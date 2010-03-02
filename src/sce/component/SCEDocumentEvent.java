@@ -1,4 +1,3 @@
-
 /**
  * @author Jörg Endrullis
  */
@@ -7,18 +6,18 @@ package sce.component;
 
 public class SCEDocumentEvent {
   // undoable events
-  public static final int EVENT_INSERT    = 1 << 0;
-  public static final int EVENT_REMOVE    = 1 << 1;
+  public static final int EVENT_INSERT = 1 << 0;
+  public static final int EVENT_REMOVE = 1 << 1;
 
   // style events (not undoable)
-  public static final int EVENT_STYLE     = 1 << 2;
+  public static final int EVENT_STYLE = 1 << 2;
   public static final int EVENT_EDITRANGE = 1 << 3;
 
   // update view (cursor pos)?
-  public static final int UPDATE_VIEW     = 1 << 4;
+  public static final int UPDATE_VIEW = 1 << 4;
 
   // undo event
-  public static final int EVENT_UNDO      = 1 << 5;
+  public static final int EVENT_UNDO = 1 << 5;
   public static final int EVENT_REDO = 1 << 6;
 
   // the event properties
@@ -33,7 +32,7 @@ public class SCEDocumentEvent {
   /**
    * Creates a document event.
    */
-  public SCEDocumentEvent(){
+  public SCEDocumentEvent() {
     time = System.currentTimeMillis();
   }
 
@@ -42,7 +41,7 @@ public class SCEDocumentEvent {
    *
    * @return the time
    */
-  public long getTimeMillis(){
+  public long getTimeMillis() {
     return time;
   }
 
@@ -51,7 +50,7 @@ public class SCEDocumentEvent {
    *
    * @return event type
    */
-  public int getEventType(){
+  public int getEventType() {
     return eventType;
   }
 
@@ -60,7 +59,7 @@ public class SCEDocumentEvent {
    *
    * @param eventType event type
    */
-  public void setEventType(int eventType){
+  public void setEventType(int eventType) {
     this.eventType = eventType;
   }
 
@@ -69,14 +68,14 @@ public class SCEDocumentEvent {
    *
    * @return true, if insert event
    */
-  public boolean isInsert(){
+  public boolean isInsert() {
     return (eventType & EVENT_INSERT) != 0;
   }
 
   /**
    * Sets the EVENT_INSERT flag of event type.
    */
-  public void setInsert(){
+  public void setInsert() {
     eventType |= EVENT_INSERT;
   }
 
@@ -85,14 +84,14 @@ public class SCEDocumentEvent {
    *
    * @return true, if remove event
    */
-  public boolean isRemove(){
+  public boolean isRemove() {
     return (eventType & EVENT_REMOVE) != 0;
   }
 
   /**
    * Sets the EVENT_REMOVE flag of event type.
    */
-  public void setRemove(){
+  public void setRemove() {
     eventType |= EVENT_REMOVE;
   }
 
@@ -101,14 +100,14 @@ public class SCEDocumentEvent {
    *
    * @return true, if the cursor position should be updated
    */
-  public boolean updateView(){
+  public boolean updateView() {
     return (eventType & UPDATE_VIEW) != 0;
   }
 
   /**
    * Sets the UPDATE_VIEW flag of event type.
    */
-  public void setUpdateView(){
+  public void setUpdateView() {
     eventType |= UPDATE_VIEW;
   }
 
@@ -117,7 +116,7 @@ public class SCEDocumentEvent {
    *
    * @return start of the range
    */
-  public SCEDocumentPosition getRangeStart(){
+  public SCEDocumentPosition getRangeStart() {
     return start;
   }
 
@@ -126,19 +125,19 @@ public class SCEDocumentEvent {
    *
    * @return end of the damage range
    */
-  public SCEDocumentPosition getRangeEnd(){
+  public SCEDocumentPosition getRangeEnd() {
     return end;
   }
 
   /**
    * Sets the range of the damage.
    *
-   * @param startRow start row
+   * @param startRow    start row
    * @param startColumn start column
-   * @param endRow end row
-   * @param endColumn end column
+   * @param endRow      end row
+   * @param endColumn   end column
    */
-  public void setRange(int startRow, int startColumn, int endRow, int endColumn){
+  public void setRange(int startRow, int startColumn, int endRow, int endColumn) {
     start = new SCEDocumentPosition(startRow, startColumn);
     end = new SCEDocumentPosition(endRow, endColumn);
   }
@@ -147,11 +146,11 @@ public class SCEDocumentEvent {
    * Sets the range of the damage.
    *
    * @param start the start position.
-   * @param end the end position.
+   * @param end   the end position.
    */
-  public void setRange(SCEDocumentPosition start, SCEDocumentPosition end){
-    if(start != null) this.start = new SCEDocumentPosition(start.getRow(), start.getColumn());
-    if(end != null) this.end = new SCEDocumentPosition(end.getRow(), end.getColumn());
+  public void setRange(SCEDocumentPosition start, SCEDocumentPosition end) {
+    if (start != null) this.start = new SCEDocumentPosition(start.getRow(), start.getColumn());
+    if (end != null) this.end = new SCEDocumentPosition(end.getRow(), end.getColumn());
   }
 
   /**
@@ -159,7 +158,7 @@ public class SCEDocumentEvent {
    *
    * @return the text
    */
-  public String getText(){
+  public String getText() {
     return text;
   }
 
@@ -168,7 +167,7 @@ public class SCEDocumentEvent {
    *
    * @param text the text
    */
-  public void setText(String text){
+  public void setText(String text) {
     this.text = text;
   }
 }

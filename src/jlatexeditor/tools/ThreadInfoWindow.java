@@ -27,7 +27,7 @@ public class ThreadInfoWindow extends JFrame implements Runnable {
 
     JScrollPane scrollPane = new JScrollPane(info);
     cp.add(scrollPane);
-    scrollPane.setPreferredSize(new Dimension(600,800));
+    scrollPane.setPreferredSize(new Dimension(600, 800));
 
     working = new JLabel(new ImageIcon(getClass().getResource("/images/working32.gif")));
     working.setText("collecting CPU usage information...");
@@ -35,9 +35,9 @@ public class ThreadInfoWindow extends JFrame implements Runnable {
 
     message.setHorizontalAlignment(JLabel.CENTER);
     message.setHorizontalTextPosition(JLabel.CENTER);
-    message.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+    message.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     cp.add(message, BorderLayout.SOUTH);
-    
+
     setVisible(true);
     pack();
 
@@ -45,21 +45,22 @@ public class ThreadInfoWindow extends JFrame implements Runnable {
   }
 
   public void run() {
-    ThreadMXBean bean = ManagementFactory.getThreadMXBean( );
+    ThreadMXBean bean = ManagementFactory.getThreadMXBean();
     long[] ids = bean.getAllThreadIds();
     ThreadInfo[] threadInfos = bean.getThreadInfo(ids, 100);
 
     // collect CPU times
     ThreadCPUInfo[] threadCPUInfos = new ThreadCPUInfo[ids.length];
-    if(bean.isThreadCpuTimeSupported()) {
+    if (bean.isThreadCpuTimeSupported()) {
       long[] initTime = new long[ids.length];
-      for(int nr = 0; nr < ids.length; nr++) initTime[nr] = bean.getThreadCpuTime(ids[nr]);
+      for (int nr = 0; nr < ids.length; nr++) initTime[nr] = bean.getThreadCpuTime(ids[nr]);
 
       try {
         Thread.sleep(2000);
-      } catch (InterruptedException e) { }
+      } catch (InterruptedException e) {
+      }
 
-      for(int nr = 0; nr < ids.length; nr++) {
+      for (int nr = 0; nr < ids.length; nr++) {
         threadCPUInfos[nr] = new ThreadCPUInfo(threadInfos[nr], bean.getThreadCpuTime(ids[nr]) - initTime[nr]);
       }
     }
@@ -67,37 +68,37 @@ public class ThreadInfoWindow extends JFrame implements Runnable {
     Arrays.sort(threadCPUInfos);
 
     StringBuffer builder = new StringBuffer();
-    for(int nr = 0; nr < ids.length; nr++) {
+    for (int nr = 0; nr < ids.length; nr++) {
       ThreadCPUInfo threadCPUInfo = threadCPUInfos[nr];
       ThreadInfo info = threadCPUInfo.getThreadInfo();
-      if(info == null) continue;
+      if (info == null) continue;
       long cpuTime = threadCPUInfo.getCpuTime();
 
       builder.append("Thread: " + info.getThreadName() + " (" + info.getThreadId() + ") " + info.getThreadState() + "\n");
-      builder.append("CPU time: " + (cpuTime >= 0 ? cpuTime/ 2000000000. : "thread has died already") + "\n");
+      builder.append("CPU time: " + (cpuTime >= 0 ? cpuTime / 2000000000. : "thread has died already") + "\n");
 
       builder.append("Stack trace:\n");
       StackTraceElement[] trace = info.getStackTrace();
-      for(StackTraceElement traceElement : trace) builder.append("\tat " + traceElement).append("\n");
+      for (StackTraceElement traceElement : trace) builder.append("\tat " + traceElement).append("\n");
       builder.append("\n");
     }
 
-	  /*
-	  try {
-		  String desc = URLEncoder.encode(builder.toString(), "UTF-8");
-		  String url = "https://jlatexeditor.endrullis.de/trac/JLatexEditor/newticket?type=defect&summary=sum&description=" + desc;
-		  System.out.println(url);
-		  Desktop.getDesktop().browse(new URI(url));
-	  } catch (UnsupportedEncodingException e) {
-		  e.printStackTrace();
-	  } catch (URISyntaxException e) {
-		  e.printStackTrace();
-	  } catch (IOException e) {
-		  e.printStackTrace();
-	  }
-	  */
+    /*
+      try {
+        String desc = URLEncoder.encode(builder.toString(), "UTF-8");
+        String url = "https://jlatexeditor.endrullis.de/trac/JLatexEditor/newticket?type=defect&summary=sum&description=" + desc;
+        System.out.println(url);
+        Desktop.getDesktop().browse(new URI(url));
+      } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();
+      } catch (URISyntaxException e) {
+        e.printStackTrace();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      */
 
-	  info.setText(builder.toString());
+    info.setText(builder.toString());
     working.setVisible(false);
   }
 

@@ -23,7 +23,7 @@ public class ImageButton extends JPanel implements MouseListener {
   private String actionCommand = "clicked";
 
   public ImageButton(ImageIcon icon) {
-    this(icon,icon,icon);
+    this(icon, icon, icon);
   }
 
   public ImageButton(ImageIcon icon, ImageIcon over, ImageIcon press) {
@@ -38,7 +38,7 @@ public class ImageButton extends JPanel implements MouseListener {
 
   public void paint(Graphics g) {
     Graphics2D g2d = (Graphics2D) g;
-    if(!enabled) {
+    if (!enabled) {
       g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.3f));
       g.drawImage(icon.getImage(), 0, 0, null);
     } else {
@@ -77,8 +77,8 @@ public class ImageButton extends JPanel implements MouseListener {
   }
 
   public void mouseClicked(MouseEvent e) {
-    if(!enabled) return;
-    for(ActionListener listener : (ArrayList<ActionListener>) listeners.clone()) {
+    if (!enabled) return;
+    for (ActionListener listener : (ArrayList<ActionListener>) listeners.clone()) {
       listener.actionPerformed(new ActionEvent(this, 0, actionCommand));
     }
   }

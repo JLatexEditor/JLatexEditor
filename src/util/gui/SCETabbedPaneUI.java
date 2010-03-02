@@ -60,18 +60,21 @@ public class SCETabbedPaneUI extends BasicTabbedPaneUI {
 
   protected int calculateTabWidth(int tabPlacement, int tabIndex, FontMetrics metrics) {
     int width = super.calculateTabWidth(tabPlacement, tabIndex, metrics);
-    if(tabIndex == 0 || tabIndex == tabbedPane.getTabCount()-1) width += 10;
-    return width+20;
+    if (tabIndex == 0 || tabIndex == tabbedPane.getTabCount() - 1) width += 10;
+    return width + 20;
   }
 
   protected void paintTabBackground(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h, boolean isSelected) {
     Rectangle area = new Rectangle(x, y, w, h);
 
-    if(isSelected) {
-      acitveX = x-5;
-      acitveWidth = w+2;
-      if(tabIndex == 0) { acitveX += 7; acitveWidth -= 7; }
-      if(tabIndex != tabbedPane.getTabCount()-1) acitveWidth += 9;
+    if (isSelected) {
+      acitveX = x - 5;
+      acitveWidth = w + 2;
+      if (tabIndex == 0) {
+        acitveX += 7;
+        acitveWidth -= 7;
+      }
+      if (tabIndex != tabbedPane.getTabCount() - 1) acitveWidth += 9;
     }
     // background
     {
@@ -79,22 +82,22 @@ public class SCETabbedPaneUI extends BasicTabbedPaneUI {
       g.drawImage(image.getImage(), area.x, area.y, area.x + area.width, area.y + area.height, 0, 0, image.getIconWidth(), image.getIconHeight(), null);
     }
     // left
-    if(tabIndex == 0) {
+    if (tabIndex == 0) {
       g.drawImage((isSelected ? image_active_left : image_inactive_left).getImage(), area.x, area.y, null);
     } else {
-      boolean left_isSelected = tabbedPane.getSelectedIndex() == tabIndex-1;
+      boolean left_isSelected = tabbedPane.getSelectedIndex() == tabIndex - 1;
       ImageIcon image = isSelected ? image_inactive_active : (left_isSelected ? image_active_inactive : image_inactive_inactive);
-      int hw = image.getIconWidth()/2;
-      g.drawImage(image.getImage(), area.x, area.y, area.x + hw, area.y + area.height, hw, 0, 2*hw, image.getIconHeight(), null);
+      int hw = image.getIconWidth() / 2;
+      g.drawImage(image.getImage(), area.x, area.y, area.x + hw, area.y + area.height, hw, 0, 2 * hw, image.getIconHeight(), null);
     }
     // right
-    if(tabIndex == tabbedPane.getTabCount()-1) {
+    if (tabIndex == tabbedPane.getTabCount() - 1) {
       ImageIcon image = isSelected ? image_active_right : image_inactive_right;
       g.drawImage(image.getImage(), area.x + area.width - image.getIconWidth(), area.y, null);
     } else {
-      boolean right_isSelected = tabbedPane.getSelectedIndex() == tabIndex+1;
+      boolean right_isSelected = tabbedPane.getSelectedIndex() == tabIndex + 1;
       ImageIcon image = isSelected ? image_active_inactive : (right_isSelected ? image_inactive_active : image_inactive_inactive);
-      int hw = image.getIconWidth()/2;
+      int hw = image.getIconWidth() / 2;
       g.drawImage(image.getImage(), area.x + area.width - hw, area.y, area.x + area.width, area.y + area.height, 0, 0, hw, image.getIconHeight(), null);
     }
   }
@@ -107,12 +110,12 @@ public class SCETabbedPaneUI extends BasicTabbedPaneUI {
 
   protected void paintContentBorderBottomEdge(Graphics g, int tabPlacement, int selectedIndex, int x, int y, int w, int h) {
     g.setColor(BLUE);
-    g.fillRect(0, y-3, 2000, 3);
+    g.fillRect(0, y - 3, 2000, 3);
 
     g.setColor(BORDER);
-    g.drawLine(0, y-4, 2000, y-4);
+    g.drawLine(0, y - 4, 2000, y - 4);
     g.setColor(BLUE);
-    g.drawLine(acitveX, y-4, acitveX+acitveWidth, y-4);
+    g.drawLine(acitveX, y - 4, acitveX + acitveWidth, y - 4);
   }
 
   protected void paintContentBorderTopEdge(Graphics g, int tabPlacement, int selectedIndex, int x, int y, int w, int h) {

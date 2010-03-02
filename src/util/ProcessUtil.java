@@ -10,8 +10,8 @@ public class ProcessUtil {
     Process process;
 
     ArrayList<String> env = new ArrayList<String>();
-    for(Map.Entry<String, String> entry : System.getenv().entrySet()) {
-      if(entry.getKey().equalsIgnoreCase("PWD")) continue;
+    for (Map.Entry<String, String> entry : System.getenv().entrySet()) {
+      if (entry.getKey().equalsIgnoreCase("PWD")) continue;
       env.add(entry.getKey() + "=" + entry.getValue());
     }
     String[] envArray = new String[env.size()];

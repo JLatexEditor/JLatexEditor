@@ -6,7 +6,7 @@ package sce.syntaxhighlighting;
 
 import java.util.Stack;
 
-public class ParserStateStack{
+public class ParserStateStack {
   private Stack<ParserState> stateStack = new Stack<ParserState>();
 
   /**
@@ -14,7 +14,7 @@ public class ParserStateStack{
    *
    * @param state the state
    */
-  public void push(ParserState state){
+  public void push(ParserState state) {
     stateStack.push(state);
   }
 
@@ -23,7 +23,7 @@ public class ParserStateStack{
    *
    * @return the top element
    */
-  public ParserState pop(){
+  public ParserState pop() {
     return stateStack.pop();
   }
 
@@ -32,7 +32,7 @@ public class ParserStateStack{
    *
    * @return the top element of the stack
    */
-  public ParserState peek(){
+  public ParserState peek() {
     return stateStack.peek();
   }
 
@@ -41,7 +41,7 @@ public class ParserStateStack{
    *
    * @return true, if stack empty
    */
-  public boolean isEmpty(){
+  public boolean isEmpty() {
     return stateStack.isEmpty();
   }
 
@@ -50,7 +50,7 @@ public class ParserStateStack{
    *
    * @return number of elements
    */
-  protected int size(){
+  protected int size() {
     return stateStack.size();
   }
 
@@ -60,7 +60,7 @@ public class ParserStateStack{
    * @param nr
    * @return
    */
-  protected ParserState get(int nr){
+  protected ParserState get(int nr) {
     return stateStack.get(nr);
   }
 
@@ -70,12 +70,12 @@ public class ParserStateStack{
    * @param psStack the stack to compare with
    * @return true, if they are equal
    */
-  public boolean equals(ParserStateStack psStack){
-    if(psStack == null) return false;
-    if(stateStack.size() != psStack.size()) return false;
+  public boolean equals(ParserStateStack psStack) {
+    if (psStack == null) return false;
+    if (stateStack.size() != psStack.size()) return false;
 
-    for(int state_nr = 0; state_nr < stateStack.size(); state_nr++){
-      if(!get(state_nr).equals(psStack.get(state_nr))) return false;
+    for (int state_nr = 0; state_nr < stateStack.size(); state_nr++) {
+      if (!get(state_nr).equals(psStack.get(state_nr))) return false;
     }
 
     return true;
@@ -86,12 +86,12 @@ public class ParserStateStack{
    *
    * @return the clone
    */
-  public ParserStateStack copy(){
+  public ParserStateStack copy() {
     ParserStateStack clone = new ParserStateStack();
 
-	  for (ParserState aStateStack : stateStack) {
-		  clone.push(aStateStack.copy());
-	  }
+    for (ParserState aStateStack : stateStack) {
+      clone.push(aStateStack.copy());
+    }
 
     return clone;
   }

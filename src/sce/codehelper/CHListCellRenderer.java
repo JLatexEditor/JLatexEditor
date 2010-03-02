@@ -9,15 +9,15 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-public class CHListCellRenderer extends DefaultListCellRenderer{
+public class CHListCellRenderer extends DefaultListCellRenderer {
   protected static Border noFocusBorder;
 
   /**
    * Constructs a default renderer object for an item in a list.
    */
-  public CHListCellRenderer(){
+  public CHListCellRenderer() {
     super();
-    if(noFocusBorder == null){
+    if (noFocusBorder == null) {
       noFocusBorder = new EmptyBorder(1, 1, 1, 1);
     }
 
@@ -25,20 +25,20 @@ public class CHListCellRenderer extends DefaultListCellRenderer{
     setBorder(noFocusBorder);
   }
 
-  public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus){
+  public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
     setComponentOrientation(list.getComponentOrientation());
-    if(isSelected){
+    if (isSelected) {
       setBackground(list.getSelectionBackground());
       setForeground(list.getSelectionForeground());
-    } else{
+    } else {
       setBackground(list.getBackground());
       setForeground(list.getForeground());
     }
 
-    if(value instanceof Icon){
+    if (value instanceof Icon) {
       setIcon((Icon) value);
       setText("");
-    } else{
+    } else {
       setIcon(null);
       setText((value == null) ? "" : value.toString());
     }

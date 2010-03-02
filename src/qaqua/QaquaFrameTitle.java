@@ -1,4 +1,3 @@
-
 /**
  * @author Jörg Endrullis
  */
@@ -11,7 +10,7 @@ import java.awt.event.*;
 import java.awt.font.TextAttribute;
 import java.text.AttributedString;
 
-public class QaquaFrameTitle extends JPanel implements ActionListener, MouseListener, MouseMotionListener{
+public class QaquaFrameTitle extends JPanel implements ActionListener, MouseListener, MouseMotionListener {
   // the owner frame
   QaquaFrame window = null;
   AttributedString titleString = null;
@@ -34,7 +33,7 @@ public class QaquaFrameTitle extends JPanel implements ActionListener, MouseList
    *
    * @param window the frame
    */
-  public QaquaFrameTitle(QaquaFrame window){
+  public QaquaFrameTitle(QaquaFrame window) {
     this.window = window;
 
     // set the layout
@@ -89,12 +88,12 @@ public class QaquaFrameTitle extends JPanel implements ActionListener, MouseList
     addMouseMotionListener(this);
   }
 
-  public void paint(Graphics g){
+  public void paint(Graphics g) {
     Graphics2D g2D = (Graphics2D) g;
 
     int increment = imgTitleBackground.getWidth(null);
     int width = getWidth();
-    for(int x = 0; x < width; x += increment){
+    for (int x = 0; x < width; x += increment) {
       g2D.drawImage(imgTitleBackground, x, 0, null);
     }
 
@@ -116,24 +115,25 @@ public class QaquaFrameTitle extends JPanel implements ActionListener, MouseList
    *
    * @return the with of the title
    */
-  public int getTitleWidth(){
+  public int getTitleWidth() {
     Graphics2D g2D = (Graphics2D) getGraphics();
-    if(g2D == null) return 100;
+    if (g2D == null) return 100;
     FontMetrics fm = g2D.getFontMetrics(g2D.getFont());
 
     return 81 + fm.stringWidth(window.getTitle()) + 15;
   }
 
   // ActionListener methods
+
   public void actionPerformed(ActionEvent e) {
-    if(e.getActionCommand().equals("close")){
-      if(window.getDefaultCloseOperation() == QaquaFrame.EXIT_ON_CLOSE) System.exit(0);
+    if (e.getActionCommand().equals("close")) {
+      if (window.getDefaultCloseOperation() == QaquaFrame.EXIT_ON_CLOSE) System.exit(0);
       setVisible(false);
     }
-    if(e.getActionCommand().equals("minimize")){
+    if (e.getActionCommand().equals("minimize")) {
       window.getJFrameOwner().setExtendedState(JFrame.ICONIFIED);
     }
-    if(e.getActionCommand().equals("maximize")){
+    if (e.getActionCommand().equals("maximize")) {
       window.setMaximized(!window.isMaximized());
     }
   }
@@ -143,28 +143,29 @@ public class QaquaFrameTitle extends JPanel implements ActionListener, MouseList
   private Point dragStartWindow = new Point();
   private Point currentMousePos = new Point();
 
-  public void mouseClicked(MouseEvent e){
-    if(e.getClickCount() == 2) window.setMaximized(!window.isMaximized());
+  public void mouseClicked(MouseEvent e) {
+    if (e.getClickCount() == 2) window.setMaximized(!window.isMaximized());
   }
 
-  public void mousePressed(MouseEvent e){
+  public void mousePressed(MouseEvent e) {
     dragStartWindow = window.getLocationOnScreen();
     dragStartMouse.x = dragStartWindow.x + e.getX();
     dragStartMouse.y = dragStartWindow.y + e.getY();
   }
 
-  public void mouseReleased(MouseEvent e){
+  public void mouseReleased(MouseEvent e) {
   }
 
-  public void mouseEntered(MouseEvent e){
+  public void mouseEntered(MouseEvent e) {
   }
 
-  public void mouseExited(MouseEvent e){
+  public void mouseExited(MouseEvent e) {
   }
 
   // MouseMotionListener methods
-  public void mouseDragged(MouseEvent e){
-    if(window.isMaximized()) return;
+
+  public void mouseDragged(MouseEvent e) {
+    if (window.isMaximized()) return;
 
     currentMousePos.x = window.getLocationOnScreen().x + e.getX();
     currentMousePos.y = window.getLocationOnScreen().y + e.getY();
@@ -172,6 +173,6 @@ public class QaquaFrameTitle extends JPanel implements ActionListener, MouseList
     window.setLocation(dragStartWindow.x + currentMousePos.x - dragStartMouse.x, dragStartWindow.y + currentMousePos.y - dragStartMouse.y);
   }
 
-  public void mouseMoved(MouseEvent e){
+  public void mouseMoved(MouseEvent e) {
   }
 }

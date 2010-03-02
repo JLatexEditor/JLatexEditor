@@ -1,5 +1,3 @@
-
-
 package sce.component;
 
 import javax.swing.*;
@@ -12,9 +10,9 @@ import java.util.ArrayList;
  * Cared in a document.
  *
  * @author Jörg Endrullis
- * @author Stefan Endrullis 
+ * @author Stefan Endrullis
  */
-public class SCECaret implements SCEPosition, ActionListener{
+public class SCECaret implements SCEPosition, ActionListener {
   private SCEPane pane = null;
   private SCEDocument document = null;
 
@@ -45,10 +43,10 @@ public class SCECaret implements SCEPosition, ActionListener{
    *
    * @param pane SCE pane
    */
-  public SCECaret(SCEPane pane){
+  public SCECaret(SCEPane pane) {
     this.pane = pane;
     document = pane.getDocument();
-    position = new SCEDocumentPosition(0,0);
+    position = new SCEDocumentPosition(0, 0);
 
     // blink timer
     timer = new Timer(500, this);
@@ -60,7 +58,7 @@ public class SCECaret implements SCEPosition, ActionListener{
    *
    * @return row
    */
-  public int getRow(){
+  public int getRow() {
     return position.getRow();
   }
 
@@ -69,7 +67,7 @@ public class SCECaret implements SCEPosition, ActionListener{
    *
    * @return column
    */
-  public int getColumn(){
+  public int getColumn() {
     return position.getColumn();
   }
 
@@ -78,20 +76,20 @@ public class SCECaret implements SCEPosition, ActionListener{
    *
    * @param direction a direction constant
    */
-  public void move(int direction){
-    if(direction == DIRECTION_UP) moveTo(getRow() - 1, virtualColumn, false);
-    if(direction == DIRECTION_DOWN) moveTo(getRow() + 1, virtualColumn, false);
-    if(direction == DIRECTION_LEFT){
-      if(getColumn() == 0 && getRow() > 0){
+  public void move(int direction) {
+    if (direction == DIRECTION_UP) moveTo(getRow() - 1, virtualColumn, false);
+    if (direction == DIRECTION_DOWN) moveTo(getRow() + 1, virtualColumn, false);
+    if (direction == DIRECTION_LEFT) {
+      if (getColumn() == 0 && getRow() > 0) {
         moveTo(getRow() - 1, document.getRowLength(getRow() - 1));
-      } else{
+      } else {
         moveTo(getRow(), getColumn() - 1);
       }
     }
-    if(direction == DIRECTION_RIGHT){
-      if(getColumn() == document.getRowLength(getRow()) && getRow() < document.getRowsCount() - 1){
+    if (direction == DIRECTION_RIGHT) {
+      if (getColumn() == document.getRowLength(getRow()) && getRow() < document.getRowsCount() - 1) {
         moveTo(getRow() + 1, 0);
-      } else{
+      } else {
         moveTo(getRow(), getColumn() + 1);
       }
     }
@@ -100,30 +98,30 @@ public class SCECaret implements SCEPosition, ActionListener{
   /**
    * Moves the caret to the specified position.
    *
-   * @param row the row
+   * @param row    the row
    * @param column the column
    */
-  public void moveTo(int row, int column){
+  public void moveTo(int row, int column) {
     moveTo(row, column, true);
   }
-
-	/**
-	 * Moves the caret to the specified position.
-	 *
-	 * @param pos position
-	 */
-	public void moveTo (SCEPosition pos) {
-		moveTo(pos.getRow(), pos.getColumn());
-	}
 
   /**
    * Moves the caret to the specified position.
    *
-   * @param row the row
-   * @param column the column
+   * @param pos position
+   */
+  public void moveTo(SCEPosition pos) {
+    moveTo(pos.getRow(), pos.getColumn());
+  }
+
+  /**
+   * Moves the caret to the specified position.
+   *
+   * @param row                 the row
+   * @param column              the column
    * @param updateVirtualColumn true, if the virtual column should be updated
    */
-  private void moveTo(int row, int column, boolean updateVirtualColumn){
+  private void moveTo(int row, int column, boolean updateVirtualColumn) {
     // remember the last position
     int lastRow = getRow();
     int lastColumn = getColumn();
@@ -142,9 +140,9 @@ public class SCECaret implements SCEPosition, ActionListener{
     document.setSelectionRange(position, selectionMark);
 
     // inform listeners
-	  for (SCECaretListener caretListener : caretListeners) {
-			caretListener.caretMoved(getRow(), getColumn(), lastRow, lastColumn);
-	  }
+    for (SCECaretListener caretListener : caretListeners) {
+      caretListener.caretMoved(getRow(), getColumn(), lastRow, lastColumn);
+    }
 
     // upate last Motion time
     lastMotionTime = System.currentTimeMillis();
@@ -153,14 +151,14 @@ public class SCECaret implements SCEPosition, ActionListener{
   /**
    * Sets the selection mark to the current caret position.
    */
-  public void setSelectionMark(){
+  public void setSelectionMark() {
     selectionMark = new SCEDocumentPosition(getRow(), getColumn());
   }
 
   /**
    * Removes the selection mark.
    */
-  public void removeSelectionMark(){
+  public void removeSelectionMark() {
     selectionMark = null;
     document.setSelectionRange(null, null);
   }
@@ -170,7 +168,7 @@ public class SCECaret implements SCEPosition, ActionListener{
    *
    * @return the selection mark
    */
-  public SCEDocumentPosition getSelectionMark(){
+  public SCEDocumentPosition getSelectionMark() {
     return selectionMark;
   }
 
@@ -179,7 +177,7 @@ public class SCECaret implements SCEPosition, ActionListener{
    *
    * @param show true, if the cursor should be showed
    */
-  public void showCursor(boolean show){
+  public void showCursor(boolean show) {
     cursorVisible = show;
 
     // repaint the caret
@@ -192,7 +190,7 @@ public class SCECaret implements SCEPosition, ActionListener{
    *
    * @return the visualization rectangle
    */
-  private Rectangle getCaretRectangle(){
+  private Rectangle getCaretRectangle() {
     Point position = pane.modelToView(getRow(), getColumn());
     return new Rectangle(position.x, position.y, 2, pane.getLineHeight());
   }
@@ -202,8 +200,8 @@ public class SCECaret implements SCEPosition, ActionListener{
    *
    * @param g the graphics object to draw on
    */
-  public void paint(Graphics g){
-    if(!cursorVisible) return;
+  public void paint(Graphics g) {
+    if (!cursorVisible) return;
 
     // Draw the caret
     g.setColor(Color.BLACK);
@@ -214,8 +212,9 @@ public class SCECaret implements SCEPosition, ActionListener{
   }
 
   // ActionListener methods
-  public void actionPerformed(ActionEvent e){
-    if(lastMotionTime + 250 < System.currentTimeMillis()){
+
+  public void actionPerformed(ActionEvent e) {
+    if (lastMotionTime + 250 < System.currentTimeMillis()) {
       showCursor(!cursorVisible);
     }
   }
@@ -225,7 +224,7 @@ public class SCECaret implements SCEPosition, ActionListener{
    *
    * @param listener the listener
    */
-  public void addSCECaretListener(SCECaretListener listener){
+  public void addSCECaretListener(SCECaretListener listener) {
     caretListeners.add(listener);
   }
 
@@ -234,7 +233,7 @@ public class SCECaret implements SCEPosition, ActionListener{
    *
    * @param listener the listener
    */
-  public void removeSCECaretListener(SCECaretListener listener){
+  public void removeSCECaretListener(SCECaretListener listener) {
     caretListeners.remove(listener);
   }
 }

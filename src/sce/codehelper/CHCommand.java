@@ -1,4 +1,3 @@
-
 /**
  * @author Jörg Endrullis
  */
@@ -7,7 +6,7 @@ package sce.codehelper;
 
 import java.util.ArrayList;
 
-public class CHCommand implements Comparable{
+public class CHCommand implements Comparable {
   // the name
   private String name = null;
   // the usage string
@@ -21,7 +20,7 @@ public class CHCommand implements Comparable{
    *
    * @param name the name
    */
-  public CHCommand(String name){
+  public CHCommand(String name) {
     this.name = name;
   }
 
@@ -30,7 +29,7 @@ public class CHCommand implements Comparable{
    *
    * @return name
    */
-  public String getName(){
+  public String getName() {
     return name;
   }
 
@@ -43,8 +42,8 @@ public class CHCommand implements Comparable{
    *
    * @return usage string
    */
-  public String getUsage(){
-    if(usage == null) return name;
+  public String getUsage() {
+    if (usage == null) return name;
     return usage;
   }
 
@@ -53,7 +52,7 @@ public class CHCommand implements Comparable{
    *
    * @param usage the usage string
    */
-  public void setUsage(String usage){
+  public void setUsage(String usage) {
     this.usage = usage;
   }
 
@@ -80,7 +79,7 @@ public class CHCommand implements Comparable{
    *
    * @param argument the argument
    */
-  public void addArgument(CHCommandArgument argument){
+  public void addArgument(CHCommandArgument argument) {
     arguments.add(argument);
   }
 
@@ -89,13 +88,14 @@ public class CHCommand implements Comparable{
    *
    * @return the arguments of the command
    */
-  public ArrayList<CHCommandArgument> getArguments(){
+  public ArrayList<CHCommandArgument> getArguments() {
     return arguments;
   }
 
   // Comparable methods
+
   public int compareTo(Object o) {
-    if(!(o instanceof CHCommand)) return -1;
+    if (!(o instanceof CHCommand)) return -1;
     return getName().compareTo(((CHCommand) o).getName());
   }
 
@@ -104,7 +104,7 @@ public class CHCommand implements Comparable{
    *
    * @return command as string
    */
-  public String toString(){
+  public String toString() {
     return getName();
   }
 }

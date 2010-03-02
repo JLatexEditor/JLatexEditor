@@ -42,22 +42,23 @@ public class Performance {
 
     try {
       pane.addCodeAssistantListener(new SpellCheckSuggester());
-    } catch (Exception e) { }
+    } catch (Exception e) {
+    }
 
     long startTime = System.nanoTime();
 
     String chars = "abcdefghijklmnopqrstuvwxyz \n{}(){}";
     Random random = new Random(8923489);
-    for(int i = 0; i < 200000; i++) {
+    for (int i = 0; i < 200000; i++) {
       int row = random.nextInt(document.getRowsCount());
-      int column = random.nextInt(document.getRowLength(row)+1);
+      int column = random.nextInt(document.getRowLength(row) + 1);
       caret.moveTo(row, column);
 
-      if(random.nextBoolean()) {
-        char c = chars.charAt(random.nextInt(chars.length()-1));
+      if (random.nextBoolean()) {
+        char c = chars.charAt(random.nextInt(chars.length() - 1));
         document.insert(c + "", caret.getRow(), caret.getColumn());
       }
-      if(random.nextBoolean()) {
+      if (random.nextBoolean()) {
         document.remove(caret.getRow(), Math.max(0, caret.getColumn() - random.nextInt(3)), caret.getRow(), caret.getColumn());
       }
     }

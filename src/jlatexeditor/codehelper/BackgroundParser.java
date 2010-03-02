@@ -24,20 +24,20 @@ import java.util.regex.Pattern;
  * Parsing files in background.
  */
 public class BackgroundParser extends Thread {
-	private static final Pattern WORD_PATTERN = Pattern.compile("[a-zA-ZäöüÄÖÜß]*");
-	private static final Pattern TODO_PATTERN = Pattern.compile("\\btodo\\b");
+  private static final Pattern WORD_PATTERN = Pattern.compile("[a-zA-ZäöüÄÖÜß]*");
+  private static final Pattern TODO_PATTERN = Pattern.compile("\\btodo\\b");
   private JLatexEditorJFrame jle;
 
   private long bibModified = 0;
   private ArrayList<BibEntry> bibEntries = new ArrayList<BibEntry>();
 
-	private Trie words = new Trie();
+  private Trie words = new Trie();
   private Trie commands = new Trie();
   private Trie labels = new Trie();
 
   private DefaultTreeModel structure = new DefaultTreeModel(new DefaultMutableTreeNode());
 
-	private ArrayList<TODO> todos = new ArrayList<TODO>();
+  private ArrayList<TODO> todos = new ArrayList<TODO>();
 
   public BackgroundParser(JLatexEditorJFrame jle) {
     this.jle = jle;
@@ -48,11 +48,11 @@ public class BackgroundParser extends Thread {
     return bibEntries;
   }
 
-	public Trie getWords() {
-		return words;
-	}
+  public Trie getWords() {
+    return words;
+  }
 
-	public Trie getCommands() {
+  public Trie getCommands() {
     return commands;
   }
 
@@ -61,10 +61,10 @@ public class BackgroundParser extends Thread {
   }
 
   public void run() {
-    while(true) {
+    while (true) {
       SourceCodeEditor editor = jle.getMainEditor();
       AbstractResource resource = editor.getResource();
-      if(!(resource instanceof Doc.FileDoc)) continue;
+      if (!(resource instanceof Doc.FileDoc)) continue;
 
       File file = ((Doc.FileDoc) resource).getFile();
       File directory = file.getParentFile();
@@ -82,8 +82,11 @@ public class BackgroundParser extends Thread {
       structure.setRoot(structureStack.get(0));
 
       try {
-        synchronized (this) { wait(); }
-      } catch (InterruptedException e) { }
+        synchronized (this) {
+          wait();
+        }
+      } catch (InterruptedException e) {
+      }
     }
   }
 
@@ -92,101 +95,110 @@ public class BackgroundParser extends Thread {
   }
 
   private void parseTex(File directory, String fileName, Trie words, Trie commands, Trie labels, ArrayList<StructureEntry> structure, HashSet<String> done) {
-    if(done.contains(fileName)) return; else done.add(fileName);
+    if (done.contains(fileName)) return;
+    else done.add(fileName);
 
     File file = new File(directory, fileName);
-    if(!file.exists()) file = new File(directory, fileName + ".tex");
-    if(!file.exists()) return;
+    if (!file.exists()) file = new File(directory, fileName + ".tex");
+    if (!file.exists()) return;
 
     String tex;
     try {
       tex = StreamUtils.readFile(file.getAbsolutePath());
-    } catch (IOException e) { return; }
+    } catch (IOException e) {
+      return;
+    }
 
     int index = 0;
-	  int line = 0;
-    while(index < tex.length()) {
+    int line = 0;
+    while (index < tex.length()) {
       char c = tex.charAt(index);
 
       // skip comments
-      if(c == '%') {
-	      int startIndex = index;
-        while(index < tex.length() && tex.charAt(index) != '\n') index++;
-	      line++;
+      if (c == '%') {
+        int startIndex = index;
+        while (index < tex.length() && tex.charAt(index) != '\n') index++;
+        line++;
         index++;
-	      String commentString = tex.substring(startIndex+1, index-1);
-	      Matcher matcher = TODO_PATTERN.matcher(commentString.toLowerCase());
-	      if (matcher.find()) {
-		      // found a "todo"
-		      String todoMsg = commentString.substring(matcher.start() + 5);
-		      todos.add(new TODO(todoMsg, file, line));
-	      }
+        String commentString = tex.substring(startIndex + 1, index - 1);
+        Matcher matcher = TODO_PATTERN.matcher(commentString.toLowerCase());
+        if (matcher.find()) {
+          // found a "todo"
+          String todoMsg = commentString.substring(matcher.start() + 5);
+          todos.add(new TODO(todoMsg, file, line));
+        }
         continue;
       }
 
-	    // newline?
-	    if(c == '\n') { line++; }
-      
+      // newline?
+      if (c == '\n') {
+        line++;
+      }
+
       // starting of commands?
-      if(c != '\\') { index++; continue; }
+      if (c != '\\') {
+        index++;
+        continue;
+      }
       index++;
-      if(index >= tex.length()) return;
-      if(!Character.isLetter(tex.charAt(index))) { index++; continue; }
+      if (index >= tex.length()) return;
+      if (!Character.isLetter(tex.charAt(index))) {
+        index++;
+        continue;
+      }
 
       // find the end of the command
       int begin = index;
       index++;
-      while(index < tex.length() && Character.isLetter(tex.charAt(index))) index++;
+      while (index < tex.length() && Character.isLetter(tex.charAt(index))) index++;
 
       // the command
       String command = tex.substring(begin, index);
       commands.add(command);
 
       // label, input, include
-      if(command.equals("label") || command.equals("bibliography") || command.equals("input") || command.equals("include")) {
+      if (command.equals("label") || command.equals("bibliography") || command.equals("input") || command.equals("include")) {
         int closing = tex.indexOf('}', index);
-        if(closing == -1) continue;
-        String argument = tex.substring(index+1,closing);
+        if (closing == -1) continue;
+        String argument = tex.substring(index + 1, closing);
 
-        if(command.equals("label")) {
+        if (command.equals("label")) {
           labels.add(argument);
-        } else
-        if(command.equals("bibliography")) {
+        } else if (command.equals("bibliography")) {
           parseBib(directory, argument);
         } else {
           parseTex(directory, argument, words, commands, labels, structure, done);
         }
-      } else
-      if(command.equals("section") || command.equals("subsection") || command.equals("subsubsection")) {
+      } else if (command.equals("section") || command.equals("subsection") || command.equals("subsubsection")) {
         int depth = 0;
-        if(command.equals("section")) depth = 1;
-        else if(command.equals("subsection")) depth = 2;
-        else if(command.equals("subsubsection")) depth = 3;
+        if (command.equals("section")) depth = 1;
+        else if (command.equals("subsection")) depth = 2;
+        else if (command.equals("subsubsection")) depth = 3;
 
         String name = "";
-        if(depth <= 3) {
+        if (depth <= 3) {
           int closing = tex.indexOf('}', index);
-          if(closing != -1) name = tex.substring(index+1,closing);
+          if (closing != -1) name = tex.substring(index + 1, closing);
         }
 
-        while(structure.get(structure.size()-1).getDepth() >= depth) structure.remove(structure.size()-1);
+        while (structure.get(structure.size() - 1).getDepth() >= depth) structure.remove(structure.size() - 1);
 
-        StructureEntry parent = structure.get(structure.size()-1);
+        StructureEntry parent = structure.get(structure.size() - 1);
         parent.add(new StructureEntry(name, depth));
       }
     }
 
-	  // collect words
-	  Matcher matcher = WORD_PATTERN.matcher(tex);
+    // collect words
+    Matcher matcher = WORD_PATTERN.matcher(tex);
     while (matcher.find()) {
-	    words.add(matcher.group());
+      words.add(matcher.group());
     }
   }
 
   private void parseBib(File directory, String fileName) {
-    if(!fileName.endsWith(".bib")) fileName = fileName + ".bib";
+    if (!fileName.endsWith(".bib")) fileName = fileName + ".bib";
     File bibFile = new File(directory, fileName);
-    if(bibFile.lastModified() == bibModified) return;
+    if (bibFile.lastModified() == bibModified) return;
     bibModified = bibFile.lastModified();
 
     bibEntries = BibParser.parseBib(bibFile);
@@ -196,12 +208,15 @@ public class BackgroundParser extends Thread {
     ArrayList<String> keys = ParseUtil.splitBySpace(search);
     ArrayList<BibEntry> entries = new ArrayList<BibEntry>();
 
-    for(BibEntry entry : bibEntries) {
+    for (BibEntry entry : bibEntries) {
       boolean all = true;
-      for(String key : keys) {
-        if(entry.getText().toLowerCase().indexOf(key) == -1) { all = false; break; }
+      for (String key : keys) {
+        if (entry.getText().toLowerCase().indexOf(key) == -1) {
+          all = false;
+          break;
+        }
       }
-      if(all) entries.add(entry);
+      if (all) entries.add(entry);
     }
 
     return entries;
@@ -212,16 +227,16 @@ public class BackgroundParser extends Thread {
   }
 
   public static class TODO {
-		private String msg;
-		private File file;
-		private int line;
+    private String msg;
+    private File file;
+    private int line;
 
-		private TODO(String msg, File file, int line) {
-			this.msg = msg;
-			this.file = file;
-			this.line = line;
-		}
-	}
+    private TODO(String msg, File file, int line) {
+      this.msg = msg;
+      this.file = file;
+      this.line = line;
+    }
+  }
 
   public static class StructureEntry extends DefaultMutableTreeNode {
     private String name;

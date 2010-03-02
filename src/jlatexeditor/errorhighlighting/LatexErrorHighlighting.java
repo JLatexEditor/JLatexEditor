@@ -23,7 +23,7 @@ public class LatexErrorHighlighting implements LatexCompileListener {
   private ArrayList<SCEErrorHighlight> errorHighlights = new ArrayList<SCEErrorHighlight>();
 
 
-  public LatexErrorHighlighting(){
+  public LatexErrorHighlighting() {
   }
 
   public void attach(SourceCodeEditor editor, ErrorView errorView) {
@@ -34,7 +34,7 @@ public class LatexErrorHighlighting implements LatexCompileListener {
   }
 
   public void detach() {
-    if(editor != null) clear();
+    if (editor != null) clear();
   }
 
   public void clear() {
@@ -43,29 +43,29 @@ public class LatexErrorHighlighting implements LatexCompileListener {
     // remove old error highlights
     SCEPane pane = editor.getTextPane();
     Iterator highlightsIterator = errorHighlights.iterator();
-    while(highlightsIterator.hasNext()){
+    while (highlightsIterator.hasNext()) {
       pane.removeTextHighlight((SCEErrorHighlight) highlightsIterator.next());
       highlightsIterator.remove();
     }
   }
 
   public void update() {
-	  if(errorView == null || editor == null) return;
+    if (errorView == null || editor == null) return;
 
-	  File file;
-	  if (editor.getResource() instanceof Doc.FileDoc) {
-		  file = ((Doc.FileDoc) editor.getResource()).getFile();
-	  } else {
-		  return;
-	  }
+    File file;
+    if (editor.getResource() instanceof Doc.FileDoc) {
+      file = ((Doc.FileDoc) editor.getResource()).getFile();
+    } else {
+      return;
+    }
 
     SCEPane pane = editor.getTextPane();
     SCEDocument document = pane.getDocument();
     SCEMarkerBar markerBar = editor.getMarkerBar();
     try {
       String canonicalFile = file.getCanonicalPath();
-      for(LatexCompileError error : errorView.getErrors()) {
-        if(!canonicalFile.equals(error.getFile().getCanonicalPath())) continue;
+      for (LatexCompileError error : errorView.getErrors()) {
+        if (!canonicalFile.equals(error.getFile().getCanonicalPath())) continue;
 
         // add error highlights
         int errorRow = Math.max(0, error.getLineStart() - 1);
@@ -73,16 +73,16 @@ public class LatexErrorHighlighting implements LatexCompileListener {
         int markerType = LatexCompileError.errorType2markerType(error.getType());
         markerBar.addMarker(new SCEMarkerBar.Marker(markerType, errorRow, error));
 
-        if(error.getType() != LatexCompileError.TYPE_ERROR) continue;
+        if (error.getType() != LatexCompileError.TYPE_ERROR) continue;
 
         String row = document.getRow(errorRow);
 
         int errorColumn = 0;
         String before = error.getTextBefore();
-        if(before != null) errorColumn = row.indexOf(before) + before.length();
+        if (before != null) errorColumn = row.indexOf(before) + before.length();
 
         SCEDocumentPosition start, end;
-        if(error.getCommand() != null) {
+        if (error.getCommand() != null) {
           errorColumn = row.lastIndexOf(error.getCommand(), errorColumn);
           start = document.createDocumentPosition(errorRow, errorColumn);
           end = document.createDocumentPosition(errorRow, errorColumn + error.getCommand().length());
@@ -97,17 +97,18 @@ public class LatexErrorHighlighting implements LatexCompileListener {
         errorHighlights.add(errorHighlight);
       }
       markerBar.repaint();
-    } catch (IOException ignored) { }
+    } catch (IOException ignored) {
+    }
   }
 
   // LatexCompileListener
-  public void compileStarted(){
+  public void compileStarted() {
   }
 
-  public void compileEnd(){
+  public void compileEnd() {
     update();
   }
 
-  public void latexError(LatexCompileError error){
+  public void latexError(LatexCompileError error) {
   }
 }
