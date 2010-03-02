@@ -1,4 +1,3 @@
-
 <commandList>
   <command name="\ " hint="force ordinary space"/>
   <command name="\@" hint="following period ends sentence"/>
@@ -19,14 +18,16 @@
   <command name="\)" hint="define math environment"/>
   <command name="\[" hint="define displaymath environment"/>
   <command name="\]" hint="define displaymath environment"/>
-  
-  <command name="\documentclass" usage="\documentclass[@opt@]{@style@}" hint="declares a document to be of the specified style">
+
+  <command name="\documentclass" usage="\documentclass[@opt@]{@style@}"
+           hint="declares a document to be of the specified style">
     <argument name="opt"/>
     <argument name="style"/>
   </command>
 
 
-  <command name="\addcontentsline" usage="\addcontentsline{@file@}{@sec_unit@}{@entry@}" hint="adds an entry to the specified list or table">
+  <command name="\addcontentsline" usage="\addcontentsline{@file@}{@sec_unit@}{@entry@}"
+           hint="adds an entry to the specified list or table">
     <argument name="file" hint="extension of the file on which information is to be written">
       <argumentValue value="toc" hint="table of contents"/>
       <argumentValue value="lof" hint="list of figures"/>
@@ -45,12 +46,14 @@
     <argument name="text" hint="the information to be written"/>
   </command>
 
-  <command name="\addtocounter" usage="\addtocounter{@counter@}{@value@}" hint="increments the counter by the amount specified by the value argument">
+  <command name="\addtocounter" usage="\addtocounter{@counter@}{@value@}"
+           hint="increments the counter by the amount specified by the value argument">
     <argument name="counter"/>
     <argument name="value"/>
   </command>
 
-  <command name="\address" usage="\address{@return address@}" hint="return address, as it should appear on the letter and the envelope">
+  <command name="\address" usage="\address{@return address@}"
+           hint="return address, as it should appear on the letter and the envelope">
     <argument name="return address"/>
   </command>
 
@@ -63,14 +66,16 @@
     <argument name="length"/>
   </command>
 
-  <command name="\alph" usage="\alph{@counter@}" hint="causes the current value of counter to be printed in alphabetic characters">
+  <command name="\alph" usage="\alph{@counter@}"
+           hint="causes the current value of counter to be printed in alphabetic characters">
     <argument name="counter"/>
   </command>
 
   <command name="\appendix" hint="changes the way sectional units are numbered">
   </command>
 
-  <command name="\arabic" usage="\arabic{@counter@}" hint="causes the current value of counter to be printed in Arabic numbers">
+  <command name="\arabic" usage="\arabic{@counter@}"
+           hint="causes the current value of counter to be printed in Arabic numbers">
     <argument name="counter"/>
   </command>
 
@@ -78,7 +83,8 @@
     <argument name="names" hint="list of authors separated by \and commands"/>
   </command>
 
-  <command name="\baselineskip" hint="a length command which specifies the minimum space between the botton of two successive lines in a paragraph">
+  <command name="\baselineskip"
+           hint="a length command which specifies the minimum space between the botton of two successive lines in a paragraph">
   </command>
 
   <command name="\baselinestretch" hint="scales the value of \baselineskip">
@@ -89,7 +95,8 @@
 
   <command name="\bibitem" usage="\bibitem[@label@]{@cite_key@}" hint="generates an entry labeled by label">
     <argument name="label"/>
-    <argument name="cite_key" hint="mnemonic consisting of any sequence of letters, numbers, and punctuation symbols not containing a comma"/>
+    <argument name="cite_key"
+              hint="mnemonic consisting of any sequence of letters, numbers, and punctuation symbols not containing a comma"/>
   </command>
 
   <command name="\bigskip" hint="equivalent to \vspace{\bigskipamount}">
@@ -98,31 +105,35 @@
   <command name="\boldmath" hint="switches to a bold math italic font">
   </command>
 
-  <command name="\cal" usage="{\cal @|@}" hint="twenty-six calligraphic letters are provided, these can only be used in math mode">
+  <command name="\cal" usage="{\cal @|@}"
+           hint="twenty-six calligraphic letters are provided, these can only be used in math mode">
   </command>
 
-  <command name="\caption" usage="\caption[@lst-entry@]{@text of table caption@}" hint="used to generate a caption for a figure or a table">
+  <command name="\caption" usage="\caption[@lst-entry@]{@text of table caption@}"
+           hint="used to generate a caption for a figure or a table">
     <argument name="lst-entry" hint="may be used to generate an entry for a list of figures or tables"/>
     <argument name="text of table caption"/>
   </command>
 
-  <command name="\cdots" hint="produces a horizontal ellipsis where the dots are raised to the center of the line (math mode)">
+  <command name="\cdots"
+           hint="produces a horizontal ellipsis where the dots are raised to the center of the line (math mode)">
   </command>
 
   <command name="\centering" hint="corresponds to the center environment">
   </command>
 
-	<command name="\chapter" usage="\chapter{@title@}" hint="starts a new chapter in the document structure">
-	  <argument name="title">
-	  </argument>
-	</command>
+  <command name="\chapter" usage="\chapter{@title@}" hint="starts a new chapter in the document structure">
+    <argument name="title">
+    </argument>
+  </command>
 
   <command name="\circle" usage="\circle[@*@]{@diameter@}" hint="produces a circle of the specified diameter">
     <argument name="*" hint="solid circle"/>
     <argument name="diameter"/>
   </command>
 
-  <command name="\cite" usage="\cite[@text@]{@key_list@}" hint="in-text citation to the references associated with the keys in key_list">
+  <command name="\cite" usage="\cite[@text@]{@key_list@}"
+           hint="in-text citation to the references associated with the keys in key_list">
     <argument name="text"/>
     <argument name="key_list" hint="list of citation keys"/>
   </command>
@@ -142,7 +153,8 @@
     <argument name="text" hint="mandatory argument, text is the desired text"/>
   </command>
 
-  <command name="\dashbox" usage="\dashbox{@dash length@}(@width@,@height@)[@pos@]{ @|@ }" hint="like \framebox but has an extra argument which specifies the width of each dash">
+  <command name="\dashbox" usage="\dashbox{@dash length@}(@width@,@height@)[@pos@]{ @|@ }"
+           hint="like \framebox but has an extra argument which specifies the width of each dash">
     <argument name="dash length"/>
     <argument name="width"/>
     <argument name="height"/>
@@ -162,22 +174,26 @@
   <command name="\em" hint="emphasis (toggles between \it and \rm)">
   </command>
 
-  <command name="\ensuremath" usage="\ensuremath{@text set in math mode@}" hint="the argument is always set in math mode, regardless of the current mode (LaTeX2e)">
+  <command name="\ensuremath" usage="\ensuremath{@text set in math mode@}"
+           hint="the argument is always set in math mode, regardless of the current mode (LaTeX2e)">
     <argument name="text set in math mode"/>
   </command>
 
-  <command name="\fbox" usage="\fbox{@text@}" hint="same as the \mbox command, except that it puts a rectangular frame around the box ">
+  <command name="\fbox" usage="\fbox{@text@}"
+           hint="same as the \mbox command, except that it puts a rectangular frame around the box ">
     <argument name="text"/>
   </command>
 
   <command name="\flushbottom" hint="makes all text pages the same height">
   </command>
 
-  <command name="\fnsymbol" usage="\fnsymbol{@counter@}" hint="causes the current value of counter to be printed for numbering footnotes (math mode)">
+  <command name="\fnsymbol" usage="\fnsymbol{@counter@}"
+           hint="causes the current value of counter to be printed for numbering footnotes (math mode)">
     <argument name="counter"/>
   </command>
 
-  <command name="\footnote" usage="\footnote[@num@]{@text@}" hint="places a numbered footnote at the bottom of the current page">
+  <command name="\footnote" usage="\footnote[@num@]{@text@}"
+           hint="places a numbered footnote at the bottom of the current page">
     <argument name="num"/>
     <argument name="text"/>
   </command>
@@ -189,7 +205,8 @@
   <command name="\footnotesize" hint="third smallest of 10 typefaces available">
   </command>
 
-  <command name="\footnotetext" usage="\footnotetext[@num@]{@text@}" hint="places the text in the argument at the bottom of the page">
+  <command name="\footnotetext" usage="\footnotetext[@num@]{@text@}"
+           hint="places the text in the argument at the bottom of the page">
     <argument name="num"/>
     <argument name="text"/>
   </command>
@@ -199,10 +216,12 @@
     <argument name="den"/>
   </command>
 
-  <command name="\frame" usage="\frame{ @|@ }" hint="puts a rectangular frame around the object specified in the argument">
+  <command name="\frame" usage="\frame{ @|@ }"
+           hint="puts a rectangular frame around the object specified in the argument">
   </command>
 
-  <command name="\framebox" usage="\framebox[@width@][@position@]{@text@}" hint="same as the \makebox command, except that it puts a frame around the box">
+  <command name="\framebox" usage="\framebox[@width@][@position@]{@text@}"
+           hint="same as the \makebox command, except that it puts a frame around the box">
     <argument name="width"/>
     <argument name="position"/>
     <argument name="text"/>
@@ -233,14 +252,16 @@
   </command>
 
   <command name="\hyphenation" usage="\hyphenation{@words@}" hint="declares allowed hyphenation points">
-    <argument name="words" hint="list of words, separated by spaces, in which each hyphenation point is indicated by a - character"/>
+    <argument name="words"
+              hint="list of words, separated by spaces, in which each hyphenation point is indicated by a - character"/>
   </command>
 
   <command name="\include" usage="\include{@file@}" hint="selective inclusion of files">
     <argument name="file"/>
   </command>
 
-  <command name="\includeonly" usage="\includeonly{@file_list@}" hint="controls which files will be read in by an \include command">
+  <command name="\includeonly" usage="\includeonly{@file_list@}"
+           hint="controls which files will be read in by an \include command">
     <argument name="file_list"/>
   </command>
 
@@ -298,7 +319,8 @@
     </argument>
   </command>
 
-  <command name="\makebox" usage="\makebox[@width@][@position@]{@text@}" hint="creates a box to contain the specified text">
+  <command name="\makebox" usage="\makebox[@width@][@position@]{@text@}"
+           hint="creates a box to contain the specified text">
     <argument name="width" hint="the width of the box">
     </argument>
     <argument name="position" hint="specify the position of text within the box">
@@ -313,7 +335,8 @@
   <command name="\maketitle" hint="generates a title on a separate title page">
   </command>
 
-  <command name="\markboth" usage="\markboth{@left head@}{@right head@}" hint="conjunction with the page style myheadings">
+  <command name="\markboth" usage="\markboth{@left head@}{@right head@}"
+           hint="conjunction with the page style myheadings">
     <argument name="left head">
     </argument>
     <argument name="right head">
@@ -351,7 +374,8 @@
     </argument>
   </command>
 
-  <command name="\newenvironment" usage="\newenvironment{@name@}[@args@][@opt@]{@begdef@}{@enddef@}" hint="define an environment">
+  <command name="\newenvironment" usage="\newenvironment{@name@}[@args@][@opt@]{@begdef@}{@enddef@}"
+           hint="define an environment">
     <argument name="name" hint="the name of the environment">
     </argument>
     <argument name="args" hint="1 to 9 denoting the number of arguments of the newly-defined environment">
@@ -364,14 +388,16 @@
     </argument>
   </command>
 
-  <command name="\newfont" usage="\newfont{@cmd@}{@font_name@}" hint="defines a command, which must not be currently defined, to be a declaration that selects the font named font_name to be the current font">
+  <command name="\newfont" usage="\newfont{@cmd@}{@font_name@}"
+           hint="defines a command, which must not be currently defined, to be a declaration that selects the font named font_name to be the current font">
     <argument name="cmd" hint="the command name">
     </argument>
     <argument name="font_name" hint="the font name">
     </argument>
   </command>
 
-  <command name="\newlength" usage="\newlength{\@gnat@}" hint="defines the mandatory argument as a length command with a value of 0in">
+  <command name="\newlength" usage="\newlength{\@gnat@}"
+           hint="defines the mandatory argument as a length command with a value of 0in">
     <argument name="gnat" hint="the name of the length command">
     </argument>
   </command>
@@ -384,7 +410,8 @@
     </argument>
   </command>
 
-  <command name="\newtheorem" usage="\newtheorem{@env_name@}{@caption@}[@within@]" hint="defines a theorem-like environment">
+  <command name="\newtheorem" usage="\newtheorem{@env_name@}{@caption@}[@within@]"
+           hint="defines a theorem-like environment">
     <argument name="env_name" hint="the name of the environment ">
     </argument>
     <argument name="caption" hint="the text printed at the beginning of the environment">
@@ -401,7 +428,8 @@
   <command name="\noindent" hint="to suppress the paragraph indentation">
   </command>
 
-  <command name="\nolinebreak" usage="\nolinebreak[@number@]" hint="prevents LaTeX from breaking the current line at the point of the command">
+  <command name="\nolinebreak" usage="\nolinebreak[@number@]"
+           hint="prevents LaTeX from breaking the current line at the point of the command">
     <argument name="number" hint="0 to 4, the higher the number, the more insistent the request is">
     </argument>
   </command>
@@ -409,7 +437,8 @@
   <command name="\normalsize" hint="is the default type size">
   </command>
 
-  <command name="\nopagebreak" usage="\nopagebreak[@number@]" hint="prevents LaTeX form breaking the current page at the point of the command">
+  <command name="\nopagebreak" usage="\nopagebreak[@number@]"
+           hint="prevents LaTeX form breaking the current page at the point of the command">
     <argument name="number" hint="0 to 4, the higher the number, the more insistent the request is">
     </argument>
   </command>
@@ -460,7 +489,8 @@
     </argument>
   </command>
 
-  <command name="\pagestyle" usage="\pagestyle{@option@}" hint="changes the style from the current page on throughout the remainder of your document">
+  <command name="\pagestyle" usage="\pagestyle{@option@}"
+           hint="changes the style from the current page on throughout the remainder of your document">
     <argument name="option">
       <argumentValue value="plain" hint="just a plain page number"/>
       <argumentValue value="empty" hint="produces empty heads and feet - no page numbers"/>
@@ -472,17 +502,18 @@
   <command name="\par" hint="equivalent to a blank line">
   </command>
 
-	<command name="\paragraph" usage="\paragraph{@title@}" hint="starts a new paragraph in the document structure">
-	  <argument name="title">
-	  </argument>
-	</command>
+  <command name="\paragraph" usage="\paragraph{@title@}" hint="starts a new paragraph in the document structure">
+    <argument name="title">
+    </argument>
+  </command>
 
-	<command name="\part" usage="\part{@title@}" hint="starts a new part in the document structure">
-	  <argument name="title">
-	  </argument>
-	</command>
+  <command name="\part" usage="\part{@title@}" hint="starts a new part in the document structure">
+    <argument name="title">
+    </argument>
+  </command>
 
-  <command name="\parbox" usage="\parbox[@position@]{@width@}{@text@}" hint="creates a box whose contents are created in paragraph mode">
+  <command name="\parbox" usage="\parbox[@position@]{@width@}{@text@}"
+           hint="creates a box whose contents are created in paragraph mode">
     <argument name="position">
       <argumentValue value="t" hint="moves the item to the top of the rectangle"/>
       <argumentValue value="b" hint="moves the item to the bottom"/>
@@ -502,7 +533,8 @@
   <command name="\protect" hint="applies only to the immediately following command">
   </command>
 
-  <command name="\providecommand" usage="\providecommand{@cmd@}[@args@][@opt@]{@def@}" hint="define (or redefine) a command">
+  <command name="\providecommand" usage="\providecommand{@cmd@}[@args@][@opt@]{@def@}"
+           hint="define (or redefine) a command">
     <argument name="cmd" hint="the name of the new command">
     </argument>
     <argument name="args" hint="1 to 9 denoting the number of arguments">
@@ -528,7 +560,8 @@
   <command name="\raggedright" hint="corresponds to the flushleft environment">
   </command>
 
-  <command name="\raisebox" usage="\raisebox{@distance@}[@extend-above@][@extend-below@]{@|@}" hint="creates a LR box containing text; it is used to raise or lower text">
+  <command name="\raisebox" usage="\raisebox{@distance@}[@extend-above@][@extend-below@]{@|@}"
+           hint="creates a LR box containing text; it is used to raise or lower text">
     <argument name="distance" hint="specifies how high the text is to be raised">
     </argument>
     <argument name="extend-above" hint="makes LaTeX think that the text extends above the current line">
@@ -537,7 +570,8 @@
     </argument>
   </command>
 
-  <command name="\ref" usage="\ref{@key@}" hint="produces the number of the sectional unit, equation number, ... of the corresponding \label command">
+  <command name="\ref" usage="\ref{@key@}"
+           hint="produces the number of the sectional unit, equation number, ... of the corresponding \label command">
     <argument name="key" hint="corresponding label">
     </argument>
   </command>
@@ -548,12 +582,14 @@
   <command name="\rm" hint="Roman typeface (default)">
   </command>
 
-  <command name="\roman" usage="\roman{@counter@}" hint="causes the current value of counter to be printed in roman numerals">
+  <command name="\roman" usage="\roman{@counter@}"
+           hint="causes the current value of counter to be printed in roman numerals">
     <argument name="counter">
     </argument>
   </command>
 
-  <command name="\rule" usage="\rule[@raise-height@]{@width@}{@height@}" hint="generates a rectangular 'blob of ink.', it can be used to produce horizontal or vertical lines">
+  <command name="\rule" usage="\rule[@raise-height@]{@width@}{@height@}"
+           hint="generates a rectangular 'blob of ink.', it can be used to produce horizontal or vertical lines">
     <argument name="raise-height" hint="specifies how high to raise the rule">
     </argument>
     <argument name="width" hint="specifies the length of the rule">
@@ -625,7 +661,8 @@
     </argument>
   </command>
 
-  <command name="\signature" usage="\signature{@your name@}" hint="your name, as it should appear at the end of the letter underneath the space for your signature">
+  <command name="\signature" usage="\signature{@your name@}"
+           hint="your name, as it should appear at the end of the letter underneath the space for your signature">
     <argument name="your name">
     </argument>
   </command>
@@ -650,34 +687,38 @@
     </argument>
   </command>
 
-  <command name="\sqrt" usage="\sqrt[@root@]{@arg@}" hint="produces the square root (radical) symbol with the argument as radicand">
+  <command name="\sqrt" usage="\sqrt[@root@]{@arg@}"
+           hint="produces the square root (radical) symbol with the argument as radicand">
     <argument name="root">
     </argument>
     <argument name="arg">
     </argument>
   </command>
 
-  <command name="\stackrel" usage="\stackrel{@top@}{@bot@}" hint="can be used to stack something above something else; used in math mode">
+  <command name="\stackrel" usage="\stackrel{@top@}{@bot@}"
+           hint="can be used to stack something above something else; used in math mode">
     <argument name="top">
     </argument>
     <argument name="bot">
     </argument>
   </command>
 
-	<command name="\subparagraph" usage="\subparagraph{@title@}" hint="starts a new subparagraph in the document structure">
-	  <argument name="title">
-	  </argument>
-	</command>
+  <command name="\subparagraph" usage="\subparagraph{@title@}"
+           hint="starts a new subparagraph in the document structure">
+    <argument name="title">
+    </argument>
+  </command>
 
-	<command name="\subsection" usage="\subsection{@title@}" hint="starts a new subsection in the document structure">
-	  <argument name="title">
-	  </argument>
-	</command>
+  <command name="\subsection" usage="\subsection{@title@}" hint="starts a new subsection in the document structure">
+    <argument name="title">
+    </argument>
+  </command>
 
-	<command name="\subsubsection" usage="\subsubsection{@title@}" hint="starts a new subsubsection in the document structure">
-	  <argument name="title">
-	  </argument>
-	</command>
+  <command name="\subsubsection" usage="\subsubsection{@title@}"
+           hint="starts a new subsubsection in the document structure">
+    <argument name="title">
+    </argument>
+  </command>
 
   <command name="\tableofcontents" hint="produces a table of contents">
   </command>
@@ -725,14 +766,16 @@
     </argument>
   </command>
 
-  <command name="\typein" usage="\typein[@cmd@]{@msg@}" hint="prints msg on the terminal and causes LaTeX to stop and wait for you to type a line of input, ending with return">
+  <command name="\typein" usage="\typein[@cmd@]{@msg@}"
+           hint="prints msg on the terminal and causes LaTeX to stop and wait for you to type a line of input, ending with return">
     <argument name="cmd" hint="command name">
     </argument>
     <argument name="msg">
     </argument>
   </command>
 
-  <command name="\underbrace" usage="\underbrace{@formula@} " hint="generates a brace underneath the formula (math mode)">
+  <command name="\underbrace" usage="\underbrace{@formula@} "
+           hint="generates a brace underneath the formula (math mode)">
     <argument name="formula">
     </argument>
   </command>
@@ -745,17 +788,20 @@
   <command name="\unitlength" hint="defines the units used in the Picture Environment">
   </command>
 
-  <command name="\usebox" usage="\usebox{@cmd@}" hint="prints the box most recently saved in cmd by a \savebox or \sbox command">
+  <command name="\usebox" usage="\usebox{@cmd@}"
+           hint="prints the box most recently saved in cmd by a \savebox or \sbox command">
     <argument name="cmd">
     </argument>
   </command>
 
-  <command name="\usecounter" usage="\usecounter{@counter@}" hint="used in the second argument of the list environment to allow the counter specified to be used to number the list items">
+  <command name="\usecounter" usage="\usecounter{@counter@}"
+           hint="used in the second argument of the list environment to allow the counter specified to be used to number the list items">
     <argument name="counter">
     </argument>
   </command>
 
-  <command name="\value" usage="\value{@counter@}" hint="produces the value of the counter named in the mandatory argument">
+  <command name="\value" usage="\value{@counter@}"
+           hint="produces the value of the counter named in the mandatory argument">
     <argument name="counter">
     </argument>
   </command>
@@ -763,7 +809,8 @@
   <command name="\vdots" hint="command produces a vertical ellipsis">
   </command>
 
-  <command name="\vector" usage="\vector(@x-slope@,@y-slope@){@length@}" hint="draws an arrow of the specified length and slope (picture environment)">
+  <command name="\vector" usage="\vector(@x-slope@,@y-slope@){@length@}"
+           hint="draws an arrow of the specified length and slope (picture environment)">
     <argument name="x-slope">
     </argument>
     <argument name="y-slope">
@@ -781,7 +828,8 @@
   <command name="\vline" hint="will draw a vertical line extending the full height and depth of its row">
   </command>
 
-  <command name="\vphantom" usage="\vphantom{@construct@}" hint="creates a zero-width object with the height of construct">
+  <command name="\vphantom" usage="\vphantom{@construct@}"
+           hint="creates a zero-width object with the height of construct">
     <argument name="construct">
     </argument>
   </command>
@@ -826,7 +874,8 @@
   </command>
 
   <environment name="picture">
-    <command name="\line" usage="\line(@x-slope@,@y-slope@){@length@}" hint="draws a line of the specified length and slope">
+    <command name="\line" usage="\line(@x-slope@,@y-slope@){@length@}"
+             hint="draws a line of the specified length and slope">
       <argument name="x-slope" hint="the x-coordinate of the slope">
       </argument>
       <argument name="y-slope" hint="the y-coordinate of the slope">
@@ -835,12 +884,14 @@
       </argument>
     </command>
 
-    <command name="\linethickness" usage="\linethickness{@dimension@}" hint="declares the thickness of horizontal and vertical lines in a picture environment ">
+    <command name="\linethickness" usage="\linethickness{@dimension@}"
+             hint="declares the thickness of horizontal and vertical lines in a picture environment ">
       <argument name="dimension" hint="must be a positive length">
       </argument>
     </command>
 
-    <command name="\makebox" usage="\makebox(@width@,@height@)[@position@]{@text@}" hint="creates a box with a specified with and height">
+    <command name="\makebox" usage="\makebox(@width@,@height@)[@position@]{@text@}"
+             hint="creates a box with a specified with and height">
       <argument name="width" hint="the width of the box">
       </argument>
       <argument name="height" hint="the height of the box">
@@ -855,7 +906,8 @@
       </argument>
     </command>
 
-    <command name="\multiput" usage="\multiput(@x coord@,@y coord@)(@delta x@,@delta y@){@number of copies@}{@object@}" hint="used to put the same object in a regular pattern across a picture">
+    <command name="\multiput" usage="\multiput(@x coord@,@y coord@)(@delta x@,@delta y@){@number of copies@}{@object@}"
+             hint="used to put the same object in a regular pattern across a picture">
       <argument name="x coord">
       </argument>
       <argument name="y coord">
@@ -877,7 +929,8 @@
       </argument>
     </command>
 
-    <command name="\mathop" usage="\mathop{@|@}" hint="argument is considered to be a single variable sized math symbol">
+    <command name="\mathop" usage="\mathop{@|@}"
+             hint="argument is considered to be a single variable sized math symbol">
     </command>
 
     <command name="\not" hint="a slash is placed through the next symbol (or letter)">
@@ -890,7 +943,8 @@
   </environment>
 
   <environment name="array & table">
-    <command name="\multicolumn" usage="\multicolumn{@cols@}{@pos@}{@text@}" hint="used to make an entry that spans several columns">
+    <command name="\multicolumn" usage="\multicolumn{@cols@}{@pos@}{@text@}"
+             hint="used to make an entry that spans several columns">
       <argument name="cols" hint="the number of columns to span">
       </argument>
       <argument name="pos" hint="the formatting of the entry">

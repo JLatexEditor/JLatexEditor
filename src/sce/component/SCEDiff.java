@@ -1,8 +1,9 @@
 package sce.component;
 
-import util.diff.Modification;
-import util.diff.SystemDiff;
-import util.diff.TokenList;
+import util.diff.Diff;
+import util.diff.levenstein.Modification;
+import util.diff.levenstein.TokenList;
+import util.diff.system.SystemDiff;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
@@ -199,7 +200,7 @@ public class SCEDiff extends JPanel implements ComponentListener {
     int paneRows = paneDocument.getRowsCount();
     int diffRows = diffDocument.getRowsCount();
 
-    modifications = SystemDiff.diff(diffDocument.getText(), paneDocument.getText());
+    modifications = Diff.diff(diffDocument.getText(), paneDocument.getText());
 
     // create a mapping for line correspondence
     int diffLine = 0;

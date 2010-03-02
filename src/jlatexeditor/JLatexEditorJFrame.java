@@ -24,6 +24,7 @@ import sce.component.*;
 import sce.syntaxhighlighting.SyntaxHighlighting;
 import util.Pair;
 import util.StreamUtils;
+import util.diff.Diff;
 import util.filechooser.SCEFileChooser;
 
 import javax.swing.*;
@@ -647,18 +648,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
         try {
           if (file_backup.exists()) {
-            Process process = Runtime.getRuntime().exec(new String[]{
-                    "diff",
-                    file.getCanonicalPath(),
-                    file_backup.getCanonicalPath()
-            });
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String backup = StreamUtils.readFile(file_backup.getCanonicalPath());
 
-            String line;
-            while ((line = reader.readLine()) != null) diff_writer.println(line);
-
-            reader.close();
-            process.destroy();
+            diff_writer.write(Diff.diffPlain(text, backup));
           }
         } catch (Exception diffException) {
           System.err.println("Local history, error starting diff: " + diffException.getMessage());

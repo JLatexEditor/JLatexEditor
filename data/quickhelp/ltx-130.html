@@ -2,144 +2,128 @@
 
 <head>
 
-<title>Help On LaTeX Modes</title>
+    <title>Help On LaTeX Modes</title>
 
-<link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
+    <link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
 
 </head>
 
 <body>
 
 
-
-
-
 <h2>Modes</h2>
-
 
 
 <p>When LaTeX is processing your input text, it is always in one of three
 
-modes:</p>
-
+    modes:</p>
 
 
 <ul>
 
-  <li><i>Paragraph</i> mode</li>
+    <li><i>Paragraph</i> mode</li>
 
-  <li><i>Math</i> mode</li>
+    <li><i>Math</i> mode</li>
 
-  <li><i>Left-to-right</i> mode, called LR mode for short</li>
+    <li><i>Left-to-right</i> mode, called LR mode for short</li>
 
 </ul>
 
 
+<p>LaTeX changes mode only when it goes up or down a staircase to a
 
-<p>LaTeX  changes  mode only when  it goes  up or down  a staircase  to a
+    different level, though not all level changes produce mode changes.
 
-different  level, though not all level changes  produce  mode changes.
+    Mode changes occur only when entering or leaving an environment, or
 
-Mode changes occur only when entering  or leaving  an environment,  or
+    when LaTeX is processing the argument of certain text-producing
 
-when  LaTeX  is processing  the  argument  of  certain  text-producing
-
-commands. </p>
-
+    commands. </p>
 
 
 <h3>Paragraph mode</h3>
 
 
+<p>Paragraph mode is the most common; it's the one LaTeX is in when
 
-<p>Paragraph  mode  is the most  common;  it's  the one LaTeX  is in when
+    processing ordinary text. In that mode, LaTeX breaks your text into
 
-processing  ordinary  text.  In that mode, LaTeX breaks your text into
-
-lines and breaks  the lines  into pages. </p>
-
+    lines and breaks the lines into pages. </p>
 
 
 <p>There
 
-are also several text-producing commands and environments for making a
+    are also several text-producing commands and environments for making a
 
-box that put LaTeX  in paragraph  mode.   The box made by one of these
+    box that put LaTeX in paragraph mode. The box made by one of these
 
-commands  or environments  will be called a 
+    commands or environments will be called a
 
-<a href="ltx-294.html">parbox</a>.   When LaTeX is in
+    <a href="ltx-294.html">parbox</a>. When LaTeX is in
 
-paragraph mode while making a box, it is said to be in inner paragraph
+    paragraph mode while making a box, it is said to be in inner paragraph
 
-mode.  The normal  paragraph  mode, in which LaTeX starts  out, is called
+    mode. The normal paragraph mode, in which LaTeX starts out, is called
 
-outer paragraph mode.</p>
-
-
-
-<h3>Math mode</h3> 
+    outer paragraph mode.</p>
 
 
+<h3>Math mode</h3>
 
-<p>LaTeX  is in math mode when it's generating a mathematical formula. It is
 
-in math mode in the <a href="ltx-115.html#math">math</a>, 
+<p>LaTeX is in math mode when it's generating a mathematical formula. It is
 
-<a href="ltx-421.html">displaymath</a>, <a href="ltx-224.html">equation</a>,
+    in math mode in the <a href="ltx-115.html#math">math</a>,
 
-and <a href="ltx-223.html"> eqnarray</a> environments.</p>
+    <a href="ltx-421.html">displaymath</a>, <a href="ltx-224.html">equation</a>,
 
+    and <a href="ltx-223.html"> eqnarray</a> environments.</p>
 
 
 <p>In math mode letters are assumed to be math symbols and spaced accordingly.
 
-Spaces in the input are ignored, except that spaces may be needed to 
+    Spaces in the input are ignored, except that spaces may be needed to
 
-delineate the end of commands.</p>
-
+    delineate the end of commands.</p>
 
 
 <h3>LR mode</h3>
 
 
-
 <p>In LR mode, as in paragraph
 
-mode, LaTeX considers  the output that it produces  to be a string  of
+    mode, LaTeX considers the output that it produces to be a string of
 
-words with spaces between them. In LR mode, unlike paragraph and math modes,
+    words with spaces between them. In LR mode, unlike paragraph and math modes,
 
-spaces are not ignored; an input space creates an output space. 
+    spaces are not ignored; an input space creates an output space.
 
-However, unlike paragraph mode, LaTeX
+    However, unlike paragraph mode, LaTeX
 
-keeps going from left to right; it never starts a new line in LR mode. 
+    keeps going from left to right; it never starts a new line in LR mode.
 
-Even  if you put a hundred  words  into  an 
+    Even if you put a hundred words into an
 
-<tt><a href="ltx-265.html">\mbox</a></tt>,  LaTeX  would  keep
+    <tt><a href="ltx-265.html">\mbox</a></tt>, LaTeX would keep
 
-typesetting  them from left to right  inside  a single  box,  and then
+    typesetting them from left to right inside a single box, and then
 
-complain because the resulting box was too wide to fit on the line.</p>
+    complain because the resulting box was too wide to fit on the line.</p>
 
 
+<p>LaTeX is in LR mode when it starts making a box with an
 
-<p>LaTeX is in LR mode when it starts making a box with an 
+    <tt><a href="ltx-265.html">\mbox</a></tt> command.
 
-<tt><a href="ltx-265.html">\mbox</a></tt> command. 
+    You can get it to enter a different mode inside the box - for example,
 
-You can get it to enter a different mode inside the box - for example,
-
-you can make it enter  math mode to put a formula  in the box.  </p>
-
+    you can make it enter math mode to put a formula in the box. </p>
 
 
 <hr noshade="noshade" size="1">
 
 
-
 <p>Also see <a href="ltx-115.html">Math Formulas</a><br>
 
-</body></html>
+</body>
+</html>

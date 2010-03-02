@@ -59,7 +59,7 @@ import java.util.Hashtable;
  *         Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-public class Diff {
+public class GnuDiff {
 
   /**
    * Prepare to find differences between two arrays.  Each element of
@@ -69,7 +69,7 @@ public class Diff {
    * be needed again later to print the results of the comparison as
    * an edit script, if desired.
    */
-  public Diff(Object[] a, Object[] b) {
+  public GnuDiff(Object[] a, Object[] b) {
     Hashtable h = new Hashtable(a.length + b.length);
     filevec[0] = new file_data(a, h);
     filevec[1] = new file_data(b, h);

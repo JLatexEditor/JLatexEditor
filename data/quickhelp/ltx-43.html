@@ -2,16 +2,13 @@
 
 <head>
 
-<title>Help On LaTeX picture</title>
+    <title>Help On LaTeX picture</title>
 
-<link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
+    <link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
 
 </head>
 
 <body>
-
-
-
 
 
 <h2>Picture environment</h2>
@@ -33,80 +30,76 @@
 </pre>
 
 
-
 <p> The picture environment allows you to create just about
 
-any kind of picture you want containing text, lines, arrows and
+    any kind of picture you want containing text, lines, arrows and
 
-circles. You tell LaTeX where to put things in the 
+    circles. You tell LaTeX where to put things in the
 
-picture by specifying their coordinates. A coordinate is a
+    picture by specifying their coordinates. A coordinate is a
 
-number that may have a decimal point and a minus sign 
+    number that may have a decimal point and a minus sign
 
-(<tt>-</tt>), for example, 5, 2.3, or -3.1416. A coordinate
+    (<tt>-</tt>), for example, 5, 2.3, or -3.1416. A coordinate
 
-specifies a length in multiples of the unit length <a
+    specifies a length in multiples of the unit length <a
 
-href="unitlength.html"><tt>\unitlength</a></tt>, so if
+            href="unitlength.html"><tt>\unitlength</a></tt>, so if
 
-<tt>\unitlength</tt> has been set to 1cm, then the coordinate
+    <tt>\unitlength</tt> has been set to 1cm, then the coordinate
 
-2.54 specifies a length of 2.54 centimeters. You can change 
+    2.54 specifies a length of 2.54 centimeters. You can change
 
-the value of <tt>\unitlength</tt> anywhere you want, using the
+    the value of <tt>\unitlength</tt> anywhere you want, using the
 
-<tt><a href="ltx-88.html">\setlength</a></tt> command, but it
+    <tt><a href="ltx-88.html">\setlength</a></tt> command, but it
 
-should be set before the beginning of the picture environment
+    should be set before the beginning of the picture environment
 
-since strange things may happen if you try changing it inside
+    since strange things may happen if you try changing it inside
 
-the picture environment.</p>
-
+    the picture environment.</p>
 
 
 <p> A position is a pair of coordinates, such as (2.4,-5),
 
-specifying the point with x-coordinate = 2.4 and y-coordinate =
+    specifying the point with x-coordinate = 2.4 and y-coordinate =
 
--5. Coordinates are specified in the usual way with 
+    -5. Coordinates are specified in the usual way with
 
-respect to an origin, which is normally at the lower-left 
+    respect to an origin, which is normally at the lower-left
 
-corner of the picture. Note that when a position appears as
+    corner of the picture. Note that when a position appears as
 
-an argument, it is not enclosed in braces; the parentheses
+    an argument, it is not enclosed in braces; the parentheses
 
-serve to delimit the argument.</p>
-
-
-
-<p>The picture environment has one mandatory argument, 
-
-which specifies the size of the picture. The environment
-
-produces a rectangular box with width and height determined 
-
-by this argument's two values.</p>
+    serve to delimit the argument.</p>
 
 
+<p>The picture environment has one mandatory argument,
 
-<p>The picture environment also has an optional position 
+    which specifies the size of the picture. The environment
 
-argument, following the size argument, that can change the
+    produces a rectangular box with width and height determined
 
-origin. (Unlike ordinary optional arguments, this argument is
+    by this argument's two values.</p>
 
-not contained in square brackets.) The optional argument gives
 
-the coordinates of the point at the lower-left corner of the
+<p>The picture environment also has an optional position
 
-picture (thereby determining the origin). For example, if
+    argument, following the size argument, that can change the
 
-<tt><a href="unitlength.html">\unitlength</a></tt> has been set
+    origin. (Unlike ordinary optional arguments, this argument is
 
-to 1mm, the command</p>
+    not contained in square brackets.) The optional argument gives
+
+    the coordinates of the point at the lower-left corner of the
+
+    picture (thereby determining the origin). For example, if
+
+    <tt><a href="unitlength.html">\unitlength</a></tt> has been set
+
+    to 1mm, the command</p>
 
 
 
@@ -117,40 +110,37 @@ to 1mm, the command</p>
 </pre>
 
 
+<p>produces a picture of width 100 millimeters and
 
-<p>produces a picture of width 100 millimeters and 
+    height 200 millimeters, whose lower-left corner is the point
 
-height 200 millimeters, whose lower-left corner is the point
+    (10,20) and whose upper-right corner is therefore the point
 
-(10,20) and whose upper-right corner is therefore the point
+    (110,220). Typically one initially omits the optional
 
-(110,220). Typically one initially omits the optional 
+    argument, leaving the origin at the lower-left corner. If
 
-argument, leaving the origin at the lower-left corner. If
+    you then want to modify your picture by shifting everything,
 
-you then want to modify your picture by shifting everything,
-
-you just add the appropriate optional argument.</p>
-
+    you just add the appropriate optional argument.</p>
 
 
 <p>The environment's mandatory argument determines the
 
-nominal size of the picture. This need bear no relation to
+    nominal size of the picture. This need bear no relation to
 
-how large the picture really is; LaTeX will happily allow 
+    how large the picture really is; LaTeX will happily allow
 
-you to put things outside the picture, or even off the page. 
+    you to put things outside the picture, or even off the page.
 
-The picture's nominal size is used by TeX in determining how
+    The picture's nominal size is used by TeX in determining how
 
-much room to leave for it.</p>
-
+    much room to leave for it.</p>
 
 
 <p>Everything that appears in a picture is drawn by the
 
-<tt><a href="ltx-296.html">\put</a></tt> command. The command</p>
+    <tt><a href="ltx-296.html">\put</a></tt> command. The command</p>
 
 
 
@@ -161,71 +151,66 @@ much room to leave for it.</p>
 </pre>
 
 
-
 <p>puts the object specified by <tt>obj</tt> in the picture,
 
-with its reference point at coordinates (11.3,-.3). The
+    with its reference point at coordinates (11.3,-.3). The
 
-reference points for various objects will be described below.</p>
-
+    reference points for various objects will be described below.</p>
 
 
 <p>The <tt><a href="ltx-296.html">\put</a></tt> command creates
 
-an LR box. You can put anything in the text argument of the
+    an LR box. You can put anything in the text argument of the
 
-<tt>\put</tt> command that you'd put into the argument of an
+    <tt>\put</tt> command that you'd put into the argument of an
 
-<tt><a href="ltx-265.html">\mbox</a></tt> (or related) command.
+    <tt><a href="ltx-265.html">\mbox</a></tt> (or related) command.
 
- When you do this, the reference point will be the lower left
+    When you do this, the reference point will be the lower left
 
-corner of the box.</p>
-
+    corner of the box.</p>
 
 
 <p>See also</p>
 
 
-
 <ul>
 
-  <li><tt><a href="ltx-210.html">\circle</a></tt></li>
+    <li><tt><a href="ltx-210.html">\circle</a></tt></li>
 
-  <li><tt><a href="ltx-216.html">\dashbox</a></tt></li>
+    <li><tt><a href="ltx-216.html">\dashbox</a></tt></li>
 
-  <li><tt><a href="ltx-236.html">\frame</a></tt></li>
+    <li><tt><a href="ltx-236.html">\frame</a></tt></li>
 
-  <li><tt><a href="ltx-237.html">\framebox</a></tt></li>
+    <li><tt><a href="ltx-237.html">\framebox</a></tt></li>
 
-  <li><tt><a href="ltx-257.html">\line</a></tt></li>
+    <li><tt><a href="ltx-257.html">\line</a></tt></li>
 
-  <li><tt><a href="ltx-259.html">\linethickness</a></tt></li>
+    <li><tt><a href="ltx-259.html">\linethickness</a></tt></li>
 
-  <li><tt><a href="ltx-262.html">\makebox</a></tt></li>
+    <li><tt><a href="ltx-262.html">\makebox</a></tt></li>
 
-  <li><tt><a href="ltx-269.html">\multiput</a></tt></li>
+    <li><tt><a href="ltx-269.html">\multiput</a></tt></li>
 
-  <li><tt><a href="ltx-286.html">\oval</a></tt></li>
+    <li><tt><a href="ltx-286.html">\oval</a></tt></li>
 
-  <li><tt><a href="ltx-296.html">\put</a></tt></li>
+    <li><tt><a href="ltx-296.html">\put</a></tt></li>
 
-  <li><tt><a href="ltx-314.html">\shortstack</a></tt></li>
+    <li><tt><a href="ltx-314.html">\shortstack</a></tt></li>
 
-  <li><tt><a href="unitlength.html">\unitlength</a></tt></li>
+    <li><tt><a href="unitlength.html">\unitlength</a></tt></li>
 
-  <li><tt><a href="ltx-341.html">\vector</a></tt></li>
+    <li><tt><a href="ltx-341.html">\vector</a></tt></li>
 
 </ul>
 
 
-
 <ul>
 
-  <li><a href="ltx-86.html">Lengths</a>
+    <li><a href="ltx-86.html">Lengths</a>
 
 </ul>
 
 
-
-</body></html>
+</body>
+</html>

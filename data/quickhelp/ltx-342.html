@@ -2,53 +2,45 @@
 
 <head>
 
-<title>Help On LaTeX \verb</title>
+    <title>Help On LaTeX \verb</title>
 
-<link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
+    <link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
 
 </head>
 
 <body>
 
 
-
-
-
 <h2>\verb</h2>
-
 
 
 <p><tt>\verb char literal_text char</tt></p>
 
 
-
 <p>or</p>
-
 
 
 <p><tt>\verb*char literal_text char</tt></p>
 
 
+<p>Typesets <tt>literal_text</tt> exactly as typed, including
 
-<p>Typesets <tt>literal_text</tt> exactly as typed, including 
+    special characters and spaces, using a typewriter
 
-special characters and spaces, using a typewriter 
+    (<tt>\tt</tt>) font. There may be no space between
 
-(<tt>\tt</tt>) font. There may be no space between 
+    <tt>\verb</tt> or <tt>\verb*</tt> and <tt>char</tt> (space is
 
-<tt>\verb</tt> or <tt>\verb*</tt> and <tt>char</tt> (space is
+    shown here only for clarity). The *-form differs only in that
 
-shown here only for clarity). The *-form differs only in that
-
-spaces are printed as "visual" spaces, i.e., a short, squat "u".</p>
-
+    spaces are printed as "visual" spaces, i.e., a short, squat "u".</p>
 
 
 <p>Any <tt>char</tt> except a space (or a <tt>*</tt> for the
 
-<tt>\verb</tt> form) may be chosen as the delimiter. Thus, the
+    <tt>\verb</tt> form) may be chosen as the delimiter. Thus, the
 
-input</p>
+    input</p>
 
 
 
@@ -59,31 +51,27 @@ input</p>
 </pre>
 
 
-
 <p>would produce</p>
-
 
 
 <p><tt>This!is?the##</tt> verbatim ...</p>
 
 
-
 <p>The <tt>\verb</tt> command may <strong>not</strong> be used
 
-in the argument of another command. For example, it cannot be
+    in the argument of another command. For example, it cannot be
 
-used in the text of a <a href="ltx-141.html">sectioning command</a>.</p>
-
+    used in the text of a <a href="ltx-141.html">sectioning command</a>.</p>
 
 
 <hr noshade="noshade" size="1">
 
 
-
 <p>
 
-See also <a href="ltx-27.html">Environments</a>, 
+    See also <a href="ltx-27.html">Environments</a>,
 
-  <a href="ltx-79.html">verbatim</a><br>
+    <a href="ltx-79.html">verbatim</a><br>
 
-</body></html>
+</body>
+</html>

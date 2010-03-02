@@ -2,114 +2,104 @@
 
 <head>
 
-<title>Help On LaTeX \newcommand and \renewcommand</title>
+    <title>Help On LaTeX \newcommand and \renewcommand</title>
 
-<link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
+    <link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
 
 </head>
 
 <body>
 
 
-
-
-
-
-
 <h2>\newcommand \renewcommand</h2>
-
 
 
 <p><tt>\newcommand{cmd}[args][opt]{def}</tt><br>
 
-<tt>\renewcommand{cmd}[args][opt]{def}</tt><br>
+    <tt>\renewcommand{cmd}[args][opt]{def}</tt><br>
 
-<tt>\providecommand{cmd}[args][opt]{def}</tt> -- 
+    <tt>\providecommand{cmd}[args][opt]{def}</tt> --
 
-<a href="versions.html">LaTeX2e</a></p>
-
+    <a href="versions.html">LaTeX2e</a></p>
 
 
 <p>These commands define (or redefine) a command.</p>
 
 
-
 <ul>
 
-  <li><tt>cmd</tt> - The name of the new or redefined command.
+    <li><tt>cmd</tt> - The name of the new or redefined command.
 
-    A <tt>\</tt> followed by a string of lower and/or uppercase
+        A <tt>\</tt> followed by a string of lower and/or uppercase
 
-    letters or a <tt>\</tt> followed by a single nonletter.  For
+        letters or a <tt>\</tt> followed by a single nonletter. For
 
-    <tt>\newcommand</tt> the name  must not  be  already 
+        <tt>\newcommand</tt> the name must not be already
 
-    defined  and  must  not  begin  with  <tt>\end</tt>; for
+        defined and must not begin with <tt>\end</tt>; for
 
-    <tt>\renewcommand</tt> it must already be defined. The
+        <tt>\renewcommand</tt> it must already be defined. The
 
-    <tt>\providecommand</tt> command is identical to the
+        <tt>\providecommand</tt> command is identical to the
 
-    <tt>\newcommand</tt> command if a command with this name
+        <tt>\newcommand</tt> command if a command with this name
 
-    does not exist; if it does already exist, the
+        does not exist; if it does already exist, the
 
-    <tt>\providecommand</tt> does nothing and the old definition
+        <tt>\providecommand</tt> does nothing and the old definition
 
-    remains in effect.</li>
+        remains in effect.
+    </li>
 
 </ul>
 
 
-
 <ul>
 
-  <li><tt>args</tt> - An integer from 1 to 9 denoting the number
+    <li><tt>args</tt> - An integer from 1 to 9 denoting the number
 
-    of arguments of the  command  being  defined.   The default
+        of arguments of the command being defined. The default
 
-    is for the command to have no arguments.</li>
+        is for the command to have no arguments.
+    </li>
 
 </ul>
 
 
-
 <ul>
 
-  <li><tt>opt</tt> - (<strong><a href="versions.html">LaTeX2e
+    <li><tt>opt</tt> - (<strong><a href="versions.html">LaTeX2e
 
-    only</a></strong>) If present, then the first of the number
+        only</a></strong>) If present, then the first of the number
 
-    of arguments specified by <tt>args</tt> is optional with a
+        of arguments specified by <tt>args</tt> is optional with a
 
-    default value of <tt>opt</tt>; if absent, then all of the
+        default value of <tt>opt</tt>; if absent, then all of the
 
-    arguments are required. </li>
+        arguments are required.
+    </li>
 
 </ul>
 
 
-
 <ul>
 
-  <li><tt>def</tt> - The text to be substituted for every
+    <li><tt>def</tt> - The text to be substituted for every
 
-    occurrence of  cmd;  a parameter  of  the  form #n in cmd is
+        occurrence of cmd; a parameter of the form #n in cmd is
 
-    replaced by the text of the nth argument when this
+        replaced by the text of the nth argument when this
 
-    substitution takes place.</li>
+        substitution takes place.
+    </li>
 
 </ul>
-
 
 
 <h3>Examples</h3>
 
 
-
 <p><tt>\newcommand{\water}{H$_2$O}</tt></p>
-
 
 
 <p>This would allow one to write, e.g., </p>
@@ -123,7 +113,6 @@
 </pre>
 
 
-
 <p>or</p>
 
 
@@ -135,42 +124,37 @@
 </pre>
 
 
-
 <p>Note, in the second case, the trailing <tt>\</tt> followed by a blank
 
-is required to ensure a blank space after the H<sub>2</sub>O;
+    is required to ensure a blank space after the H<sub>2</sub>O;
 
-LaTeX ignores the blank following a command, so the space has
+    LaTeX ignores the blank following a command, so the space has
 
-to be specifically inserted with the 
+    to be specifically inserted with the
 
-<tt><a href="ltx-431.html">\&lt;space&gt;</a></tt>.</p>
-
+    <tt><a href="ltx-431.html">\&lt;space&gt;</a></tt>.</p>
 
 
 <p>As a second example consider</p>
 
 
-
 <p><tt>\newcommand{\hypotenuse}{$a^{2}+b^{2}$}</tt></p>
-
 
 
 <p>Note that this will produce the desired formula in text
 
-(paragraph) mode because of the <tt>$...$</tt> in the definition.
+    (paragraph) mode because of the <tt>$...$</tt> in the definition.
 
-In math mode, however, the first <tt>$</tt> in the definition
+    In math mode, however, the first <tt>$</tt> in the definition
 
-will cause LaTeX to leave math mode, causing problems.</p>
-
+    will cause LaTeX to leave math mode, causing problems.</p>
 
 
 <p>In <strong>LaTeX 2.09</strong> a standard trick for getting
 
-around this is to put the math-mode expression in an 
+    around this is to put the math-mode expression in an
 
-<tt><a href="ltx-265.html">\mbox</a></tt>, viz.,</p>
+    <tt><a href="ltx-265.html">\mbox</a></tt>, viz.,</p>
 
 
 
@@ -181,16 +165,15 @@ around this is to put the math-mode expression in an
 </pre>
 
 
+<p>In <strong>LaTeX2e</strong> the
 
-<p>In <strong>LaTeX2e</strong> the 
+    <tt><a href="ensuremath.html">\ensuremath</a></tt> command has been
 
-<tt><a href="ensuremath.html">\ensuremath</a></tt> command has been
+    provided to alleviate this problem. The argument of the <tt>\ensuremath</tt>
 
-provided to alleviate this problem.  The argument of the <tt>\ensuremath</tt>
+    command is always processed in math mode, regardless of the current mode.
 
-command is always processed in math mode, regardless of the current mode. 
-
-Using this mechanism the above could be written as </p>
+    Using this mechanism the above could be written as </p>
 
 
 
@@ -201,13 +184,12 @@ Using this mechanism the above could be written as </p>
 </pre>
 
 
-
 <hr noshade="noshade" size="1">
-
 
 
 <p>
 
-See also <a href="ltx-17.html">Commands</a><br>
+    See also <a href="ltx-17.html">Commands</a><br>
 
-</body></html>
+</body>
+</html>

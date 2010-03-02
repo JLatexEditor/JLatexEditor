@@ -1,6 +1,10 @@
 package util.diff;
 
 import util.StreamUtils;
+import util.diff.levenstein.LevenStein;
+import util.diff.levenstein.Modification;
+import util.diff.levenstein.Token;
+import util.diff.levenstein.TokenList;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,8 +37,8 @@ public class DiffTest {
       Token[] tokens1 = new TokenList("LAHYQQKPGKA", false).getTokens();
       Token[] tokens2 = new TokenList("YHCQPGK", false).getTokens();
 
-      List<Modification<Token>> modifications = new Diff().diff(tokens1, tokens2);
-      for(Modification modification : modifications) {
+      List<Modification<Token>> modifications = new LevenStein().diff(tokens1, tokens2);
+      for (Modification modification : modifications) {
         System.out.println(modification);
       }
     }
@@ -45,12 +49,12 @@ public class DiffTest {
       TokenList[] file2 = readFile("test-src/util/diff/diff2.tex");
 
       long startTime = System.nanoTime();
-      List<Modification<TokenList>> modifications = new Diff().diff(file1, file2);
+      List<Modification<TokenList>> modifications = new LevenStein().diff(file1, file2);
       long endTime = System.nanoTime();
-      for(Modification modification : modifications) {
+      for (Modification modification : modifications) {
         System.out.println(modification);
       }
-      System.out.println("time: " + (((endTime - startTime) / 10000000) /100.));
+      System.out.println("time: " + (((endTime - startTime) / 10000000) / 100.));
     }
   }
 
@@ -75,7 +79,7 @@ public class DiffTest {
 
     ArrayList<TokenList> lines = new ArrayList<TokenList>();
     String line;
-    while((line = reader.readLine()) != null) {
+    while ((line = reader.readLine()) != null) {
       lines.add(new TokenList(line, true));
     }
 

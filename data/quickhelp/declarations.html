@@ -1,7 +1,7 @@
 <html>
 <head>
-<title>Help On LaTeX Declarations</title>
-<link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
+    <title>Help On LaTeX Declarations</title>
+    <link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
 </head>
 <body>
 
@@ -10,43 +10,43 @@
 <h2>Declarations</h2>
 
 <p>A declaration is a LaTeX command that does not act on an
-argument, but which changes the way LaTeX prints the following
-text or which changes the value or meaning of some <a
-href="ltx-17.html">command</a> or
-<a href="ltx-3.html">counter</a>.</p>
- 
+    argument, but which changes the way LaTeX prints the following
+    text or which changes the value or meaning of some <a
+            href="ltx-17.html">command</a> or
+    <a href="ltx-3.html">counter</a>.</p>
+
 <h3>Scope</h3>
 
 <p>The <em>scope</em> of a declaration begins with the
-declaration command itself and is ended by the first right brace
-(<tt>}</tt>) or <tt>\end{}</tt> command whose matching left
-brace (<tt>{</tt>) or <tt>\begin{}</tt> precedes the
-declaration. However, the <tt>\begin{}</tt> and <tt>\end{}</tt>
-of environments you create yourself, for example, with the
-<tt><a href="ltx-19.html">\newenvironment</a></tt> command, do
-not count for calculating the scope of declarations.</p>
+    declaration command itself and is ended by the first right brace
+    (<tt>}</tt>) or <tt>\end{}</tt> command whose matching left
+    brace (<tt>{</tt>) or <tt>\begin{}</tt> precedes the
+    declaration. However, the <tt>\begin{}</tt> and <tt>\end{}</tt>
+    of environments you create yourself, for example, with the
+    <tt><a href="ltx-19.html">\newenvironment</a></tt> command, do
+    not count for calculating the scope of declarations.</p>
 
 <p>The declaration is in effect within its scope, exept that it
-may be countermanded by another declaration whose scope is a
-subset.</p>
+    may be countermanded by another declaration whose scope is a
+    subset.</p>
 
 <p>However, some declarations are <em>global</em>; they are in
-effect until countermanded by another declaration. They include</p>
+    effect until countermanded by another declaration. They include</p>
 
 <ul>
-  <li><tt><a href="ltx-195.html">\addtocounter</a></tt></li>
-  <li><tt><a href="ltx-271.html">\newcounter</a></tt></li>
-  <li><tt><a href="ltx-310.html">\setcounter</a></tt></li>
-  <li><tt><a href="ltx-137.html">\pagenumbering</a></tt></li>
-  <li><tt><a href="ltx-140.html">\thispagestyle</a></tt></li>
-  <li><tt><a href="ltx-87.html">\newlength</a></tt></li>
-  <li><tt><a href="ltx-277.html">\newsavebox</a></tt></li>
-  <li><tt><a href="ltx-20.html">\newtheorem</a></tt></li>
+    <li><tt><a href="ltx-195.html">\addtocounter</a></tt></li>
+    <li><tt><a href="ltx-271.html">\newcounter</a></tt></li>
+    <li><tt><a href="ltx-310.html">\setcounter</a></tt></li>
+    <li><tt><a href="ltx-137.html">\pagenumbering</a></tt></li>
+    <li><tt><a href="ltx-140.html">\thispagestyle</a></tt></li>
+    <li><tt><a href="ltx-87.html">\newlength</a></tt></li>
+    <li><tt><a href="ltx-277.html">\newsavebox</a></tt></li>
+    <li><tt><a href="ltx-20.html">\newtheorem</a></tt></li>
 </ul>
 
 <p>Every declaration has an
-<a href="ltx-27.html">environment</a> of the same name.  If
-<tt>\decl</tt> is a declaration command, then</p>
+    <a href="ltx-27.html">environment</a> of the same name. If
+    <tt>\decl</tt> is a declaration command, then</p>
 
 <pre>
     {\decl .... }
@@ -59,18 +59,18 @@ effect until countermanded by another declaration. They include</p>
 </pre>
 
 <p>If the declaration takes arguments these become additional
-arguments of the <tt>\begin</tt> command.</p>
+    arguments of the <tt>\begin</tt> command.</p>
 
 <hr noshade="noshade" size="1">
 
 <p>
-See also <a href="ltx-27.html">Environments</a><br>
-Return to <a href="ltx-2.html">LaTeX Table of Contents</a>
+    See also <a href="ltx-27.html">Environments</a><br>
+    Return to <a href="ltx-2.html">LaTeX Table of Contents</a>
 </p>
 
 <hr noshade="noshade" size="1">
 <address>
-Revised 16 Nov 1995.
+    Revised 16 Nov 1995.
 </address>
 </body>
 </html>

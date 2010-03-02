@@ -3,8 +3,8 @@ package jlatexeditor.gui;
 import jlatexeditor.JLatexEditorJFrame;
 import sce.component.SourceCodeEditor;
 import util.StreamUtils;
-import util.diff.Modification;
-import util.diff.SystemDiff;
+import util.diff.levenstein.Modification;
+import util.diff.system.SystemDiff;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;

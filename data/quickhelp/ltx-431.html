@@ -2,34 +2,29 @@
 
 <head>
 
-<title>Help On LaTeX \&lt;space&gt;</title>
+    <title>Help On LaTeX \&lt;space&gt;</title>
 
-<link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
+    <link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
 
 </head>
 
 <body>
 
 
-
-
-
 <h2>\&lt;space&gt;</h2>
-
 
 
 <p>LaTeX normally leaves a little extra space after sentences.
 
-However, it uses a rather simple rule for determining whether a
+    However, it uses a rather simple rule for determining whether a
 
-period ends a sentence: it assumes that periods end sentences
+    period ends a sentence: it assumes that periods end sentences
 
-<em>unless</em> they follow an upper case letter. To let LaTeX
+    <em>unless</em> they follow an upper case letter. To let LaTeX
 
-know that a period does <em>not</em> end a sentence after, for
+    know that a period does <em>not</em> end a sentence after, for
 
-example, an abbreviation, use <tt>\&lt;space&gt;</tt></p>
-
+    example, an abbreviation, use <tt>\&lt;space&gt;</tt></p>
 
 
 <p>For example,</p>
@@ -43,14 +38,13 @@ example, an abbreviation, use <tt>\&lt;space&gt;</tt></p>
 </pre>
 
 
-
 <p>Such a space may also be needed after a text-producing
 
-command, such as one defined with
+    command, such as one defined with
 
-<tt><a href="ltx-18.html">\newcommand</a></tt>. As an example,
+    <tt><a href="ltx-18.html">\newcommand</a></tt>. As an example,
 
-consider</p>
+    consider</p>
 
 
 
@@ -63,30 +57,28 @@ consider</p>
 </pre>
 
 
-
 <p>The first <tt>\water</tt> command is terminated by the comma;
 
-note that LaTeX does not leave a space between the first
+    note that LaTeX does not leave a space between the first
 
-<tt>\water</tt> and the comma -- as desired -- and the trailing
+    <tt>\water</tt> and the comma -- as desired -- and the trailing
 
-space is treated as an interword space.  However, the second
+    space is treated as an interword space. However, the second
 
-<tt>\water</tt> command is terminated by the space, but LaTeX 
+    <tt>\water</tt> command is terminated by the space, but LaTeX
 
-would not leave an extra space after this, running
+    would not leave an extra space after this, running
 
-"H<sub>2</sub>Owater" into one word, except for  the trailing
+    "H<sub>2</sub>Owater" into one word, except for the trailing
 
-<tt>\ </tt>.</p>
-
+    <tt>\ </tt>.</p>
 
 
 <p>An alternate way to indicate the end of a command so that a
 
-trailing space is interpreted as an interword space is to use
+    trailing space is interpreted as an interword space is to use
 
-braces:</p>
+    braces:</p>
 
 
 
@@ -97,17 +89,16 @@ braces:</p>
 </pre>
 
 
-
 <hr noshade="noshade" size="1">
-
 
 
 <p>
 
-See <tt><a href="ltx-432.html">\@</a></tt> for the opposite case<br>
+    See <tt><a href="ltx-432.html">\@</a></tt> for the opposite case<br>
 
-See also <a href="ltx-99.html">Line and Page Breaking</a>,
+    See also <a href="ltx-99.html">Line and Page Breaking</a>,
 
-<a href="ltx-143.html">Spaces and Boxes</a><br> 
+    <a href="ltx-143.html">Spaces and Boxes</a><br>
 
-</body></html>
+</body>
+</html>
