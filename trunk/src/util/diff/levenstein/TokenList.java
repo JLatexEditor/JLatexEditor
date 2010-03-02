@@ -1,4 +1,4 @@
-package util.diff;
+package util.diff.levenstein;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,7 +69,7 @@ public class TokenList implements Metric<TokenList> {
   }
 
   public int getDistance(TokenList list, int max) {
-    int costs = new Diff().costs(this.tokenList, list.tokenList);
+    int costs = new LevenStein().costs(this.tokenList, list.tokenList);
     int length = Math.min(tokenList.length + 1, list.tokenList.length + 1);
     return Math.min(max, (2 * max * costs) / length);
   }

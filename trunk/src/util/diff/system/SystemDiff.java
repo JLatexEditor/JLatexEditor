@@ -1,6 +1,6 @@
 package util.diff.system;
 
-import util.diff.Modification;
+import util.diff.levenstein.Modification;
 
 import java.io.*;
 import java.util.ArrayList;
