@@ -52,6 +52,8 @@ public class SpellCheckSuggester implements CodeAssistant, SCEPopup.ItemHandler 
     if (wordList == null) return false;
 
     wordUnderCaret = wordList.get(0);
+    if(wordUnderCaret.word.length() == 0) return false;
+    if(!Character.isLetter(wordUnderCaret.word.charAt(0))) return false;
 
     try {
       Aspell.Result aspellResult = aspell.check(wordUnderCaret.word);
