@@ -1,4 +1,6 @@
-package util.diff;
+package util.diff.system;
+
+import util.diff.Modification;
 
 import java.io.*;
 import java.util.ArrayList;
