@@ -1,7 +1,7 @@
 <html>
 <head>
-<title>LaTeX 2.09 and LaTeX2e</title>
-<link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
+    <title>LaTeX 2.09 and LaTeX2e</title>
+    <link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
 </head>
 <body>
 
@@ -10,78 +10,79 @@
 <h2>LaTeX 2.09 and LaTeX2e</h2>
 
 <p>The following information is excerpted from "A Document
-Preparation System: LaTeX" by Leslie Lamport, 2nd edition and/or
-"LaTeX2e for authors", by the LaTeX3 Project Team, June 1994.</p>
+    Preparation System: LaTeX" by Leslie Lamport, 2nd edition and/or
+    "LaTeX2e for authors", by the LaTeX3 Project Team, June 1994.</p>
 
 <p>LaTex2e was produced in an attempt to reconcile the various,
-sometimes incompatble, "flavors" of LaTeX which were developing.
-Some of these included the New Font Selection Scheme (NFSS),
-SLITeX (for slides), AASTeX (the American Astronomical Society
-macros), etc. The major change to LaTeX2e is the method for
-trying to make the use of add-on packages more uniform by the
-introduction of "classes" and "packages." Most of the new
-commands are the "initial" commands, i.e., those which can
-appear only <em>before</em> the <tt>\documentclass</tt>
-command.</p>
+    sometimes incompatble, "flavors" of LaTeX which were developing.
+    Some of these included the New Font Selection Scheme (NFSS),
+    SLITeX (for slides), AASTeX (the American Astronomical Society
+    macros), etc. The major change to LaTeX2e is the method for
+    trying to make the use of add-on packages more uniform by the
+    introduction of "classes" and "packages." Most of the new
+    commands are the "initial" commands, i.e., those which can
+    appear only <em>before</em> the <tt>\documentclass</tt>
+    command.</p>
 
 <p>A few standard LaTeX commands have been modified and a few
-new commands added, notably:</p>
+    new commands added, notably:</p>
 
 <ul>
-  <li><tt><a href="ltx-18.html">\newcommand</a></tt> (and related)
-    commands, which now allow for an optional argument in newly
-    defined commands</li>
-  <li><tt><a href="ensuremath.html">\ensuremath</a></tt></li>
+    <li><tt><a href="ltx-18.html">\newcommand</a></tt> (and related)
+        commands, which now allow for an optional argument in newly
+        defined commands
+    </li>
+    <li><tt><a href="ensuremath.html">\ensuremath</a></tt></li>
 </ul>
 
 
 <h3>Document Styles and Style Options</h3>
 
 <p>In LaTeX2e, documents begin with a <tt>\documentclass</tt>
-command. This replaces the LaTeX 2.09 
-<tt><a href="ltx-22.html">\documentstyle</a></tt> command. The
-<tt>\usepackage</tt> command has been added and is used in
-conjunction with <tt>\documentclass</tt>.</p>
+    command. This replaces the LaTeX 2.09
+    <tt><a href="ltx-22.html">\documentstyle</a></tt> command. The
+    <tt>\usepackage</tt> command has been added and is used in
+    conjunction with <tt>\documentclass</tt>.</p>
 
-<p>aTeX2e still understands the old 
-<tt><a href="ltx-22.html">\documentstyle</a></tt> command; if it
-is encountered, LaTex2e enters <em>compatibility mode</em> in
-which most 2.09 input files should still be processed properly.</p>
+<p>aTeX2e still understands the old
+    <tt><a href="ltx-22.html">\documentstyle</a></tt> command; if it
+    is encountered, LaTex2e enters <em>compatibility mode</em> in
+    which most 2.09 input files should still be processed properly.</p>
 
 
 <h3>Type Styles and Sizes</h3>
 
 <p>LaTeX 2.09 commands for changing type style, for example,
-<tt>\tt</tt>, still work similarly in LaTeX2e.  The major
-difference is that <tt>\sc</tt> and <tt>\sl</tt> can no longer
-be used in math mode (except when LaTeX2e is in
-<em>compatibility mode</em>, see above).</p>
+    <tt>\tt</tt>, still work similarly in LaTeX2e. The major
+    difference is that <tt>\sc</tt> and <tt>\sl</tt> can no longer
+    be used in math mode (except when LaTeX2e is in
+    <em>compatibility mode</em>, see above).</p>
 
 <p>However, <a href="fonts2e.html">a new set of commands</a>
-have been added to allow separate (and independent)
-specification of</p>
+    have been added to allow separate (and independent)
+    specification of</p>
 
 <ul>
-  <li>Shape</li>
-  <li>Series</li>
-  <li>Family</li>
+    <li>Shape</li>
+    <li>Series</li>
+    <li>Family</li>
 </ul>
 
 <p>These can be combined to form a wide variety of type styles. If a style
-you specify is not available on your computer, LaTeX2e produce a warning
-message and will substitute a style it thinks is similar.</p>
+    you specify is not available on your computer, LaTeX2e produce a warning
+    message and will substitute a style it thinks is similar.</p>
 
 <hr noshade="noshade" size="1">
 
 <p>
-Return to the <a href="index.html">Introduction</a><br>
-Go to the <a href="ltx-2.html">LaTeX Table of Contents</a>
+    Return to the <a href="index.html">Introduction</a><br>
+    Go to the <a href="ltx-2.html">LaTeX Table of Contents</a>
 </p>
 
 <hr noshade="noshade" size="1">
 
 <address>
-Revised 14 May 1995.
+    Revised 14 May 1995.
 </address>
 
 

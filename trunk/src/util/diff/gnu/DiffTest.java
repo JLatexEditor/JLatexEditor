@@ -37,8 +37,8 @@ public class DiffTest extends TestCase {
   }
 
   public void testReverse() {
-    Diff diff = new Diff(f1, f2);
-    Diff.change script = diff.diff_2(true);
+    GnuDiff diff = new GnuDiff(f1, f2);
+    GnuDiff.change script = diff.diff_2(true);
     assertTrue(script != null);
     assertTrue(script.link == null);
   }
@@ -60,8 +60,8 @@ public class DiffTest extends TestCase {
   public void testSwap() {
     final Integer[] l1 = loadArray(new int[]{1, 2, 4, 7, 9, 35, 56, 58, 76});
     final Integer[] l2 = loadArray(new int[]{1, 2, 4, 76, 9, 35, 56, 58, 7});
-    Diff diff = new Diff(l1, l2);
-    Diff.change script = diff.diff_2(false);
+    GnuDiff diff = new GnuDiff(l1, l2);
+    GnuDiff.change script = diff.diff_2(false);
     // script should have two changes
     assertTrue(script != null);
     assertTrue(script.link != null);
@@ -91,8 +91,8 @@ public class DiffTest extends TestCase {
    * Submitted by Cristian-Augustin Saita and Adam Rabung.
    */
   public void testContext() {
-    Diff diff = new Diff(test1, test2);
-    Diff.change script = diff.diff_2(false);
+    GnuDiff diff = new GnuDiff(test1, test2);
+    GnuDiff.change script = diff.diff_2(false);
     DiffPrint.Base p = new DiffPrint.UnifiedPrint(test1, test2);
     StringWriter wtr = new StringWriter();
     p.setOutput(wtr);

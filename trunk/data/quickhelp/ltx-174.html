@@ -2,54 +2,47 @@
 
 <head>
 
-<title>Help On LaTeX \typeout</title>
+    <title>Help On LaTeX \typeout</title>
 
-<link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
+    <link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
 
 </head>
 
 <body>
 
 
-
-
-
 <h2>\typeout</h2>
-
 
 
 <p><tt>\typeout{msg}</tt></p>
 
 
+<p>Prints <tt>msg</tt> on the terminal and in the log file.
 
-<p>Prints <tt>msg</tt> on the terminal and in the log file. 
+    Commands in <tt>msg</tt> that are defined with
 
-Commands in <tt>msg</tt> that are defined with
+    <tt><a href="ltx-18.html">\newcommand</a></tt> or
 
-<tt><a href="ltx-18.html">\newcommand</a></tt> or
+    <tt><a href="ltx-18.html">\renewcommand</a></tt> are replaced
 
-<tt><a href="ltx-18.html">\renewcommand</a></tt> are replaced
-
-by their definitions before being printed.</p>
-
+    by their definitions before being printed.</p>
 
 
 <p>LaTeX's usual rules for treating multiple spaces as a single
 
-space and ignoring spaces after a command name apply to
+    space and ignoring spaces after a command name apply to
 
-<tt>msg</tt>. A <tt><a href="ltx-431.html">\&lt;space&gt;</a></tt>
+    <tt>msg</tt>. A <tt><a href="ltx-431.html">\&lt;space&gt;</a></tt>
 
-command in <tt>msg</tt> causes a single space to be printed.</p>
-
+    command in <tt>msg</tt> causes a single space to be printed.</p>
 
 
 <hr noshade="noshade" size="1">
 
 
-
 <p>
 
-See also <a href="ltx-173.html">Terminal Input and Output</a><br> 
+    See also <a href="ltx-173.html">Terminal Input and Output</a><br>
 
-</body></html>
+</body>
+</html>

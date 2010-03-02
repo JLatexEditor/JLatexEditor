@@ -2,82 +2,74 @@
 
 <head>
 
-<title>Help On LaTeX \bibitem</title>
+    <title>Help On LaTeX \bibitem</title>
 
-<link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
+    <link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
 
 </head>
 
 <body>
 
 
-
-
-
 <h2>\bibitem</h2>
-
 
 
 <p><tt>\bibitem[label]{cite_key}</tt></p>
 
 
+<p>The <tt>\bibitem</tt> command generates an entry labeled
 
-<p>The <tt>\bibitem</tt>  command  generates  an entry labeled 
+    by <tt>label</tt>. If the <tt>label</tt> argument is missing, a
 
-by <tt>label</tt>. If the <tt>label</tt> argument is missing,  a
+    number is generated as the label, using the <tt>enumiv</tt>
 
-number is generated  as the label, using the <tt>enumiv</tt>
+    <a href="ltx-3.html">counter</a>. The <tt>cite_key</tt> is a
 
-<a href="ltx-3.html">counter</a>.   The <tt>cite_key</tt> is a
+    mnemonic consisting of any sequence of letters, numbers, and
 
-mnemonic consisting of any  sequence of letters, numbers, and
-
-punctuation  symbols not containing  a comma.</p>
-
+    punctuation symbols not containing a comma.</p>
 
 
 <p><tt>\bibitem</tt> and
 
-<tt><a href="ltx-211.html">\cite</a></tt> are used together much
+    <tt><a href="ltx-211.html">\cite</a></tt> are used together much
 
-as <tt><a href="ltx-252.html">\label</a></tt> and
+    as <tt><a href="ltx-252.html">\label</a></tt> and
 
-<tt><a href="ltx-303.html">\ref</a></tt> to produce a
+    <tt><a href="ltx-303.html">\ref</a></tt> to produce a
 
-correspondence between items in the Reference or Bibliography
+    correspondence between items in the Reference or Bibliography
 
-(<tt><a href="ltx-73.html">thebibliography</a></tt> environment).</p>
+    (<tt><a href="ltx-73.html">thebibliography</a></tt> environment).</p>
 
 
+<p>This command writes an entry on the aux file containing
 
-<p>This command writes an entry  on the aux file containing 
+    <tt>cite_key</tt> and the item's <tt>label</tt>. When this
 
-<tt>cite_key</tt>  and the item's  <tt>label</tt>.  When this
+    aux file is read by the
 
-aux file is read by the
+    <tt><a href="ltx-169.html">\begin{document}</a></tt> command,
 
-<tt><a href="ltx-169.html">\begin{document}</a></tt> command,
+    the item's <tt>label</tt> is associated with <tt>cite_key</tt>,
 
-the item's <tt>label</tt> is associated  with <tt>cite_key</tt>,
+    causing the reference to <tt>cite_key</tt> by a
 
-causing the reference  to <tt>cite_key</tt> by a
+    <tt><a href="ltx-211.html">\cite</a></tt> command to produce the
 
-<tt><a href="ltx-211.html">\cite</a></tt> command to produce the
-
-associated <tt>label</tt>.</p>
-
+    associated <tt>label</tt>.</p>
 
 
 <hr noshade="noshade" size="1">
 
 
-
 <p>
 
-See also <a href="ltx-27.html">Environments</a><br>
+    See also <a href="ltx-27.html">Environments</a><br>
 
-See also <tt><a href="ltx-73.html">thebibliography</a></tt>,
+    See also <tt><a href="ltx-73.html">thebibliography</a></tt>,
 
-         <tt><a href="ltx-211.html">\cite</a></tt><br>
+    <tt><a href="ltx-211.html">\cite</a></tt><br>
 
-</body></html>
+</body>
+</html>

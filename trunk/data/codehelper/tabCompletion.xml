@@ -1,4 +1,3 @@
-
 <commandList>
   <command name="item" usage="\begin{itemize}&nl;  \item @|@&nl;\end{itemize}" hint="itemize environment">
   </command>
@@ -26,7 +25,8 @@
     <argument name="label">
     </argument>
   </command>
-  <command name="frame" usage="\begin{frame}&nl;  \frametitle{@title@}&nl;  @|@&nl;\end{frame}" hint="latex beamer frame">
+  <command name="frame" usage="\begin{frame}&nl;  \frametitle{@title@}&nl;  @|@&nl;\end{frame}"
+           hint="latex beamer frame">
     <argument name="title">
     </argument>
   </command>
