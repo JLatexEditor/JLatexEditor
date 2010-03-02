@@ -1,4 +1,4 @@
-package util.diff;
+package util.diff.levenstein;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Diff.
  */
-public class Diff {
+public class LevenStein {
   public static final int COST_REMOVE = 3;
   public static final int COST_ADD = 3;
   public static final int COST_CHANGE = 3;

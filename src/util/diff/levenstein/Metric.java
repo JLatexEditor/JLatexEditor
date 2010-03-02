@@ -1,4 +1,4 @@
-package util.diff;
+package util.diff.levenstein;
 
 /**
  * Metric between objects.

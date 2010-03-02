@@ -1,4 +1,4 @@
-package util.diff;
+package util.diff.levenstein;
 
 import java.util.ArrayList;
 import java.util.Arrays;
