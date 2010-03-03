@@ -7,26 +7,46 @@ import java.util.*;
  *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
-public class Trie {
+public class Trie<T> {
   private int count = 0;
-  private TreeMap<Character, Trie> map = new TreeMap<Character, Trie>();
+  private TreeMap<Character, Trie<T>> map = new TreeMap<Character, Trie<T>>();
+
+  private T object;
+
+  public Trie() {
+    this(null);
+  }
+
+  public Trie(T object) {
+    this.object = object;
+  }
 
   public int add(String s) {
     return add(s.toCharArray(), 0);
   }
 
+  public int add(String s, T object) {
+    return add(s.toCharArray(), 0, object);
+  }
+
   public int add(char[] chars) {
+    return add(chars, null);
+  }
+
+  public int add(char[] chars, T object) {
     return add(chars, 0);
   }
 
   private int add(char[] chars, int i) {
-    if (i == chars.length) {
-      return ++count;
-    }
+    return add(chars, i, null);
+  }
+
+  private int add(char[] chars, int i, T object) {
+    if(i == chars.length) return ++count;
 
     Trie next = map.get(chars[i]);
     if (next == null) {
-      next = new Trie();
+      next = new Trie(object);
       map.put(chars[i], next);
     }
     return next.add(chars, i + 1);
@@ -52,6 +72,21 @@ public class Trie {
     return map.isEmpty();
   }
 
+  public T get(String s) {
+    return get(s.toCharArray(), 0);
+  }
+
+  public T get(char[] chars) {
+    return get(chars, 0);
+  }
+
+  private T get(char[] chars, int i) {
+    if (i == chars.length) return object;
+
+    Trie<T> next = map.get(chars[i]);
+    return next != null ? next.get(chars, i + 1) : null;
+  }
+
   public String getMaxCommonPrefix(String prefix) {
     return getMaxCommonPrefix(prefix.toCharArray(), 0);
   }
@@ -71,7 +106,7 @@ public class Trie {
 
   private String getMaxCommonPrefix() {
     if (map.size() == 1) {
-      Map.Entry<Character, Trie> entity = map.entrySet().iterator().next();
+      Map.Entry<Character, Trie<T>> entity = map.entrySet().iterator().next();
       return entity.getKey() + entity.getValue().getMaxCommonPrefix();
     }
     return "";
@@ -80,7 +115,7 @@ public class Trie {
   public List<String> getStrings(String prefix, int count) {
     // navigate to the trie node that represents the end of the prefix
     char[] chars = prefix.toCharArray();
-    Trie t = this;
+    Trie<T> t = this;
     for (char aChar : chars) {
       t = t.map.get(aChar);
       if (t == null) {
@@ -98,7 +133,7 @@ public class Trie {
       list.add(prefix);
       remaining--;
     }
-    for (Map.Entry<Character, Trie> entry : map.entrySet()) {
+    for (Map.Entry<Character, Trie<T>> entry : map.entrySet()) {
       if (remaining == 0) break;
       remaining = entry.getValue().addStrings(list, prefix + entry.getKey(), remaining);
     }

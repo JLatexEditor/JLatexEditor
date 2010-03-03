@@ -3,6 +3,9 @@ package util;
 import java.util.ArrayList;
 
 public class ParseUtil {
+  /**
+   * Parses a balanced string excluding the closing symbol. 
+   */
   public static String parseBalanced(String text, int index, char stop) {
     int start = index;
     int depth = 0;
