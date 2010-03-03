@@ -98,7 +98,7 @@ public class BackgroundParser extends Thread {
     notify();
   }
 
-  private void parseTex(File directory, String fileName, Trie words, Trie commandNames, Trie<Command> definitions, Trie labels, ArrayList<StructureEntry> structure, HashSet<String> done) {
+  private void parseTex(File directory, String fileName, Trie words, Trie commandNames, Trie<Command> commands, Trie labels, ArrayList<StructureEntry> structure, HashSet<String> done) {
     if (done.contains(fileName)) return;
     else done.add(fileName);
 
@@ -168,15 +168,16 @@ public class BackgroundParser extends Thread {
           } catch(NumberFormatException ignore) {}
         }
         // default argument
-        String def = null;
+        String optional = null;
         if(tex.charAt(index) == '[') {
           try {
-            def = ParseUtil.parseBalanced(tex, index+1, ']');
-            index += 2 + def.length();
+            optional = ParseUtil.parseBalanced(tex, index+1, ']');
+            index += 2 + optional.length();
           } catch(NumberFormatException ignore) {}
         }
         String body = ParseUtil.parseBalanced(tex, index+1, '}');
-        definitions.add(name, new Command(name, numberOfArgs, def, body));
+        name = name.substring(1);
+        commands.add(name, new Command(name, numberOfArgs, optional, body));
       // label, input, include
       } else if (command.equals("label") || command.equals("bibliography") || command.equals("input") || command.equals("include")) {
         String argument = ParseUtil.parseBalanced(tex, index+1, '}');
@@ -184,9 +185,9 @@ public class BackgroundParser extends Thread {
         if (command.equals("label")) {
           labels.add(argument);
         } else if (command.equals("bibliography")) {
-          parseBib(directory, argument);
+          parseBib(directory, Command.unfoldRecursive(argument, commands, 10));
         } else {
-          parseTex(directory, argument, words, commandNames, definitions, labels, structure, done);
+          parseTex(directory, Command.unfoldRecursive(argument, commands, 10), words, commandNames, commands, labels, structure, done);
         }
       // sections
       } else if (command.equals("section") || command.equals("subsection") || command.equals("subsubsection")) {

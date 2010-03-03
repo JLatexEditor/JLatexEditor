@@ -34,7 +34,7 @@ public class Trie<T> {
   }
 
   public int add(char[] chars, T object) {
-    return add(chars, 0);
+    return add(chars, 0, object);
   }
 
   private int add(char[] chars, int i) {
@@ -42,14 +42,14 @@ public class Trie<T> {
   }
 
   private int add(char[] chars, int i, T object) {
-    if(i == chars.length) return ++count;
+    if(i == chars.length) { this.object = object; return ++count; }
 
-    Trie next = map.get(chars[i]);
+    Trie<T> next = map.get(chars[i]);
     if (next == null) {
-      next = new Trie(object);
+      next = new Trie<T>();
       map.put(chars[i], next);
     }
-    return next.add(chars, i + 1);
+    return next.add(chars, i + 1, object);
   }
 
   public boolean remove(String s) {
