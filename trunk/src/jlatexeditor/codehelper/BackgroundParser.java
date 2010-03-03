@@ -76,7 +76,7 @@ public class BackgroundParser extends Thread {
       Trie<Command> commands = new Trie<Command>();
 
       ArrayList<StructureEntry> structureStack = new ArrayList<StructureEntry>();
-      structureStack.add(new StructureEntry("root", 0));
+      structureStack.add(new StructureEntry("Project", 0, resource.getName(), 0));
 
       parseTex(directory, file.getName(), words, commandNames, commands, labels, structureStack, new HashSet<String>());
 
@@ -107,8 +107,10 @@ public class BackgroundParser extends Thread {
     if (!file.exists()) return;
 
     String tex;
+    String fileCanonicalPath;
     try {
       tex = StreamUtils.readFile(file.getAbsolutePath());
+      fileCanonicalPath = file.getCanonicalPath();
     } catch (IOException e) {
       return;
     }
@@ -190,19 +192,24 @@ public class BackgroundParser extends Thread {
           parseTex(directory, Command.unfoldRecursive(argument, commands, 10), words, commandNames, commands, labels, structure, done);
         }
       // sections
-      } else if (command.equals("section") || command.equals("subsection") || command.equals("subsubsection")) {
+      } else if (command.equals("chapter") || command.equals("section") || command.equals("subsection") || command.equals("subsubsection")) {
         int depth = 0;
-        if (command.equals("section")) depth = 1;
-        else if (command.equals("subsection")) depth = 2;
-        else if (command.equals("subsubsection")) depth = 3;
+        if (command.equals("chapter")) depth = 1;
+        if (command.equals("section")) depth = 2;
+        else if (command.equals("subsection")) depth = 3;
+        else if (command.equals("subsubsection")) depth = 4;
 
         String name = "";
-        if (depth <= 3) name = ParseUtil.parseBalanced(tex, index+1, '}');
+        if (depth <= 4) {
+          name = ParseUtil.parseBalanced(tex, index+1, tex.charAt(index) == '[' ? ']' : '}');
+        }
 
         while (structure.get(structure.size() - 1).getDepth() >= depth) structure.remove(structure.size() - 1);
 
         StructureEntry parent = structure.get(structure.size() - 1);
-        parent.add(new StructureEntry(name, depth));
+        StructureEntry entry = new StructureEntry(name, depth, fileCanonicalPath, line);
+        parent.add(entry);
+        structure.add(entry);
       }
     }
 
@@ -260,11 +267,16 @@ public class BackgroundParser extends Thread {
     private String name;
     private int depth;
 
-    public StructureEntry(String name, int depth) {
+    private String file;
+    private int lineNr;
+
+    public StructureEntry(String name, int depth, String file, int lineNr) {
       super(name);
 
       this.name = name;
       this.depth = depth;
+      this.file = file;
+      this.lineNr = lineNr;
     }
 
     public String getName() {
@@ -273,6 +285,14 @@ public class BackgroundParser extends Thread {
 
     public int getDepth() {
       return depth;
+    }
+
+    public String getFile() {
+      return file;
+    }
+
+    public int getLineNr() {
+      return lineNr;
     }
   }
 
