@@ -8,6 +8,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Popup window to show options for code completion.
@@ -20,7 +22,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
   protected SCEPane pane = null;
   protected SCEDocument document = null;
   protected SCECaret caret = null;
-	protected IdleThread idleThread = new IdleThread();
+	protected IdleThread idleThread;
 
   // the popup
   protected JPopupMenu popup = null;
@@ -76,8 +78,6 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     // add listeners
     pane.addKeyListener(this);
     document.addSCEDocumentListener(this);
-
-	  //idleThread.start();
   }
 
   public void setVisible(boolean visible) {
@@ -100,6 +100,11 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     this.codeHelper = codeHelper;
     if (codeHelper != null) {
       this.codeHelper.setSCEPane(pane);
+
+	    if (codeHelper.autoCompletion) {
+		    idleThread = new IdleThread(codeHelper);
+	      idleThread.start();
+	    }
     }
   }
 
@@ -328,7 +333,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
     // control+space
     if (e.getKeyCode() == KeyEvent.VK_SPACE && e.isControlDown() && !isVisible()) {
-	    callCodeHelper();
+	    callCodeHelperWithCompletion();
 
 	    e.consume();
     }
@@ -456,7 +461,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     }
   }
 
-	private void callCodeHelper() {
+	private void callCodeHelperWithCompletion() {
 		if (popup.isVisible()) return;
 
 		if (codeHelper.matches()) {
@@ -475,6 +480,27 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 		    setSize(getPreferredSize());
 		    popup.pack();
 		  }
+		}
+	}
+
+	private void callCodeHelperWithoutCompletion() {
+		if (popup.isVisible()) return;
+
+		if (codeHelper.matches()) {
+		  wordPos = codeHelper.getWordToReplace();
+		  updatePrefix();
+
+			String replacement = codeHelper.getMaxCommonPrefix();
+
+			if (replacement != null) {
+				Point wordPoint = pane.modelToView(wordPos.getStartRow(), wordPos.getStartCol());
+
+				setVisible(true);
+				popup.show(pane, wordPoint.x, wordPoint.y + pane.getLineHeight());
+
+				setSize(getPreferredSize());
+				popup.pack();
+			}
 		}
 	}
 
@@ -522,7 +548,11 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     }
 
     if (isVisible()) updatePrefix();
-	  else idleThread.documentChanged(sender, event);
+	  else {
+	    if (idleThread != null) {
+	      idleThread.documentChanged(sender, event);
+	    }
+    }
   }
 
   public static class SCEListCellRenderer extends DefaultListCellRenderer {
@@ -537,11 +567,15 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
 	private class IdleThread extends Thread implements SCEDocumentListener {
 		private final Object sync = new Object();
-		private int delay = 200;
+		private int delay;
+		private int minLetters;
 		private long lastTime;
+		private Pattern pattern = Pattern.compile("\\p{Alnum}*$");
 
-		public IdleThread() {
+		public IdleThread(CodeHelper codeHelper) {
 			super("CodeHelperPane-IdleThread");
+			delay = codeHelper.autoCompletionDelay;
+			minLetters = codeHelper.autoCompletionMinLetters;
 		}
 
 		@Override
@@ -554,7 +588,16 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 						sleep(toWait);
 						toWait = delay - ((System.nanoTime() - lastTime) / 1000000);
 					}
-					callCodeHelper();
+
+					String word = document.getRow(caret.getRow(), 0, caret.getColumn());
+					Matcher matcher = pattern.matcher(word);
+					if (matcher.find()) {
+						word = matcher.group();
+						if (word.length() >= minLetters) {
+							callCodeHelperWithoutCompletion();
+						}
+					}
+
 					synchronized (sync) {
 						sync.wait();
 					}

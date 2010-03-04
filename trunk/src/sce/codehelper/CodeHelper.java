@@ -11,6 +11,9 @@ import sce.component.SCEPane;
 public abstract class CodeHelper {
   protected SCEPane pane = null;
   protected SCEDocument document = null;
+	protected boolean autoCompletion = false;
+	protected int autoCompletionMinLetters = 3;
+	protected int autoCompletionDelay = 1000;
 
 	/**
 	 * Checks whether it can be applied to the current document position.
@@ -57,4 +60,16 @@ public abstract class CodeHelper {
     this.pane = pane;
     this.document = pane.getDocument();
   }
+
+	public void setAutoCompletion(boolean activated) {
+		this.autoCompletion = activated;
+	}
+
+	public void setAutoCompletionMinLetters(int autoCompletionMinLetters) {
+		this.autoCompletionMinLetters = autoCompletionMinLetters;
+	}
+
+	public void setAutoCompletionDelay(int autoCompletionDelay) {
+		this.autoCompletionDelay = autoCompletionDelay;
+	}
 }
