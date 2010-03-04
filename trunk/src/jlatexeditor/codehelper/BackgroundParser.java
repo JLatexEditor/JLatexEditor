@@ -199,6 +199,9 @@ public class BackgroundParser extends Thread {
         else if (command.equals("subsection")) depth = 3;
         else if (command.equals("subsubsection")) depth = 4;
 
+        // skip*
+        if(tex.charAt(index) == '*') index++;
+
         String name = "";
         if (depth <= 4) {
           name = ParseUtil.parseBalanced(tex, index+1, tex.charAt(index) == '[' ? ']' : '}');

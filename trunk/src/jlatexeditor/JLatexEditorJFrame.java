@@ -30,6 +30,8 @@ import util.filechooser.SCEFileChooser;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
@@ -45,7 +47,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener {
+public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener, TreeSelectionListener {
   public static final File FILE_LAST_SESSION = new File(System.getProperty("user.home") + "/.jlatexeditor/last.session");
   public static final File FILE_RECENT = new File(System.getProperty("user.home") + "/.jlatexeditor/recent");
   private JMenu recentFilesMenu;
@@ -264,6 +266,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     symbolsPanel = new SymbolsPanel(this);
     // structure view
     structureTree = new JTree();
+    structureTree.getSelectionModel().addTreeSelectionListener(this);
 
     leftPane = new LeftPane(tabbedPane, symbolsPanel, new JScrollPane(structureTree));
 
@@ -1065,6 +1068,17 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
       }
     });
+  }
+
+  public void valueChanged(TreeSelectionEvent e) {
+    BackgroundParser.StructureEntry structureEntry = (BackgroundParser.StructureEntry) structureTree.getLastSelectedPathComponent();
+    if(structureEntry == null) return;
+    
+    File file = new File(structureEntry.getFile());
+    if (file.exists() && file.isFile()) {
+      SourceCodeEditor editor = open(new Doc.FileDoc(file));
+      editor.getTextPane().getCaret().moveTo(structureEntry.getLineNr(), 0);
+    }
   }
 
   private class ShutdownHook extends Thread {
