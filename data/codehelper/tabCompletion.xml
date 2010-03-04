@@ -30,4 +30,13 @@
     <argument name="title">
     </argument>
   </command>
+	<command name="it" usage="\textit{@text@}@|@" hint="italic">
+		<argument name="text"/>
+	</command>
+	<command name="bf" usage="\textbf{@text@}@|@" hint="bold">
+		<argument name="text"/>
+	</command>
+	<command name="tt" usage="\texttt{@text@}@|@" hint="type writer">
+		<argument name="text"/>
+	</command>
 </commandList>
