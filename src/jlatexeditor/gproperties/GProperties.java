@@ -90,8 +90,19 @@ public class GProperties {
     dictList.toArray(aspellDicts);
 
     // set default for the properties file
+    properties.addEntry(new Comment("\n## General properties"));
     properties.addEntry(new Comment(" Check for updates"));
     properties.addEntry(new Def("check_for_updates", BOOLEAN, "true"));
+
+	  properties.addEntry(new Comment("\n## Window properties"));
+	  properties.addEntry(new Comment(" Width of the symbols panel as part of the main window"));
+	  properties.addEntry(new Def("symbols_panel.width", INT_GT_0, "220"));
+	  properties.addEntry(new Comment(" Height of the tools panel as part of the main window"));
+	  properties.addEntry(new Def("tools_panel.height", DOUBLE_0_TO_1, "0.15"));
+	  properties.addEntry(new Comment(" Number of parent directories of the open file shown in the window title"));
+	  properties.addEntry(new Def("window.title.number_of_parent_dirs_shown", INT_GT_0, "2"));
+
+	  properties.addEntry(new Comment("\n## Editor properties"));
     properties.addEntry(new Comment(" Font settings"));
     properties.addEntry(new Def(EDITOR_FONT_NAME, new PSet(MONOSPACE_FONTS_ARRAY), "Monospaced"));
     properties.addEntry(new Def(EDITOR_FONT_SIZE, INT_GT_0, "13"));
@@ -99,12 +110,10 @@ public class GProperties {
     properties.addEntry(new Def("editor.columns_per_row", INT_GT_0, "80"));
     properties.addEntry(new Comment(" Spell checker settings"));
     properties.addEntry(new Def(ASPELL_LANG, new PSet(aspellDicts), "en_GB"));
-    properties.addEntry(new Comment(" Width of the symbols panel as part of the main window"));
-    properties.addEntry(new Def("symbols_panel.width", INT_GT_0, "220"));
-    properties.addEntry(new Comment(" Height of the tools panel as part of the main window"));
-    properties.addEntry(new Def("tools_panel.height", DOUBLE_0_TO_1, "0.15"));
-    properties.addEntry(new Comment(" Number of parent directories of the open file shown in the window title"));
-    properties.addEntry(new Def("window.title.number_of_parent_dirs_shown", INT_GT_0, "2"));
+	  properties.addEntry(new Comment(" Automatic completion"));
+	  properties.addEntry(new Def("editor.auto_completion.activated", BOOLEAN, "true"));
+	  properties.addEntry(new Def("editor.auto_completion.min_number_of_letters", INT_GT_0, "3"));
+	  properties.addEntry(new Def("editor.auto_completion.delay", INT_GT_0, "200"));
 
     properties.addEntry(new Comment("\n## Shortcuts"));
     properties.addEntry(new Comment(" File menu"));

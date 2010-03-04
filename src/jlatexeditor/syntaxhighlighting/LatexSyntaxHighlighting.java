@@ -37,6 +37,7 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
   }
 
   public LatexSyntaxHighlighting(SCEPane pane) {
+	  super("LatexSyntaxHighlighting");
     this.pane = pane;
     document = pane.getDocument();
     document.addSCEDocumentListener(this);

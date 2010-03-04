@@ -20,6 +20,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
   protected SCEPane pane = null;
   protected SCEDocument document = null;
   protected SCECaret caret = null;
+	protected IdleThread idleThread = new IdleThread();
 
   // the popup
   protected JPopupMenu popup = null;
@@ -75,6 +76,8 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     // add listeners
     pane.addKeyListener(this);
     document.addSCEDocumentListener(this);
+
+	  //idleThread.start();
   }
 
   public void setVisible(boolean visible) {
@@ -325,26 +328,9 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
     // control+space
     if (e.getKeyCode() == KeyEvent.VK_SPACE && e.isControlDown() && !isVisible()) {
+	    callCodeHelper();
 
-      if (codeHelper.matches()) {
-        wordPos = codeHelper.getWordToReplace();
-        updatePrefix();
-        String replacement = codeHelper.getMaxCommonPrefix();
-
-        if (replacement != null) {
-          replace(wordPos, replacement);
-
-          Point wordPoint = pane.modelToView(wordPos.getStartRow(), wordPos.getStartCol());
-
-          setVisible(true);
-          popup.show(pane, wordPoint.x, wordPoint.y + pane.getLineHeight());
-
-          setSize(getPreferredSize());
-          popup.pack();
-        }
-      }
-
-      e.consume();
+	    e.consume();
     }
 
     // hide on escape
@@ -470,7 +456,29 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     }
   }
 
-  private void select(int index) {
+	private void callCodeHelper() {
+		if (popup.isVisible()) return;
+
+		if (codeHelper.matches()) {
+		  wordPos = codeHelper.getWordToReplace();
+		  updatePrefix();
+		  String replacement = codeHelper.getMaxCommonPrefix();
+
+		  if (replacement != null) {
+		    replace(wordPos, replacement);
+
+		    Point wordPoint = pane.modelToView(wordPos.getStartRow(), wordPos.getStartCol());
+
+		    setVisible(true);
+		    popup.show(pane, wordPoint.x, wordPoint.y + pane.getLineHeight());
+
+		    setSize(getPreferredSize());
+		    popup.pack();
+		  }
+		}
+	}
+
+	private void select(int index) {
     int size = model.getSize();
     if (index < 0) index = 0;
     if (index > size - 1) index = size - 1;
@@ -514,6 +522,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     }
 
     if (isVisible()) updatePrefix();
+	  else idleThread.documentChanged(sender, event);
   }
 
   public static class SCEListCellRenderer extends DefaultListCellRenderer {
@@ -525,4 +534,45 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
       return component;
     }
   }
+
+	private class IdleThread extends Thread implements SCEDocumentListener {
+		private final Object sync = new Object();
+		private int delay = 200;
+		private long lastTime;
+
+		public IdleThread() {
+			super("CodeHelperPane-IdleThread");
+		}
+
+		@Override
+		public void run() {
+			try {
+				while (!isInterrupted()) {
+					lastTime = System.nanoTime();
+					long toWait = delay;
+					while (toWait > 0) {
+						sleep(toWait);
+						toWait = delay - ((System.nanoTime() - lastTime) / 1000000);
+					}
+					callCodeHelper();
+					synchronized (sync) {
+						sync.wait();
+					}
+				}
+			} catch (InterruptedException ignored) {
+			}
+		}
+
+		public void activate() {
+			synchronized (sync) {
+				sync.notify();
+			}
+		}
+
+		@Override
+		public void documentChanged(SCEDocument sender, SCEDocumentEvent event) {
+			lastTime = System.nanoTime();
+			activate();
+		}
+	}
 }

@@ -105,7 +105,7 @@ public class Trie<T> {
   }
 
   private String getMaxCommonPrefix() {
-    if (map.size() == 1) {
+    if (count == 0 && map.size() == 1) {
       Map.Entry<Character, Trie<T>> entity = map.entrySet().iterator().next();
       return entity.getKey() + entity.getValue().getMaxCommonPrefix();
     }
