@@ -16,9 +16,6 @@ import java.util.ArrayList;
 public class CombinedCodeHelper extends PatternHelper {
   private ArrayList<PatternHelper> patternHelpers = new ArrayList<PatternHelper>();
   private PatternHelper currentPatternHelper = null;
-	private boolean autoCompletion = false;
-	private int autoCompletionMinLetters = 3;
-	private int autoCompletionDelay = 1000;
 
 	@Override
   public boolean matches() {
@@ -67,16 +64,4 @@ public class CombinedCodeHelper extends PatternHelper {
       patternHelper.setSCEPane(pane);
     }
   }
-
-	public void setAutoCompletion(boolean activated) {
-		this.autoCompletion = activated;
-	}
-
-	public void setAutoCompletionMinLetters(int autoCompletionMinLetters) {
-		this.autoCompletionMinLetters = autoCompletionMinLetters;
-	}
-	
-	public void setAutoCompletionDelay(int autoCompletionDelay) {
-		this.autoCompletionDelay = autoCompletionDelay;
-	}
 }

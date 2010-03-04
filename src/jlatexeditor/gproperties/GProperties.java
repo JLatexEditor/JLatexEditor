@@ -111,7 +111,7 @@ public class GProperties {
     properties.addEntry(new Comment(" Spell checker settings"));
     properties.addEntry(new Def(ASPELL_LANG, new PSet(aspellDicts), "en_GB"));
 	  properties.addEntry(new Comment(" Automatic completion"));
-	  properties.addEntry(new Def("editor.auto_completion.activated", BOOLEAN, "true"));
+	  properties.addEntry(new Def("editor.auto_completion.activated", BOOLEAN, "false"));
 	  properties.addEntry(new Def("editor.auto_completion.min_number_of_letters", INT_GT_0, "3"));
 	  properties.addEntry(new Def("editor.auto_completion.delay", INT_GT_0, "200"));
 
