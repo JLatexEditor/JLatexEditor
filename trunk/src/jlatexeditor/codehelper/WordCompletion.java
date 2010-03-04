@@ -25,7 +25,7 @@ public class WordCompletion extends PatternHelper {
     super.matches();
     if (params != null) {
       word = params.get(0);
-      return true;
+      return word.word.length() > 0;
     }
     return false;
   }
