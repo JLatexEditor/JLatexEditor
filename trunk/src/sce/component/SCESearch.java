@@ -403,6 +403,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     private int text2column[] = new int[0];
 
     private UpdateThread() {
+	    super("SCESearch-UpdateThread");
       setPriority(Thread.NORM_PRIORITY);
     }
 

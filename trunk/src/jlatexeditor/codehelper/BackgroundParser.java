@@ -38,6 +38,7 @@ public class BackgroundParser extends Thread {
   private ArrayList<TODO> todos = new ArrayList<TODO>();
 
   public BackgroundParser(JLatexEditorJFrame jle) {
+	  super("BackgroundParser");
     this.jle = jle;
     setPriority(Thread.MIN_PRIORITY);
   }
@@ -71,6 +72,7 @@ public class BackgroundParser extends Thread {
       File file = ((Doc.FileDoc) resource).getFile();
       File directory = file.getParentFile();
 
+	    Trie words = new Trie();
       Trie commandNames = new Trie();
       Trie labels = new Trie();
       Trie<Command> commands = new Trie<Command>();
@@ -80,6 +82,7 @@ public class BackgroundParser extends Thread {
 
       parseTex(directory, file.getName(), words, commandNames, commands, labels, structureStack, new HashSet<String>());
 
+	    this.words = words;
       this.commandNames = commandNames;
       this.commands = commands;
       this.labels = labels;

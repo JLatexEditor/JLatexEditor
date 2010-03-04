@@ -16,134 +16,148 @@ import java.util.Vector;
  * Abstract document.
  */
 public abstract class Doc implements AbstractResource, SCEDocumentListener {
-  private ArrayList todos = new ArrayList();
-  private Vector<Line> oldLines = new Vector<Line>();
-  private Vector<Line> currLines = new Vector<Line>();
-  public static String UNTITLED = "Untitled";
+	private ArrayList todos = new ArrayList();
+	private Vector<Line> oldLines = new Vector<Line>();
+	private Vector<Line> currLines = new Vector<Line>();
+	public static String UNTITLED = "Untitled";
 
-  public static class Line {
-    enum State {
-      parsed, added, deleted, changed
-    }
+	private static class DocState {
+		private Line root = new Line(Line.State.parsed, -1, null);
+		// small cache of one element
+		private Line lastLine;
 
-    private Line.State state;
-    private String line;
+		private DocState() {
+		}
 
-    public Line(Line.State state, String line) {
-      this.state = state;
-      this.line = line;
-    }
-  }
+		private DocState(SCEDocument document) {
+			// build a balanced binary tree from the rows of the document
+			SCEDocumentRow[] rows = document.getRows();
 
-  public void documentChanged(SCEDocument sender, SCEDocumentEvent event) {
-    // TODO
-    if (event.isInsert()) {
-      String text = event.getText();
-      int newLines = 0;
-      for (char c : text.toCharArray()) {
-        if (c == '\n') {
-          newLines++;
-        }
-      }
-    }
-    //lines.insertElementAt();
-  }
+			int start = 0;
+			int end = rows.length - 1;
+			int pivot = end / 2;
+			root = new Line(Line.State.added, pivot, rows[pivot].toString());
 
-  /**
-   * Document read from file.
-   */
-  public static class FileDoc extends Doc {
-    private File file;
-    private String id;
+		}
 
-    public FileDoc(File file) {
-      this.file = file;
-      try {
-        this.id = file.getCanonicalPath();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
+		public int addLine(int lineNr) {
+			//if (lineNr == lastLine) return lastIndex;
+			return -1;
+		}
+	}
 
-    @Override
-    public int hashCode() {
-      return id.hashCode();
-    }
+	private static class Line {
+		enum State { parsed, added, deleted, changed }
+		private Line.State state;
+		private int lineNr;
+		private String oldLine;
 
-    @Override
-    public boolean equals(Object obj) {
-      if (obj instanceof FileDoc) {
-        FileDoc that = (FileDoc) obj;
-        return this.id.equals(that.id);
-      }
-      return false;
-    }
+		public Line(Line.State state, int lineNr, String oldLine) {
+			this.state = state;
+			this.lineNr = lineNr;
+			this.oldLine = oldLine;
+		}
+	}
 
-    public File getFile() {
-      return file;
-    }
+	@Override
+	public void documentChanged(SCEDocument sender, SCEDocumentEvent event) {
+		// TODO
+		if (event.isInsert()) {
+			String text = event.getText();
+			int newLines = 0;
+			for (char c : text.toCharArray()) {
+				if (c == '\n') {
+					newLines++;
+				}
+			}
+		}
+		//currLines.insertElementAt();
+	}
 
-    public String getContent() throws IOException {
-      return StreamUtils.readFile(file.getAbsolutePath());
-    }
+	/**
+	 * Document read from file.
+	 */
+	public static class FileDoc extends Doc {
+		private File file;
+		private String id;
 
-    public String getName() {
-      return file.getName();
-    }
+		public FileDoc(File file) {
+			this.file = file;
+			try {
+				this.id = file.getCanonicalPath();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 
-    public URI getUri() {
-      return file.toURI();
-    }
+		@Override
+		public int hashCode() {
+			return id.hashCode();
+		}
 
-    public String toString() {
-      return file.toString();
-    }
-  }
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof FileDoc) {
+			  FileDoc that = (FileDoc) obj;
+			  return this.id.equals(that.id);
+			}
+			return false;
+		}
 
-  /**
-   * Unsaved document.
-   */
-  public static class UntitledDoc extends Doc {
-    private static int untitledNr = 1;
-    private String name;
+		public File getFile() {
+			return file;
+		}
 
-    public UntitledDoc() {
-      name = UNTITLED + " " + untitledNr++;
-    }
+		public String getContent() throws IOException {
+			return StreamUtils.readFile(file.getAbsolutePath());
+		}
 
-    @Override
-    public int hashCode() {
-      return name.hashCode();
-    }
+		public String getName() { return file.getName(); }
 
-    @Override
-    public boolean equals(Object obj) {
-      if (obj instanceof UntitledDoc) {
-        UntitledDoc that = (UntitledDoc) obj;
-        return this.name.equals(that.name);
-      }
-      return false;
-    }
+		public URI getUri() {
+			return file.toURI();
+		}
 
-    public String getContent() {
-      return "";
-    }
+		public String toString() { return file.toString(); }
+	}
 
-    public String getName() {
-      return name;
-    }
+	/**
+	 * Unsaved document.
+	 */
+	public static class UntitledDoc extends Doc {
+		private static int untitledNr = 1;
+		private String name;
 
-    public URI getUri() {
-      try {
-        return new URI("unsaved:" + name);
-      } catch (URISyntaxException e) {
-        e.printStackTrace();
-        return null;
-      }
-    }
+		public UntitledDoc() {
+			name = UNTITLED + " " + untitledNr++;
+		}
 
-    public String toString() {
-      return name;
-    }
-  }
+		@Override
+		public int hashCode() {
+			return name.hashCode();
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof UntitledDoc) {
+				UntitledDoc that = (UntitledDoc) obj;
+				return this.name.equals(that.name);
+			}
+			return false;
+		}
+
+		public String getContent() { return ""; }
+		public String getName() { return name; }
+
+		public URI getUri() {
+			try {
+				return new URI("unsaved:" + name);
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+
+		public String toString() { return name; }
+	}
 }
