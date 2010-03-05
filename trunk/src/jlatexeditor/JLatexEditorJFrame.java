@@ -6,6 +6,7 @@
 package jlatexeditor;
 
 import de.endrullis.utils.ProgramUpdater;
+import jlatexeditor.bib.BibSyntaxHighlighting;
 import jlatexeditor.codehelper.*;
 import jlatexeditor.errorhighlighting.LatexCompiler;
 import jlatexeditor.errorhighlighting.LatexErrorHighlighting;
@@ -443,6 +444,49 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     return editor;
   }
 
+	private SourceCodeEditor<Doc> createBibSourceCodeEditor() {
+	  SourceCodeEditor<Doc> editor = new SourceCodeEditor<Doc>(null);
+
+	  SCEPane scePane = editor.getTextPane();
+	  setPaneProperties(scePane);
+	  SCEDocument document = scePane.getDocument();
+
+	  // TODO: user other styles
+	  // add some styles to the document
+		LatexStyles.addStyles(document);
+
+	  // syntax highlighting
+	  BibSyntaxHighlighting syntaxHighlighting = new BibSyntaxHighlighting(scePane);
+	  syntaxHighlighting.start();
+
+		// code completion and quick help
+		CombinedCodeHelper codeHelper = new CombinedCodeHelper();
+		if (backgroundParser != null) {
+			codeHelper.addPatternHelper(new BibCodeHelper(backgroundParser));
+			codeHelper.addPatternHelper(new LabelCodeHelper(backgroundParser));
+		}
+		codeHelper.addPatternHelper(new IncludeCodeHelper());
+		codeHelper.addPatternHelper(new LatexCommandCodeHelper("(\\\\[a-zA-Z]*)", "data/codehelper/commands.xml"));
+		if (backgroundParser != null) {
+			codeHelper.addPatternHelper(new WordCompletion(backgroundParser));
+		}
+		codeHelper.setAutoCompletion(GProperties.getBoolean("editor.auto_completion.activated"));
+		codeHelper.setAutoCompletionMinLetters(GProperties.getInt("editor.auto_completion.min_number_of_letters"));
+		codeHelper.setAutoCompletionDelay(GProperties.getInt("editor.auto_completion.delay"));
+		scePane.setCodeHelper(codeHelper);
+		scePane.setTabCompletion(new LatexCommandCodeHelper("([a-zA-Z]*)", "data/codehelper/tabCompletion.xml"));
+		scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
+
+		CombinedCodeAssistant codeAssistant = new CombinedCodeAssistant();
+		try {
+		  codeAssistant.addAssistant(new SpellCheckSuggester());
+		} catch (Exception ignored) {
+		}
+		scePane.addCodeAssistantListener(codeAssistant);
+
+	  return editor;
+	}
+
   private SourceCodeEditor<Doc> createGPropertiesSourceCodeEditor() {
     SourceCodeEditor<Doc> editor = new SourceCodeEditor<Doc>(null);
 
@@ -503,6 +547,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     SourceCodeEditor<Doc> editor;
     if (doc.getName().endsWith("global.properties")) {
       editor = createGPropertiesSourceCodeEditor();
+    } else
+    if (doc.getName().endsWith(".bib")) {
+      editor = createBibSourceCodeEditor();
     } else {
       editor = createLatexSourceCodeEditor();
     }
