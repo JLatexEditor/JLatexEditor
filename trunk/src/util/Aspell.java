@@ -136,7 +136,7 @@ public final class Aspell {
 
     String line = aspellOut.readLine();
 
-    if (line.equals("*")) {
+    if (line.equals("*") || line.startsWith("+") || line.startsWith("-")) {
       aspellOut.readLine();
       return new Result();
     } else if (line.startsWith("#")) {
