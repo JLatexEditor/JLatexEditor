@@ -207,9 +207,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     menuBar.add(viewMenu);
 
     viewMenu.add(createMenuItem("Symbols", "symbols", 'y'));
-    viewMenu.add(createMenuItem("Status Bar", "status bar", 'S'));
+    viewMenu.add(createMenuItem("Structure", "structure", 'S'));
     viewMenu.add(createMenuItem("Compile", "compile", 'C'));
-    viewMenu.add(createMenuItem("Local History", "local history", 'S'));
+    viewMenu.add(createMenuItem("Local History", "local history", 'L'));
+	  viewMenu.add(createMenuItem("Status Bar", "status bar", 'B'));
 
     JMenu buildMenu = new JMenu("Build");
     buildMenu.setMnemonic('B');
@@ -779,201 +780,201 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       }
     } else
 
-      // open a file
-      if (action.equals("open")) {
-        openDialog.setDialogTitle("Open");
-        openDialog.setDialogType(JFileChooser.OPEN_DIALOG);
-        if (openDialog.showDialog(this, "Open") != JFileChooser.APPROVE_OPTION) return;
-        if (openDialog.getSelectedFile() == null) return;
+		// open a file
+		if (action.equals("open")) {
+			openDialog.setDialogTitle("Open");
+			openDialog.setDialogType(JFileChooser.OPEN_DIALOG);
+			if (openDialog.showDialog(this, "Open") != JFileChooser.APPROVE_OPTION) return;
+			if (openDialog.getSelectedFile() == null) return;
 
-        open(new Doc.FileDoc(openDialog.getSelectedFile()));
-      } else
-        // recent files list
-        if (action.startsWith("open recent:")) {
-          open(new Doc.FileDoc(new File(action.substring("open recent:".length()))));
-        } else if (action.equals("clear recent")) {
-          recentFiles.clear();
-          updateRecentMenu();
-        } else
-          // save a file
-          if (action.equals("save")) {
-            saveAll();
-          } else
-            // close
-            if (action.equals("close")) {
-              closeTab(tabbedPane.getSelectedIndex());
-            } else
-              // exit
-              if (action.equals("exit")) {
-                saveAll();
-                System.exit(0);
-              } else
+			open(new Doc.FileDoc(openDialog.getSelectedFile()));
+		} else
+		// recent files list
+		if (action.startsWith("open recent:")) {
+			open(new Doc.FileDoc(new File(action.substring("open recent:".length()))));
+		} else if (action.equals("clear recent")) {
+			recentFiles.clear();
+			updateRecentMenu();
+		} else
+		// save a file
+		if (action.equals("save")) {
+			saveAll();
+		} else
+		// close
+		if (action.equals("close")) {
+			closeTab(tabbedPane.getSelectedIndex());
+		} else
+		// exit
+		if (action.equals("exit")) {
+			saveAll();
+			System.exit(0);
+		} else
 
-                // undo
-                if (action.equals("undo")) {
-                  getEditor(tabbedPane.getSelectedIndex()).getTextPane().getUndoManager().undo(false);
-                } else
-                  // undo
-                  if (action.equals("redo")) {
-                    getEditor(tabbedPane.getSelectedIndex()).getTextPane().getUndoManager().redo(false);
-                  } else
+		// undo
+		if (action.equals("undo")) {
+			getEditor(tabbedPane.getSelectedIndex()).getTextPane().getUndoManager().undo(false);
+		} else
+		// undo
+		if (action.equals("redo")) {
+			getEditor(tabbedPane.getSelectedIndex()).getTextPane().getUndoManager().redo(false);
+		} else
 
-                    // find
-                    if (action.equals("find")) {
-                      getEditor(tabbedPane.getSelectedIndex()).search();
-                    } else
-                      // replace
-                      if (action.equals("replace")) {
-                        getEditor(tabbedPane.getSelectedIndex()).replace();
-                      } else
-                        // find next
-                        if (action.equals("find next")) {
-                          getEditor(tabbedPane.getSelectedIndex()).getSearch().next(false);
-                        } else
-                          // find previous
-                          if (action.equals("find previous")) {
-                            getEditor(tabbedPane.getSelectedIndex()).getSearch().previous();
-                          } else
+		// find
+		if (action.equals("find")) {
+			getEditor(tabbedPane.getSelectedIndex()).search();
+		} else
+		// replace
+		if (action.equals("replace")) {
+			getEditor(tabbedPane.getSelectedIndex()).replace();
+		} else
+		// find next
+		if (action.equals("find next")) {
+			getEditor(tabbedPane.getSelectedIndex()).getSearch().next(false);
+		} else
+		// find previous
+		if (action.equals("find previous")) {
+			getEditor(tabbedPane.getSelectedIndex()).getSearch().previous();
+		} else
 
-                            // cut
-                            if (action.equals("cut")) {
-                              getEditor(tabbedPane.getSelectedIndex()).cut();
-                            } else
+		// cut
+		if (action.equals("cut")) {
+			getEditor(tabbedPane.getSelectedIndex()).cut();
+		} else
 
-                              // copy
-                              if (action.equals("copy")) {
-                                getEditor(tabbedPane.getSelectedIndex()).copy();
-                              } else
+		// copy
+		if (action.equals("copy")) {
+			getEditor(tabbedPane.getSelectedIndex()).copy();
+		} else
 
-                                // paste
-                                if (action.equals("paste")) {
-                                  getEditor(tabbedPane.getSelectedIndex()).paste();
-                                } else
+		// paste
+		if (action.equals("paste")) {
+			getEditor(tabbedPane.getSelectedIndex()).paste();
+		} else
 
-                                  // lineComment
-                                  if (action.equals("comment")) {
-                                    getEditor(tabbedPane.getSelectedIndex()).lineComment("% ");
-                                  } else
-                                    // lineUncomment
-                                    if (action.equals("uncomment")) {
-                                      getEditor(tabbedPane.getSelectedIndex()).lineUncomment("% ");
-                                    } else
+		// lineComment
+		if (action.equals("comment")) {
+			getEditor(tabbedPane.getSelectedIndex()).lineComment("% ");
+		} else
+		// lineUncomment
+		if (action.equals("uncomment")) {
+			getEditor(tabbedPane.getSelectedIndex()).lineUncomment("% ");
+		} else
 
-                                      // show/hide symbols
-                                      if (action.equals("symbols")) {
-                                        leftPane.changeView(symbolsPanel);
-                                      } else
-                                        // show/hide status bar
-                                        if (action.equals("status bar")) {
-                                          statusBar.setVisible(!statusBar.isVisible());
-                                        } else
-                                          // show/hide compile
-                                          if (action.equals("compile")) {
-                                            toggleTool(0);
-                                          } else
-                                            // show/hide status bar
-                                            if (action.equals("local history")) {
-                                              toggleTool(1);
-                                            } else
+		// show/hide symbols
+		if (action.equals("symbols")) {
+			leftPane.changeView(symbolsPanel);
+		} else
+		// show/hide status bar
+		if (action.equals("status bar")) {
+			statusBar.setVisible(!statusBar.isVisible());
+		} else
+		// show/hide compile
+		if (action.equals("compile")) {
+			toggleTool(0);
+		} else
+		// show/hide status bar
+		if (action.equals("local history")) {
+			toggleTool(1);
+		} else
 
-                                              // diff
-                                              if (action.equals("diff")) {
-                                                openDialog.showDialog(this, "Diff View");
-                                                if (openDialog.getSelectedFile() == null) return;
+		// diff
+		if (action.equals("diff")) {
+			openDialog.showDialog(this, "Diff View");
+			if (openDialog.getSelectedFile() == null) return;
 
-                                                try {
-                                                  String text = SourceCodeEditor.readFile(openDialog.getSelectedFile().getCanonicalPath());
-                                                  getEditor(tabbedPane.getSelectedIndex()).diffView(openDialog.getSelectedFile().getCanonicalPath(), text);
-                                                } catch (IOException e1) {
-                                                  e1.printStackTrace();
-                                                }
-                                              } else
+			try {
+				String text = SourceCodeEditor.readFile(openDialog.getSelectedFile().getCanonicalPath());
+				getEditor(tabbedPane.getSelectedIndex()).diffView(openDialog.getSelectedFile().getCanonicalPath(), text);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		} else
 
-                                                // compile
-                                                if (action.equals("pdf")) {
-                                                  saveAll();
-                                                  compile(LatexCompiler.TYPE_PDF);
-                                                } else if (action.equals("dvi")) {
-                                                  saveAll();
-                                                  compile(LatexCompiler.TYPE_DVI);
-                                                } else if (action.equals("dvi + ps")) {
-                                                  saveAll();
-                                                  compile(LatexCompiler.TYPE_DVI_PS);
-                                                } else if (action.equals("dvi + ps + pdf")) {
-                                                  saveAll();
-                                                  compile(LatexCompiler.TYPE_DVI_PS_PDF);
-                                                } else
+		// compile
+		if (action.equals("pdf")) {
+			saveAll();
+			compile(LatexCompiler.TYPE_PDF);
+		} else if (action.equals("dvi")) {
+			saveAll();
+			compile(LatexCompiler.TYPE_DVI);
+		} else if (action.equals("dvi + ps")) {
+			saveAll();
+			compile(LatexCompiler.TYPE_DVI_PS);
+		} else if (action.equals("dvi + ps + pdf")) {
+			saveAll();
+			compile(LatexCompiler.TYPE_DVI_PS_PDF);
+		} else
 
-                                                  // svn update
-                                                  if (action.equals("svn update")) {
-                                                    saveAll();
-                                                    ArrayList<SVN.UpdateResult> results;
-                                                    try {
-                                                      results = SVN.getInstance().update(getMainEditor().getFile().getParentFile());
-                                                    } catch (Exception exception) {
-                                                      statusBar.showMessage("SVN update failed", "SVN update failed: " + exception.getMessage());
-                                                      return;
-                                                    }
-                                                    StringBuilder builder = new StringBuilder();
-                                                    builder.append("<html>");
-                                                    builder.append("SVN update: " + (results.size() == 0 ? "All Quiet on the Western Front" : "<br>"));
-                                                    builder.append("<br>");
-                                                    svnList("Updated/Merged:", builder, results, new int[]{SVN.UpdateResult.TYPE_UPDATE, SVN.UpdateResult.TYPE_MERGED});
-                                                    svnList("Added:", builder, results, new int[]{SVN.UpdateResult.TYPE_ADD});
-                                                    svnList("Deleted:", builder, results, new int[]{SVN.UpdateResult.TYPE_DELETE});
-                                                    svnList("Conflicts:", builder, results, new int[]{SVN.UpdateResult.TYPE_CONFLICT});
-                                                    builder.append("</html>");
+		// svn update
+		if (action.equals("svn update")) {
+			saveAll();
+			ArrayList<SVN.UpdateResult> results;
+			try {
+				results = SVN.getInstance().update(getMainEditor().getFile().getParentFile());
+			} catch (Exception exception) {
+				statusBar.showMessage("SVN update failed", "SVN update failed: " + exception.getMessage());
+				return;
+			}
+			StringBuilder builder = new StringBuilder();
+			builder.append("<html>");
+			builder.append("SVN update: " + (results.size() == 0 ? "All Quiet on the Western Front" : "<br>"));
+			builder.append("<br>");
+			svnList("Updated/Merged:", builder, results, new int[]{SVN.UpdateResult.TYPE_UPDATE, SVN.UpdateResult.TYPE_MERGED});
+			svnList("Added:", builder, results, new int[]{SVN.UpdateResult.TYPE_ADD});
+			svnList("Deleted:", builder, results, new int[]{SVN.UpdateResult.TYPE_DELETE});
+			svnList("Conflicts:", builder, results, new int[]{SVN.UpdateResult.TYPE_CONFLICT});
+			builder.append("</html>");
 
-                                                    checkExternalModification(false);
-                                                    statusBar.showMessage("SVN update", builder.toString());
-                                                    statusBar.setUpdatesAvailableVisible(false);
-                                                  } else
-                                                    // svn commit
-                                                    if (action.equals("svn commit")) {
-                                                      saveAll();
-                                                      String message = (String) JOptionPane.showInputDialog(
-                                                              this,
-                                                              "Commit message:",
-                                                              "SVN commit",
-                                                              JOptionPane.QUESTION_MESSAGE,
-                                                              null,
-                                                              null,
-                                                              "");
-                                                      if (message != null) {
-                                                        Pair<Boolean, String> result = SVN.getInstance().commit(getMainEditor().getFile().getParentFile(), message);
-                                                        statusBar.showMessage("SVN commit", "<html>SVN commit:<br><br>" + result.second + "</html>");
-                                                      }
-                                                    } else if (action.equals("next tab")) {
-                                                      // select the right tab
-                                                      int index = tabbedPane.getSelectedIndex() + 1;
-                                                      if (index >= tabbedPane.getTabCount()) index = 0;
-                                                      tabbedPane.setSelectedIndex(index);
-                                                    } else if (action.equals("previous tab")) {
-                                                      // select the left tab
-                                                      int index = tabbedPane.getSelectedIndex() - 1;
-                                                      if (index < 0) index = tabbedPane.getTabCount() - 1;
-                                                      tabbedPane.setSelectedIndex(index);
-                                                    } else if (action.equals("font")) {
-                                                      SCEFontWindow fontDialog = new SCEFontWindow(GProperties.getEditorFont().getFamily(), GProperties.getEditorFont().getSize(), this);
-                                                      fontDialog.setVisible(true);
-                                                    } else if (action.equals("font window") || action.equals("font window cancel")) {
-                                                      SCEFontWindow fontDialog = (SCEFontWindow) e.getSource();
-                                                      changeFont(fontDialog.getFontName(), fontDialog.getFontSize());
-                                                    } else if (action.equals("global settings")) {
-                                                      open(new Doc.FileDoc(GProperties.CONFIG_FILE));
-                                                    } else if (action.equals("update")) {
-                                                      checkForUpdates(false);
-                                                    } else if (action.equals("about")) {
-                                                      AboutDialog aboutDialog = new AboutDialog(version);
-                                                      aboutDialog.showIt();
-                                                    } else if (action.equals("stack trace")) {
-                                                      new ThreadInfoWindow();
-                                                    } else
+			checkExternalModification(false);
+			statusBar.showMessage("SVN update", builder.toString());
+			statusBar.setUpdatesAvailableVisible(false);
+		} else
+		// svn commit
+		if (action.equals("svn commit")) {
+			saveAll();
+			String message = (String) JOptionPane.showInputDialog(
+							this,
+							"Commit message:",
+							"SVN commit",
+							JOptionPane.QUESTION_MESSAGE,
+							null,
+							null,
+							"");
+			if (message != null) {
+				Pair<Boolean, String> result = SVN.getInstance().commit(getMainEditor().getFile().getParentFile(), message);
+				statusBar.showMessage("SVN commit", "<html>SVN commit:<br><br>" + result.second + "</html>");
+			}
+		} else if (action.equals("next tab")) {
+			// select the right tab
+			int index = tabbedPane.getSelectedIndex() + 1;
+			if (index >= tabbedPane.getTabCount()) index = 0;
+			tabbedPane.setSelectedIndex(index);
+		} else if (action.equals("previous tab")) {
+			// select the left tab
+			int index = tabbedPane.getSelectedIndex() - 1;
+			if (index < 0) index = tabbedPane.getTabCount() - 1;
+			tabbedPane.setSelectedIndex(index);
+		} else if (action.equals("font")) {
+			SCEFontWindow fontDialog = new SCEFontWindow(GProperties.getEditorFont().getFamily(), GProperties.getEditorFont().getSize(), this);
+			fontDialog.setVisible(true);
+		} else if (action.equals("font window") || action.equals("font window cancel")) {
+			SCEFontWindow fontDialog = (SCEFontWindow) e.getSource();
+			changeFont(fontDialog.getFontName(), fontDialog.getFontSize());
+		} else if (action.equals("global settings")) {
+			open(new Doc.FileDoc(GProperties.CONFIG_FILE));
+		} else if (action.equals("update")) {
+			checkForUpdates(false);
+		} else if (action.equals("about")) {
+			AboutDialog aboutDialog = new AboutDialog(version);
+			aboutDialog.showIt();
+		} else if (action.equals("stack trace")) {
+			new ThreadInfoWindow();
+		} else
 
-                                                      // timer
-                                                      if (action.equals("timer")) {
-                                                        checkExternalModification(true);
-                                                      }
+		// timer
+		if (action.equals("timer")) {
+			checkExternalModification(true);
+		}
   }
 
   private void toggleTool(int tab) {
