@@ -137,10 +137,10 @@ public class GProperties {
     properties.addEntry(new Def("shortcut.diff", SHORTCUT, "alt D"));
     properties.addEntry(new Comment(" View"));
     properties.addEntry(new Def("shortcut.symbols", SHORTCUT, "alt Y"));
-    properties.addEntry(new Def("shortcut.status bar", SHORTCUT, ""));
-    properties.addEntry(new Def("shortcut.status bar", SHORTCUT, ""));
+    properties.addEntry(new Def("shortcut.structure", SHORTCUT, "alt X"));
     properties.addEntry(new Def("shortcut.compile", SHORTCUT, ""));
     properties.addEntry(new Def("shortcut.local history", SHORTCUT, ""));
+	  properties.addEntry(new Def("shortcut.status bar", SHORTCUT, ""));
     properties.addEntry(new Comment(" Build menu"));
     properties.addEntry(new Def("shortcut.pdf", SHORTCUT, "alt 1"));
     properties.addEntry(new Def("shortcut.dvi", SHORTCUT, "alt 2"));
