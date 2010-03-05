@@ -25,7 +25,7 @@ public class LeftPane extends JPanel implements ActionListener {
 
   // currently shown component
   private JComponent view = null;
-  private int dividerLocation = GProperties.getInt("symbols_panel.width");
+  private int dividerLocation = GProperties.getInt("main_window.symbols_panel.width");
 
   public LeftPane(JComponent main, JComponent symbolsPanel, JComponent structureView) {
     this.main = main;

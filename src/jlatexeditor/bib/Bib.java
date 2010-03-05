@@ -100,11 +100,11 @@ public class Bib {
     properties.addEntry(new Comment(" Spell checker settings"));
     properties.addEntry(new Def(ASPELL_LANG, new PSet(aspellDicts), "en_GB"));
     properties.addEntry(new Comment(" Width of the symbols panel as part of the main window"));
-    properties.addEntry(new Def("symbols_panel.width", INT_GT_0, "220"));
+    properties.addEntry(new Def("main_window.symbols_panel.width", INT_GT_0, "220"));
     properties.addEntry(new Comment(" Height of the tools panel as part of the main window"));
-    properties.addEntry(new Def("tools_panel.height", DOUBLE_0_TO_1, "0.15"));
+    properties.addEntry(new Def("main_window.tools_panel.height", DOUBLE_0_TO_1, "0.15"));
     properties.addEntry(new Comment(" Number of parent directories of the open file shown in the window title"));
-    properties.addEntry(new Def("window.title.number_of_parent_dirs_shown", INT_GT_0, "2"));
+    properties.addEntry(new Def("main_window.title.number_of_parent_dirs_shown", INT_GT_0, "2"));
 
     properties.addEntry(new Comment("\n## Shortcuts"));
     properties.addEntry(new Comment(" File menu"));

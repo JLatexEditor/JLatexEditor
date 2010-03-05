@@ -7,6 +7,7 @@ import de.endrullis.utils.BetterProperties2.Range;
 import de.endrullis.utils.BetterProperties2.PSet;
 import util.Aspell;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
@@ -95,12 +96,18 @@ public class GProperties {
     properties.addEntry(new Def("check_for_updates", BOOLEAN, "true"));
 
 	  properties.addEntry(new Comment("\n## Window properties"));
+	  properties.addEntry(new Comment(" Position, width, and height of the main window"));
+	  properties.addEntry(new Def("main_window.x", INT_GT_0, "0"));
+	  properties.addEntry(new Def("main_window.y", INT_GT_0, "0"));
+	  properties.addEntry(new Def("main_window.width", INT_GT_0, "1024"));
+	  properties.addEntry(new Def("main_window.height", INT_GT_0, "800"));
+	  properties.addEntry(new Def("main_window.maximized_state", INT_GT_0, "" + JFrame.MAXIMIZED_BOTH));
 	  properties.addEntry(new Comment(" Width of the symbols panel as part of the main window"));
-	  properties.addEntry(new Def("symbols_panel.width", INT_GT_0, "220"));
+	  properties.addEntry(new Def("main_window.symbols_panel.width", INT_GT_0, "220"));
 	  properties.addEntry(new Comment(" Height of the tools panel as part of the main window"));
-	  properties.addEntry(new Def("tools_panel.height", DOUBLE_0_TO_1, "0.15"));
+	  properties.addEntry(new Def("main_window.tools_panel.height", DOUBLE_0_TO_1, "0.15"));
 	  properties.addEntry(new Comment(" Number of parent directories of the open file shown in the window title"));
-	  properties.addEntry(new Def("window.title.number_of_parent_dirs_shown", INT_GT_0, "2"));
+	  properties.addEntry(new Def("main_window.title.number_of_parent_dirs_shown", INT_GT_0, "2"));
 
 	  properties.addEntry(new Comment("\n## Editor properties"));
     properties.addEntry(new Comment(" Font settings"));
@@ -270,6 +277,24 @@ public class GProperties {
   public static double getDouble(String key) {
     return properties.getDouble(key);
   }
+
+	public static void setMainWindowBounds(Rectangle mainWindowBounds, int mainWindowMaximizedState) {
+		properties.setInt("main_window.x", mainWindowBounds.x);
+		properties.setInt("main_window.y", mainWindowBounds.y);
+		properties.setInt("main_window.width", mainWindowBounds.width);
+		properties.setInt("main_window.height", mainWindowBounds.height);
+		properties.setInt("main_window.maximized_state", mainWindowMaximizedState);
+		//save();
+	}
+
+	public static Rectangle getMainWindowBounds() {
+		return new Rectangle(
+				properties.getInt("main_window.x"),
+				properties.getInt("main_window.y"),
+				properties.getInt("main_window.width"),
+				properties.getInt("main_window.height")
+		);
+	}
 
   public static void addPropertyChangeListener(String key, PropertyChangeListener listener) {
     Set<PropertyChangeListener> listeners = changeListeners.get(key);

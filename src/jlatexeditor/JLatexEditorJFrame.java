@@ -20,7 +20,6 @@ import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
 import jlatexeditor.tools.SVN;
 import jlatexeditor.tools.ThreadInfoWindow;
-import sce.codehelper.CodeAssistant;
 import sce.codehelper.CombinedCodeAssistant;
 import sce.codehelper.CombinedCodeHelper;
 import sce.component.*;
@@ -42,13 +41,10 @@ import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
-import java.lang.management.ManagementFactory;
-import java.lang.management.ThreadMXBean;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Map;
 
 public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener, TreeSelectionListener {
   public static final File FILE_LAST_SESSION = new File(System.getProperty("user.home") + "/.jlatexeditor/last.session");
@@ -141,7 +137,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     new AboutDialog(null).showAndAutoHideAfter(5000);
 
     JLatexEditorJFrame latexEditor = new JLatexEditorJFrame(args);
-    latexEditor.setSize(1024, 800);
+    latexEditor.setBounds(GProperties.getMainWindowBounds());
     latexEditor.setVisible(true);
   }
 
@@ -150,7 +146,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     this.args = args;
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     addWindowListener(this);
-    Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+    Runtime.getRuntime().addShutdownHook(new ShutdownHook(this));
 
     initFileChooser();
 
@@ -276,7 +272,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
     textToolsSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, leftPane, toolsTab);
     textToolsSplit.setOneTouchExpandable(true);
-    textToolsSplit.setResizeWeight(1 - GProperties.getDouble("tools_panel.height"));
+    textToolsSplit.setResizeWeight(1 - GProperties.getDouble("main_window.tools_panel.height"));
     ((BasicSplitPaneUI) textToolsSplit.getUI()).getDivider().addMouseListener(new MouseAdapter() {
       public void mousePressed(MouseEvent e) {
         toolsTab.setVisible(true);
@@ -992,7 +988,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     } else {
       toolsTab.setSelectedIndex(tab);
       toolsTab.setVisible(true);
-      textToolsSplit.setResizeWeight(1 - GProperties.getDouble("tools_panel.height"));
+      textToolsSplit.setResizeWeight(1 - GProperties.getDouble("main_window.tools_panel.height"));
       textToolsSplit.resetToPreferredSizes();
       toolsTab.getSelectedComponent().requestFocus();
     }
@@ -1127,7 +1123,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
           openDialog.setCurrentDirectory(new File(new File(args[0]).getParent()));
         }
 
-        setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
+        setExtendedState(getExtendedState() | GProperties.getInt("main_window.maximized_state"));
       }
     });
   }
@@ -1144,8 +1140,20 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   }
 
   private class ShutdownHook extends Thread {
-    public void run() {
+	  private JLatexEditorJFrame mainWindow;
+
+	  private ShutdownHook(JLatexEditorJFrame mainWindow) {
+		  super("ShutdownHook");
+		  this.mainWindow = mainWindow;
+	  }
+
+	  public void run() {
       try {
+	      // save windows position and state
+	      GProperties.setMainWindowBounds(mainWindow.getBounds(), mainWindow.getExtendedState() & JFrame.MAXIMIZED_BOTH);
+	      GProperties.save();
+
+	      // save last session
         PrintWriter writerLast = new PrintWriter(new FileWriter(FILE_LAST_SESSION));
         for (int tabNr = 0; tabNr < tabbedPane.getTabCount(); tabNr++) {
           SourceCodeEditor editor = getEditor(tabNr);
@@ -1154,6 +1162,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         }
         writerLast.close();
 
+	      // save recent files
         PrintWriter writerRecent = new PrintWriter(new FileWriter(FILE_RECENT));
         for (String name : recentFiles) writerRecent.println(name);
         writerRecent.close();
@@ -1203,7 +1212,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       File file = fileDoc.getFile();
       String fileWithPath = file.getPath();
       fileName = file.getName();
-      for (int i = 0; i < GProperties.getInt("window.title.number_of_parent_dirs_shown"); i++) {
+      for (int i = 0; i < GProperties.getInt("main_window.title.number_of_parent_dirs_shown"); i++) {
         file = file.getParentFile();
         if (file != null) {
           fileName = file.getName() + "/" + fileName;
