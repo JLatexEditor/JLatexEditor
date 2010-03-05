@@ -864,9 +864,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		if (action.equals("symbols")) {
 			leftPane.changeView(symbolsPanel);
 		} else
-		// show/hide status bar
-		if (action.equals("status bar")) {
-			statusBar.setVisible(!statusBar.isVisible());
+		// show/hide symbols
+		if (action.equals("structure")) {
+			leftPane.changeView(structureTree);
 		} else
 		// show/hide compile
 		if (action.equals("compile")) {
@@ -875,6 +875,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		// show/hide status bar
 		if (action.equals("local history")) {
 			toggleTool(1);
+		} else
+		// show/hide status bar
+		if (action.equals("status bar")) {
+			statusBar.setVisible(!statusBar.isVisible());
 		} else
 
 		// diff
