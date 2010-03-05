@@ -48,6 +48,10 @@ public class WordCompletion extends PatternHelper {
 
   @Override
   public String getMaxCommonPrefix() {
-    return backgroundParser.getWords().getMaxCommonPrefix(word.word);
+    String prefix = backgroundParser.getWords().getMaxCommonPrefix(word.word);
+	  if (prefix.length() < word.word.length()) {
+		  prefix = word.word;
+	  }
+	  return prefix;
   }
 }
