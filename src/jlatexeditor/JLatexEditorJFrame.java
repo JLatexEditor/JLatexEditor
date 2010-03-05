@@ -451,7 +451,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  setPaneProperties(scePane);
 	  SCEDocument document = scePane.getDocument();
 
-	  // TODO: user other styles
+	  // TODO: use other styles
 	  // add some styles to the document
 		LatexStyles.addStyles(document);
 
@@ -494,7 +494,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     setPaneProperties(scePane);
     SCEDocument document = scePane.getDocument();
 
-    // TODO: user other styles
     // add some styles to the document
     GPropertiesStyles.addStyles(document);
 
