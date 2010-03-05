@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class TrieTest extends TestCase {
   public void testTrie() {
-    Trie root = new Trie();
+    Trie<Object> root = new Trie<Object>();
     assertEquals(1, root.add("asdf"));
     assertEquals("asdf", root.getMaxCommonPrefix(""));
     assertEquals("asdf", root.getMaxCommonPrefix("a"));
@@ -47,8 +47,8 @@ public class TrieTest extends TestCase {
     }
     assertEquals(
             "aaa\n" +
-                    "b2\n" +
-                    "blah\n", s);
+						"b2\n" +
+						"blah\n", s);
 
     list = root.getStrings("aa", 1);
     s = "";
@@ -64,8 +64,8 @@ public class TrieTest extends TestCase {
     }
     assertEquals(
             "ccc1\n" +
-                    "ccc2\n" +
-                    "ccc3\n", s);
+						"ccc2\n" +
+						"ccc3\n", s);
 
     assertEquals(1, root.add("cc"));
 
@@ -76,7 +76,7 @@ public class TrieTest extends TestCase {
     }
     assertEquals(
             "cc\n" +
-                    "ccc1\n" +
-                    "ccc2\n", s);
+						"ccc1\n" +
+						"ccc2\n", s);
   }
 }
