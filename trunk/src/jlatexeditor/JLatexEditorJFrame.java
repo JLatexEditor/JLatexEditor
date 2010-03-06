@@ -735,6 +735,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   }
 
   public void compile(int type) {
+	  showTool(0);
+
     SourceCodeEditor editor = mainEditor;
     if (editor == null) {
       editor = (SourceCodeEditor) tabbedPane.getSelectedComponent();
@@ -977,20 +979,28 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		}
   }
 
+	private void showTool(int tab) {
+		if (toolsTab.isVisible()) {
+		  if (toolsTab.getSelectedIndex() != tab) {
+		    toolsTab.setSelectedIndex(tab);
+		  }
+		} else {
+			toolsTab.setSelectedIndex(tab);
+			toolsTab.setVisible(true);
+			textToolsSplit.setResizeWeight(1 - GProperties.getDouble("main_window.tools_panel.height"));
+			textToolsSplit.resetToPreferredSizes();
+			toolsTab.getSelectedComponent().requestFocus();
+		}
+	}
+
   private void toggleTool(int tab) {
-    if (toolsTab.isVisible()) {
-      if (toolsTab.getSelectedIndex() == tab) {
-        toolsTab.setVisible(false);
-        getActiveEditor().requestFocus();
-      } else {
-        toolsTab.setSelectedIndex(tab);
-      }
-    } else {
-      toolsTab.setSelectedIndex(tab);
-      toolsTab.setVisible(true);
-      textToolsSplit.setResizeWeight(1 - GProperties.getDouble("main_window.tools_panel.height"));
-      textToolsSplit.resetToPreferredSizes();
-      toolsTab.getSelectedComponent().requestFocus();
+	  if (toolsTab.isVisible() && toolsTab.getSelectedIndex() == tab) {
+		  // if tool is visible -> hide it
+			toolsTab.setVisible(false);
+			getActiveEditor().requestFocus();
+		} else {
+		  // else -> show it
+		  showTool(tab);
     }
   }
 
