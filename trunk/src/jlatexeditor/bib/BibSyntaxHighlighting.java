@@ -1,23 +1,20 @@
 package jlatexeditor.bib;
 
-import de.endrullis.utils.BetterProperties2.Def;
-import jlatexeditor.gproperties.GProperties;
-import jlatexeditor.gproperties.GPropertiesStyles;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
+import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
 import jlatexeditor.syntaxhighlighting.states.RootState;
 import sce.component.*;
-import sce.syntaxhighlighting.ParserState;
 import sce.syntaxhighlighting.ParserStateStack;
 import sce.syntaxhighlighting.SyntaxHighlighting;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Arrays;
 
 /**
  * Syntax highlighting for global.properties.
  */
 public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocumentListener {
-  private static final Pattern PATTERN = Pattern.compile("^([^#=]+)=([^#]*)");
+  private static char[] COMMA_OR_BRACKET = new char[] {'}', ',', ' '};
+  static { Arrays.sort(COMMA_OR_BRACKET); }
 
   // text pane and document
   private SCEPane pane = null;
@@ -125,71 +122,82 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
 
       // the current states state (at the beginning of the row)
       ParserStateStack stateStack = row.parserStateStack.copy();
-      ParserState state = stateStack.peek();
+      BibParserState state = (BibParserState) stateStack.peek();
 
       // reset the modified value of the row
       row.modified = false;
 
       // parse the row
-      boolean parsingKey = true;
       SCEDocumentChar chars[] = row.chars;
       for (int char_nr = 0; char_nr < row.length; char_nr++) {
         SCEDocumentChar sce_char = chars[char_nr];
         char c = sce_char.character;
 
         byte[] stateStyles = state.getStyles();
+        chars[char_nr].style = stateStyles[LatexStyles.COMMENT];
 
-        // search for '#' (comment)
-        if (c == '#') {
-          byte commentStyle = stateStyles[LatexStyles.COMMENT];
-          while (char_nr < row.length) chars[char_nr++].style = commentStyle;
+        // @name
+        if(state.getState() == BibParserState.STATE_NOTHING && c == '@') {
+          String entryType = LatexSyntaxHighlighting.getWord(row, char_nr + 1, false);
+          if(entryType == null) continue;
+
+          byte entryStyle = stateStyles[LatexStyles.COMMAND];
+          for (int i = 0; i <= entryType.length(); i++) {
+            chars[char_nr + i].style = entryStyle;
+          }
+          char_nr += entryType.length();
+
+          stateStack.pop();
+          stateStack.push(new BibParserState(BibParserState.STATE_EXPECT_OPEN, 0));
           continue;
         }
 
-        if (parsingKey) {
-          // search for a backslash '\'
-          if (c == '=') {
-            sce_char.style = stateStyles[GPropertiesStyles.TEXT];
-            parsingKey = false;
-            continue;
+        // open entry {
+        if(state.getState() == BibParserState.STATE_EXPECT_OPEN && c == '{') {
+          chars[char_nr].style = stateStyles[LatexStyles.BRACKET];
+
+          stateStack.pop();
+          stateStack.push(new BibParserState(BibParserState.STATE_EXPECT_NAME, 0));
+          continue;
+        }
+
+        // closing bracket
+        if(c == '}' && state.getState() != BibParserState.STATE_VALUE_QUOTED) {
+          sce_char.style = stateStyles[LatexStyles.BRACKET];
+
+          stateStack.pop();
+
+          if(state.getBracketLevel() > 1) {
+            stateStack.push(new BibParserState(state.getState(), state.getBracketLevel()-1));
+          } else
+          if(state.getBracketLevel() == 1) {
+            // exit value
+            stateStack.push(new BibParserState(BibParserState.STATE_EXPECT_COMMA, 0));
           } else {
-            sce_char.style = stateStyles[GPropertiesStyles.KEY];
+            // exit block
+            stateStack.push(new BibParserState(BibParserState.STATE_NOTHING, 0));
+          }
+
+          continue;
+        }
+
+        // entry name
+        if(state.getState() == BibParserState.STATE_EXPECT_NAME && !Character.isWhitespace(c)) {
+          String entryName = LatexSyntaxHighlighting.getUntil(row, char_nr + 1, COMMA_OR_BRACKET);
+          if(entryName == null) {
+            sce_char.style = stateStyles[LatexStyles.ERROR];
             continue;
           }
-        }
 
-        // search for '{' and '}'
-        if (c == '{') {
-          sce_char.style = stateStyles[GPropertiesStyles.BRACKET];
-          continue;
-        }
-        if (c == '}') {
-          sce_char.style = stateStyles[GPropertiesStyles.BRACKET];
-          continue;
-        }
-
-        // default style is text or number
-        if (c >= '0' && c <= '9') {
-          sce_char.style = stateStyles[GPropertiesStyles.NUMBER];
-        } else {
-          sce_char.style = stateStyles[GPropertiesStyles.TEXT];
-        }
-      }
-
-      Matcher matcher = PATTERN.matcher(row.toString());
-      if (matcher.find()) {
-        String key = matcher.group(1);
-        String value = matcher.group(2);
-
-        Def def = GProperties.getDef(key.replaceAll("\\\\(.)", "$1"));
-        if (def == null) {
-          // mark invalid key
-          markError(row, matcher.start(1), key.length());
-        } else {
-          // check value
-          if (!def.getRange().isValid(value.replaceAll("\\\\(.)", "$1"))) {
-            markError(row, matcher.start(2), value.length());
+          byte entryStyle = stateStyles[LatexStyles.COMMAND];
+          for (int i = 0; i <= entryName.length(); i++) {
+            chars[char_nr + i].style = entryStyle;
           }
+          char_nr += entryName.length();
+
+          stateStack.pop();
+          stateStack.push(new BibParserState(BibParserState.STATE_EXPECT_COMMA, 0));
+          continue;
         }
       }
 
@@ -211,7 +219,7 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
     SCEDocumentChar[] chars = row.chars;
     int endColumn = startColumn + length;
     for (int i = startColumn; i < endColumn; i++) {
-      chars[i].style = GPropertiesStyles.ERROR;
+      chars[i].style = LatexStyles.ERROR;
     }
   }
 
@@ -221,4 +229,5 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
     parseNeeded = true;
     currentlyChanging = true;
   }
+
 }

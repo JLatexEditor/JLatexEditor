@@ -22,7 +22,6 @@ public class RootState implements ParserState {
     return styles;
   }
 
-  @Override
   public boolean equals(Object obj) {
     return obj instanceof RootState;
   }
