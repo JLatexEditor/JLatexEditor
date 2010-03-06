@@ -14,6 +14,7 @@ import sce.syntaxhighlighting.SyntaxHighlighting;
 import util.Aspell;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -151,28 +152,15 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 
         // search for a backslash '\'
         if (c == '\\') {
-          String command = getCommandString(row, char_nr + 1);
+          String command = getWord(row, char_nr + 1, true);
 
-          if (command == null) {
-            byte styleText = stateStyles[LatexStyles.TEXT];
-            // if there is no command -> '\' escapes the next character -> set style text
-            if (char_nr < row.length - 1) {
-              sce_char.style = styleText;
-              chars[char_nr + 1].style = styleText;
-              char_nr += 1;
-            } else {
-              sce_char.style = stateStyles[LatexStyles.ERROR];
-            }
-            lastCommandStyle = null;
-          } else {
-            lastCommandStyle = LatexStyles.getCommandStyle(command);
-            // highlight the command
-            byte commandStyle = stateStyles[lastCommandStyle.commandStyle];
-            for (int i = 0; i <= command.length(); i++) {
-              chars[char_nr + i].style = commandStyle;
-            }
-            char_nr += command.length();
+          lastCommandStyle = LatexStyles.getCommandStyle(command);
+          // highlight the command
+          byte commandStyle = stateStyles[lastCommandStyle.commandStyle];
+          for (int i = 0; i <= command.length(); i++) {
+            chars[char_nr + i].style = commandStyle;
           }
+          char_nr += command.length();
 
           continue;
         }
@@ -274,14 +262,14 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
   }
 
   /**
-   * Returns the command name found at the given position (after '\').
+   * Returns the word found at the given position (after '\').
    *
    * @param row    the row
    * @param offset the offset
    * @return the command string
    */
-  private String getCommandString(SCEDocumentRow row, int offset) {
-    String command = null;
+  public static String getWord(SCEDocumentRow row, int offset, boolean nonEmpty) {
+    String word = null;
 
     SCEDocumentChar chars[] = row.chars;
     int end_offset = offset;
@@ -289,10 +277,40 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
       char character = chars[end_offset].character;
 
       // only letters are allowed
-      if (character >= 'a' && character <= 'z') continue;
-      if (character >= 'A' && character <= 'Z') continue;
+      if (Character.isLetter(character)) continue;
 
       // we found the end of the command
+      break;
+    }
+    // command consists of at least 1 char
+    if (nonEmpty && end_offset == offset) end_offset++;
+
+    // did we find a command?
+    if (offset != end_offset) {
+      SCEString sceCommand = new SCEString(chars, offset, end_offset - offset);
+      word = sceCommand.toString();
+    }
+
+    return word;
+  }
+
+  /**
+   * Returns the word found at the given position (after '\').
+   *
+   * @param row    the row
+   * @param offset the offset
+   * @return the command string
+   */
+  public static String getUntil(SCEDocumentRow row, int offset, char[] until) {
+    String word = null;
+
+    SCEDocumentChar chars[] = row.chars;
+    int end_offset = offset;
+    for (; end_offset < row.length; end_offset++) {
+      char character = chars[end_offset].character;
+
+      if (Arrays.binarySearch(until, character) < 0) continue;
+
       break;
     }
     // command consists of at least 1 char
@@ -301,10 +319,10 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
     // did we find a command?
     if (offset != end_offset) {
       SCEString sceCommand = new SCEString(chars, offset, end_offset - offset);
-      command = sceCommand.toString();
+      word = sceCommand.toString();
     }
 
-    return command;
+    return word;
   }
 
   // SCEDocumentListener methods

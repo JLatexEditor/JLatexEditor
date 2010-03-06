@@ -23,7 +23,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
   private ImageButton buttonPrevious;
   private JCheckBox caseSensitive = new JCheckBox("Case sensitive", false);
   private JCheckBox regExp = new JCheckBox("Regexp", false);
-  private JCheckBox selectionOnly = new JCheckBox("Selection only", true);
+  private JCheckBox selectionOnly = new JCheckBox("Selection only", false);
   private ImageButton buttonClose;
   private ImageButton buttonShowReplace;
 
@@ -198,17 +198,22 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     input.requestFocusInWindow();
   }
 
-  private void clearHighlights(boolean highlightSelection) {
+  private void clearHighlights(boolean highlightSelection, boolean selectionOnly) {
     SCEMarkerBar markerBar = editor.getMarkerBar();
     markerBar.clear(SCEMarkerBar.TYPE_SEARCH);
     SCEPane pane = editor.getTextPane();
     pane.removeAllTextHighlights();
+
     if (highlightSelection && selection != null) {
       int rows = pane.getDocument().getRowsCount();
       SCEDocumentPosition endDocPos = new SCEDocumentPosition(rows, 0);
-      pane.addTextHighlight(new SCETextHighlight(pane, new SCEDocumentPosition(0, 0), selection.getStartPosition(), SCEPane.nonSelectionHighlightColor));
-      //pane.addTextHighlight(new SCETextHighlight(pane, selection.getStartPosition(), selection.getEndPosition(), SCEPane.selectionHighlightColorLight));
-      pane.addTextHighlight(new SCETextHighlight(pane, selection.getEndPosition(), endDocPos, SCEPane.nonSelectionHighlightColor));
+
+      if(selectionOnly) {
+        pane.addTextHighlight(new SCETextHighlight(pane, new SCEDocumentPosition(0, 0), selection.getStartPosition(), SCEPane.nonSelectionHighlightColor));
+        pane.addTextHighlight(new SCETextHighlight(pane, selection.getEndPosition(), endDocPos, SCEPane.nonSelectionHighlightColor));
+      } else {
+        pane.addTextHighlight(new SCETextHighlight(pane, selection.getStartPosition(), selection.getEndPosition(), SCEPane.selectionHighlightColorLight));
+      }
     }
   }
 
@@ -231,7 +236,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     } else {
       results.clear();
     }
-    clearHighlights(visibility);
+    clearHighlights(visibility, selectionOnly.isSelected());
     super.setVisible(visibility);
   }
 
@@ -334,7 +339,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     if (e.getSource() == buttonNext) next(false);
     if (e.getSource() == buttonPrevious) previous();
     if (e.getSource() == regExp) updateThread.searchChanged();
-    if (e.getSource() == selectionOnly) updateThread.searchChanged();
+    if (e.getSource() == selectionOnly) { clearHighlights(true, selectionOnly.isSelected()); updateThread.searchChanged(); }
     if (e.getSource() == buttonShowReplace) setShowReplace(!isShowReplace());
 
     if (e.getSource() == buttonReplace) {
@@ -461,7 +466,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
       searchChanged = false;
       SCEDocument document = editor.getTextPane().getDocument();
 
-      clearHighlights(true);
+      clearHighlights(true, selectionOnly.isSelected());
       SCEMarkerBar markerBar = editor.getMarkerBar();
       SCEPane pane = editor.getTextPane();
 

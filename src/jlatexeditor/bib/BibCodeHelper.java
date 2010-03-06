@@ -3,7 +3,6 @@ package jlatexeditor.bib;
 import de.endrullis.utils.BetterProperties2.PSet;
 import de.endrullis.utils.BetterProperties2.Range;
 import jlatexeditor.codehelper.PatternHelper;
-import jlatexeditor.gproperties.GProperties;
 import sce.codehelper.CHCommand;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
@@ -25,7 +24,7 @@ public class BibCodeHelper extends PatternHelper {
       key = params.get(0).word;
       value = params.get(1);
 
-      range = GProperties.getRange(key);
+      // TODO range = Bib.getRange(key);
       return true;
     }
     return false;
