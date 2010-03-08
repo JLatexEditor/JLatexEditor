@@ -293,7 +293,7 @@ public final class Aspell implements SpellChecker {
         instances.put(lang, instance);
       } catch (IOException e) {
         instanceFailed = true;
-        System.err.println("Warning: spell checker not available. Please install aspell!");
+        System.err.println("Warning: Failed to initialize spell checker 'aspell':");
         System.err.println("  " + e.getMessage());
       }
     }
