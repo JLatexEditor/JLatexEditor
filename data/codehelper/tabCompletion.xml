@@ -14,21 +14,16 @@
   <command name="align*" usage="\begin{align*}&nl;  @|@&nl;\end{align*}" hint="align environment">
   </command>
   <command name="sec" usage="\section{@name@}\label{sec:@label@}&nl;@|@" hint="section">
-    <argument name="name">
-    </argument>
-    <argument name="label">
-    </argument>
+    <argument name="name"/>
+    <argument name="label"/>
   </command>
   <command name="ssec" usage="\subsection{@name@}\label{sec:@label@}&nl;@|@" hint="subsection">
-    <argument name="name">
-    </argument>
-    <argument name="label">
-    </argument>
+    <argument name="name"/>
+    <argument name="label"/>
   </command>
   <command name="frame" usage="\begin{frame}&nl;  \frametitle{@title@}&nl;  @|@&nl;\end{frame}"
            hint="latex beamer frame">
-    <argument name="title">
-    </argument>
+    <argument name="title"/>
   </command>
 	<command name="it" usage="\textit{@text@}@|@" hint="italic">
 		<argument name="text"/>
@@ -38,5 +33,8 @@
 	</command>
 	<command name="tt" usage="\texttt{@text@}@|@" hint="type writer">
 		<argument name="text"/>
+	</command>
+	<command name="tab" usage="\begin{tabular}{|@c@|}&nl;  @|@&nl;\end{tabular}" hint="tabular environment">
+		<argument name="c"/>
 	</command>
 </commandList>

@@ -8,6 +8,7 @@ import util.StreamUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 /**
  * Provides a code completion with static commands (command templates).
@@ -16,10 +17,10 @@ import java.util.Collections;
  * @author Stefan Endrullis
  */
 public class StaticCommandsCodeHelper extends PatternHelper {
-  /**
-   * The command reference.
-   */
+  /** The command reference. */
   protected ArrayList<CHCommand> commands = null;
+	/** Maps an environment name to a list of commands. */
+	protected HashMap<String,ArrayList<CHCommand>> environments = new HashMap<String, ArrayList<CHCommand>>();
   /**
    * The last command that has been found.
    */
@@ -48,79 +49,106 @@ public class StaticCommandsCodeHelper extends PatternHelper {
 
     XMLElement commandListXML = commandsDocument.getRootElement();
     if (!commandListXML.getName().equalsIgnoreCase("commandList")) {
-      System.out.println("Error in commands.xml: root element must be 'commandList'");
+      System.out.println("Error in commands.xml: root element must be 'commandList' instead of element '" + commandListXML.getName() + "'");
       return;
     }
 
     // extract commands
     for (XMLElement commandXML : commandListXML.getChildElements()) {
-      if (!commandXML.getName().equals("command")) {
-        System.out.println("Error in commands.xml: expected element 'command'");
-        continue;
+
+      if (commandXML.getName().equals("command")) {
+	      // extract command form XML element
+	      CHCommand command = getCommand(commandXML);
+	      if (command == null) continue;
+
+	      // add the command to the commands list
+	      commands.add(command);
+      } else
+
+      if (commandXML.getName().equals("environment")) {
+	      String envName = commandXML.getAttribute("name");
+	      if (envName == null) {
+	        System.out.println("Error in commands.xml: environment must have a name");
+		      continue;
+	      }
+
+	      ArrayList<CHCommand> envCommands = new ArrayList<CHCommand>();
+	      for (XMLElement element : commandXML.getChildElements()) {
+		      // extract command form XML element
+		      CHCommand command = getCommand(element);
+		      if (command == null) continue;
+
+		      // add the command to the commands list
+		      envCommands.add(command);
+	      }
+	      environments.put(envName, envCommands);
+      } else {
+	      System.out.println("Error in commands.xml: expected element 'command' or 'environment' instead of element '" + commandXML.getName() + "'");
       }
-      String commandName = commandXML.getAttribute("name");
-      if (commandName == null) {
-        System.out.println("Error in commands.xml: command must have a name");
-        continue;
-      }
-
-      // create the command and set usage + hint
-      CHCommand command = new CHCommand(commandName);
-      String usage = commandXML.getAttribute("usage");
-      if (usage != null) usage = usage.replaceAll("&nl;", "\n");
-      command.setUsage(usage);
-      command.setHint(commandXML.getAttribute("hint"));
-
-      // read the arguments
-      for (XMLElement argumentXML : commandXML.getChildElements()) {
-        if (!argumentXML.getName().equalsIgnoreCase("argument")) {
-          System.out.println("Error in commands.xml: expected element 'argument' - " + argumentXML.getName());
-          continue;
-        }
-        String argumentName = argumentXML.getAttribute("name");
-        if (argumentName == null) {
-          System.out.println("Error in commands.xml: argument must have a name");
-          continue;
-        }
-
-        // check if the command is optional
-        boolean optional = false;
-
-        String commandUsage = command.getUsage();
-        if (commandUsage == null) {
-          System.out.println("Error in commands.xml: wrong usage declaration");
-          continue;
-        }
-        int argumentStart = commandUsage.indexOf("@" + argumentName + "@");
-        if (argumentStart == -1) {
-          System.out.println("Error in commands.xml: couldn't find argument in usage declaration - " + argumentName);
-          continue;
-        }
-        int argumentEnd = argumentStart + argumentName.length() + 2;
-        if (commandUsage.substring(0, argumentStart).trim().endsWith("[")) optional = true;
-        if (commandUsage.substring(argumentEnd).trim().startsWith("]")) optional = true;
-
-        // create the argument
-        CHCommandArgument argument = new CHCommandArgument(argumentName, optional);
-        argument.setHint(argumentXML.getAttribute("hint"));
-
-        // read the suggested values if there are some
-        for (XMLElement valueXML : argumentXML.getChildElements()) {
-          argument.addValue(valueXML.getAttribute("value"));
-        }
-
-        // add the argument to the command
-        command.addArgument(argument);
-      }
-
-      // add the command to the commands list
-      commands.add(command);
     }
 
     Collections.sort(commands);
   }
 
-  @Override
+	private CHCommand getCommand(XMLElement commandXML) {
+		String commandName = commandXML.getAttribute("name");
+		if (commandName == null) {
+		  System.out.println("Error in commands.xml: command must have a name");
+			return null;
+		}
+
+		// create the command and set usage + hint
+		CHCommand command = new CHCommand(commandName);
+		String usage = commandXML.getAttribute("usage");
+		if (usage != null) usage = usage.replaceAll("&nl;", "\n");
+		command.setUsage(usage);
+		command.setHint(commandXML.getAttribute("hint"));
+
+		// read the arguments
+		for (XMLElement argumentXML : commandXML.getChildElements()) {
+		  if (!argumentXML.getName().equalsIgnoreCase("argument")) {
+		    System.out.println("Error in commands.xml: expected element 'argument' - " + argumentXML.getName());
+		    continue;
+		  }
+		  String argumentName = argumentXML.getAttribute("name");
+		  if (argumentName == null) {
+		    System.out.println("Error in commands.xml: argument must have a name");
+		    continue;
+		  }
+
+		  // check if the command is optional
+		  boolean optional = false;
+
+		  String commandUsage = command.getUsage();
+		  if (commandUsage == null) {
+		    System.out.println("Error in commands.xml: wrong usage declaration");
+		    continue;
+		  }
+		  int argumentStart = commandUsage.indexOf("@" + argumentName + "@");
+		  if (argumentStart == -1) {
+		    System.out.println("Error in commands.xml: couldn't find argument in usage declaration - " + argumentName);
+		    continue;
+		  }
+		  int argumentEnd = argumentStart + argumentName.length() + 2;
+		  if (commandUsage.substring(0, argumentStart).trim().endsWith("[")) optional = true;
+		  if (commandUsage.substring(argumentEnd).trim().startsWith("]")) optional = true;
+
+		  // create the argument
+		  CHCommandArgument argument = new CHCommandArgument(argumentName, optional);
+		  argument.setHint(argumentXML.getAttribute("hint"));
+
+		  // read the suggested values if there are some
+		  for (XMLElement valueXML : argumentXML.getChildElements()) {
+		    argument.addValue(valueXML.getAttribute("value"));
+		  }
+
+		  // add the argument to the command
+		  command.addArgument(argument);
+		}
+		return command;
+	}
+
+	@Override
   public boolean matches() {
     if (super.matches()) {
       command = params.get(0);
