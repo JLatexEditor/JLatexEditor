@@ -4,14 +4,13 @@
 
 package jlatexeditor.syntaxhighlighting;
 
-import jlatexeditor.gproperties.GProperties;
 import jlatexeditor.syntaxhighlighting.states.MathMode;
 import jlatexeditor.syntaxhighlighting.states.RootState;
 import sce.component.*;
 import sce.syntaxhighlighting.ParserState;
 import sce.syntaxhighlighting.ParserStateStack;
 import sce.syntaxhighlighting.SyntaxHighlighting;
-import util.Aspell;
+import util.SpellChecker;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -31,15 +30,12 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
   private boolean parseNeeded = false;
   private boolean currentlyChanging = false;
 
-  private static Aspell aspell;
+	private SpellChecker spellChecker;
 
-  static {
-    aspell = Aspell.getInstance(GProperties.getAspellLang());
-  }
-
-  public LatexSyntaxHighlighting(SCEPane pane) {
+  public LatexSyntaxHighlighting(SCEPane pane, SpellChecker spellChecker) {
 	  super("LatexSyntaxHighlighting");
     this.pane = pane;
+	  this.spellChecker = spellChecker;
     document = pane.getDocument();
     document.addSCEDocumentListener(this);
 
@@ -233,9 +229,9 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
         } else {
           // spell check
           try {
-            if (aspell != null) {
-              Aspell.Result aspellResult = aspell.check(termString);
-              term = new StyleableTerm(termString, chars, matcher.start(1), aspellResult.isCorrect() ? LatexStyles.U_NORMAL : LatexStyles.U_MISSPELLED);
+            if (spellChecker != null) {
+              SpellChecker.Result spellCheckResult = spellChecker.check(termString);
+              term = new StyleableTerm(termString, chars, matcher.start(1), spellCheckResult.isCorrect() ? LatexStyles.U_NORMAL : LatexStyles.U_MISSPELLED);
             }
           } catch (IOException e) {
             e.printStackTrace();

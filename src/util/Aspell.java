@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  *
  * @author Stefan Endrullis
  */
-public final class Aspell {
+public final class Aspell implements SpellChecker {
   public static String ASPELL_EXECUTABLE = "aspell";
 
   private static final Matcher masterDictMatcher = Pattern.compile("/([^/\\.]+)\\.multi").matcher("");
@@ -321,44 +321,4 @@ public final class Aspell {
 
     return dicts;
   }
-
-  /**
-   * Aspell result.
-   */
-  public static class Result {
-    private boolean correct;
-    private List<String> suggestions;
-
-    /**
-     * Creates a correct result.
-     */
-    public Result() {
-      correct = true;
-    }
-
-    /**
-     * Creates a result with suggestions.
-     *
-     * @param suggestions list of suggestions
-     */
-    public Result(List<String> suggestions) {
-      this.suggestions = suggestions;
-      correct = false;
-    }
-
-    public boolean isCorrect() {
-      return correct;
-    }
-
-    public List<String> getSuggestions() {
-      return suggestions;
-    }
-
-    @Override
-    public String toString() {
-      return correct ?
-              "correct" :
-              "misspelled; suggestions: " + suggestions;
-		}
-	}
 }
