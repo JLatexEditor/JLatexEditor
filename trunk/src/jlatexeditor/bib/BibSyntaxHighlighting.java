@@ -14,7 +14,11 @@ import java.util.Arrays;
  */
 public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocumentListener {
   private static char[] COMMA_OR_BRACKET = new char[] {'}', ',', ' '};
-  static { Arrays.sort(COMMA_OR_BRACKET); }
+  private static char[] EQ_COMMA_OR_BRACKET = new char[] {'=', '}', ',', ' '};
+  static {
+    Arrays.sort(COMMA_OR_BRACKET);
+    Arrays.sort(EQ_COMMA_OR_BRACKET);
+  }
 
   // text pane and document
   private SCEPane pane = null;
@@ -139,7 +143,10 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
         // @name
         if(state.getState() == BibParserState.STATE_NOTHING && c == '@') {
           String entryType = LatexSyntaxHighlighting.getWord(row, char_nr + 1, false);
-          if(entryType == null) continue;
+          if(entryType == null) {
+            sce_char.overlayStyle = stateStyles[LatexStyles.ERROR];
+            continue;
+          }
 
           byte entryStyle = stateStyles[LatexStyles.COMMAND];
           for (int i = 0; i <= entryType.length(); i++) {
@@ -148,16 +155,17 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
           char_nr += entryType.length();
 
           stateStack.pop();
-          stateStack.push(new BibParserState(BibParserState.STATE_EXPECT_OPEN, 0));
+          stateStack.push(state = new BibParserState(BibParserState.STATE_EXPECT_OPEN, 0));
           continue;
         }
 
         // open entry {
-        if(state.getState() == BibParserState.STATE_EXPECT_OPEN && c == '{') {
-          chars[char_nr].style = stateStyles[LatexStyles.BRACKET];
+        if(state.getState() == BibParserState.STATE_EXPECT_OPEN && !Character.isWhitespace(c)) {
+          sce_char.style = stateStyles[LatexStyles.BRACKET];
+          if(c != '{') sce_char.overlayStyle = LatexStyles.ERROR;
 
           stateStack.pop();
-          stateStack.push(new BibParserState(BibParserState.STATE_EXPECT_NAME, 0));
+          stateStack.push(state = new BibParserState(BibParserState.STATE_EXPECT_NAME, 0));
           continue;
         }
 
@@ -168,14 +176,14 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
           stateStack.pop();
 
           if(state.getBracketLevel() > 1) {
-            stateStack.push(new BibParserState(state.getState(), state.getBracketLevel()-1));
+            stateStack.push(state = new BibParserState(state.getState(), state.getBracketLevel()-1));
           } else
           if(state.getBracketLevel() == 1) {
             // exit value
-            stateStack.push(new BibParserState(BibParserState.STATE_EXPECT_COMMA, 0));
+            stateStack.push(state = new BibParserState(BibParserState.STATE_EXPECT_COMMA, 0));
           } else {
             // exit block
-            stateStack.push(new BibParserState(BibParserState.STATE_NOTHING, 0));
+            stateStack.push(state = new BibParserState(BibParserState.STATE_NOTHING, 0));
           }
 
           continue;
@@ -185,18 +193,112 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
         if(state.getState() == BibParserState.STATE_EXPECT_NAME && !Character.isWhitespace(c)) {
           String entryName = LatexSyntaxHighlighting.getUntil(row, char_nr + 1, COMMA_OR_BRACKET);
           if(entryName == null) {
-            sce_char.style = stateStyles[LatexStyles.ERROR];
+            sce_char.style = stateStyles[LatexStyles.TEXT];
+            sce_char.overlayStyle = stateStyles[LatexStyles.ERROR];
             continue;
           }
 
-          byte entryStyle = stateStyles[LatexStyles.COMMAND];
+          byte entryStyle = stateStyles[LatexStyles.ERROR];
           for (int i = 0; i <= entryName.length(); i++) {
             chars[char_nr + i].style = entryStyle;
           }
           char_nr += entryName.length();
 
           stateStack.pop();
-          stateStack.push(new BibParserState(BibParserState.STATE_EXPECT_COMMA, 0));
+          stateStack.push(state = new BibParserState(BibParserState.STATE_EXPECT_COMMA, 0));
+          continue;
+        }
+
+        // comma
+        if(state.getState() == BibParserState.STATE_EXPECT_COMMA && !Character.isWhitespace(c)) {
+          sce_char.style = stateStyles[LatexStyles.TEXT];
+          if(c != ',') sce_char.overlayStyle = LatexStyles.ERROR;
+
+          stateStack.pop();
+          stateStack.push(state = new BibParserState(BibParserState.STATE_EXPECT_KEY, 0));
+          continue;
+        }
+
+        // key
+        if(state.getState() == BibParserState.STATE_EXPECT_KEY && !Character.isWhitespace(c)) {
+          String key = LatexSyntaxHighlighting.getUntil(row, char_nr + 1, EQ_COMMA_OR_BRACKET);
+          if(key == null) {
+            sce_char.style = stateStyles[LatexStyles.ERROR];
+            continue;
+          }
+
+          byte entryStyle = stateStyles[LatexStyles.MATH_COMMAND];
+          for (int i = 0; i <= key.length(); i++) {
+            chars[char_nr + i].style = entryStyle;
+          }
+          char_nr += key.length();
+
+          stateStack.pop();
+          stateStack.push(state = new BibParserState(BibParserState.STATE_EXPECT_EQ, 0));
+          continue;
+        }
+
+        // eq
+        if(state.getState() == BibParserState.STATE_EXPECT_EQ && !Character.isWhitespace(c)) {
+          sce_char.style = stateStyles[LatexStyles.TEXT];
+          if(c != '=') sce_char.overlayStyle = LatexStyles.ERROR;
+
+          stateStack.pop();
+          stateStack.push(state = new BibParserState(BibParserState.STATE_EXPECT_VALUE, 0));
+          continue;
+        }
+
+        // value
+        if(state.getState() == BibParserState.STATE_EXPECT_VALUE && !Character.isWhitespace(c)) {
+          sce_char.style = stateStyles[LatexStyles.TEXT];
+
+          stateStack.pop();
+          if(c == '"') {
+            stateStack.push(state = new BibParserState(BibParserState.STATE_VALUE_QUOTED, 0));
+            continue;
+          } else {
+            stateStack.push(state = new BibParserState(BibParserState.STATE_VALUE_BRACED, 0));
+          }
+        }
+
+        // quoted value
+        if(state.getState() == BibParserState.STATE_VALUE_QUOTED) {
+          sce_char.style = stateStyles[LatexStyles.TEXT];
+
+          if(c == '\\') {
+            if(char_nr + 1 < row.length) chars[char_nr+1].style = stateStyles[LatexStyles.TEXT];
+            char_nr++;
+            continue;
+          } else
+          if(c == '"') {
+            stateStack.pop();
+            stateStack.push(state = new BibParserState(BibParserState.STATE_EXPECT_COMMA, 0));
+          }
+
+          continue;
+        }
+
+        // braced value
+        if(state.getState() == BibParserState.STATE_VALUE_BRACED) {
+          sce_char.style = stateStyles[LatexStyles.TEXT];
+
+          if(c == '\\') {
+            if(char_nr + 1 < row.length) chars[char_nr+1].style = stateStyles[LatexStyles.TEXT];
+            char_nr++;
+            continue;
+          } else
+          if(c == '{') {
+            sce_char.style = stateStyles[LatexStyles.BRACKET];
+            
+            stateStack.pop();
+            stateStack.push(state = new BibParserState(BibParserState.STATE_VALUE_BRACED, state.getBracketLevel()+1));
+          } else
+          if(state.getBracketLevel() == 0 && c == ',') {
+            stateStack.pop();
+            stateStack.push(state = new BibParserState(BibParserState.STATE_EXPECT_COMMA, 0));
+            char_nr--;
+          }
+
           continue;
         }
       }
