@@ -25,14 +25,11 @@ public final class Aspell implements SpellChecker {
   private BufferedReader aspellOut;
   private BufferedReader aspellErr;
   private InputStream out;
-  /**
-   * Words in the personal dictionary.
-   */
+	
+  /** Words in the personal dictionary. */
   private HashSet<String> personalWords = new HashSet<String>();
 
-  /**
-   * Windows is fucking shit! Step over to a real operating system.
-   */
+  /** Windows is fucking shit! Step over to a real operating system. */
   private boolean fuckWindows = false;
 
   public static void main(String[] args) throws IOException {
