@@ -25,6 +25,15 @@
     <argument name="style"/>
   </command>
 
+	<command name="\DeclareRobustCommand" usage="\DeclareRobustCommand{@cmd@}[@args@]{@def@}" hint="used to define a robust command">
+		<argument name="cmd" hint="the name of the new command">
+		</argument>
+		<argument name="args" hint="1 to 9 denoting the number of arguments">
+		</argument>
+		<argument name="def" hint="the text to be substituted for every occurrence of cmd">
+		</argument>
+	</command>
+  
 
   <command name="\addcontentsline" usage="\addcontentsline{@file@}{@sec_unit@}{@entry@}"
            hint="adds an entry to the specified list or table">
