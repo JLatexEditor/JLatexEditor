@@ -5,16 +5,13 @@ import sce.codehelper.CodeAssistant;
 import sce.codehelper.PatternPair;
 import sce.codehelper.SCEPopup;
 import sce.codehelper.WordWithPos;
-import sce.component.SCECaret;
 import sce.component.SCEDocument;
 import sce.component.SCEPane;
-import util.Aspell;
+import util.SpellChecker;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Spell checker for the SourceCodeEditor.
@@ -27,21 +24,16 @@ public class SpellCheckSuggester implements CodeAssistant, SCEPopup.ItemHandler 
   static final Action addToDictionary = new Action("<add to dictionary>");
   static final Action removeFromDictionary = new Action("<remove from dictionary>");
 
-  /**
-   * Aspell wrapper.
-   */
-  private Aspell aspell = null;
+  /** Spell checker. */
+  private SpellChecker spellChecker = null;
 
-  /**
-   * Last misspelled word ant its position in the document.
-   */
+  /** Last misspelled word ant its position in the document. */
   private WordWithPos wordUnderCaret = null;
   private SCEDocument document = null;
 
-  public SpellCheckSuggester() throws Exception {
-    aspell = Aspell.getInstance(GProperties.getAspellLang());
-    if (aspell == null) throw new Exception("Initialization of the spell check suggester failed!");
-  }
+	public SpellCheckSuggester(SpellChecker spellChecker) {
+		this.spellChecker = spellChecker;
+	}
 
   public boolean assistAt(SCEPane pane) {
     document = pane.getDocument();
@@ -56,10 +48,10 @@ public class SpellCheckSuggester implements CodeAssistant, SCEPopup.ItemHandler 
     if(!Character.isLetter(wordUnderCaret.word.charAt(0))) return false;
 
     try {
-      Aspell.Result aspellResult = aspell.check(wordUnderCaret.word);
+      SpellChecker.Result spellCheckResult = spellChecker.check(wordUnderCaret.word);
 
-      if (aspellResult.isCorrect()) {
-        if (aspell.getPersonalWords().contains(wordUnderCaret.word)) {
+      if (spellCheckResult.isCorrect()) {
+        if (spellChecker.getPersonalWords().contains(wordUnderCaret.word)) {
           List<Object> list = new ArrayList<Object>();
           list.add(removeFromDictionary);
 
@@ -69,7 +61,7 @@ public class SpellCheckSuggester implements CodeAssistant, SCEPopup.ItemHandler 
       } else {
         List<Object> list = new ArrayList<Object>();
         list.add(addToDictionary);
-        for (String suggestion : aspellResult.getSuggestions()) {
+        for (String suggestion : spellCheckResult.getSuggestions()) {
           list.add(new Suggestion(suggestion));
         }
 
@@ -87,13 +79,17 @@ public class SpellCheckSuggester implements CodeAssistant, SCEPopup.ItemHandler 
   public void perform(Object item) {
     if (item instanceof Action) {
       if (item == addToDictionary) {
-        aspell.addToPersonalDict(wordUnderCaret.word);
-        // replace the word for reparsing
+	      try {
+		      spellChecker.addToPersonalDict(wordUnderCaret.word);
+	      } catch (IOException e) {
+		      e.printStackTrace();
+	      }
+	      // replace the word for reparsing
         document.replace(wordUnderCaret.getStartPos(), wordUnderCaret.getEndPos(), wordUnderCaret.word);
       }
       if (item == removeFromDictionary) {
         try {
-          aspell.removeFromPersonalDict(wordUnderCaret.word);
+          spellChecker.removeFromPersonalDict(wordUnderCaret.word);
         } catch (IOException e) {
           e.printStackTrace();
         }

@@ -24,7 +24,9 @@ import sce.codehelper.CombinedCodeAssistant;
 import sce.codehelper.CombinedCodeHelper;
 import sce.component.*;
 import sce.syntaxhighlighting.SyntaxHighlighting;
+import util.Aspell;
 import util.Pair;
+import util.SpellChecker;
 import util.StreamUtils;
 import util.diff.Diff;
 import util.filechooser.SCEFileChooser;
@@ -135,6 +137,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     */
 
     new AboutDialog(null).showAndAutoHideAfter(5000);
+
+	  // set executables
+	  Aspell.ASPELL_EXECUTABLE = GProperties.getString("aspell.executable");
 
     JLatexEditorJFrame latexEditor = new JLatexEditorJFrame(args);
     latexEditor.setBounds(GProperties.getMainWindowBounds());
@@ -407,8 +412,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // add some styles to the document
     LatexStyles.addStyles(document);
 
+	  SpellChecker spellChecker = null;
+	  try {
+		  spellChecker = createSpellChecker();
+	  } catch (Exception ignored) {}
+
     // syntax highlighting
-    SyntaxHighlighting syntaxHighlighting = new LatexSyntaxHighlighting(scePane);
+    SyntaxHighlighting syntaxHighlighting = new LatexSyntaxHighlighting(scePane, spellChecker);
     syntaxHighlighting.start();
 
     // code completion and quick help
@@ -431,7 +441,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 	  CombinedCodeAssistant codeAssistant = new CombinedCodeAssistant();
     try {
-      codeAssistant.addAssistant(new SpellCheckSuggester());
+      codeAssistant.addAssistant(new SpellCheckSuggester(createSpellChecker()));
     } catch (Exception ignored) {
     }
 	  scePane.addCodeAssistantListener(codeAssistant);
@@ -440,6 +450,24 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
     return editor;
   }
+
+	private SpellChecker createSpellChecker() throws Exception {
+		String program = GProperties.getString("editor.spell_checker");
+
+		if (program.equals("aspell")) {
+			SpellChecker spellChecker = Aspell.getInstance(GProperties.getAspellLang());
+			if (spellChecker == null) throw new Exception("Initialization of the spell check suggester failed!");
+			return spellChecker;
+		} else
+		if (program.equals("hunspell")) {
+			// TODO
+			SpellChecker spellChecker = Aspell.getInstance(GProperties.getAspellLang());
+			if (spellChecker == null) throw new Exception("Initialization of the spell check suggester failed!");
+			return spellChecker;
+		}
+
+		return null;
+	}
 
 	private SourceCodeEditor<Doc> createBibSourceCodeEditor() {
 	  SourceCodeEditor<Doc> editor = new SourceCodeEditor<Doc>(null);
@@ -476,7 +504,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 		CombinedCodeAssistant codeAssistant = new CombinedCodeAssistant();
 		try {
-		  codeAssistant.addAssistant(new SpellCheckSuggester());
+		  codeAssistant.addAssistant(new SpellCheckSuggester(createSpellChecker()));
 		} catch (Exception ignored) {
 		}
 		scePane.addCodeAssistantListener(codeAssistant);

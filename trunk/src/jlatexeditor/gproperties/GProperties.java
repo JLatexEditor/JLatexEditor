@@ -48,8 +48,6 @@ public class GProperties {
   private static final String EDITOR_FONT_SIZE = "editor.font.size";
   private static final String EDITOR_FONT_ANTIALIASING = "editor.font.antialiasing";
 
-  private static final String ASPELL_LANG = "aspell.lang";
-
   static {
     // text anti-aliasing
     TEXT_ANTIALIAS_KEYS = new String[]{"On", "Off", "GASP", "LCD HBGR", "LCD HRGB", "LCD VBGR", "LCD VRGB"};
@@ -116,7 +114,9 @@ public class GProperties {
     properties.addEntry(new Def(EDITOR_FONT_ANTIALIASING, new PSet(TEXT_ANTIALIAS_KEYS), "Off"));
     properties.addEntry(new Def("editor.columns_per_row", INT_GT_0, "80"));
     properties.addEntry(new Comment(" Spell checker settings"));
-    properties.addEntry(new Def(ASPELL_LANG, new PSet(aspellDicts), "en_GB"));
+    properties.addEntry(new Def("editor.spell_checker", new PSet("none", "aspell", "hunspell"), "aspell"));
+    properties.addEntry(new Def("aspell.executable", STRING, "aspell"));
+    properties.addEntry(new Def("aspell.lang", new PSet(aspellDicts), "en_GB"));
 	  properties.addEntry(new Comment(" Automatic completion"));
 	  properties.addEntry(new Def("editor.auto_completion.activated", BOOLEAN, "false"));
 	  properties.addEntry(new Def("editor.auto_completion.min_number_of_letters", INT_GT_0, "3"));
@@ -259,7 +259,7 @@ public class GProperties {
   }
 
   public static String getAspellLang() {
-    return properties.getString(ASPELL_LANG);
+    return properties.getString("aspell.lang");
   }
 
   public static String getString(String key) {

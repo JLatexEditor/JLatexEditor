@@ -3,6 +3,7 @@ package jlatexeditor.performance;
 import jlatexeditor.Doc;
 import jlatexeditor.codehelper.LatexCommandCodeHelper;
 import jlatexeditor.codehelper.SpellCheckSuggester;
+import jlatexeditor.gproperties.GProperties;
 import jlatexeditor.quickhelp.LatexQuickHelp;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
@@ -11,6 +12,8 @@ import sce.component.SCEDocument;
 import sce.component.SCEPane;
 import sce.component.SourceCodeEditor;
 import sce.syntaxhighlighting.SyntaxHighlighting;
+import util.Aspell;
+import util.SpellChecker;
 import util.StreamUtils;
 
 import java.io.File;
@@ -33,17 +36,19 @@ public class Performance {
 
     LatexStyles.addStyles(document);
 
-    SyntaxHighlighting syntaxHighlighting = new LatexSyntaxHighlighting(pane);
+	  SpellChecker spellChecker = Aspell.getInstance(GProperties.getAspellLang());
+	  //if (spellChecker == null) throw new Exception("Initialization of the spell check suggester failed!");
+
+    SyntaxHighlighting syntaxHighlighting = new LatexSyntaxHighlighting(pane, spellChecker);
     syntaxHighlighting.start();
 
     pane.setCodeHelper(new LatexCommandCodeHelper("(\\\\[a-zA-Z]*)", "data/codehelper/commands.xml"));
     pane.setTabCompletion(new LatexCommandCodeHelper("([a-zA-Z]*)", "data/codehelper/tabCompletion.xml"));
     pane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
 
-    try {
-      pane.addCodeAssistantListener(new SpellCheckSuggester());
-    } catch (Exception e) {
-    }
+		if (spellChecker != null) {
+	    pane.addCodeAssistantListener(new SpellCheckSuggester(spellChecker));
+		}
 
     long startTime = System.nanoTime();
 
