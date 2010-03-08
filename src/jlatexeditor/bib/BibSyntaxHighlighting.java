@@ -52,7 +52,7 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
 
     // initialize the first row with states state
     rows[0].parserStateStack = new ParserStateStack();
-    rows[0].parserStateStack.push(new RootState());
+    rows[0].parserStateStack.push(new BibParserState(BibParserState.STATE_NOTHING, 0));
   }
 
   public void run() {
