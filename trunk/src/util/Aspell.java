@@ -54,6 +54,7 @@ public final class Aspell implements SpellChecker {
     System.out.println("\ntest some words");
     System.out.println(aspell.check("Eingabemaske"));
     System.out.println(aspell.check("Eingabemenge"));
+	  System.out.println(aspell.check("Bierbauch"));
     aspell.shutdown();
   }
 
