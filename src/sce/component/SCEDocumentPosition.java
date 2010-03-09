@@ -4,7 +4,7 @@
 
 package sce.component;
 
-public class SCEDocumentPosition implements SCEPosition, Comparable {
+public class SCEDocumentPosition implements SCEPosition {
   // dynamic position
   private SCEDocumentChar character = null;
   private SCEDocumentRow row = null;
@@ -67,6 +67,11 @@ public class SCEDocumentPosition implements SCEPosition, Comparable {
   public void setPosition(SCEDocumentChar character) {
     this.character = character;
   }
+
+	public void setPosition(SCEPosition pos) {
+		this.row_nr = pos.getRow();
+		this.column_nr = pos.getColumn();
+	}
 
   /**
    * Sets a fixed position (will not be updated).
