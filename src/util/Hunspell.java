@@ -1,5 +1,7 @@
 package util;
 
+import de.endrullis.utils.StringUtils;
+
 import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -33,7 +35,6 @@ public final class Hunspell implements SpellChecker {
     for (String dict : availableDicts()) {
       System.out.println(dict);
     }
-
     // start hunspell with language "en" / "en_GB"
     Hunspell hunspell = new Hunspell("en_GB");
     // test some words
@@ -209,14 +210,6 @@ public final class Hunspell implements SpellChecker {
     return getOption("lang");
   }
 
-  public void setLanguageTag(String languageTag) {
-    setOption("language-tag", languageTag);
-  }
-
-  public String getLanguageTag() throws IOException {
-    return getOption("language-tag");
-  }
-
   public String getMasterLang() throws IOException {
     masterDictMatcher.reset(getOption("master"));
     masterDictMatcher.find();
@@ -298,15 +291,35 @@ public final class Hunspell implements SpellChecker {
   public static List<String> availableDicts() throws IOException {
     Process process = Runtime.getRuntime().exec(new String[]{
 		    HUNSPELL_EXECUTABLE,
-            "dump",
-            "dicts"
+				"-D",
+				"-l"
     });
-    BufferedReader r = new BufferedReader(new InputStreamReader(process.getInputStream()));
+	  process.getOutputStream().close();
+    BufferedReader r = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
-    List<String> dicts = new ArrayList<String>();
+	  // full list
+    List<String> fullDicts = new ArrayList<String>();
     String line;
-    while ((line = r.readLine()) != null) dicts.add(line);
+	  while (!r.readLine().startsWith("AVAILABLE DICTIONARIES"));
 
-    return dicts;
+    while ((line = r.readLine()) != null) {
+	    if (line.equals("LOADED DICTIONARY:")) break;
+	    fullDicts.add(line);
+    }
+
+	  // abbreviate to language names
+	  Set<String> dicts = new HashSet<String>();
+	  for (String fullDict : fullDicts) {
+		  String abbrName = StringUtils.stringAfter(fullDict, "/", 'l');
+		  if (abbrName == null) {
+			  abbrName = fullDict;
+		  }
+		  dicts.add(abbrName);
+	  }
+
+	  List<String> sortedDicts = new ArrayList<String>(dicts);
+	  Collections.sort(sortedDicts);
+
+    return sortedDicts;
   }
 }
