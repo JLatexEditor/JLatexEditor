@@ -6,6 +6,7 @@ import de.endrullis.utils.BetterProperties2.Def;
 import de.endrullis.utils.BetterProperties2.Range;
 import de.endrullis.utils.BetterProperties2.PSet;
 import util.Aspell;
+import util.Hunspell;
 
 import javax.swing.*;
 import java.awt.*;
@@ -88,6 +89,14 @@ public class GProperties {
     String[] aspellDicts = new String[dictList.size()];
     dictList.toArray(aspellDicts);
 
+	  try {
+	    dictList = Hunspell.availableDicts();
+	  } catch (IOException e) {
+	    dictList = new ArrayList<String>();
+	  }
+	  String[] hunspellDicts = new String[dictList.size()];
+	  dictList.toArray(hunspellDicts);
+
     // set default for the properties file
     properties.addEntry(new Comment("\n## General properties"));
     properties.addEntry(new Comment(" Check for updates"));
@@ -116,7 +125,9 @@ public class GProperties {
     properties.addEntry(new Comment(" Spell checker settings"));
     properties.addEntry(new Def("editor.spell_checker", new PSet("none", "aspell", "hunspell"), "aspell"));
     properties.addEntry(new Def("aspell.executable", STRING, "aspell"));
-    properties.addEntry(new Def("aspell.lang", new PSet(aspellDicts), "en_GB"));
+    properties.addEntry(new Def("aspell.lang", new PSet(aspellDicts), getFromList(aspellDicts, "en_GB")));
+    properties.addEntry(new Def("hunspell.executable", STRING, "hunspell"));
+    properties.addEntry(new Def("hunspell.lang", new PSet(hunspellDicts), getFromList(hunspellDicts, "en_GB")));
 	  properties.addEntry(new Comment(" Automatic completion"));
 	  properties.addEntry(new Def("editor.auto_completion.activated", BOOLEAN, "false"));
 	  properties.addEntry(new Def("editor.auto_completion.min_number_of_letters", INT_GT_0, "3"));
@@ -170,7 +181,19 @@ public class GProperties {
     save();
   }
 
-  public static Def getDef(String key) {
+	private static String getFromList(String[] dicts, String default_) {
+		for (String dict : dicts) {
+			if (dict.equals(default_)) {
+				return dict;
+			}
+		}
+		if (dicts.length > 0) {
+			return dicts[0];
+		}
+		return "";
+	}
+
+	public static Def getDef(String key) {
     return properties.getDefMap().get(key);
   }
 
