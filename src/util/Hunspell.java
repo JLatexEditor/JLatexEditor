@@ -24,6 +24,7 @@ public final class Hunspell implements SpellChecker {
   private BufferedReader hunspellOut;
   private BufferedReader hunspellErr;
   private InputStream out;
+	private String lang;
 
   /** Words in the personal dictionary. */
   private HashSet<String> personalWords = new HashSet<String>();
@@ -70,21 +71,12 @@ public final class Hunspell implements SpellChecker {
    * @throws java.io.IOException if hunspell could not be started
    */
   public Hunspell(String lang) throws IOException {
-    startAspell(lang, lang);
+    startAspell(lang);
   }
 
-  /**
-   * Creates the hunspell wrapper that runs hunspell in background.
-   *
-   * @param lang    language, e.g. "en"
-   * @param langTag language tag, e.g. "en_GB"
-   * @throws java.io.IOException if hunspell could not be started
-   */
-  public Hunspell(String lang, String langTag) throws IOException {
-    startAspell(lang, langTag);
-  }
+  private void startAspell(String lang) throws IOException {
+	  this.lang = lang;
 
-  private void startAspell(String lang, String langTag) throws IOException {
     String[] hunspellCommand = new String[]{
 		    HUNSPELL_EXECUTABLE,
 				"-a",
@@ -110,8 +102,7 @@ public final class Hunspell implements SpellChecker {
     String version = hunspellOut.readLine();
     if (version == null) throw new IOException("Aspell failed to start: " + hunspellErr.readLine());
 
-    personalWords.clear();
-    personalWords.addAll(Arrays.asList(getPersonalWordList()));
+    personalWords = getPersonalWordList();
   }
 
   /**
@@ -157,10 +148,8 @@ public final class Hunspell implements SpellChecker {
 
   public synchronized void removeFromPersonalDict(String word) throws IOException {
     // remove word from personal dict
-    File homeDir = new File(System.getProperty("user.home"));
-    String personalDictName = getOption("personal");
-    File personalDict = new File(homeDir, personalDictName);
-    File newPersonalDict = new File(homeDir, personalDictName + "_new");
+	  File personalDict = new File(System.getProperty("user.home"), ".hunspell_" + lang);
+	  File newPersonalDict = new File(System.getProperty("user.home"), ".hunspell_" + lang + "_new");
     BufferedReader r = new BufferedReader(new FileReader(personalDict));
     PrintStream w = new PrintStream(new FileOutputStream(newPersonalDict));
 
@@ -173,9 +162,8 @@ public final class Hunspell implements SpellChecker {
 
     newPersonalDict.renameTo(personalDict);
 
-    String masterLang = getMasterLang();
     shutdown();
-    startAspell(masterLang, masterLang);
+    startAspell(lang);
 
     personalWords.remove(word);
   }
@@ -216,25 +204,21 @@ public final class Hunspell implements SpellChecker {
     return masterDictMatcher.group(1);
   }
 
-  public void addReplacement(String misspelling, String correction) {
-    hunspellIn.println("$$ra " + misspelling + "," + correction);
-    hunspellIn.flush();
-  }
+  public HashSet<String> getPersonalWordList() throws IOException {
+	  File wordListFile = new File(System.getProperty("user.home"), ".hunspell_" + lang);
 
-  public String[] getPersonalWordList() throws IOException {
-	  // TODO
-	  return new String[0];
-	  /*
-    String listString = call("$$pp");
-    listString = listString.substring(listString.indexOf(':') + 1).trim();
-    return listString.split(", ");
-    */
-  }
+	  if (wordListFile.exists()) {
+		  HashSet<String> wordList = new HashSet<String>();
 
-  public String[] getSessionWordList() throws IOException {
-    String listString = call("$$ps");
-    listString = listString.substring(listString.indexOf(':') + 1).trim();
-    return listString.split(", ");
+		  BufferedReader r = new BufferedReader(new FileReader(wordListFile));
+		  String word;
+		  while ((word = r.readLine()) != null) {
+			  wordList.add(word);
+		  }
+		  
+		  return wordList;
+	  }
+    return new HashSet<String>();
   }
 
   private String call(String input) throws IOException {
