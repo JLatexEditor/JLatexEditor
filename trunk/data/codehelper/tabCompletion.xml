@@ -37,4 +37,8 @@
 	<command name="tab" usage="\begin{tabular}{|@c@|}&nl;  @|@&nl;\end{tabular}" hint="tabular environment">
 		<argument name="c"/>
 	</command>
+	<command name="env" usage="\begin{@env@}@opt@&nl;  @|@&nl;\end{@env@}" hint="tabular environment">
+		<argument name="env"/>
+		<argument name="opt"/>
+	</command>
 </commandList>
