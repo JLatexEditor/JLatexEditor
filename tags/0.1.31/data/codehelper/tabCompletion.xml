@@ -1,0 +1,44 @@
+<commandList>
+  <command name="item" usage="\begin{itemize}&nl;  \item @|@&nl;\end{itemize}" hint="itemize environment">
+  </command>
+  <command name="enum" usage="\begin{enumerate}&nl;  \item @|@&nl;\end{enumerate}" hint="enumerate environment">
+  </command>
+  <command name="tikz" usage="\begin{tikzpicture}&nl;  @|@&nl;\end{tikzpicture}" hint="tikz picture environment">
+  </command>
+  <command name="fig" usage="\begin{figure}&nl;  @|@&nl;\end{figure}" hint="figure environment">
+  </command>
+  <command name="center" usage="\begin{center}&nl;  @|@&nl;\end{center}" hint="center environment">
+  </command>
+  <command name="align" usage="\begin{align}&nl;  @|@&nl;\end{align}" hint="align environment">
+  </command>
+  <command name="align*" usage="\begin{align*}&nl;  @|@&nl;\end{align*}" hint="align environment">
+  </command>
+  <command name="sec" usage="\section{@name@}\label{sec:@label@}&nl;@|@" hint="section">
+    <argument name="name"/>
+    <argument name="label"/>
+  </command>
+  <command name="ssec" usage="\subsection{@name@}\label{sec:@label@}&nl;@|@" hint="subsection">
+    <argument name="name"/>
+    <argument name="label"/>
+  </command>
+  <command name="frame" usage="\begin{frame}&nl;  \frametitle{@title@}&nl;  @|@&nl;\end{frame}"
+           hint="latex beamer frame">
+    <argument name="title"/>
+  </command>
+	<command name="it" usage="\textit{@text@}@|@" hint="italic">
+		<argument name="text"/>
+	</command>
+	<command name="bf" usage="\textbf{@text@}@|@" hint="bold">
+		<argument name="text"/>
+	</command>
+	<command name="tt" usage="\texttt{@text@}@|@" hint="type writer">
+		<argument name="text"/>
+	</command>
+	<command name="tab" usage="\begin{tabular}{|@c@|}&nl;  @|@&nl;\end{tabular}" hint="tabular environment">
+		<argument name="c"/>
+	</command>
+	<command name="env" usage="\begin{@env@}@opt@&nl;  @|@&nl;\end{@env@}" hint="tabular environment">
+		<argument name="env"/>
+		<argument name="opt"/>
+	</command>
+</commandList>
