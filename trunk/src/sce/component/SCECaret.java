@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @author Jörg Endrullis
  * @author Stefan Endrullis
  */
-public class SCECaret implements SCEPosition, ActionListener {
+public class SCECaret implements SCEPosition, Comparable, ActionListener {
   private SCEPane pane = null;
   private SCEDocument document = null;
 
@@ -93,6 +93,7 @@ public class SCECaret implements SCEPosition, ActionListener {
         moveTo(getRow(), getColumn() + 1);
       }
     }
+
   }
 
   /**
@@ -132,6 +133,15 @@ public class SCECaret implements SCEPosition, ActionListener {
     int new_column = Math.max(Math.min(column, document.getRowLength(new_row)), 0);
     position.setPosition(new_row, new_column);
 
+	  if (document.hasEditRange()) {
+		  if (this.compareTo(document.getEditRangeStart()) < 0) {
+			  position.setPosition(document.getEditRangeStart());
+		  } else
+		  if (this.compareTo(document.getEditRangeEnd()) > 0) {
+			  position.setPosition(document.getEditRangeEnd());
+		  }
+	  }
+	  
     if (updateVirtualColumn) virtualColumn = getColumn();
 
     showCursor(true);
@@ -236,4 +246,25 @@ public class SCECaret implements SCEPosition, ActionListener {
   public void removeSCECaretListener(SCECaretListener listener) {
     caretListeners.remove(listener);
   }
+
+	// Comparable methods
+
+	public int compareTo(Object o) {
+	  if (!(o instanceof SCEDocumentPosition)) return -1;
+
+	  SCEDocumentPosition oPos = (SCEDocumentPosition) o;
+
+	  if (getRow() < oPos.getRow() || (getRow() == oPos.getRow() && getColumn() < oPos.getColumn())) return -1;
+	  if (getRow() == oPos.getRow() && getColumn() == oPos.getColumn()) return 0;
+	  return 1;
+	}
+
+	public boolean equals(Object obj) {
+	  return compareTo(obj) == 0;
+	}
+
+	@Override
+	public String toString() {
+	  return getRow() + ", " + getColumn();
+	}
 }

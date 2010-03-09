@@ -5,7 +5,7 @@ package sce.component;
  *
  * @author Stefan Endrullis
  */
-public interface SCEPosition {
+public interface SCEPosition extends Comparable {
   /**
    * Returns the row.
    *
