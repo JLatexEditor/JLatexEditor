@@ -291,8 +291,7 @@ public final class Hunspell implements SpellChecker {
   public static List<String> availableDicts() throws IOException {
     Process process = Runtime.getRuntime().exec(new String[]{
 		    HUNSPELL_EXECUTABLE,
-				"-D",
-				"-l"
+				"-D"
     });
 	  process.getOutputStream().close();
     BufferedReader r = new BufferedReader(new InputStreamReader(process.getErrorStream()));

@@ -24,10 +24,7 @@ import sce.codehelper.CombinedCodeAssistant;
 import sce.codehelper.CombinedCodeHelper;
 import sce.component.*;
 import sce.syntaxhighlighting.SyntaxHighlighting;
-import util.Aspell;
-import util.Pair;
-import util.SpellChecker;
-import util.StreamUtils;
+import util.*;
 import util.diff.Diff;
 import util.filechooser.SCEFileChooser;
 
@@ -137,9 +134,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     */
 
     new AboutDialog(null).showAndAutoHideAfter(5000);
-
-	  // set executables
-	  Aspell.ASPELL_EXECUTABLE = GProperties.getString("aspell.executable");
 
     JLatexEditorJFrame latexEditor = new JLatexEditorJFrame(args);
     latexEditor.setBounds(GProperties.getMainWindowBounds());
@@ -455,14 +449,19 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		String program = GProperties.getString("editor.spell_checker");
 
 		if (program.equals("aspell")) {
+			// set executables
+			Aspell.ASPELL_EXECUTABLE = GProperties.getString("aspell.executable");
+
 			SpellChecker spellChecker = Aspell.getInstance(GProperties.getAspellLang());
-			if (spellChecker == null) throw new Exception("Initialization of the spell check suggester failed!");
+			if (spellChecker == null) throw new Exception("Initialization of the spell checker failed!");
 			return spellChecker;
 		} else
 		if (program.equals("hunspell")) {
-			// TODO
-			SpellChecker spellChecker = Aspell.getInstance(GProperties.getAspellLang());
-			if (spellChecker == null) throw new Exception("Initialization of the spell check suggester failed!");
+			// set executables
+			Hunspell.HUNSPELL_EXECUTABLE = GProperties.getString("hunspell.executable");
+
+			SpellChecker spellChecker = Hunspell.getInstance(GProperties.getString("hunspell.lang"));
+			if (spellChecker == null) throw new Exception("Initialization of the spell checker failed!");
 			return spellChecker;
 		}
 
