@@ -28,6 +28,14 @@ public class BibEntry extends CHCommand {
     return optional;
   }
 
+  public static BibEntry getEntry(String type) {
+    type = type.toLowerCase();
+    for(BibEntry entry : ENTRIES) {
+      if(entry.getName().equals(type)) return entry;
+    }
+    return null;
+  }
+  
   public static BibEntry ENTRIES[] = new BibEntry[] {
           new BibEntry(
                   "article",

@@ -6,6 +6,7 @@
 package jlatexeditor;
 
 import de.endrullis.utils.ProgramUpdater;
+import jlatexeditor.bib.BibCodeHelper;
 import jlatexeditor.bib.BibSyntaxHighlighting;
 import jlatexeditor.codehelper.*;
 import jlatexeditor.errorhighlighting.LatexCompiler;
@@ -418,7 +419,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // code completion and quick help
     CombinedCodeHelper codeHelper = new CombinedCodeHelper();
 	  if (backgroundParser != null) {
-			codeHelper.addPatternHelper(new BibCodeHelper(backgroundParser));
+			codeHelper.addPatternHelper(new CiteHelper(backgroundParser));
 			codeHelper.addPatternHelper(new LabelCodeHelper(backgroundParser));
 	  }
     codeHelper.addPatternHelper(new IncludeCodeHelper());
@@ -486,8 +487,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		// code completion and quick help
 		CombinedCodeHelper codeHelper = new CombinedCodeHelper();
 		if (backgroundParser != null) {
-			codeHelper.addPatternHelper(new jlatexeditor.bib.BibCodeHelper());
-			codeHelper.addPatternHelper(new LabelCodeHelper(backgroundParser));
+			codeHelper.addPatternHelper(new BibCodeHelper());
 		}
 		codeHelper.addPatternHelper(new IncludeCodeHelper());
 		codeHelper.addPatternHelper(new LatexCommandCodeHelper("(\\\\[a-zA-Z]*)", "data/codehelper/commands.xml"));
