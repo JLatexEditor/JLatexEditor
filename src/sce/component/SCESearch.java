@@ -261,7 +261,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     else first();
   }
 
-  public void next(boolean includeCurrentPos) {
+  public void next(boolean includeCurrentPos, boolean jumpToLast) {
     SCECaret caret = editor.getTextPane().getCaret();
     for (SCEDocumentRange result : results) {
       SCEDocumentPosition start = result.getStartPosition();
@@ -273,7 +273,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
       moveTo(result);
       return;
     }
-    last();
+    if(jumpToLast) last();
   }
 
   private void first() {
@@ -334,7 +334,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
       updateThread.documentChanged();
       updateThread.searchChanged();
     }
-    if (e.getSource() == buttonNext) next(false);
+    if (e.getSource() == buttonNext) next(false, true);
     if (e.getSource() == buttonPrevious) previous();
     if (e.getSource() == regExp) updateThread.searchChanged();
     if (e.getSource() == selectionOnly) { clearHighlights(true, selectionOnly.isSelected()); updateThread.searchChanged(); }
@@ -343,7 +343,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     if (e.getSource() == buttonReplace) {
       SCEDocument document = editor.getTextPane().getDocument();
       replace(document.getSelectionStart(), document.getSelectionEnd());
-      next(true);
+      next(true, false);
     }
 
     if (e.getSource() == buttonReplaceAll) {
@@ -544,7 +544,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
           document.setSelectionRange(selectionRange);
         }
 
-        if (move && moveCaret) next(false);
+        if (move && moveCaret) next(false, true);
       }
 
       markerBar.repaint();
