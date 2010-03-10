@@ -1,7 +1,5 @@
 package sce.component;
 
-import sce.codehelper.WordWithPos;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

@@ -172,6 +172,7 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
         char_nr += entryType.length();
 
         state.setState(BibParserState.STATE_EXPECT_OPEN);
+        state.setEntryType(entryType);
         state.setKeys(new ArrayList<String>());
         state.setAllKeys(new ArrayList<String>());
         continue;
@@ -204,6 +205,7 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
           state.setKeys(new ArrayList<String>());
 
           state.setState(BibParserState.STATE_NOTHING);
+          state.setEntryType(null);
         }
 
         continue;
@@ -239,7 +241,7 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
 
       // key
       if(state.getState() == BibParserState.STATE_EXPECT_KEY && !Character.isWhitespace(c)) {
-        String key = LatexSyntaxHighlighting.getUntil(row, char_nr + 1, EQ_COMMA_OR_BRACKET);
+        String key = LatexSyntaxHighlighting.getUntil(row, char_nr, EQ_COMMA_OR_BRACKET);
         if(key == null) {
           sce_char.style = stateStyles[LatexStyles.ERROR];
           continue;

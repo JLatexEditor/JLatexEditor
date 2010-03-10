@@ -209,7 +209,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     // remember the template and arguments
     template = template.replaceAll("@", "");
     template = template.replaceAll("&at;", "@");
-    templateWithAt = templateWithAt.replaceAll("&at;", "@");
+    templateWithAt = templateWithAt.replaceAll("&at;", "A");
     templateArguments = arguments;
 
     // insert the template in the document

@@ -19,6 +19,7 @@ public class BibParserState implements ParserState {
 
   private int state = STATE_NOTHING;
   private int bracketLevel = 0;
+  private String entryType = null;
   private ArrayList<String> keys = new ArrayList<String>();
   private ArrayList<String> allKeys = null;
 
@@ -33,6 +34,7 @@ public class BibParserState implements ParserState {
   public ParserState copy() {
     BibParserState copy = new BibParserState(state);
     copy.bracketLevel = bracketLevel;
+    copy.entryType = entryType;
     copy.keys = new ArrayList<String>(keys);
     copy.allKeys = allKeys;
     return copy;
@@ -58,6 +60,14 @@ public class BibParserState implements ParserState {
     this.bracketLevel = bracketLevel;
   }
 
+  public String getEntryType() {
+    return entryType;
+  }
+
+  public void setEntryType(String entryType) {
+    this.entryType = entryType;
+  }
+
   public ArrayList<String> getKeys() {
     return keys;
   }
@@ -77,6 +87,12 @@ public class BibParserState implements ParserState {
   public boolean equals(Object obj) {
     if(!(obj instanceof BibParserState)) return false;
     BibParserState b = (BibParserState) obj;
-    return state == b.state && bracketLevel == b.bracketLevel;
+    return state == b.state && bracketLevel == b.bracketLevel && equals(entryType, b.entryType) && equals(keys, b.keys);
+  }
+
+  private boolean equals(Object o1, Object o2) {
+    if(o1 == null && o2 == null) return true;
+    if(o1 != null && o2 != null) return o1.equals(o2);
+    return false;
   }
 }

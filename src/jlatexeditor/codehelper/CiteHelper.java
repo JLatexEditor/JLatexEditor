@@ -4,11 +4,11 @@ import sce.codehelper.CHCommand;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
 
-public class BibCodeHelper extends PatternHelper {
+public class CiteHelper extends PatternHelper {
   private BackgroundParser backgroundParser;
   protected WordWithPos word;
 
-  public BibCodeHelper(BackgroundParser backgroundParser) {
+  public CiteHelper(BackgroundParser backgroundParser) {
     this.backgroundParser = backgroundParser;
     pattern = new PatternPair("\\\\cite\\{([^{},]+,)*([^{},]*)");
   }
