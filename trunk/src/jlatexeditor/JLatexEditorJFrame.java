@@ -854,7 +854,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		} else
 		// find next
 		if (action.equals("find next")) {
-			getEditor(tabbedPane.getSelectedIndex()).getSearch().next(false);
+			getEditor(tabbedPane.getSelectedIndex()).getSearch().next(false, true);
 		} else
 		// find previous
 		if (action.equals("find previous")) {
