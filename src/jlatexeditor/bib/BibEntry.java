@@ -1,24 +1,23 @@
 package jlatexeditor.bib;
 
-public class BibEntry {
-  private String name;
-  private String description;
+import sce.codehelper.CHCommand;
+import sce.codehelper.CHCommandArgument;
+
+public class BibEntry extends CHCommand {
   private String[] required;
   private String[] optional;
 
   public BibEntry(String name, String description, String[] required, String[] optional) {
-    this.name = name;
-    this.description = description;
+    super("@" + name);
+
+    setHint(description);
     this.required = required;
     this.optional = optional;
-  }
 
-  public String getName() {
-    return name;
-  }
-
-  public String getDescription() {
-    return description;
+    String usage = "&at;" + name + "{@|@,\n";
+    for(String key : getRequired()) usage += "  " + key + " = {},\n";
+    usage += "}\n";
+    setUsage(usage);
   }
 
   public String[] getRequired() {
