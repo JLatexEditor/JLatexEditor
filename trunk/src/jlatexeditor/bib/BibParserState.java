@@ -2,6 +2,8 @@ package jlatexeditor.bib;
 
 import sce.syntaxhighlighting.ParserState;
 
+import java.util.ArrayList;
+
 public class BibParserState implements ParserState {
   private static byte[] styles = new byte[256];
 
@@ -17,18 +19,23 @@ public class BibParserState implements ParserState {
 
   private int state = STATE_NOTHING;
   private int bracketLevel = 0;
+  private ArrayList<String> keys = new ArrayList<String>();
+  private ArrayList<String> allKeys = null;
 
   static {
     for (int i = 0; i < styles.length; i++) styles[i] = (byte) i;
   }
 
-  public BibParserState(int state, int bracketLevel) {
+  public BibParserState(int state) {
     this.state = state;
-    this.bracketLevel = bracketLevel;
   }
 
   public ParserState copy() {
-    return new BibParserState(state, bracketLevel);
+    BibParserState copy = new BibParserState(state);
+    copy.bracketLevel = bracketLevel;
+    copy.keys = new ArrayList<String>(keys);
+    copy.allKeys = allKeys;
+    return copy;
   }
 
   public byte[] getStyles() {
@@ -39,8 +46,32 @@ public class BibParserState implements ParserState {
     return state;
   }
 
+  public void setState(int state) {
+    this.state = state;
+  }
+
   public int getBracketLevel() {
     return bracketLevel;
+  }
+
+  public void setBracketLevel(int bracketLevel) {
+    this.bracketLevel = bracketLevel;
+  }
+
+  public ArrayList<String> getKeys() {
+    return keys;
+  }
+
+  public void setKeys(ArrayList<String> keys) {
+    this.keys = keys;
+  }
+
+  public ArrayList<String> getAllKeys() {
+    return allKeys;
+  }
+
+  public void setAllKeys(ArrayList<String> allKeys) {
+    this.allKeys = allKeys;
   }
 
   public boolean equals(Object obj) {
