@@ -120,7 +120,7 @@ public class GPropertiesSyntaxHighlighting extends SyntaxHighlighting implements
     while (!ready && row_nr < rowsCount) {
       SCEDocumentRow row = rows[row_nr];
       // this may never be
-      if (row.parserStateStack == null) throw new RuntimeException("Internal parser error occured.");
+      if (row.parserStateStack == null) throw new RuntimeException("Internal parser error occurred.");
 
       // the current states state (at the beginning of the row)
       ParserStateStack stateStack = row.parserStateStack.copy();
