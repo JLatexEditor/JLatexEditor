@@ -132,4 +132,8 @@ public class SCEDocumentPosition implements SCEPosition {
   public String toString() {
     return getRow() + ", " + getColumn();
   }
+
+	public SCEPosition relative(int relativeRow, int relativeColumn) {
+		return new SCEDocumentPosition(getRow() + relativeRow, getColumn() + relativeColumn);
+	}
 }

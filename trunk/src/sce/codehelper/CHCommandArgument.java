@@ -4,6 +4,8 @@
 
 package sce.codehelper;
 
+import sce.component.SCEDocumentRange;
+
 import java.util.ArrayList;
 
 public class CHCommandArgument {
@@ -13,16 +15,17 @@ public class CHCommandArgument {
   // the hint
   private String hint = null;
   // possible values
-  private ArrayList values = new ArrayList();
+  private ArrayList<String> values = new ArrayList<String>();
 
   // while editing (for templates)
   private String value = null;
-  private ArrayList occurences = null;
+  private ArrayList<SCEDocumentRange> occurrences = null;
 
-  /**
+	/**
    * Creates a command argument.
    *
    * @param name the name
+	 * @param optional whether the argument is optional
    */
   public CHCommandArgument(String name, boolean optional) {
     this.name = name;
@@ -66,9 +69,9 @@ public class CHCommandArgument {
   }
 
   /**
-   * Returns true if there are suggested predifined values.
+   * Returns true if there are suggested predefined values.
    *
-   * @return true if there are predifined values
+   * @return true if there are predefined values
    */
   public boolean hasSuggestion() {
     return values.size() != 0;
@@ -79,7 +82,7 @@ public class CHCommandArgument {
    *
    * @return list of suggested values (every value is a String)
    */
-  public ArrayList getValues() {
+  public ArrayList<String> getValues() {
     return values;
   }
 
@@ -112,20 +115,20 @@ public class CHCommandArgument {
   }
 
   /**
-   * Returns the occurences (SCEDocumentRange[]) of the argument.
+   * Returns the occurrences (SCEDocumentRange[]) of the argument.
    *
-   * @return occurences of the argument
+   * @return occurrences of the argument
    */
-  public ArrayList getOccurrences() {
-    return occurences;
+  public ArrayList<SCEDocumentRange> getOccurrences() {
+    return occurrences;
   }
 
   /**
-   * Sets the occurences of the argument (SCEDocumentRange[]).
+   * Sets the occurrences of the argument (SCEDocumentRange[]).
    *
-   * @param occurences the occurences
+   * @param occurrences the occurrences
    */
-  public void setOccurrences(ArrayList occurences) {
-    this.occurences = occurences;
+  public void setOccurrences(ArrayList<SCEDocumentRange> occurrences) {
+    this.occurrences = occurrences;
   }
 }
