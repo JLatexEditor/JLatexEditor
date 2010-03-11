@@ -200,14 +200,26 @@ public class SCEDocument {
     return text;
   }
 
+	/**
+	 * Returns a document position.
+	 *
+	 * @param row_nr    the row
+	 * @param column_nr the column
+	 * @return document position
+	 */
+	public SCEDocumentPosition createDocumentPosition(int row_nr, int column_nr) {
+		return createDocumentPosition(row_nr, column_nr, 0);
+	}
+
   /**
    * Returns a document position.
    *
    * @param row_nr    the row
    * @param column_nr the column
+   * @param rel_column relative column
    * @return document position
    */
-  public SCEDocumentPosition createDocumentPosition(int row_nr, int column_nr) {
+  public SCEDocumentPosition createDocumentPosition(int row_nr, int column_nr, int rel_column) {
     // if the document is empty
     if (rowsCount <= 1 && rows[0].length == 0) return new SCEDocumentPosition(0, 0);
 
@@ -218,7 +230,7 @@ public class SCEDocument {
       return new SCEDocumentPosition(rows[row_nr], column_nr - rows[row_nr].length + 1);
     }
 
-    return new SCEDocumentPosition(rows[row_nr].chars[column_nr], 0, 0);
+    return new SCEDocumentPosition(rows[row_nr].chars[column_nr], 0, rel_column);
   }
 
   /**

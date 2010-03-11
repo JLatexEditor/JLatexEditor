@@ -43,7 +43,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
   private String template = null;
   private SCEDocumentPosition templateCaretPosition = null;
   // template argument values
-  private ArrayList templateArguments = null;
+  private ArrayList<CHCommandArgument> templateArguments = null;
   private int templateArgumentNr = -1;
 
   private static final String spaces = "                                                                                          ";
@@ -263,8 +263,11 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
           }
         }
 
-        SCEDocumentPosition occurrenceStart = document.createDocumentPosition(occurrence_row, occurrence_column - 1);
-        SCEDocumentPosition occurrenceEnd = document.createDocumentPosition(occurrence_row, occurrence_column + argument.getName().length());
+	      int rel = 0;
+	      if (argument.isOptional()) rel = 1;
+
+        SCEDocumentPosition occurrenceStart = document.createDocumentPosition(occurrence_row, occurrence_column - 1 - rel, rel);
+        SCEDocumentPosition occurrenceEnd = document.createDocumentPosition(occurrence_row, occurrence_column + argument.getName().length() + rel, -rel);
         occurrences.add(new SCEDocumentRange(occurrenceStart, occurrenceEnd));
       }
       argument.setOccurrences(occurrences);
@@ -290,7 +293,36 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
    * @param argument_nr the argument number
    */
   private void editTemplate(int argument_nr) {
-    if (templateArguments == null || templateArguments.size() == 0 || argument_nr >= templateArguments.size()) {
+	  boolean noArgument = false;
+	  if (templateArguments == null || templateArguments.size() == 0) noArgument = true;
+
+	  if (!noArgument && templateArgumentNr >= 0 && templateArgumentNr < templateArguments.size()) {
+		  // leave current template argument
+		  CHCommandArgument oldArgument = templateArguments.get(templateArgumentNr);
+
+		  if (oldArgument.isOptional()) {
+			  SCEDocumentRange range = oldArgument.getOccurrences().get(0);
+			  SCEPosition start = range.getStartPosition().relative(0, 1);
+			  SCEDocumentPosition end = range.getEndPosition();
+			  String value = document.getText(start, end);
+
+			  if (value.equals("") || value.equals(oldArgument.getName())) {
+				  for (SCEDocumentRange argumentRange : oldArgument.getOccurrences()) {
+					  // check if char before range and after range is [ or ], respectively
+					  int colBefore = argumentRange.getStartPosition().getColumn();
+					  int colAfter  = argumentRange.getEndPosition().getColumn();
+					  int rowNr = argumentRange.getStartPosition().getRow();
+					  SCEDocumentRow row = document.getRows()[rowNr];
+					  if (colBefore >= 0 && colAfter < row.length &&
+							  row.chars[colBefore].character == '[' && row.chars[colAfter].character == ']') {
+						  document.remove(rowNr, colBefore, rowNr, colAfter + 1, SCEDocumentEvent.EVENT_EDITRANGE);
+					  }
+				  }
+			  }
+		  }
+	  }
+
+    if (noArgument || argument_nr >= templateArguments.size()) {
       templateArgumentNr = -1;
       // end template editing
       document.setEditRange(null, null);
@@ -307,8 +339,23 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     templateArgumentNr = argument_nr;
 
     // set the document edit range
-    CHCommandArgument argument = (CHCommandArgument) templateArguments.get(argument_nr);
-    SCEDocumentRange argumentRange = (SCEDocumentRange) argument.getOccurrences().get(0);
+    CHCommandArgument argument = templateArguments.get(argument_nr);
+
+	  if (argument.isOptional()) {
+		  for (SCEDocumentRange argumentRange : argument.getOccurrences()) {
+			  // check if char before range and after range is [ or ], respectively
+			  int colBefore = argumentRange.getStartPosition().getColumn();
+			  int colAfter  = argumentRange.getEndPosition().getColumn();
+			  int rowNr = argumentRange.getStartPosition().getRow();
+			  SCEDocumentRow row = document.getRows()[rowNr];
+			  if (colBefore >= 0 && colAfter < row.length &&
+					  row.chars[colBefore].character != '[' || row.chars[colAfter].character != ']') {
+				  document.insert("[]", rowNr, colBefore, SCEDocumentEvent.EVENT_EDITRANGE);
+			  }
+		  }
+	  }
+
+    SCEDocumentRange argumentRange = argument.getOccurrences().get(0);
     SCEDocumentPosition start = new SCEDocumentPosition(argumentRange.getStartPosition().getRow(), argumentRange.getStartPosition().getColumn() + 1);
     SCEDocumentPosition end = argumentRange.getEndPosition();
     document.setEditRange(start, end);
@@ -532,7 +579,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
         String argumentValue = document.getEditRangeText();
 
         // update all occurrences of the argument
-        CHCommandArgument argument = (CHCommandArgument) templateArguments.get(templateArgumentNr);
+        CHCommandArgument argument = templateArguments.get(templateArgumentNr);
 
         Iterator occurrencesIterator = argument.getOccurrences().iterator();
         occurrencesIterator.next(); // jump over the first occurrence
