@@ -435,20 +435,22 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
         // select the word or line
         int left = pane.findSplitterInRow(caret.getRow(), caret.getColumn(), -1);
         int right = pane.findSplitterInRow(caret.getRow(), caret.getColumn(), 1);
-        SCEDocumentPosition leftPosition = new SCEDocumentPosition(caret.getRow(), left);
-        SCEDocumentPosition rightPosition = new SCEDocumentPosition(caret.getRow(), right);
+        SCEDocumentPosition leftPosition = document.createDocumentPosition(caret.getRow(), left);
+        SCEDocumentPosition rightPosition = document.createDocumentPosition(caret.getRow(), right);
 
         boolean select_line = document.hasSelection() && left == document.getSelectionStart().getColumn() && right == document.getSelectionEnd().getColumn();
-        document.setSelectionRange(leftPosition, rightPosition);
 
         if (select_line && lastMouseClick + 500 > System.currentTimeMillis()) {
-          SCEDocumentPosition startPosition = new SCEDocumentPosition(caret.getRow(), 0);
-          SCEDocumentPosition endPosition = new SCEDocumentPosition(caret.getRow() + 1, 0);
+          SCEDocumentPosition startPosition = document.createDocumentPosition(caret.getRow(), 0);
+          SCEDocumentPosition endPosition = document.createDocumentPosition(caret.getRow() + 1, 0);
           if (caret.getRow() >= document.getRowsCount() - 1) {
-            endPosition = new SCEDocumentPosition(caret.getRow(), document.getRowLength(caret.getRow()));
+            endPosition = document.createDocumentPosition(caret.getRow(), document.getRowLength(caret.getRow()));
           }
           document.setSelectionRange(startPosition, endPosition);
+        } else {
+          document.setSelectionRange(leftPosition, rightPosition);
         }
+        caret.setSelectionMark();
         pane.repaint();
 
         lastMouseClick = System.currentTimeMillis();

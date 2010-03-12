@@ -214,9 +214,10 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
       // entry name
       if(state.getState() == BibParserState.STATE_EXPECT_NAME && !Character.isWhitespace(c)) {
         String entryName = LatexSyntaxHighlighting.getUntil(row, char_nr + 1, COMMA_OR_BRACKET);
-        if(entryName == null) {
+        if(c == ',' || entryName == null) {
           sce_char.style = stateStyles[LatexStyles.TEXT];
           sce_char.style = stateStyles[LatexStyles.ERROR];
+          if(c == ',') state.setState(BibParserState.STATE_EXPECT_KEY);
           continue;
         }
 
