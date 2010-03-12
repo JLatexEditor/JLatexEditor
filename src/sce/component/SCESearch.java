@@ -400,6 +400,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
   private class UpdateThread extends Thread {
     private boolean searchChanged = true;
     private boolean documentChanged = true;
+    private boolean setSelection = true;
 
     private String text = "";
     private int text2row[] = new int[0];
@@ -411,12 +412,14 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     }
 
     public synchronized void searchChanged() {
+      setSelection = true;
       searchChanged = true;
       if (!isVisible()) return;
       notify();
     }
 
     public synchronized void documentChanged() {
+      setSelection = false;
       documentChanged = true;
       if (!isVisible()) return;
       notify();
@@ -522,7 +525,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 
             if (caret.getRow() == rowStart && caret.getColumn() == columnStart) {
               moveCaret = false;
-              document.setSelectionRange(start, end);
+              selectionRange = new SCERange(rowStart, columnStart, rowEnd, columnEnd);
             }
             resultsTemp.add(new SCEDocumentRange(start, end));
             pane.addTextHighlight(new SCETextHighlight(pane, start, end, Color.YELLOW));
@@ -540,9 +543,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
         document.clearSelection();
       } else {
         // set the selection
-        if (selectionRange != null) {
-          document.setSelectionRange(selectionRange);
-        }
+        if(selectionRange != null && setSelection) document.setSelectionRange(selectionRange);
 
         if (move && moveCaret) next(false, true);
       }
