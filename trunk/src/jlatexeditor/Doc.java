@@ -5,8 +5,10 @@ import util.StreamUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -151,8 +153,11 @@ public abstract class Doc implements AbstractResource, SCEDocumentListener {
 
 		public URI getUri() {
 			try {
-				return new URI("unsaved:" + name);
+				return new URI("unsaved:" + URLEncoder.encode(name, "UTF-8"));
 			} catch (URISyntaxException e) {
+				e.printStackTrace();
+				return null;
+			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 				return null;
 			}
