@@ -79,6 +79,8 @@ public final class Hunspell implements SpellChecker {
 
     String[] hunspellCommand = new String[]{
 		    HUNSPELL_EXECUTABLE,
+				"-i",
+				"Latin1",
 				"-a",
 				"-d",
 				lang,
@@ -93,9 +95,9 @@ public final class Hunspell implements SpellChecker {
     } catch (IllegalThreadStateException ignored) {
     }
 
-    hunspellIn = new PrintStream(new BufferedOutputStream(hunspellProcess.getOutputStream()), true);
+    hunspellIn = new PrintStream(new BufferedOutputStream(hunspellProcess.getOutputStream()), true, "Latin1");
     out = hunspellProcess.getInputStream();
-    hunspellOut = new BufferedReader(new InputStreamReader(out));
+    hunspellOut = new BufferedReader(new InputStreamReader(out, "Latin1"));
     hunspellErr = new BufferedReader(new InputStreamReader(hunspellProcess.getErrorStream()));
 
     // read version line
