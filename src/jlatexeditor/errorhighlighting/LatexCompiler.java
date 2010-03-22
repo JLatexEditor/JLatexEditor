@@ -88,6 +88,8 @@ public class LatexCompiler extends Thread {
       LatexCompileError error;
 
       ArrayList<String> fileStack = new ArrayList<String>();
+      String versionString = in.readLine();
+	    errorView.appendLine(versionString);
       String line = in.readLine();
       errorView.appendLine(line);
       while (line != null) {
