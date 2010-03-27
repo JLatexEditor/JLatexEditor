@@ -138,6 +138,7 @@ public class GProperties {
     properties.addEntry(new Def("shortcut.new", SHORTCUT, "control N"));
     properties.addEntry(new Def("shortcut.open", SHORTCUT, "control O"));
     properties.addEntry(new Def("shortcut.save", SHORTCUT, "control S"));
+    properties.addEntry(new Def("shortcut.save as", SHORTCUT, "control A"));
     properties.addEntry(new Def("shortcut.close", SHORTCUT, "control W"));
     properties.addEntry(new Def("shortcut.exit", SHORTCUT, ""));
     properties.addEntry(new Comment(" Edit menu"));

@@ -98,8 +98,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   // background parser
   private BackgroundParser backgroundParser;
   private HashMap<URI, Doc> docMap = new HashMap<URI, Doc>();
+	private File lastDocDir;
 
-  public static void main(String args[]) {
+	public static void main(String args[]) {
     /*
     try {
       //System.setProperty("swing.aatext", "true");
@@ -175,6 +176,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     recentFilesMenu.setMnemonic('R');
     fileMenu.add(recentFilesMenu);
     fileMenu.add(createMenuItem("Save", "save", 'S'));
+    fileMenu.add(createMenuItem("Save As...", "save as", 'A'));
     fileMenu.add(createMenuItem("Close", "close", 'C'));
     fileMenu.add(createMenuItem("Exit", "exit", 'E'));
 
@@ -655,7 +657,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   public synchronized boolean saveAll() {
     boolean all = true;
     for (int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
-      SourceCodeEditor editor = (SourceCodeEditor) tabbedPane.getComponentAt(tab);
+      SourceCodeEditor<Doc> editor = (SourceCodeEditor<Doc>) tabbedPane.getComponentAt(tab);
       AbstractResource resource = editor.getResource();
       boolean save = (!(resource instanceof Doc.UntitledDoc)) || tab == tabbedPane.getSelectedIndex();
       if (save) {
@@ -682,32 +684,11 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
     File file = null;
     if (doc instanceof Doc.UntitledDoc) {
-      openDialog.setDialogTitle("Save " + doc.getName());
-      openDialog.setDialogType(JFileChooser.SAVE_DIALOG);
-      if (openDialog.showDialog(this, "Save") != JFileChooser.APPROVE_OPTION) return false;
-      file = openDialog.getSelectedFile();
-      if (file == null) return false;
+	    if (!saveAs(editor)) return false;
 
-      if (file.exists()) {
-        int choice = JOptionPane.showOptionDialog(
-                this,
-                "The file exists! Do you want to overwrite the file?",
-                "File Exists",
-                JOptionPane.WARNING_MESSAGE,
-                JOptionPane.YES_NO_OPTION,
-                null,
-                new Object[]{"Overwrite", "Cancel"},
-                2
-        );
-        if (choice == 1) return false;
-      }
-
-      TabLabel tabLabel = (TabLabel) tabbedPane.getTabComponentAt(getTab(doc));
-      docMap.remove(doc.getUri());
-      doc = new Doc.FileDoc(file);
-      docMap.put(doc.getUri(), doc);
-      tabLabel.setDoc(doc);
-      editor.setResource(doc);
+	    doc = editor.getResource();
+	    Doc.FileDoc fileDoc = (Doc.FileDoc) doc;
+	    file = fileDoc.getFile();
     } else if (doc instanceof Doc.FileDoc) {
       Doc.FileDoc fileDoc = (Doc.FileDoc) doc;
       file = fileDoc.getFile();
@@ -761,7 +742,52 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     return true;
   }
 
-  public void compile(int type) {
+	/**
+	 * Opens a file dialog to save the file under a new name.  When "save" is clicked
+	 * the file is saved and true is returned.  Otherwise the file is not saved and
+	 * false is returned.
+	 * 
+	 * @param editor editor
+	 * @return returns true if the file was saved
+	 */
+	private boolean saveAs(SourceCodeEditor<Doc> editor) {
+		Doc doc = editor.getResource();
+
+		openDialog.setDialogTitle("Save " + doc.getName());
+		openDialog.setDialogType(JFileChooser.SAVE_DIALOG);
+		openDialog.setCurrentDirectory(lastDocDir);
+		if (openDialog.showDialog(this, "Save") != JFileChooser.APPROVE_OPTION) return true;
+		File file = openDialog.getSelectedFile();
+		if (file == null) return false;
+
+		if (file.exists()) {
+		  int choice = JOptionPane.showOptionDialog(
+		          this,
+		          "The file exists! Do you want to overwrite the file?",
+		          "File Exists",
+		          JOptionPane.WARNING_MESSAGE,
+		          JOptionPane.YES_NO_OPTION,
+		          null,
+		          new Object[]{"Overwrite", "Cancel"},
+		          2
+		  );
+		  if (choice == 1) return false;
+		}
+
+		TabLabel tabLabel = (TabLabel) tabbedPane.getTabComponentAt(getTab(doc));
+		docMap.remove(doc.getUri());
+		doc = new Doc.FileDoc(file);
+		editor.getTextPane().getDocument().setModified(true);
+		docMap.put(doc.getUri(), doc);
+		tabLabel.setDoc(doc);
+		editor.setResource(doc);
+
+		save(editor);
+		
+		return true;
+	}
+
+	public void compile(int type) {
 	  showTool(0);
 
     SourceCodeEditor editor = mainEditor;
@@ -809,6 +835,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		if (action.equals("open")) {
 			openDialog.setDialogTitle("Open");
 			openDialog.setDialogType(JFileChooser.OPEN_DIALOG);
+			openDialog.setCurrentDirectory(lastDocDir);
 			if (openDialog.showDialog(this, "Open") != JFileChooser.APPROVE_OPTION) return;
 			if (openDialog.getSelectedFile() == null) return;
 
@@ -824,6 +851,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		// save a file
 		if (action.equals("save")) {
 			saveAll();
+		} else
+		// save a file as...
+		if (action.equals("save as")) {
+			saveAs(getEditor(tabbedPane.getSelectedIndex()));
 		} else
 		// close
 		if (action.equals("close")) {
@@ -908,7 +939,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 		// diff
 		if (action.equals("diff")) {
-			openDialog.showDialog(this, "Diff View");
+			openDialog.setDialogTitle("Diff View");
+			openDialog.setDialogType(JFileChooser.OPEN_DIALOG);
+			openDialog.setCurrentDirectory(lastDocDir);
+			if (openDialog.showDialog(this, "Diff View") != JFileChooser.APPROVE_OPTION) return;
 			if (openDialog.getSelectedFile() == null) return;
 
 			try {
@@ -1247,7 +1281,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     if (resource instanceof Doc.FileDoc) {
       Doc.FileDoc fileDoc = (Doc.FileDoc) resource;
       File file = fileDoc.getFile();
-      String fileWithPath = file.getPath();
+	    lastDocDir = file.getParentFile();
       fileName = file.getName();
       for (int i = 0; i < GProperties.getInt("main_window.title.number_of_parent_dirs_shown"); i++) {
         file = file.getParentFile();
@@ -1318,7 +1352,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     private JLabel label;
     private JLabel closeIcon;
 
-    private TabLabel(Doc doc, SourceCodeEditor editor) {
+    private TabLabel(Doc doc, SourceCodeEditor<Doc> editor) {
       this.doc = doc;
       setOpaque(false);
 
