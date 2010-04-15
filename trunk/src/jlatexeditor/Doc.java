@@ -9,10 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Abstract document.
@@ -22,6 +19,15 @@ public abstract class Doc implements AbstractResource, SCEDocumentListener {
 	private Vector<Line> oldLines = new Vector<Line>();
 	private Vector<Line> currLines = new Vector<Line>();
 	public static String UNTITLED = "Untitled";
+	private HashMap<String,String> properties = new HashMap<String, String>();
+
+	public String getProperty(String key) {
+		return properties.get(key);
+	}
+
+	public void setProperty(String key, String value) {
+		properties.put(key, value);
+	}
 
 	private static class DocState {
 		private Line root = new Line(Line.State.parsed, -1, null);

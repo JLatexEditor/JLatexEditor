@@ -388,7 +388,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
       int startRow = startSel.getRow();
       int endRow = endSel.getRow() - (endSel.getColumn() == 0 ? 1 : 0);
       for (int row = startRow; row <= endRow; row++) {
-        document.insert("% ", row, 0);
+        document.insert(commentPrefix, row, 0);
       }
 
       int endCol = endSel.getColumn();
