@@ -854,7 +854,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		} else
 		// save a file as...
 		if (action.equals("save as")) {
-			saveAs(getEditor(tabbedPane.getSelectedIndex()));
+			saveAs(getActiveEditor());
 		} else
 		// close
 		if (action.equals("close")) {
@@ -868,52 +868,52 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 		// undo
 		if (action.equals("undo")) {
-			getEditor(tabbedPane.getSelectedIndex()).getTextPane().getUndoManager().undo(false);
+			getActiveEditor().getTextPane().getUndoManager().undo(false);
 		} else
 		// undo
 		if (action.equals("redo")) {
-			getEditor(tabbedPane.getSelectedIndex()).getTextPane().getUndoManager().redo(false);
+			getActiveEditor().getTextPane().getUndoManager().redo(false);
 		} else
 
 		// find
 		if (action.equals("find")) {
-			getEditor(tabbedPane.getSelectedIndex()).search();
+			getActiveEditor().search();
 		} else
 		// replace
 		if (action.equals("replace")) {
-			getEditor(tabbedPane.getSelectedIndex()).replace();
+			getActiveEditor().replace();
 		} else
 		// find next
 		if (action.equals("find next")) {
-			getEditor(tabbedPane.getSelectedIndex()).getSearch().next(false, true);
+			getActiveEditor().getSearch().next(false, true);
 		} else
 		// find previous
 		if (action.equals("find previous")) {
-			getEditor(tabbedPane.getSelectedIndex()).getSearch().previous();
+			getActiveEditor().getSearch().previous();
 		} else
 
 		// cut
 		if (action.equals("cut")) {
-			getEditor(tabbedPane.getSelectedIndex()).cut();
+			getActiveEditor().cut();
 		} else
 
 		// copy
 		if (action.equals("copy")) {
-			getEditor(tabbedPane.getSelectedIndex()).copy();
+			getActiveEditor().copy();
 		} else
 
 		// paste
 		if (action.equals("paste")) {
-			getEditor(tabbedPane.getSelectedIndex()).paste();
+			getActiveEditor().paste();
 		} else
 
 		// lineComment
 		if (action.equals("comment")) {
-			getEditor(tabbedPane.getSelectedIndex()).lineComment("% ");
+			getActiveEditor().lineComment("% ");
 		} else
 		// lineUncomment
 		if (action.equals("uncomment")) {
-			getEditor(tabbedPane.getSelectedIndex()).lineUncomment("% ");
+			getActiveEditor().lineUncomment("% ");
 		} else
 
 		// show/hide symbols
@@ -947,7 +947,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 			try {
 				String text = SourceCodeEditor.readFile(openDialog.getSelectedFile().getCanonicalPath());
-				getEditor(tabbedPane.getSelectedIndex()).diffView(openDialog.getSelectedFile().getCanonicalPath(), text);
+				getActiveEditor().diffView(openDialog.getSelectedFile().getCanonicalPath(), text);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -1271,7 +1271,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private void editorChanged() {
     // reattach error highlighter
     errorHighlighting.detach();
-    SourceCodeEditor editor = getEditor(tabbedPane.getSelectedIndex());
+    SourceCodeEditor editor = getActiveEditor();
     errorHighlighting.attach(editor, errorView);
     errorHighlighting.update();
 
@@ -1312,7 +1312,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     String fontName = action.substring(action.indexOf(": ") + 2);
     GProperties.setEditorFont(new Font(fontName, Font.PLAIN, GProperties.getEditorFont().getSize()));
 
-    SourceCodeEditor editor = getEditor(tabbedPane.getSelectedIndex());
+    SourceCodeEditor editor = getActiveEditor();
     SCEPane pane = editor.getTextPane();
     pane.setFont(GProperties.getEditorFont());
     LatexStyles.addStyles(pane.getDocument());
