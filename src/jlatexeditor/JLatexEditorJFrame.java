@@ -85,7 +85,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   // compile thread
   private LatexCompiler latexCompiler = null;
   // main file to compile
-  private SourceCodeEditor mainEditor = null;
+  private SourceCodeEditor<Doc> mainEditor = null;
 
   private LatexErrorHighlighting errorHighlighting = new LatexErrorHighlighting();
 
@@ -333,7 +333,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         int lineNr = colon >= line.length() ? 0 : Integer.parseInt(line.substring(colon + 1));
 
         if (file.exists() && file.isFile()) {
-          SourceCodeEditor editor = open(new Doc.FileDoc(file));
+          SourceCodeEditor<Doc> editor = open(new Doc.FileDoc(file));
           editor.getTextPane().getCaret().moveTo(lineNr, 0);
         }
       }
@@ -550,33 +550,36 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
   public int getTab(Doc doc) {
     for (int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
-      SourceCodeEditor editor = (SourceCodeEditor) tabbedPane.getComponentAt(tab);
+      SourceCodeEditor<Doc> editor = (SourceCodeEditor<Doc>) tabbedPane.getComponentAt(tab);
       if (doc.equals(editor.getResource())) return tab;
     }
     return -1;
   }
 
-  public SourceCodeEditor getEditor(int tab) {
-    return (SourceCodeEditor) tabbedPane.getComponentAt(tab);
+  public SourceCodeEditor<Doc> getEditor(int tab) {
+    return (SourceCodeEditor<Doc>) tabbedPane.getComponentAt(tab);
   }
 
-  public SourceCodeEditor getActiveEditor() {
+  public SourceCodeEditor<Doc> getActiveEditor() {
     return getEditor(tabbedPane.getSelectedIndex());
   }
 
-  public SourceCodeEditor getMainEditor() {
+  public SourceCodeEditor<Doc> getMainEditor() {
     return mainEditor != null ? mainEditor : getActiveEditor();
   }
 
-  private SourceCodeEditor addTab(Doc doc) throws IOException {
+  private SourceCodeEditor<Doc> addTab(Doc doc) throws IOException {
     SourceCodeEditor<Doc> editor;
     if (doc.getName().endsWith("global.properties")) {
       editor = createGPropertiesSourceCodeEditor();
+	    doc.setProperty("lineComment", "#");
     } else
     if (doc.getName().endsWith(".bib")) {
       editor = createBibSourceCodeEditor();
+	    doc.setProperty("lineComment", "% ");
     } else {
       editor = createLatexSourceCodeEditor();
+	    doc.setProperty("lineComment", "% ");
     }
     editor.setResource(doc);
     tabbedPane.removeChangeListener(this);
@@ -589,7 +592,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     return editor;
   }
 
-  public SourceCodeEditor open(Doc doc) {
+  public SourceCodeEditor<Doc> open(Doc doc) {
     try {
       // is existing object if it already exists, otherwise add it to docMap
       if (docMap.containsKey(doc.getName())) {
@@ -608,13 +611,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       // replacing the untitled tab?
       boolean closeFirstTab = false;
       if (tabbedPane.getTabCount() == 1) {
-        SourceCodeEditor firstEditor = getEditor(0);
+        SourceCodeEditor<Doc> firstEditor = getEditor(0);
         if (firstEditor.getResource() instanceof Doc.UntitledDoc && !firstEditor.getTextPane().getDocument().isModified()) {
           closeFirstTab = true;
         }
       }
 
-      SourceCodeEditor editor = addTab(doc);
+      SourceCodeEditor<Doc> editor = addTab(doc);
       if (closeFirstTab) closeTab(0);
 
       if (doc instanceof Doc.FileDoc) {
@@ -641,7 +644,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
    */
   public boolean anyModifications() {
     for (int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
-      SourceCodeEditor editor = (SourceCodeEditor) tabbedPane.getComponentAt(tab);
+      SourceCodeEditor<Doc> editor = (SourceCodeEditor<Doc>) tabbedPane.getComponentAt(tab);
       if (editor.getTextPane().getDocument().isModified()) {
         return true;
       }
@@ -790,9 +793,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	public void compile(int type) {
 	  showTool(0);
 
-    SourceCodeEditor editor = mainEditor;
+    SourceCodeEditor<Doc> editor = mainEditor;
     if (editor == null) {
-      editor = (SourceCodeEditor) tabbedPane.getSelectedComponent();
+      editor = (SourceCodeEditor<Doc>) tabbedPane.getSelectedComponent();
     }
 
     if (latexCompiler != null) latexCompiler.halt();
@@ -805,7 +808,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   }
 
   private void closeTab(int tab) {
-    SourceCodeEditor editor = getEditor(tab);
+    SourceCodeEditor<Doc> editor = getEditor(tab);
     if (tabbedPane.getTabCount() > 1) {
       tabbedPane.removeTabAt(tab);
     } else {
@@ -909,11 +912,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 		// lineComment
 		if (action.equals("comment")) {
-			getActiveEditor().lineComment("% ");
+			String lineComment = getActiveEditor().getResource().getProperty("lineComment");
+			getActiveEditor().lineComment(lineComment);
 		} else
 		// lineUncomment
 		if (action.equals("uncomment")) {
-			getActiveEditor().lineUncomment("% ");
+			String lineComment = getActiveEditor().getResource().getProperty("lineComment");
+			getActiveEditor().lineUncomment(lineComment);
 		} else
 
 		// show/hide symbols
@@ -1085,7 +1090,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private synchronized void checkExternalModification(boolean showPopup) {
     ArrayList<String> reloaded = new ArrayList<String>();
     for (int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
-      SourceCodeEditor editor = getEditor(tab);
+      SourceCodeEditor<Doc> editor = getEditor(tab);
 
       File file;
       if (editor.getResource() instanceof Doc.FileDoc) {
@@ -1205,7 +1210,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     
     File file = new File(structureEntry.getFile());
     if (file.exists() && file.isFile()) {
-      SourceCodeEditor editor = open(new Doc.FileDoc(file));
+      SourceCodeEditor<Doc> editor = open(new Doc.FileDoc(file));
       editor.getTextPane().getCaret().moveTo(structureEntry.getLineNr(), 0);
     }
   }
@@ -1227,7 +1232,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	      // save last session
         PrintWriter writerLast = new PrintWriter(new FileWriter(FILE_LAST_SESSION));
         for (int tabNr = 0; tabNr < tabbedPane.getTabCount(); tabNr++) {
-          SourceCodeEditor editor = getEditor(tabNr);
+          SourceCodeEditor<Doc> editor = getEditor(tabNr);
           if (!(editor.getResource() instanceof Doc.FileDoc)) continue;
           writerLast.println(editor.getFile().getCanonicalPath() + ":" + editor.getTextPane().getCaret().getRow());
         }
@@ -1271,7 +1276,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private void editorChanged() {
     // reattach error highlighter
     errorHighlighting.detach();
-    SourceCodeEditor editor = getActiveEditor();
+    SourceCodeEditor<Doc> editor = getActiveEditor();
     errorHighlighting.attach(editor, errorView);
     errorHighlighting.update();
 
@@ -1312,7 +1317,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     String fontName = action.substring(action.indexOf(": ") + 2);
     GProperties.setEditorFont(new Font(fontName, Font.PLAIN, GProperties.getEditorFont().getSize()));
 
-    SourceCodeEditor editor = getActiveEditor();
+    SourceCodeEditor<Doc> editor = getActiveEditor();
     SCEPane pane = editor.getTextPane();
     pane.setFont(GProperties.getEditorFont());
     LatexStyles.addStyles(pane.getDocument());
@@ -1322,7 +1327,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   public void changeFont(String fontName, int fontSize) {
     GProperties.setEditorFont(new Font(fontName, Font.PLAIN, fontSize));
 
-    SourceCodeEditor editor = getActiveEditor();
+    SourceCodeEditor<Doc> editor = getActiveEditor();
     SCEPane pane = editor.getTextPane();
     pane.setFont(GProperties.getEditorFont());
     LatexStyles.load();
