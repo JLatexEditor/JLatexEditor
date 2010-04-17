@@ -550,8 +550,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
   public int getTab(Doc doc) {
     for (int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
-      SourceCodeEditor<Doc> editor = (SourceCodeEditor<Doc>) tabbedPane.getComponentAt(tab);
-      if (doc.equals(editor.getResource())) return tab;
+      if (doc.equals(getEditor(tab).getResource())) return tab;
     }
     return -1;
   }
@@ -595,8 +594,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   public SourceCodeEditor<Doc> open(Doc doc) {
     try {
       // is existing object if it already exists, otherwise add it to docMap
-      if (docMap.containsKey(doc.getName())) {
-        doc = docMap.get(doc.getName());
+      if (docMap.containsKey(doc.getUri())) {
+        doc = docMap.get(doc.getUri());
       } else {
         docMap.put(doc.getUri(), doc);
       }
@@ -644,8 +643,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
    */
   public boolean anyModifications() {
     for (int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
-      SourceCodeEditor<Doc> editor = (SourceCodeEditor<Doc>) tabbedPane.getComponentAt(tab);
-      if (editor.getTextPane().getDocument().isModified()) {
+      if (getEditor(tab).getTextPane().getDocument().isModified()) {
         return true;
       }
     }
@@ -660,7 +658,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   public synchronized boolean saveAll() {
     boolean all = true;
     for (int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
-      SourceCodeEditor<Doc> editor = (SourceCodeEditor<Doc>) tabbedPane.getComponentAt(tab);
+      SourceCodeEditor<Doc> editor = getEditor(tab);
       AbstractResource resource = editor.getResource();
       boolean save = (!(resource instanceof Doc.UntitledDoc)) || tab == tabbedPane.getSelectedIndex();
       if (save) {
