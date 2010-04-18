@@ -1,3 +1,16 @@
+<!DOCTYPE commandList [
+		<!ELEMENT commandList (command+)>
+
+		<!ELEMENT command (argument*)>
+		<!ATTLIST command name CDATA #REQUIRED
+				              usage CDATA #REQUIRED
+				              hint CDATA #IMPLIED>
+
+		<!ELEMENT argument EMPTY>
+		<!ATTLIST argument name CDATA #REQUIRED>
+
+		<!ENTITY nl "@newline@">
+]>
 <commandList>
   <command name="item" usage="\begin{itemize}&nl;  \item @|@&nl;\end{itemize}" hint="itemize environment">
   </command>
