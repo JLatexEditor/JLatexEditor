@@ -569,18 +569,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
   private SourceCodeEditor<Doc> addTab(Doc doc) throws IOException {
     SourceCodeEditor<Doc> editor;
-    if (doc.getName().endsWith("global.properties")) {
-      editor = createGPropertiesSourceCodeEditor();
-	    doc.setProperty("lineComment", "#");
-    } else
-    if (doc.getName().endsWith(".bib")) {
-      editor = createBibSourceCodeEditor();
-	    doc.setProperty("lineComment", "% ");
-    } else {
-      editor = createLatexSourceCodeEditor();
-	    doc.setProperty("lineComment", "% ");
-    }
-    editor.setResource(doc);
+	  editor = assignDocProperties(doc);
+	  editor.setResource(doc);
     tabbedPane.removeChangeListener(this);
     tabbedPane.addTab(doc.getName(), editor);
     tabbedPane.addChangeListener(this);
@@ -591,7 +581,23 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     return editor;
   }
 
-  public SourceCodeEditor<Doc> open(Doc doc) {
+	private SourceCodeEditor<Doc> assignDocProperties(Doc doc) {
+		SourceCodeEditor<Doc> editor;
+		if (doc.getName().endsWith("global.properties")) {
+		  editor = createGPropertiesSourceCodeEditor();
+			doc.setProperty("lineComment", "#");
+		} else
+		if (doc.getName().endsWith(".bib")) {
+		  editor = createBibSourceCodeEditor();
+			doc.setProperty("lineComment", "% ");
+		} else {
+		  editor = createLatexSourceCodeEditor();
+			doc.setProperty("lineComment", "% ");
+		}
+		return editor;
+	}
+
+	public SourceCodeEditor<Doc> open(Doc doc) {
     try {
       // is existing object if it already exists, otherwise add it to docMap
       if (docMap.containsKey(doc.getUri())) {
@@ -778,6 +784,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		TabLabel tabLabel = (TabLabel) tabbedPane.getTabComponentAt(getTab(doc));
 		docMap.remove(doc.getUri());
 		doc = new Doc.FileDoc(file);
+		assignDocProperties(doc);
 		editor.getTextPane().getDocument().setModified(true);
 		docMap.put(doc.getUri(), doc);
 		tabLabel.setDoc(doc);
