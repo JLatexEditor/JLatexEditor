@@ -78,4 +78,18 @@ public class StringUtils{
 
     return stringVector.toArray(new String[]{});
   }
+
+	/**
+	 * Truncate the strings to a maximal length of 30.
+	 *
+	 * @param s string
+	 * @return truncated string
+	 */
+	public static String truncate(String s) {
+		if (s.length() > 30) {
+			return s.substring(0, 30);
+		} else {
+			return s;
+		}
+	}
 }

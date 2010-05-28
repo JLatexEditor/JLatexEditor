@@ -1,5 +1,7 @@
 package util;
 
+import de.endrullis.utils.StringUtils;
+
 import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -128,6 +130,7 @@ public final class Aspell implements SpellChecker {
    * @throws IOException thrown if execution of aspell failed
    */
   public synchronized Result check(String word) throws IOException {
+	  word = StringUtils.truncate(word);
     flushOut();
     aspellIn.println(word);
     aspellIn.flush();
@@ -154,6 +157,7 @@ public final class Aspell implements SpellChecker {
    * @param word word to add
    */
   public synchronized void addToPersonalDict(String word) {
+	  word = StringUtils.truncate(word);
     aspellIn.println("*" + word);
     aspellIn.println("#");
     aspellIn.flush();
@@ -162,6 +166,7 @@ public final class Aspell implements SpellChecker {
   }
 
   public synchronized void removeFromPersonalDict(String word) throws IOException {
+	  word = StringUtils.truncate(word);
     // remove word from personal dict
     File homeDir = new File(System.getProperty("user.home"));
     String personalDictName = getOption("personal");

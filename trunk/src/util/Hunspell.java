@@ -115,6 +115,7 @@ public final class Hunspell implements SpellChecker {
    * @throws java.io.IOException thrown if execution of hunspell failed
    */
   public synchronized Result check(String word) throws IOException {
+	  word = StringUtils.truncate(word);
     flushOut();
     hunspellIn.println(word);
     hunspellIn.flush();
@@ -141,6 +142,7 @@ public final class Hunspell implements SpellChecker {
    * @param word word to add
    */
   public synchronized void addToPersonalDict(String word) {
+	  word = StringUtils.truncate(word);
     hunspellIn.println("*" + word);
     hunspellIn.println("#");
     hunspellIn.flush();
@@ -149,6 +151,7 @@ public final class Hunspell implements SpellChecker {
   }
 
   public synchronized void removeFromPersonalDict(String word) throws IOException {
+	  word = StringUtils.truncate(word);
     // remove word from personal dict
 	  File personalDict = new File(System.getProperty("user.home"), ".hunspell_" + lang);
 	  File newPersonalDict = new File(System.getProperty("user.home"), ".hunspell_" + lang + "_new");
@@ -175,7 +178,7 @@ public final class Hunspell implements SpellChecker {
    *
    * @param option option name
    * @return value
-   * @throws java.io.IOException
+   * @throws java.io.IOException if an I/O error occurs
    */
   public synchronized String getOption(String option) throws IOException {
     return call("$$cr " + option);
