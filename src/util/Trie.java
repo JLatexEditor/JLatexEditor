@@ -22,18 +22,18 @@ public class Trie<T> {
   }
 
   public int add(String s) {
-    return add(s.toCharArray(), 0);
+    return add(truncate(s).toCharArray(), 0);
   }
 
   public int add(String s, T object) {
-    return add(s.toCharArray(), 0, object);
+    return add(truncate(s).toCharArray(), 0, object);
   }
 
-  public int add(char[] chars) {
+  private int add(char[] chars) {
     return add(chars, null);
   }
 
-  public int add(char[] chars, T object) {
+  private int add(char[] chars, T object) {
     return add(chars, 0, object);
   }
 
@@ -53,10 +53,10 @@ public class Trie<T> {
   }
 
   public boolean remove(String s) {
-    return remove(s.toCharArray(), 0);
+    return remove(truncate(s).toCharArray(), 0);
   }
 
-  public boolean remove(char[] chars) {
+  private boolean remove(char[] chars) {
     return remove(chars, 0);
   }
 
@@ -73,10 +73,10 @@ public class Trie<T> {
   }
 
   public T get(String s) {
-    return get(s.toCharArray(), 0);
+    return get(truncate(s).toCharArray(), 0);
   }
 
-  public T get(char[] chars) {
+  private T get(char[] chars) {
     return get(chars, 0);
   }
 
@@ -88,7 +88,7 @@ public class Trie<T> {
   }
 
   public String getMaxCommonPrefix(String prefix) {
-    return getMaxCommonPrefix(prefix.toCharArray(), 0);
+    return getMaxCommonPrefix(truncate(prefix).toCharArray(), 0);
   }
 
   private String getMaxCommonPrefix(char[] chars, int i) {
@@ -114,7 +114,7 @@ public class Trie<T> {
 
   public List<String> getStrings(String prefix, int count) {
     // navigate to the trie node that represents the end of the prefix
-    char[] chars = prefix.toCharArray();
+    char[] chars = truncate(prefix).toCharArray();
     Trie<T> t = this;
     for (char aChar : chars) {
       t = t.map.get(aChar);
@@ -139,4 +139,18 @@ public class Trie<T> {
     }
     return remaining;
   }
+
+	/**
+	 * Truncate the strings to a maximal length of 30.
+	 *
+	 * @param s string
+	 * @return truncated string
+	 */
+	private String truncate(String s) {
+		if (s.length() > 30) {
+			return s.substring(0, 30);
+		} else {
+			return s;
+		}
+	}
 }
