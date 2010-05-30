@@ -18,11 +18,15 @@ public class SCEFileChooser extends JFileChooser {
         new java.util.Timer().schedule(
                 new TimerTask() {
                   public void run() {
-                    if (list == null) findList(component, 5);
-                    if (list != null && list.isVisible()) {
-                      list.requestFocus();
-                      if (list.getSelectedIndex() < 0) list.setSelectedIndex(0);
-                    }
+	                  try {
+											if (list == null) findList(component, 5);
+											if (list != null && list.isVisible()) {
+												list.requestFocus();
+												if (list.getSelectedIndex() < 0) list.setSelectedIndex(0);
+											}
+	                  } catch (NullPointerException ignored) {
+		                  // this is just a workaround for one of the bugs of this component
+	                  }
                   }
                 }, 100
         );
