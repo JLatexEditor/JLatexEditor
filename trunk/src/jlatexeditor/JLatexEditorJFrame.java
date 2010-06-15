@@ -6,6 +6,7 @@
 package jlatexeditor;
 
 import de.endrullis.utils.ProgramUpdater;
+import de.endrullis.utils.StringUtils;
 import jlatexeditor.bib.BibCodeHelper;
 import jlatexeditor.bib.BibSyntaxHighlighting;
 import jlatexeditor.codehelper.*;
@@ -30,6 +31,7 @@ import util.diff.Diff;
 import util.filechooser.SCEFileChooser;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -42,9 +44,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
+import java.util.*;
 
 public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener, TreeSelectionListener {
   public static final File FILE_LAST_SESSION = new File(System.getProperty("user.home") + "/.jlatexeditor/last.session");
@@ -583,17 +583,36 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 	private SourceCodeEditor<Doc> assignDocProperties(Doc doc) {
 		SourceCodeEditor<Doc> editor;
+
 		if (doc.getName().endsWith("global.properties")) {
 		  editor = createGPropertiesSourceCodeEditor();
-			doc.setProperty("lineComment", "#");
 		} else
 		if (doc.getName().endsWith(".bib")) {
 		  editor = createBibSourceCodeEditor();
-			doc.setProperty("lineComment", "% ");
 		} else {
 		  editor = createLatexSourceCodeEditor();
-			doc.setProperty("lineComment", "% ");
 		}
+
+		// load the document properties for this file format
+		String extension = StringUtils.stringAfter(doc.getName(), ".", 'l');
+		Properties docProperties = new Properties();
+		try {
+			InputStream in = StreamUtils.getInputStream("data/docproperties/" + extension + ".properties");
+			docProperties.load(in);
+		} catch (IOException e) {
+			try {
+				InputStream in = StreamUtils.getInputStream("data/docproperties/tex.properties");
+				docProperties.load(in);
+			} catch (IOException e1) {
+				System.out.println("warning: cannot find document properties for .tex files");
+			}
+		}
+
+		// set the document properties
+		for (Map.Entry<Object, Object> entry : docProperties.entrySet()) {
+			doc.setProperty(entry.getKey().toString(), entry.getValue().toString());
+		}
+
 		return editor;
 	}
 
