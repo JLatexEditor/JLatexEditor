@@ -155,7 +155,7 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
       char c = sce_char.character;
 
       byte[] stateStyles = state.getStyles();
-      chars[char_nr].style = stateStyles[LatexStyles.COMMENT];
+      chars[char_nr].style = stateStyles[Character.isWhitespace(c) ? LatexStyles.TEXT : LatexStyles.COMMENT];
 
       // @name
       if(state.getState() == BibParserState.STATE_NOTHING && c == '@') {
