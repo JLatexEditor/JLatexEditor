@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Utilities for Strings.
  *
  * @author Jörg Endrullis und Stefan Endrullis
- * @version 1.1
+ * @version 1.2
  */
 public class StringUtils{
   public static String stringBefore(String inStr, String delimiterStr){
@@ -91,5 +91,52 @@ public class StringUtils{
 		} else {
 			return s;
 		}
+	}
+
+	/**
+	 * Tokenizes a text.
+	 *
+	 * @param text text
+	 * @return list of tokens
+	 */
+	public static ArrayList<String> tokenize(String text) {
+		ArrayList<String> tokens = new ArrayList<String>();
+		char[] chars = text.toCharArray();
+
+		boolean quote = false;
+		StringBuffer token = new StringBuffer();
+
+		for (int i=0; i<text.length(); i++) {
+			switch (chars[i]) {
+				case ' ':
+					if (quote) {
+						token.append(chars[i]);
+					} else {
+						if (token.length() > 0) {
+							tokens.add(token.toString());
+							token = new StringBuffer();
+						}
+					}
+					break;
+
+				case '\\':
+					i++;
+					token.append(chars[i]);
+					break;
+
+				case '"':
+					quote = !quote;
+					break;
+
+				default:
+					token.append(chars[i]);
+			}
+		}
+
+		if (token.length() > 0) {
+			tokens.add(token.toString());
+		}
+
+		return tokens;
 	}
 }
