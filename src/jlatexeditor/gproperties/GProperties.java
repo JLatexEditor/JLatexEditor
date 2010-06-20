@@ -178,6 +178,14 @@ public class GProperties {
     properties.addEntry(new Comment(" About screen"));
     properties.addEntry(new Def("shortcut.about", SHORTCUT, ""));
 
+	  properties.addEntry(new Comment("\n## Compiler settings"));
+    properties.addEntry(new Comment(" pdflatex"));
+    properties.addEntry(new Def("compiler.pdflatex.executable", STRING, "pdflatex"));
+    properties.addEntry(new Def("compiler.pdflatex.parameters", STRING, ""));
+    properties.addEntry(new Comment(" latex"));
+    properties.addEntry(new Def("compiler.latex.executable", STRING, "latex"));
+    properties.addEntry(new Def("compiler.latex.parameters", STRING, ""));
+
     load();
     save();
   }

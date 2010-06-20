@@ -2,6 +2,7 @@ package jlatexeditor.errorhighlighting;
 
 import jlatexeditor.Doc;
 import jlatexeditor.ErrorView;
+import jlatexeditor.gproperties.GProperties;
 import sce.component.AbstractResource;
 import sce.component.SourceCodeEditor;
 import util.ProcessUtil;
@@ -12,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -72,10 +74,24 @@ public class LatexCompiler extends Thread {
     // Command line shell
     try {
       if (type == TYPE_PDF) {
-        latexCompiler = ProcessUtil.exec(new String[]{"pdflatex", "-file-line-error", "-interaction=nonstopmode", baseName + ".tex"}, file.getParentFile());
+	      // build commandline string
+	      String exe = GProperties.getString("compiler.pdflatex.executable");
+	      String additionalParameters = GProperties.getString("compiler.pdflatex.parameters");
+	      String command = exe + " -file-line-error -interaction=nonstopmode " +
+			      additionalParameters + " \"" + baseName + ".tex\"";
+
+	      // start the compiler
+        latexCompiler = ProcessUtil.exec(command, file.getParentFile());
         errorView.compileStarted("pdflatex");
       } else {
-        latexCompiler = ProcessUtil.exec(new String[]{"latex", "-file-line-error", "-interaction=nonstopmode", "-output-format=dvi", baseName + ".tex"}, file.getParentFile());
+	      // build commandline string
+	      String exe = GProperties.getString("compiler.latex.executable");
+	      String additionalParameters = GProperties.getString("compiler.latex.parameters");
+	      String command = exe + " -file-line-error -interaction=nonstopmode -output-format=dvi " +
+			      additionalParameters + " \"" + baseName + ".tex\"";
+
+	      // start the compiler
+        latexCompiler = ProcessUtil.exec(command, file.getParentFile());
         errorView.compileStarted("latex");
       }
     } catch (Exception e) {
