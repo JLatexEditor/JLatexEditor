@@ -28,10 +28,10 @@ public class BackgroundParser extends Thread {
   private long bibModified = 0;
   private ArrayList<BibEntry> bibEntries = new ArrayList<BibEntry>();
 
-  private Trie words = new Trie();
-  private Trie commandNames = new Trie();
+  private Trie<? extends Object> words = new Trie<Object>();
+  private Trie<? extends Object> commandNames = new Trie<Object>();
   private Trie<Command> commands = new Trie<Command>();
-  private Trie labels = new Trie();
+  private Trie<FilePos> labels = new Trie<FilePos>();
 
   private DefaultTreeModel structure = new DefaultTreeModel(new DefaultMutableTreeNode());
 
@@ -47,7 +47,7 @@ public class BackgroundParser extends Thread {
     return bibEntries;
   }
 
-  public Trie getWords() {
+  public Trie<? extends Object> getWords() {
     return words;
   }
 
@@ -59,13 +59,13 @@ public class BackgroundParser extends Thread {
     return commands;
   }
 
-  public Trie getLabels() {
+  public Trie<FilePos> getLabels() {
     return labels;
   }
 
   public void run() {
     while (true) {
-      SourceCodeEditor editor = jle.getMainEditor();
+      SourceCodeEditor<Doc> editor = jle.getMainEditor();
       AbstractResource resource = editor.getResource();
       if (!(resource instanceof Doc.FileDoc)) continue;
 
@@ -74,7 +74,7 @@ public class BackgroundParser extends Thread {
 
 	    Trie words = new Trie();
       Trie commandNames = new Trie();
-      Trie labels = new Trie();
+      Trie<FilePos> labels = new Trie<FilePos>();
       Trie<Command> commands = new Trie<Command>();
 
       ArrayList<StructureEntry> structureStack = new ArrayList<StructureEntry>();
@@ -92,7 +92,7 @@ public class BackgroundParser extends Thread {
         synchronized (this) {
           wait();
         }
-      } catch (InterruptedException e) {
+      } catch (InterruptedException ignored) {
       }
     }
   }
@@ -101,7 +101,7 @@ public class BackgroundParser extends Thread {
     notify();
   }
 
-  private void parseTex(File directory, String fileName, Trie words, Trie commandNames, Trie<Command> commands, Trie labels, ArrayList<StructureEntry> structure, HashSet<String> done) {
+  private void parseTex(File directory, String fileName, Trie words, Trie<? extends Object> commandNames, Trie<Command> commands, Trie<FilePos> labels, ArrayList<StructureEntry> structure, HashSet<String> done) {
     if (done.contains(fileName)) return;
     else done.add(fileName);
 
@@ -168,22 +168,25 @@ public class BackgroundParser extends Thread {
         index += 2 + name.length();
         // number of arguments
         int numberOfArgs = 0;
-        if(tex.charAt(index) == '[') {
-          try {
-            String number = ParseUtil.parseBalanced(tex, index+1, ']');
-            index += 2 + number.length();
-            numberOfArgs = Integer.parseInt(number);
-          } catch(NumberFormatException ignore) {}
-        }
-        // default argument
-        String optional = null;
-        if(tex.charAt(index) == '[') {
-          try {
-            optional = ParseUtil.parseBalanced(tex, index+1, ']');
-            index += 2 + optional.length();
-          } catch(NumberFormatException ignore) {}
-        }
-        String body = ParseUtil.parseBalanced(tex, index+1, '}');
+	      String optional = null, body = null;
+	      try {
+					if(tex.charAt(index) == '[') {
+						try {
+							String number = ParseUtil.parseBalanced(tex, index+1, ']');
+							index += 2 + number.length();
+							numberOfArgs = Integer.parseInt(number);
+						} catch(NumberFormatException ignore) {}
+					}
+					// default argument
+					if(tex.charAt(index) == '[') {
+						try {
+							optional = ParseUtil.parseBalanced(tex, index+1, ']');
+							index += 2 + optional.length();
+						} catch(NumberFormatException ignore) {}
+					}
+					body = ParseUtil.parseBalanced(tex, index+1, '}');
+	      } catch (StringIndexOutOfBoundsException ignored) {
+	      }
         name = name.substring(1);
         commands.add(name, new Command(name, numberOfArgs, optional, body));
       // label, input, include
@@ -191,7 +194,7 @@ public class BackgroundParser extends Thread {
         String argument = ParseUtil.parseBalanced(tex, index+1, '}');
 
         if (command.equals("label")) {
-          labels.add(argument);
+          labels.add(argument, new FilePos(argument, fileCanonicalPath, line));
         } else if (command.equals("bibliography")) {
           parseBib(directory, Command.unfoldRecursive(argument, commands, 10));
         } else {
@@ -272,37 +275,42 @@ public class BackgroundParser extends Thread {
     }
   }
 
-  public static class StructureEntry extends DefaultMutableTreeNode {
-    private String name;
+	public static class FilePos extends DefaultMutableTreeNode {
+		private String name;
+
+		private String file;
+		private int lineNr;
+
+		public FilePos(String name, String file, int lineNr) {
+			this.name = name;
+			this.file = file;
+			this.lineNr = lineNr;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public String getFile() {
+			return file;
+		}
+
+		public int getLineNr() {
+			return lineNr;
+		}
+	}
+
+  public static class StructureEntry extends FilePos {
     private int depth;
 
-    private String file;
-    private int lineNr;
-
     public StructureEntry(String name, int depth, String file, int lineNr) {
-      super(name);
+      super(name, file, lineNr);
 
-      this.name = name;
       this.depth = depth;
-      this.file = file;
-      this.lineNr = lineNr;
-    }
-
-    public String getName() {
-      return name;
     }
 
     public int getDepth() {
       return depth;
     }
-
-    public String getFile() {
-      return file;
-    }
-
-    public int getLineNr() {
-      return lineNr;
-    }
   }
-
 }
