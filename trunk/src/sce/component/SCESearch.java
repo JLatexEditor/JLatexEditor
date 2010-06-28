@@ -32,6 +32,9 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 
   private GroupLayout layout;
 
+	/** Listeners: searchChangeListeners of type SearchChangeListener. */
+	private ArrayList<SearchChangeListener> searchChangeListeners = new ArrayList<SearchChangeListener>();
+
   // search update thread
   private UpdateThread updateThread = new UpdateThread();
 
@@ -215,13 +218,19 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     }
   }
 
-  public void setVisible(boolean visibility) {
+	public void setVisible(boolean visibility) {
+		setVisible(visibility, true);
+	}
+
+  public void setVisible(boolean visibility, boolean reset) {
     if (visibility == isVisible()) return;
 
     SCEPane pane = editor.getTextPane();
     SCEDocument document = pane.getDocument();
     if (visibility) {
-      input.setText("");
+	    if (reset) {
+        input.setText("");
+	    }
 
       SCEDocumentPosition selectionStart = document.getSelectionStart();
       SCEDocumentPosition selectionEnd = document.getSelectionEnd();
@@ -332,12 +341,12 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     if (e.getSource() == buttonClose) setVisible(false);
     if (e.getSource() == caseSensitive) {
       updateThread.documentChanged();
-      updateThread.searchChanged();
+      searchChanged();
     }
     if (e.getSource() == buttonNext) next(false, true);
     if (e.getSource() == buttonPrevious) previous();
-    if (e.getSource() == regExp) updateThread.searchChanged();
-    if (e.getSource() == selectionOnly) { clearHighlights(true, selectionOnly.isSelected()); updateThread.searchChanged(); }
+    if (e.getSource() == regExp) searchChanged();
+    if (e.getSource() == selectionOnly) { clearHighlights(true, selectionOnly.isSelected()); searchChanged(); }
     if (e.getSource() == buttonShowReplace) setShowReplace(!isShowReplace());
 
     if (e.getSource() == buttonReplace) {
@@ -366,10 +375,45 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
   }
 
   public void keyReleased(KeyEvent e) {
-    if (e.getSource() == input) updateThread.searchChanged();
+    if (e.getSource() == input) searchChanged();
   }
 
-  public void documentChanged(SCEDocument sender, SCEDocumentEvent event) {
+	private void searchChanged() {
+		informSearchChangeListeners();
+		updateThread.searchChanged();
+	}
+
+	/**
+	 * SearchChangeListener can register themselves at SCESearch
+	 * to be informed about search changes.
+	 *
+	 * @param listener listener who wants to be informed about changes
+	 */
+	public void addSearchChangeListener(SearchChangeListener listener){
+	  if(searchChangeListeners.contains(listener)) return;
+	  searchChangeListeners.add(listener);
+	}
+
+	/**
+	 * SearchChangeListener can sign off at SCESearch
+	 * to be no longer informed about search changes.
+	 *
+	 * @param listener listener who wants to sign off
+	 */
+	public void removeSearchChangeListener(SearchChangeListener listener){
+	  searchChangeListeners.remove(listener);
+	}
+
+	/**
+	 * Informs SearchChangeListeners about search changes.
+	 */
+	private void informSearchChangeListeners(){
+	  for (SearchChangeListener listener : searchChangeListeners) {
+	    listener.searchChanged(this);
+	  }
+	}
+
+	public void documentChanged(SCEDocument sender, SCEDocumentEvent event) {
     updateThread.documentChanged();
   }
 
@@ -397,7 +441,21 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     buttonReplaceAll.setEnabled(enabled);
   }
 
-  private class UpdateThread extends Thread {
+	public void openSearch(SCESearch lastSearch) {
+		setVisible(true, false);
+		setProperties(lastSearch);
+		searchChanged();
+	}
+
+	public void setProperties(SCESearch lastSearch) {
+		input.setText(lastSearch.input.getText());
+		replace.setText(lastSearch.replace.getText());
+		caseSensitive.setSelected(lastSearch.caseSensitive.isSelected());
+		regExp.setSelected(lastSearch.regExp.isSelected());
+		setShowReplace(lastSearch.isShowReplace());
+	}
+
+	private class UpdateThread extends Thread {
     private boolean searchChanged = true;
     private boolean documentChanged = true;
     private boolean setSelection = true;
