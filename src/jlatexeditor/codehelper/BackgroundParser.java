@@ -132,8 +132,11 @@ public class BackgroundParser extends Thread {
         String commentString = tex.substring(startIndex + 1, index - 1);
         Matcher matcher = TODO_PATTERN.matcher(commentString.toLowerCase());
         if (matcher.find()) {
-          // found a "todo"
-          String todoMsg = commentString.substring(matcher.start() + 5);
+          // found a "todo" -> extract message after todo (if available)
+	        String todoMsg = null;
+	        if (commentString.length() > matcher.start() + 5) {
+            todoMsg = commentString.substring(matcher.start() + 5);
+	        }
           todos.add(new TODO(todoMsg, file, line));
         }
         continue;
