@@ -443,7 +443,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     }
 	  scePane.addCodeAssistantListener(codeAssistant);
 
-    new JumpTo(editor, this);
+    new JumpTo(editor, this, backgroundParser);
 
     return editor;
   }
@@ -660,6 +660,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     }
     return null;
   }
+
+	public SourceCodeEditor<Doc> open(Doc doc, int lineNr) {
+		SourceCodeEditor<Doc> editor = open(doc);
+		editor.getTextPane().getCaret().moveTo(lineNr, 0);
+
+		return editor;
+	}
 
   /**
    * Returns true if any modifications have been done at an open file.

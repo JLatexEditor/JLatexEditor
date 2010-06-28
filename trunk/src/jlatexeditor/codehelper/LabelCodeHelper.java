@@ -4,6 +4,7 @@ import sce.codehelper.CHCommand;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
 import util.Trie;
+import jlatexeditor.codehelper.BackgroundParser.FilePos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,7 @@ public class LabelCodeHelper extends PatternHelper {
   }
 
   public Iterable<? extends CHCommand> getCompletions() {
-    Trie labels = backgroundParser.getLabels();
+    Trie<FilePos> labels = backgroundParser.getLabels();
 
     ArrayList<CHCommand> commands = new ArrayList<CHCommand>();
     List<String> strings = labels.getStrings(label.word, 100);
