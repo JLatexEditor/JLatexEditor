@@ -46,7 +46,7 @@ import java.io.*;
 import java.net.URI;
 import java.util.*;
 
-public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener, TreeSelectionListener {
+public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener, TreeSelectionListener, SearchChangeListener {
   public static final File FILE_LAST_SESSION = new File(System.getProperty("user.home") + "/.jlatexeditor/last.session");
   public static final File FILE_RECENT = new File(System.getProperty("user.home") + "/.jlatexeditor/recent");
   private JMenu recentFilesMenu;
@@ -99,6 +99,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private BackgroundParser backgroundParser;
   private HashMap<URI, Doc> docMap = new HashMap<URI, Doc>();
 	private File lastDocDir;
+	private SCESearch lastSearch;
 
 	public static void main(String args[]) {
     /*
@@ -571,6 +572,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     SourceCodeEditor<Doc> editor;
 	  editor = assignDocProperties(doc);
 	  editor.setResource(doc);
+	  editor.getSearch().addSearchChangeListener(this);
     tabbedPane.removeChangeListener(this);
     tabbedPane.addTab(doc.getName(), editor);
     tabbedPane.addChangeListener(this);
@@ -919,10 +921,12 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		} else
 		// find next
 		if (action.equals("find next")) {
+			ensureOpenSearch();
 			getActiveEditor().getSearch().next(false, true);
 		} else
 		// find previous
 		if (action.equals("find previous")) {
+			ensureOpenSearch();
 			getActiveEditor().getSearch().previous();
 		} else
 
@@ -1076,6 +1080,12 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		}
   }
 
+	private void ensureOpenSearch() {
+		if (!getActiveEditor().getSearch().isVisible()) {
+			getActiveEditor().search(lastSearch);
+		}
+	}
+
 	private void showTool(int tab) {
 		if (toolsTab.isVisible()) {
 		  if (toolsTab.getSelectedIndex() != tab) {
@@ -1211,6 +1221,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       }
     }
   }
+
+	public void searchChanged(SCESearch search) {
+		lastSearch = search;
+	}
 
   public void windowOpened(WindowEvent e) {
     SwingUtilities.invokeLater(new Runnable() {

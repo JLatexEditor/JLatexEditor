@@ -281,4 +281,15 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
   public void requestFocus() {
     getFocusedPane().requestFocus();
 	}
+
+	/**
+	 * Takes the properties from the last search to start a new search.
+	 *
+	 * @param lastSearch last search
+	 */
+	public void search(SCESearch lastSearch) {
+		add(search, BorderLayout.NORTH);
+		search.openSearch(lastSearch);
+		validate();
+	}
 }
