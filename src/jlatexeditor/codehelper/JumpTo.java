@@ -24,13 +24,17 @@ public class JumpTo implements KeyListener, MouseListener {
   private static List<String> defaultExtensions = Arrays.asList("", ".tex", ".bib");
 
   private PatternPair pattern = new PatternPair("\\{([^\\{]*)", "([^\\}]*)\\}");
+	private PatternPair commandPattern = new PatternPair("\\\\(\\w+)\\{[^\\{]*");
 
   private SourceCodeEditor editor;
   private JLatexEditorJFrame jLatexEditorJFrame;
 
-  public JumpTo(SourceCodeEditor editor, JLatexEditorJFrame jLatexEditorJFrame) {
+	private BackgroundParser backgroundParser;
+
+  public JumpTo(SourceCodeEditor editor, JLatexEditorJFrame jLatexEditorJFrame, BackgroundParser backgroundParser) {
     this.editor = editor;
     this.jLatexEditorJFrame = jLatexEditorJFrame;
+	  this.backgroundParser = backgroundParser;
     editor.getTextPane().addKeyListener(this);
     editor.getTextPane().addMouseListener(this);
   }
@@ -52,6 +56,18 @@ public class JumpTo implements KeyListener, MouseListener {
     if (words != null) {
       WordWithPos word = words.get(0);
 
+	    // get command name
+	    List<WordWithPos> commandList = commandPattern.find(pane, pos);
+	    if (commandList != null) {
+		    String command = commandList.get(0).word;
+
+		    if (command.equals("ref") || command.equals("eqref")) {
+			    BackgroundParser.FilePos filePos = backgroundParser.getLabels().get(word.word);
+			    jLatexEditorJFrame.open(new FileDoc(new File(filePos.getFile())), filePos.getLineNr());
+			    return;
+		    }
+	    }
+
       if (editor.getResource() instanceof FileDoc) {
         FileDoc fileDoc = (Doc.FileDoc) editor.getResource();
         String thisFileName = fileDoc.getFile().getName();
@@ -63,7 +79,7 @@ public class JumpTo implements KeyListener, MouseListener {
           File fileUnderCaret = new File(dir, thatFileName);
 
           if (fileUnderCaret.exists() && fileUnderCaret.isFile()) {
-            jLatexEditorJFrame.open(new Doc.FileDoc(fileUnderCaret));
+            jLatexEditorJFrame.open(new FileDoc(fileUnderCaret));
             e.consume();
             return;
           }
