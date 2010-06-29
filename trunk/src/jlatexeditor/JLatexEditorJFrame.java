@@ -439,6 +439,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 	  CombinedCodeAssistant codeAssistant = new CombinedCodeAssistant();
     try {
+	    codeAssistant.addAssistant(new FileCreationSuggester(this));
       codeAssistant.addAssistant(new SpellCheckSuggester(createSpellChecker()));
     } catch (Exception ignored) {
     }

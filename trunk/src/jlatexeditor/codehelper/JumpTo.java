@@ -74,7 +74,7 @@ public class JumpTo implements KeyListener, MouseListener {
 		    }
 	    }
 
-	    // try to jump to file under cursor
+	    // try to jump to file un
       if (editor.getResource() instanceof FileDoc) {
         FileDoc fileDoc = (Doc.FileDoc) editor.getResource();
         String thisFileName = fileDoc.getFile().getName();
