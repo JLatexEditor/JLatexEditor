@@ -53,8 +53,10 @@ public class JumpTo implements KeyListener, MouseListener {
   private void jumpTo(SCEPosition pos, InputEvent e) {
     SCEPane pane = editor.getTextPane();
 
+	  // cursor placed under command parameter?
 	  List<WordWithPos> words = parameterPattern.find(pane, pos);
     if (words != null) {
+	    // extract the parameter
       WordWithPos word = words.get(0);
 
 	    // get command name
@@ -62,6 +64,7 @@ public class JumpTo implements KeyListener, MouseListener {
 	    if (commandList != null) {
 		    String command = commandList.get(0).word;
 
+		    // if \ref or \eqref -> try to jump to label definition
 		    if (command.equals("ref") || command.equals("eqref")) {
 			    BackgroundParser.FilePos filePos = backgroundParser.getLabels().get(word.word);
 			    if (filePos != null) {
@@ -71,6 +74,7 @@ public class JumpTo implements KeyListener, MouseListener {
 		    }
 	    }
 
+	    // try to jump to file under cursor
       if (editor.getResource() instanceof FileDoc) {
         FileDoc fileDoc = (Doc.FileDoc) editor.getResource();
         String thisFileName = fileDoc.getFile().getName();
@@ -92,10 +96,13 @@ public class JumpTo implements KeyListener, MouseListener {
 	    return;
     }
 
+	  // cursor under command?
 	  words = commandPattern.find(pane, pos);
 	  if (words != null) {
+		  // extract command name
 	    WordWithPos word = words.get(0);
 
+		  // try to jump to command definition
 		  BackgroundParser.FilePos filePos = backgroundParser.getCommands().get(word.word);
 		  if (filePos != null) {
 			  jLatexEditorJFrame.open(new FileDoc(new File(filePos.getFile())), filePos.getLineNr());
