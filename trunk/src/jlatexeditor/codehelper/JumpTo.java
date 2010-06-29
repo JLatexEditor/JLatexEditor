@@ -23,8 +23,9 @@ import java.util.List;
 public class JumpTo implements KeyListener, MouseListener {
   private static List<String> defaultExtensions = Arrays.asList("", ".tex", ".bib");
 
-  private PatternPair pattern = new PatternPair("\\{([^\\{]*)", "([^\\}]*)\\}");
-	private PatternPair commandPattern = new PatternPair("\\\\(\\w+)\\{[^\\{]*");
+  private PatternPair parameterPattern = new PatternPair("\\{([^\\{]*)", "([^\\}]*)\\}");
+	private PatternPair commandParamPattern = new PatternPair("\\\\(\\w+)\\{[^\\{]*");
+	private PatternPair commandPattern = new PatternPair("\\\\(\\w*)", "(\\w+)");
 
   private SourceCodeEditor editor;
   private JLatexEditorJFrame jLatexEditorJFrame;
@@ -52,19 +53,21 @@ public class JumpTo implements KeyListener, MouseListener {
   private void jumpTo(SCEPosition pos, InputEvent e) {
     SCEPane pane = editor.getTextPane();
 
-    List<WordWithPos> words = pattern.find(pane, pos);
+	  List<WordWithPos> words = parameterPattern.find(pane, pos);
     if (words != null) {
       WordWithPos word = words.get(0);
 
 	    // get command name
-	    List<WordWithPos> commandList = commandPattern.find(pane, pos);
+	    List<WordWithPos> commandList = commandParamPattern.find(pane, pos);
 	    if (commandList != null) {
 		    String command = commandList.get(0).word;
 
 		    if (command.equals("ref") || command.equals("eqref")) {
 			    BackgroundParser.FilePos filePos = backgroundParser.getLabels().get(word.word);
-			    jLatexEditorJFrame.open(new FileDoc(new File(filePos.getFile())), filePos.getLineNr());
-			    return;
+			    if (filePos != null) {
+						jLatexEditorJFrame.open(new FileDoc(new File(filePos.getFile())), filePos.getLineNr());
+						return;
+			    }
 		    }
 	    }
 
@@ -85,7 +88,20 @@ public class JumpTo implements KeyListener, MouseListener {
           }
         }
       }
+
+	    return;
     }
+
+	  words = commandPattern.find(pane, pos);
+	  if (words != null) {
+	    WordWithPos word = words.get(0);
+
+		  BackgroundParser.FilePos filePos = backgroundParser.getCommands().get(word.word);
+		  if (filePos != null) {
+			  jLatexEditorJFrame.open(new FileDoc(new File(filePos.getFile())), filePos.getLineNr());
+			  return;
+		  }
+	  }
   }
 
   public void keyReleased(KeyEvent e) {

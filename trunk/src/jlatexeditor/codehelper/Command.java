@@ -8,20 +8,21 @@ import java.util.ArrayList;
 /**
  * Command defined via \newcommand or \renewcommand.
  */
-public class Command {
+public class Command extends BackgroundParser.FilePos {
   private String name;
   private int numberOfArgs;
   private String optional;
   private String body;
 
-  public Command(String name, int numberOfArgs, String optional, String body) {
-    this.name = name;
-    this.numberOfArgs = numberOfArgs;
-    this.optional = optional;
-    this.body = body;
-  }
+	public Command(String name, String file, int lineNr, int numberOfArgs, String optional, String body) {
+		super(name, file, lineNr);
+		this.name = name;
+		this.numberOfArgs = numberOfArgs;
+		this.optional = optional;
+		this.body = body;
+	}
 
-  public String getName() {
+	public String getName() {
     return name;
   }
 
