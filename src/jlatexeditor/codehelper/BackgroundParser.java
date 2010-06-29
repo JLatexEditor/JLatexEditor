@@ -29,7 +29,7 @@ public class BackgroundParser extends Thread {
   private ArrayList<BibEntry> bibEntries = new ArrayList<BibEntry>();
 
   private Trie<? extends Object> words = new Trie<Object>();
-  private Trie<? extends Object> commandNames = new Trie<Object>();
+  private Trie<FilePos> commandNames = new Trie<FilePos>();
   private Trie<Command> commands = new Trie<Command>();
   private Trie<FilePos> labels = new Trie<FilePos>();
 
@@ -51,7 +51,7 @@ public class BackgroundParser extends Thread {
     return words;
   }
 
-  public Trie getCommandNames() {
+  public Trie<FilePos> getCommandNames() {
     return commandNames;
   }
 
@@ -73,7 +73,7 @@ public class BackgroundParser extends Thread {
       File directory = file.getParentFile();
 
 	    Trie words = new Trie();
-      Trie commandNames = new Trie();
+      Trie<FilePos> commandNames = new Trie<FilePos>();
       Trie<FilePos> labels = new Trie<FilePos>();
       Trie<Command> commands = new Trie<Command>();
 
@@ -101,7 +101,7 @@ public class BackgroundParser extends Thread {
     notify();
   }
 
-  private void parseTex(File directory, String fileName, Trie words, Trie<? extends Object> commandNames, Trie<Command> commands, Trie<FilePos> labels, ArrayList<StructureEntry> structure, HashSet<String> done) {
+  private void parseTex(File directory, String fileName, Trie words, Trie<FilePos> commandNames, Trie<Command> commands, Trie<FilePos> labels, ArrayList<StructureEntry> structure, HashSet<String> done) {
     if (done.contains(fileName)) return;
     else done.add(fileName);
 
@@ -188,7 +188,7 @@ public class BackgroundParser extends Thread {
 	      } catch (StringIndexOutOfBoundsException ignored) {
 	      }
         name = name.substring(1);
-        commands.add(name, new Command(name, numberOfArgs, optional, body));
+        commands.add(name, new Command(name, fileCanonicalPath, line, numberOfArgs, optional, body));
       // label, input, include
       } else if (command.equals("label") || command.equals("bibliography") || command.equals("input") || command.equals("include")) {
         String argument = ParseUtil.parseBalanced(tex, index+1, '}');
