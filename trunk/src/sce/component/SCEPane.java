@@ -23,6 +23,9 @@ import java.util.ArrayList;
  * @author Stefan Endrullis
  */
 public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretListener, FocusListener {
+	/** Character type. */
+	enum CT { space, special, letter }
+	
   SourceCodeEditor sourceCodeEditor;
   /**
    * Document.
@@ -95,7 +98,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   Dimension preferredSize = new Dimension(240, 320);
 
   // some characters
-  private String splitterChars = " ,;.:!\"§$%&/()=?{[]}\\'´`+-*^°";
+  private String splitterChars = ",;.:!\"§$%&/()=?{[]}\\'´`+-*^°";
 
   /**
    * Code assistants that are informed about alt+enter events.
@@ -611,15 +614,37 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     if (position < 0) return 0;
     if (position >= document.getRowLength(row)) return document.getRowLength(row);
 
+	  CT ct = getCharTypeAt(text, position);
+
+	  while (position >= 0 && position < document.getRowLength(row)) {
+	    if (ct != getCharTypeAt(text, position)) break;
+	    position += direction;
+	  }
+	  /** todo: remove if you are satisfied with the new solution
     boolean splitter = splitterChars.indexOf(text.charAt(position)) != -1;
     while (position >= 0 && position < document.getRowLength(row)) {
       if (splitter != (splitterChars.indexOf(text.charAt(position)) != -1)) break;
       position += direction;
     }
+	  */
     if (direction == -1) position++;
 
     return position;
   }
+
+	/**
+	 * Returns the character type in a given string at a given position.
+	 *
+	 * @param text input string
+	 * @param position position
+	 * @return character type
+	 */
+	private CT getCharTypeAt(String text, int position) {
+		char c = text.charAt(position);
+		if (c == ' ') return CT.space;
+		if ((splitterChars.indexOf(text.charAt(position)) != -1)) return CT.special;
+		return CT.letter;
+	}
 
   /**
    * Finds the next splitter in the given direction.
