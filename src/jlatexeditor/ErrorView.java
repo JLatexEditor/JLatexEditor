@@ -14,12 +14,16 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 /**
  * Error view.
  */
-public class ErrorView extends JSplitPane implements TreeSelectionListener, ListSelectionListener {
+public class ErrorView extends JSplitPane implements TreeSelectionListener, ListSelectionListener, MouseListener, KeyListener {
   // color definitions
   private static final Color SELECTION_BACKGROUND = new Color(241, 244, 248);
   private static final Color SELECTION_BORDER = new Color(199, 213, 229);
@@ -72,6 +76,8 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
       selectionModel.setLeadAnchorNotificationEnabled(false);
       list.setSelectionModel(selectionModel);
       list.addListSelectionListener(this);
+	    list.addMouseListener(this);
+	    list.addKeyListener(this);
     }
 
     JPanel treePanel = new JPanel();
@@ -159,30 +165,7 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     }
   }
 
-  public void valueChanged(ListSelectionEvent e) {
-    JList list = (JList) e.getSource();
-    DefaultListModel model = (DefaultListModel) list.getModel();
-    DefaultListSelectionModel selectionModel = (DefaultListSelectionModel) list.getSelectionModel();
-    int index = selectionModel.getLeadSelectionIndex();
-    if (index < 0 || index >= model.size()) return;
-
-    ErrorComponent errorComponent = (ErrorComponent) model.getElementAt(index);
-    LatexCompileError error = errorComponent.getError();
-
-    SourceCodeEditor editor = latexEditor.open(new Doc.FileDoc(error.getFile()));
-    SCEPane pane = editor.getTextPane();
-
-    int column = 0;
-    if (error.getTextBefore() != null) {
-      String line = pane.getDocument().getRow(error.getLineStart());
-      column = Math.max(0, line.indexOf(error.getTextBefore()));
-    }
-
-    int rowStart = Math.max(0, error.getLineStart() - 1);
-    editor.moveTo(rowStart, column);
-  }
-
-  @Override
+	@Override
   public void requestFocus() {
     tree.requestFocus();
     if (tree.getSelectionCount() == 0) {
@@ -190,7 +173,76 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     }
   }
 
-  private class ErrorComponent extends JLabel {
+	private void listElementClicked(JList list, boolean focusEditor) {
+		DefaultListModel model = (DefaultListModel) list.getModel();
+		DefaultListSelectionModel selectionModel = (DefaultListSelectionModel) list.getSelectionModel();
+		int index = selectionModel.getLeadSelectionIndex();
+		if (index < 0 || index >= model.size()) return;
+
+		ErrorComponent errorComponent = (ErrorComponent) model.getElementAt(index);
+		LatexCompileError error = errorComponent.getError();
+
+		SourceCodeEditor editor = latexEditor.open(new Doc.FileDoc(error.getFile()));
+		SCEPane pane = editor.getTextPane();
+
+		int column = 0;
+		if (error.getTextBefore() != null) {
+		  String line = pane.getDocument().getRow(error.getLineStart());
+		  column = Math.max(0, line.indexOf(error.getTextBefore()));
+		}
+
+		int rowStart = Math.max(0, error.getLineStart() - 1);
+		editor.moveTo(rowStart, column);
+
+		if (focusEditor) {
+			editor.requestFocus();
+		}
+	}
+
+	public void valueChanged(ListSelectionEvent e) {
+	  JList list = (JList) e.getSource();
+
+		listElementClicked(list, false);
+	}
+	
+	// MouseListener
+	public void mouseClicked(MouseEvent e) {
+		JList list = (JList) e.getSource();
+
+		listElementClicked(list, e.getClickCount() == 2);
+	}
+
+	public void mousePressed(MouseEvent e) {
+	}
+
+	public void mouseReleased(MouseEvent e) {
+	}
+
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	public void mouseExited(MouseEvent e) {
+	}
+
+	// KeyListener
+	public void keyTyped(KeyEvent e) {
+	}
+
+	public void keyPressed(KeyEvent e) {
+		JList list = (JList) e.getSource();
+
+		if (e.getKeyCode() == KeyEvent.VK_ENTER && e.getModifiers() == 0) {
+			listElementClicked(list, true);
+		}
+	}
+
+	public void keyReleased(KeyEvent e) {
+	}
+
+
+	
+	// inner classes
+	private class ErrorComponent extends JLabel {
     private LatexCompileError error;
     private boolean isSelected = false;
 
