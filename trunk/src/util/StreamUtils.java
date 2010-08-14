@@ -12,9 +12,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class StreamUtils {
-  /**
-   * Size of the temporary buffer for reading.
-   */
+  /** Size of the temporary buffer for reading. */
   private static int temporary_buffer_size = 64 * 1024;
 
   /**
@@ -35,6 +33,7 @@ public class StreamUtils {
    *
    * @param filename the filename
    * @return the content of the file
+   * @throws java.io.IOException if an I/O error occurs
    */
   public static String readFile(String filename) throws IOException {
     InputStream inputStream = getInputStream(filename);
@@ -50,6 +49,7 @@ public class StreamUtils {
    *
    * @param filename the filename
    * @return the content of the file
+   * @throws java.io.IOException if an I/O error occurs
    */
   public static ArrayList<String> readLines(String filename) throws IOException {
     InputStream inputStream = getInputStream(filename);
@@ -67,6 +67,8 @@ public class StreamUtils {
    * Opens an InputStream for the given resource name.
    *
    * @param fileName resource name / file name (does not have to start with a "/")
+   * @return input stream of the file
+   * @throws java.io.FileNotFoundException if file does not exist
    */
   public static InputStream getInputStream(String fileName) throws FileNotFoundException {
     // try to find the resource in local class resources
@@ -119,6 +121,7 @@ public class StreamUtils {
    *
    * @param stream input stream.
    * @return decoded xml string
+   * @throws java.io.IOException if an I/O error occurs
    */
   public static String readXmlStream(InputStream stream) throws IOException {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
