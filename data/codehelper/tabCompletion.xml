@@ -26,11 +26,21 @@
   </command>
   <command name="align*" usage="\begin{align*}&nl;  @|@&nl;\end{align*}" hint="align environment">
   </command>
+  <command name="eq" usage="\begin{equation@*@}&nl;  @|@&nl;\end{equation@*@}" hint="equation environment">
+	  <argument name="*"/>
+  </command>
+  <command name="eqn" usage="\begin{eqnarray@*@}&nl;  @|@&nl;\end{eqnarray@*@}" hint="eqnarray environment">
+	  <argument name="*"/>
+  </command>
   <command name="sec" usage="\section{@name@}\label{sec:@label@}&nl;@|@" hint="section">
     <argument name="name"/>
     <argument name="label"/>
   </command>
   <command name="ssec" usage="\subsection{@name@}\label{sec:@label@}&nl;@|@" hint="subsection">
+    <argument name="name"/>
+    <argument name="label"/>
+  </command>
+  <command name="sssec" usage="\subsubsection{@name@}\label{sec:@label@}&nl;@|@" hint="subsubsection">
     <argument name="name"/>
     <argument name="label"/>
   </command>
@@ -45,6 +55,9 @@
 		<argument name="text"/>
 	</command>
 	<command name="tt" usage="\texttt{@text@}@|@" hint="type writer">
+		<argument name="text"/>
+	</command>
+	<command name="emph" usage="\emph{@text@}@|@" hint="emphasising">
 		<argument name="text"/>
 	</command>
 	<command name="tab" usage="\begin{tabular}{|@c@|}&nl;  @|@&nl;\end{tabular}" hint="tabular environment">
