@@ -133,8 +133,17 @@ public class StaticCommandsCodeHelper extends PatternHelper {
 		  if (commandUsage.substring(0, argumentStart).trim().endsWith("[")) optional = true;
 		  if (commandUsage.substring(argumentEnd).trim().startsWith("]")) optional = true;
 
+			boolean secondOptional = false;
+			if (optional) {
+				if (commandUsage.substring(0, argumentStart-1).trim().endsWith("]")) {
+					secondOptional = true;
+					command.setUsage(commandUsage.replaceAll("\\[@" + argumentName + "@\\]", ""));
+					continue;
+				}
+			}
+
 		  // create the argument
-		  CHCommandArgument argument = new CHCommandArgument(argumentName, optional);
+		  CHCommandArgument argument = new CHCommandArgument(argumentName, optional, secondOptional);
 		  argument.setHint(argumentXML.getAttribute("hint"));
 
 		  // read the suggested values if there are some
