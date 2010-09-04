@@ -29,7 +29,7 @@ public class StatusBar extends JPanel implements ActionListener, MouseListener {
   private JLabel updatesAvailable = new JLabel("SVN updates are available.");
   private CheckForUpdates updateChecker = new CheckForUpdates();
 
-  private ArrayList<String> messges = new ArrayList<String>();
+  private ArrayList<String> messages = new ArrayList<String>();
 
   public StatusBar(JLatexEditorJFrame jLatexEditor) {
     this.jLatexEditor = jLatexEditor;
@@ -57,8 +57,8 @@ public class StatusBar extends JPanel implements ActionListener, MouseListener {
   }
 
   public synchronized void showMessage(String shortMessage, String message) {
-    messges.add(message);
-    new MessagePopup(message, jLatexEditor);
+    messages.add(message);
+    new MessagePopup(new Color(0, 192, 0), message, jLatexEditor);
   }
 
   public void checkForUpdates() {
@@ -111,7 +111,13 @@ public class StatusBar extends JPanel implements ActionListener, MouseListener {
   public void mouseExited(MouseEvent e) {
   }
 
-  public static class MemoryUsage extends JPanel implements ActionListener {
+	public void showTextError(String shortMessage, String textMessage) {
+		String message = "<html>" + textMessage.replaceAll("\\n", "<br>") + "</html>";
+		messages.add(message);
+		new MessagePopup(new Color(192, 0, 0), message, jLatexEditor);
+	}
+
+	public static class MemoryUsage extends JPanel implements ActionListener {
     public static Color COLOR_BAR = new Color(163, 201, 247);
     public static Color COLOR_BACKGROUND = ColorUtil.mix(COLOR_BAR, 0.5, Color.WHITE);
     private Timer timer;
