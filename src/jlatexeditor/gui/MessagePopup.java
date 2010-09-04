@@ -13,12 +13,17 @@ public class MessagePopup extends JPopupMenu implements MouseListener {
   private long alphaTime = 1000000000;
 
   private JLabel label;
+	private Color backgroundColor = new Color(192, 239, 192);
+	private Color strokeColor = new Color(0, 128, 0);
 
-  public MessagePopup(String message, JFrame invoker) {
+	public MessagePopup(Color color, String message, JFrame invoker) {
     super(message);
 
     label = new JLabel(getLabel());
     label.setMaximumSize(new Dimension(800, 600));
+
+		backgroundColor = mix(Color.WHITE, color, 0.75);
+		strokeColor = mix(Color.BLACK, color, 0.33);
 
     Dimension preferred = label.getPreferredSize();
     int width = preferred.width;
@@ -33,6 +38,13 @@ public class MessagePopup extends JPopupMenu implements MouseListener {
 
     addMouseListener(this);
   }
+
+	private Color mix(Color c1, Color c2, double c1ratio) {
+		return new Color(
+			(int) (c1.getRed()*c1ratio + c2.getRed()*(1-c1ratio)),
+			(int) (c1.getGreen()*c1ratio + c2.getGreen()*(1-c1ratio)),
+			(int) (c1.getBlue()*c1ratio + c2.getBlue()*(1-c1ratio)));
+	}
 
   public void setVisible(boolean b) {
     if (!b) return;
@@ -53,9 +65,9 @@ public class MessagePopup extends JPopupMenu implements MouseListener {
 
     // green rectangle
     g2D.clearRect(0, 0, getWidth(), getHeight());
-    g2D.setColor(new Color(192, 239, 192)); // 217, 231, 194
+    g2D.setColor(backgroundColor); // 217, 231, 194
     g2D.fillRoundRect(2, 2, getWidth() - 4, getHeight() - 4, 15, 15);
-    g2D.setColor(new Color(0, 128, 0));
+    g2D.setColor(strokeColor);
     g2D.setStroke(new BasicStroke(2));
     g2D.drawRoundRect(2, 2, getWidth() - 4, getHeight() - 4, 15, 15);
 

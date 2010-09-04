@@ -1016,7 +1016,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 			try {
 				results = SVN.getInstance().update(getMainEditor().getFile().getParentFile());
 			} catch (Exception exception) {
-				statusBar.showMessage("SVN update failed", "SVN update failed: " + exception.getMessage());
+				exception.printStackTrace();
+				statusBar.showTextError("SVN update failed", "SVN update failed: " + exception.getMessage());
 				return;
 			}
 			StringBuilder builder = new StringBuilder();
@@ -1049,6 +1050,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 				try {
 					result = SVN.getInstance().commit(getMainEditor().getFile().getParentFile(), message);
 				} catch (Exception exception) {
+					exception.printStackTrace();
 					statusBar.showMessage("SVN update failed", "SVN update failed: " + exception.getMessage());
 					return;
 				}

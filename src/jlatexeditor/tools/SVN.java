@@ -25,12 +25,7 @@ public class SVN {
     ArrayList<UpdateResult> results = new ArrayList<UpdateResult>();
 
     Process svn;
-    try {
-      svn = ProcessUtil.exec(new String[]{"svn", "--non-interactive", "update"}, dir);
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new Exception("SVN update failed!", e);
-    }
+		svn = ProcessUtil.exec(new String[]{"svn", "--non-interactive", "update"}, dir);
 
     BufferedReader in = new BufferedReader(new InputStreamReader(svn.getInputStream()), 100000);
     String line;
@@ -66,36 +61,13 @@ public class SVN {
     return results;
   }
 
-	/**
-	 * Check if the return code of the svn process is OK.
-	 *
-	 * @param process svn process
-	 */
-	private void checkProcessResult(Process process, String action) throws Exception {
-
-		try {
-			String errorString = new String(StreamUtils.readBytesFromInputStream(process.getErrorStream()));
-			throw new Exception(action + " failed due to the following error:\n" + errorString);
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new Exception(action + " failed!", e);
-		}
-	}
-
 	public synchronized Pair<Boolean, String> commit(File dir, String message) throws Exception {
     message = message.replace('"', ' ');
     message = message.replace('\\', ' ');
 
-    Process svn;
-    try {
-      svn = ProcessUtil.exec(new String[]{"svn", "--non-interactive", "commit", "-m", message}, dir);
-    } catch (Exception e) {
-      e.printStackTrace();
-	    throw new Exception("SVN update failed!", e);
-//      return new Pair<Boolean, String>(false, "<font color=red><b>Exception: " + e.getMessage() + "</b></font>");
-    }
+    Process svn = ProcessUtil.exec(new String[]{"svn", "--non-interactive", "commit", "-m", message}, dir);
 
-    boolean success = true;
+		boolean success = true;
 
     StringBuilder builder = new StringBuilder();
 
@@ -179,6 +151,18 @@ public class SVN {
       e.printStackTrace();
     }
   }
+
+	/**
+	 * Check if the return code of the svn process is OK.
+	 *
+	 * @param process svn process
+	 */
+	private void checkProcessResult(Process process, String action) throws Exception {
+		String errorString = new String(StreamUtils.readBytesFromInputStream(process.getErrorStream()));
+		if (!errorString.equals("")) {
+			throw new Exception(action + " failed due to the following error:\n" + errorString);
+		}
+	}
 
   public static class UpdateResult {
     public static final int TYPE_UPDATE = 0;
