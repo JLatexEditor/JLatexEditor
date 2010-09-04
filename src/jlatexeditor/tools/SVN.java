@@ -2,6 +2,7 @@ package jlatexeditor.tools;
 
 import util.Pair;
 import util.ProcessUtil;
+import util.StreamUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,7 +29,7 @@ public class SVN {
       svn = ProcessUtil.exec(new String[]{"svn", "--non-interactive", "update"}, dir);
     } catch (Exception e) {
       e.printStackTrace();
-      throw new Exception("SVN update failed!");
+      throw new Exception("SVN update failed!", e);
     }
 
     BufferedReader in = new BufferedReader(new InputStreamReader(svn.getInputStream()), 100000);
@@ -60,10 +61,28 @@ public class SVN {
       }
     }
 
+	  checkProcessResult(svn, "SVN update");
+
     return results;
   }
 
-  public synchronized Pair<Boolean, String> commit(File dir, String message) {
+	/**
+	 * Check if the return code of the svn process is OK.
+	 *
+	 * @param process svn process
+	 */
+	private void checkProcessResult(Process process, String action) throws Exception {
+
+		try {
+			String errorString = new String(StreamUtils.readBytesFromInputStream(process.getErrorStream()));
+			throw new Exception(action + " failed due to the following error:\n" + errorString);
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new Exception(action + " failed!", e);
+		}
+	}
+
+	public synchronized Pair<Boolean, String> commit(File dir, String message) throws Exception {
     message = message.replace('"', ' ');
     message = message.replace('\\', ' ');
 
@@ -72,7 +91,8 @@ public class SVN {
       svn = ProcessUtil.exec(new String[]{"svn", "--non-interactive", "commit", "-m", message}, dir);
     } catch (Exception e) {
       e.printStackTrace();
-      return new Pair<Boolean, String>(false, "<font color=red><b>Exception: " + e.getMessage() + "</b></font>");
+	    throw new Exception("SVN update failed!", e);
+//      return new Pair<Boolean, String>(false, "<font color=red><b>Exception: " + e.getMessage() + "</b></font>");
     }
 
     boolean success = true;
@@ -97,6 +117,8 @@ public class SVN {
       builder.append("<font color=red><b>Exception: " + e.getMessage() + "</b></font>");
     }
 
+		checkProcessResult(svn, "SVN update");
+
     return new Pair<Boolean, String>(success, builder.toString());
   }
 
@@ -105,10 +127,10 @@ public class SVN {
 
     Process svn;
     try {
-      svn = ProcessUtil.exec(new String[]{"svn", "--show-updates", "status"}, dir);
+      svn = ProcessUtil.exec(new String[]{"svn", "--non-interactive", "--show-updates", "status"}, dir);
     } catch (Exception e) {
       e.printStackTrace();
-      throw new Exception("SVN status failed!");
+      throw new Exception("SVN status failed!", e);
     }
 
     BufferedReader in = new BufferedReader(new InputStreamReader(svn.getInputStream()), 100000);
@@ -151,7 +173,7 @@ public class SVN {
   public synchronized void resolved(File file) {
     Process svn = null;
     try {
-      svn = ProcessUtil.exec(new String[]{"svn", "resolved", file.getName()}, file.getParentFile());
+      svn = ProcessUtil.exec(new String[]{"svn", "--non-interactive", "resolved", file.getName()}, file.getParentFile());
       svn.waitFor();
     } catch (Exception e) {
       e.printStackTrace();

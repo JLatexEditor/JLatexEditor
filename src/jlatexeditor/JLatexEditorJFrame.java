@@ -1045,7 +1045,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 							null,
 							"");
 			if (message != null) {
-				Pair<Boolean, String> result = SVN.getInstance().commit(getMainEditor().getFile().getParentFile(), message);
+				Pair<Boolean, String> result = null;
+				try {
+					result = SVN.getInstance().commit(getMainEditor().getFile().getParentFile(), message);
+				} catch (Exception exception) {
+					statusBar.showMessage("SVN update failed", "SVN update failed: " + exception.getMessage());
+					return;
+				}
 				statusBar.showMessage("SVN commit", "<html>SVN commit:<br><br>" + result.second + "</html>");
 			}
 		} else if (action.equals("next tab")) {
