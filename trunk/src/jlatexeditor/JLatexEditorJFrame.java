@@ -150,7 +150,14 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     addWindowListener(this);
     Runtime.getRuntime().addShutdownHook(new ShutdownHook(this));
 
-    initFileChooser();
+	  initFileChooser();
+
+		// set icon
+		try {
+			setIconImage(new ImageIcon(StreamUtils.readBytesFromInputStream(StreamUtils.getInputStream("images/icon_32.png"))).getImage());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
     /*
     JRootPane rootPane = getRootPane();
