@@ -12,6 +12,7 @@ public class CHCommandArgument {
   // the name
   private String name = null;
   private boolean optional = false;
+	private boolean secondOptional = false;
   // the hint
   private String hint = null;
   // possible values
@@ -32,7 +33,20 @@ public class CHCommandArgument {
     this.optional = optional;
   }
 
-  /**
+	/**
+   * Creates a command argument.
+   *
+   * @param name the name
+	 * @param optional whether the argument is optional
+	 * @param secondOptional whether the argument is second optional
+   */
+	public CHCommandArgument(String name, boolean optional, boolean secondOptional) {
+		this.name = name;
+		this.optional = optional;
+		this.secondOptional = secondOptional;
+	}
+
+	/**
    * Returns the name of the argument.
    *
    * @return the name
@@ -50,7 +64,16 @@ public class CHCommandArgument {
     return optional;
   }
 
-  /**
+	/**
+	 * Returns true if the argument is second optional.
+	 *
+	 * @return true if second optional
+	 */
+	public boolean isSecondOptional() {
+		return secondOptional;
+	}
+
+	/**
    * Returns the hint for this argument.
    *
    * @return the hint.
