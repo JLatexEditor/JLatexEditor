@@ -8,7 +8,7 @@ import java.awt.geom.Rectangle2D;
 /**
  * Display messages.
  */
-public class MessagePopup extends JPopupMenu implements MouseListener {
+public class MessagePopup extends JPopupMenu implements MouseListener, KeyListener {
   private long startTime = -1;
   private long alphaTime = 1000000000;
 
@@ -37,6 +37,7 @@ public class MessagePopup extends JPopupMenu implements MouseListener {
     setVisible(true);
 
     addMouseListener(this);
+		addKeyListener(this);
   }
 
 	private Color mix(Color c1, Color c2, double c1ratio) {
@@ -49,6 +50,7 @@ public class MessagePopup extends JPopupMenu implements MouseListener {
   public void setVisible(boolean b) {
     if (!b) return;
     super.setVisible(b);
+	  requestFocus();
   }
 
   public void update(Graphics g) {
@@ -97,4 +99,17 @@ public class MessagePopup extends JPopupMenu implements MouseListener {
 
   public void mouseExited(MouseEvent e) {
   }
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		super.setVisible(false);
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+	}
 }
