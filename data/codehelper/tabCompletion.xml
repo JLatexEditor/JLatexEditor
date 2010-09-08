@@ -68,4 +68,6 @@
 		<argument name="env"/>
 		<argument name="opt"/>
 	</command>
+	<command name="i" usage="\item " hint="item in itemization or enumeration">
+	</command>
 </commandList>
