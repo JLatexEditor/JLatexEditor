@@ -274,6 +274,11 @@
     <argument name="file_list"/>
   </command>
 
+  <command name="\includegraphics" usage="\includegraphics[@opt@]{@filename@}" hint="includes a graphic; requires package 'graphicx'">
+	  <argument name="opt"/>
+	  <argument name="filename"/>
+  </command>
+
   <command name="\indent" hint="produces a horizontal space whose width equals the width of the paragraph indentation">
   </command>
 
