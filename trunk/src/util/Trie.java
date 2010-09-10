@@ -147,8 +147,8 @@ public class Trie<T> {
 	 * @return truncated string
 	 */
 	private String truncate(String s) {
-		if (s.length() > 30) {
-			return s.substring(0, 30);
+		if (s.length() > 50) {
+			return s.substring(0, 50);
 		} else {
 			return s;
 		}
