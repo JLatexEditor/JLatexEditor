@@ -167,6 +167,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
     if (codeHelper.documentChanged()) {
       for (CHCommand command : codeHelper.getCompletions()) model.addElement(command);
+	    wordPos = codeHelper.getWordToReplace();
 
       // restore selection
       list.setSelectedValue(selectedValue, true);
@@ -177,6 +178,12 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
       setPreferredSize(size);
       popup.setPreferredSize(size);
       popup.pack();
+
+	    if (isVisible()) {
+		    // update popup position
+		    Point wordPoint = pane.modelToView(wordPos.getStartRow(), wordPos.getStartCol());
+		    popup.show(pane, wordPoint.x, wordPoint.y + pane.getLineHeight());
+	    }
     } else {
       setVisible(false);
     }
@@ -538,13 +545,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 		  if (replacement != null) {
 		    replace(wordPos, replacement);
 
-		    Point wordPoint = pane.modelToView(wordPos.getStartRow(), wordPos.getStartCol());
-
-		    setVisible(true);
-		    popup.show(pane, wordPoint.x, wordPoint.y + pane.getLineHeight());
-
-		    setSize(getPreferredSize());
-		    popup.pack();
+			  popItUp();
 		  }
 		}
 	}
@@ -559,15 +560,19 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 			String replacement = codeHelper.getMaxCommonPrefix();
 
 			if (replacement != null) {
-				Point wordPoint = pane.modelToView(wordPos.getStartRow(), wordPos.getStartCol());
-
-				setVisible(true);
-				popup.show(pane, wordPoint.x, wordPoint.y + pane.getLineHeight());
-
-				setSize(getPreferredSize());
-				popup.pack();
+				popItUp();
 			}
 		}
+	}
+
+	private void popItUp() {
+		Point wordPoint = pane.modelToView(wordPos.getStartRow(), wordPos.getStartCol());
+
+		setVisible(true);
+		popup.show(pane, wordPoint.x, wordPoint.y + pane.getLineHeight());
+
+		setSize(getPreferredSize());
+		popup.pack();
 	}
 
 	private void select(int index) {
