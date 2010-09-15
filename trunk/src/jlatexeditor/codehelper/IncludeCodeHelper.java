@@ -35,9 +35,11 @@ public class IncludeCodeHelper extends PatternHelper {
         if (pathName.word.startsWith("/")) {
           path = new File(pathName.word);
         } else {
+	        if (path == null) return false;
           path = new File(path.getAbsolutePath() + "/" + pathName.word);
         }
       }
+	    if (path == null) return false;
 
       // do not complete if the dir does not exists
       if (!path.isDirectory()) return false;
