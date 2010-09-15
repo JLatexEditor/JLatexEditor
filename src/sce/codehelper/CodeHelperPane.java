@@ -1,6 +1,7 @@
 package sce.codehelper;
 
 import sce.component.*;
+import util.Pair;
 
 import javax.swing.*;
 import java.awt.*;
@@ -200,46 +201,33 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
    * @param column         the column
    */
   private void startTemplate(String templateWithAt, ArrayList<CHCommandArgument> arguments, int row, int column) {
-    template = templateWithAt;
+    String newTemplate = templateWithAt;
 
     // remove the caret mark
-    int caretIndex = template.lastIndexOf("@|@");
-    if (caretIndex != -1) template = template.substring(0, caretIndex) + template.substring(caretIndex + 3);
+    int caretIndex = newTemplate.lastIndexOf("@|@");
+    if (caretIndex != -1) newTemplate = newTemplate.substring(0, caretIndex) + newTemplate.substring(caretIndex + 3);
 
     // remember the template and arguments
-    template = template.replaceAll("@", "");
-    template = template.replaceAll("&at;", "@");
+    newTemplate = newTemplate.replaceAll("@", "");
+    newTemplate = newTemplate.replaceAll("&at;", "@");
     templateWithAt = templateWithAt.replaceAll("&at;", "A");
-    templateArguments = arguments;
 
     // insert the template in the document
-    document.insert(template, row, column);
+    document.insert(newTemplate, row, column);
 
-    // where to put the caret?
-    {
-      int cursorIndex = templateWithAt.lastIndexOf("@|@");
-      if (cursorIndex != -1) {
-        templateWithAt = templateWithAt.substring(0, cursorIndex) + templateWithAt.substring(cursorIndex + 1);
-      } else {
-        cursorIndex = templateWithAt.length();
-      }
+		// set the caret position and remove it from template
+	  Pair<String, SCEDocumentPosition> pair = getCaretPositionInTemplate(templateWithAt, row, column);
+		templateWithAt = pair.first;
 
-      // get the position in the document
-      int caret_row = row;
-      int caret_column = column;
+	  if (arguments.size() == 0) {
+		  caret.moveTo(pair.second);
+		  document.clearSelection();
+		  return;
+	  }
 
-      for (int char_nr = 0; char_nr < cursorIndex; char_nr++) {
-        char character = templateWithAt.charAt(char_nr);
-        if (character != '@') caret_column++;
-        if (character == '\n') {
-          caret_row++;
-          caret_column = 0;
-        }
-      }
-
-      // set the caret position
-      templateCaretPosition = document.createDocumentPosition(caret_row, caret_column);
-    }
+	  template = newTemplate;
+	  templateArguments = arguments;
+	  templateCaretPosition = pair.second;
 
     // initialize the argument values and occurrences
     for (CHCommandArgument argument : arguments) {
@@ -287,7 +275,31 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     setVisible(false);
   }
 
-  /**
+	private Pair<String, SCEDocumentPosition> getCaretPositionInTemplate(String templateWithAt, int row, int column) {
+		int cursorIndex = templateWithAt.lastIndexOf("@|@");
+		if (cursorIndex != -1) {
+		  templateWithAt = templateWithAt.substring(0, cursorIndex) + templateWithAt.substring(cursorIndex + 1);
+		} else {
+		  cursorIndex = templateWithAt.length();
+		}
+
+		// get the position in the document
+		int caret_row = row;
+		int caret_column = column;
+
+		for (int char_nr = 0; char_nr < cursorIndex; char_nr++) {
+		  char character = templateWithAt.charAt(char_nr);
+		  if (character != '@') caret_column++;
+		  if (character == '\n') {
+		    caret_row++;
+		    caret_column = 0;
+		  }
+		}
+
+		return new Pair<String,SCEDocumentPosition>(templateWithAt, document.createDocumentPosition(caret_row, caret_column));
+	}
+
+	/**
    * Edit the template argument with the given number.
    *
    * @param argument_nr the argument number
@@ -330,7 +342,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
       // set the caret to the end position
       caret.removeSelectionMark();
-      caret.moveTo(templateCaretPosition.getRow(), templateCaretPosition.getColumn());
+      caret.moveTo(templateCaretPosition);
 
       return;
     }
@@ -361,9 +373,9 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     document.setEditRange(start, end);
 
     // select the argument value
-    caret.moveTo(start.getRow(), start.getColumn());
+    caret.moveTo(start);
     caret.setSelectionMark();
-    caret.moveTo(end.getRow(), end.getColumn());
+    caret.moveTo(end);
   }
 
   public void destroy() {
@@ -385,28 +397,6 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 	    callCodeHelperWithCompletion();
 
 	    e.consume();
-    }
-
-    // hide on escape
-    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-      // hide code helper
-      setVisible(false);
-      // end template editing
-      if (template != null) {
-        document.setEditRange(null, null);
-        template = null;
-      }
-    }
-
-    // tab - template editing
-    if ((e.getKeyCode() == KeyEvent.VK_TAB || e.getKeyCode() == KeyEvent.VK_ENTER) && template != null) {
-      if (e.isShiftDown()) {
-        editTemplate(templateArgumentNr - 1);
-      } else {
-        editTemplate(templateArgumentNr + 1);
-      }
-
-      e.consume();
     }
 
     // TODO: move somewhere else
@@ -456,55 +446,82 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
       }
     }
 
-    // continue only if the code helper is visible
-    if (!isVisible()) return;
+    // if the code helper is visible
+    if (isVisible()) {
+			// hide on cursor movement
+			if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
+				setVisible(false);
+			}
 
-    // hide on cursor movement
-    if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-      setVisible(false);
+			// up and down
+			if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
+				int direction = e.getKeyCode() == KeyEvent.VK_UP ? -1 : 1;
+				int index = list.getSelectedIndex() + direction;
+				select(index);
+
+				e.consume();
+			}
+			// page up and down
+			if (e.getKeyCode() == KeyEvent.VK_PAGE_UP || e.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
+				int direction = e.getKeyCode() == KeyEvent.VK_PAGE_UP ? -1 : 1;
+				direction *= list.getLastVisibleIndex() - list.getFirstVisibleIndex();
+				int index = list.getSelectedIndex() + direction;
+				select(index);
+
+				e.consume();
+			}
+			// home
+			if (e.getKeyCode() == KeyEvent.VK_HOME) {
+				select(0);
+				e.consume();
+			}
+			// end
+			if (e.getKeyCode() == KeyEvent.VK_END) {
+				select(list.getModel().getSize() - 1);
+				e.consume();
+			}
+
+			// enter
+			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				if (model.size() == 0) return;
+
+				WordWithPos oldWord = wordPos;
+				setVisible(false);
+
+				// remove the current text and then start the template
+				CHCommand command = (CHCommand) list.getSelectedValue();
+
+				SCECaret caret = pane.getCaret();
+				document.remove(oldWord.getStartPos(), caret);
+				startTemplate(command.getUsage(), command.getArguments(), oldWord.getStartRow(), oldWord.getStartCol());
+
+				e.consume();
+				return;
+			}
     }
 
-    // up and down
-    if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
-      int direction = e.getKeyCode() == KeyEvent.VK_UP ? -1 : 1;
-      int index = list.getSelectedIndex() + direction;
-      select(index);
-
-      e.consume();
-    }
-    // page up and down
-    if (e.getKeyCode() == KeyEvent.VK_PAGE_UP || e.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
-      int direction = e.getKeyCode() == KeyEvent.VK_PAGE_UP ? -1 : 1;
-      direction *= list.getLastVisibleIndex() - list.getFirstVisibleIndex();
-      int index = list.getSelectedIndex() + direction;
-      select(index);
-
-      e.consume();
-    }
-    // home
-    if (e.getKeyCode() == KeyEvent.VK_HOME) {
-      select(0);
-      e.consume();
-    }
-    // end
-    if (e.getKeyCode() == KeyEvent.VK_END) {
-      select(list.getModel().getSize() - 1);
-      e.consume();
+    // hide code helper on escape or close template
+    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+	    if (isVisible()) {
+				// hide code helper
+				setVisible(false);
+	    }
+	    else {
+				// end template editing
+				if (template != null) {
+					document.setEditRange(null, null);
+					template = null;
+				}
+	    }
     }
 
-    // enter
-    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-      if (model.size() == 0) return;
-
-      WordWithPos oldWord = wordPos;
-      setVisible(false);
-
-      // remove the current text and then start the template
-      CHCommand command = (CHCommand) list.getSelectedValue();
-
-      SCECaret caret = pane.getCaret();
-      document.remove(oldWord.getStartPos(), caret);
-      startTemplate(command.getUsage(), command.getArguments(), oldWord.getStartRow(), oldWord.getStartCol());
+    // tab - template editing
+    if ((e.getKeyCode() == KeyEvent.VK_TAB || e.getKeyCode() == KeyEvent.VK_ENTER) && template != null) {
+      if (e.isShiftDown()) {
+        editTemplate(templateArgumentNr - 1);
+      } else {
+        editTemplate(templateArgumentNr + 1);
+      }
 
       e.consume();
     }
