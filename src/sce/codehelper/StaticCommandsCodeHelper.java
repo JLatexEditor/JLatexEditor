@@ -115,8 +115,14 @@ public class StaticCommandsCodeHelper extends PatternHelper {
 		    System.out.println("Error in commands.xml: argument must have a name");
 		    continue;
 		  }
+			String argumentValue = argumentXML.getAttribute("value");
+			if (argumentValue == null) {
+				argumentValue = argumentName;
+			}
+			String argumentCompletionString = argumentXML.getAttribute("completion");
+			boolean argumentCompletion = argumentCompletionString != null && argumentCompletionString.equals("true");
 
-		  // check if the command is optional
+		  // check if the argument is optional
 		  boolean optional = false;
 
 		  String commandUsage = command.getUsage();
@@ -143,7 +149,7 @@ public class StaticCommandsCodeHelper extends PatternHelper {
 			}
 
 		  // create the argument
-		  CHCommandArgument argument = new CHCommandArgument(argumentName, optional, secondOptional);
+		  CHCommandArgument argument = new CHCommandArgument(argumentName, argumentValue, optional, secondOptional, argumentCompletion);
 		  argument.setHint(argumentXML.getAttribute("hint"));
 
 		  // read the suggested values if there are some

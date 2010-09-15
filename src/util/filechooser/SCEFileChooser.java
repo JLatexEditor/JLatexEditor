@@ -24,7 +24,7 @@ public class SCEFileChooser extends JFileChooser {
 												list.requestFocus();
 												if (list.getSelectedIndex() < 0) list.setSelectedIndex(0);
 											}
-	                  } catch (NullPointerException ignored) {
+	                  } catch (Exception ignored) {
 		                  // this is just a workaround for one of the bugs of this component
 	                  }
                   }
