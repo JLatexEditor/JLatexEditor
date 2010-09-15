@@ -13,6 +13,7 @@ public class CHCommandArgument {
   private String name = null;
   private boolean optional = false;
 	private boolean secondOptional = false;
+	private boolean completion;
   // the hint
   private String hint = null;
   // possible values
@@ -28,8 +29,9 @@ public class CHCommandArgument {
    * @param name the name
 	 * @param optional whether the argument is optional
    */
-  public CHCommandArgument(String name, boolean optional) {
+  public CHCommandArgument(String name, String value, boolean optional) {
     this.name = name;
+	  this.value = value;
     this.optional = optional;
   }
 
@@ -40,10 +42,12 @@ public class CHCommandArgument {
 	 * @param optional whether the argument is optional
 	 * @param secondOptional whether the argument is second optional
    */
-	public CHCommandArgument(String name, boolean optional, boolean secondOptional) {
+	public CHCommandArgument(String name, String value, boolean optional, boolean secondOptional, boolean completion) {
 		this.name = name;
+		this.value = value;
 		this.optional = optional;
 		this.secondOptional = secondOptional;
+		this.completion = completion;
 	}
 
 	/**
@@ -71,6 +75,15 @@ public class CHCommandArgument {
 	 */
 	public boolean isSecondOptional() {
 		return secondOptional;
+	}
+
+	/**
+	 * Returns true if the auto completion is activated for this argument.
+	 *
+	 * @return true if the auto completion is activated for this argument
+	 */
+	public boolean isCompletion() {
+		return completion;
 	}
 
 	/**

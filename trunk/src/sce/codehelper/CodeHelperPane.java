@@ -223,7 +223,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     document.insert(newTemplate, row, column);
 
 		// set the caret position and remove it from template
-	  Pair<String, SCEDocumentPosition> pair = getCaretPositionInTemplate(templateWithAt, row, column);
+	  Pair<String, SCEDocumentPosition> pair = getTransformedTemplate(templateWithAt, arguments, row, column);
 		templateWithAt = pair.first;
 
 	  if (arguments.size() == 0) {
@@ -238,7 +238,8 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
     // initialize the argument values and occurrences
     for (CHCommandArgument argument : arguments) {
-      argument.setValue(argument.getName());
+	    //todo
+      //argument.setValue(argument.getName());
 
       // find occurrences
       ArrayList<SCEDocumentRange> occurrences = new ArrayList<SCEDocumentRange>();
@@ -268,6 +269,16 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
       argument.setOccurrences(occurrences);
     }
 
+	  for (CHCommandArgument argument : arguments) {
+		  if (!argument.getName().equals(argument.getValue())) {
+			  SCEDocumentRange range = argument.getOccurrences().get(0);
+			  SCEPosition start = range.getStartPosition().relative(0, 1);
+			  SCEDocumentPosition end = range.getEndPosition();
+			  String value = document.getText(start, end);
+			  document.replace(start, end, argument.getValue());
+		  }
+	  }
+
     // line breaks
     String indentation = spaces.substring(0, column);
     int linebreakPos = -1;
@@ -275,14 +286,14 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
       document.insert(indentation, ++row, 0);
     }
 
-    // start editing with argument number 0
-    editTemplate(0);
-
     // hide code helper
     setVisible(false);
+
+    // start editing with argument number 0
+    editTemplate(0);
   }
 
-	private Pair<String, SCEDocumentPosition> getCaretPositionInTemplate(String templateWithAt, int row, int column) {
+	private Pair<String, SCEDocumentPosition> getTransformedTemplate(String templateWithAt, ArrayList<CHCommandArgument> arguments, int row, int column) {
 		int cursorIndex = templateWithAt.lastIndexOf("@|@");
 		if (cursorIndex != -1) {
 		  templateWithAt = templateWithAt.substring(0, cursorIndex) + templateWithAt.substring(cursorIndex + 1);
@@ -383,6 +394,11 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     caret.moveTo(start);
     caret.setSelectionMark();
     caret.moveTo(end);
+
+	  if (argument.isCompletion()) {
+		  System.out.println("CodeHelperPane.editTemplate");
+		  callCodeHelperWithCompletion();
+	  }
   }
 
   public void destroy() {

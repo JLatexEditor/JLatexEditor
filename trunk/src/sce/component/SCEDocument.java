@@ -681,7 +681,7 @@ public class SCEDocument {
     insert(text, startRow, startColumn);
   }
 
-  public void replace(SCEDocumentPosition start, SCEDocumentPosition end, String text) {
+  public void replace(SCEPosition start, SCEPosition end, String text) {
     int startRow = start.getRow();
     int startColumn = start.getColumn();
     remove(start, end);
