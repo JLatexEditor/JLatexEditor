@@ -144,7 +144,7 @@
   <command name="\cite" usage="\cite[@text@]{@key_list@}"
            hint="in-text citation to the references associated with the keys in key_list">
     <argument name="text"/>
-    <argument name="key_list" hint="list of citation keys"/>
+    <argument name="key_list" value="" completion="true" hint="list of citation keys"/>
   </command>
 
   <command name="\cleardoublepage" hint="ends the current page and causes all figures and tables to be printed">
@@ -586,8 +586,7 @@
 
   <command name="\ref" usage="\ref{@key@}"
            hint="produces the number of the sectional unit, equation number, ... of the corresponding \label command">
-    <argument name="key" hint="corresponding label">
-    </argument>
+    <argument name="key" value="" completion="true" hint="corresponding label"/>
   </command>
 
   <command name="\right" hint="')' (math mode)">
