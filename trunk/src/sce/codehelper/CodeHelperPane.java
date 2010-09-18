@@ -353,10 +353,8 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 	  }
 
     if (noArgument || argument_nr >= templateArguments.size()) {
-      templateArgumentNr = -1;
       // end template editing
-      document.setEditRange(null, null);
-      template = null;
+	    endTemplateEditing(false);
 
       // set the caret to the end position
       caret.removeSelectionMark();
@@ -388,7 +386,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     SCEDocumentRange argumentRange = argument.getOccurrences().get(0);
     SCEDocumentPosition start = new SCEDocumentPosition(argumentRange.getStartPosition().getRow(), argumentRange.getStartPosition().getColumn() + 1);
     SCEDocumentPosition end = argumentRange.getEndPosition();
-    document.setEditRange(start, end);
+    document.setEditRange(start, end, false);
 
     // select the argument value
     caret.moveTo(start);
@@ -396,12 +394,17 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     caret.moveTo(end);
 
 	  if (argument.isCompletion()) {
-		  System.out.println("CodeHelperPane.editTemplate");
 		  callCodeHelperWithCompletion();
 	  }
   }
 
-  public void destroy() {
+	public void endTemplateEditing(boolean undo) {
+		templateArgumentNr = -1;
+		document.setEditRange(null, null, undo);
+		template = null;
+	}
+
+	public void destroy() {
     pane.removeKeyListener(this);
     document.removeSCEDocumentListener(this);
   }
@@ -532,7 +535,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 	    else {
 				// end template editing
 				if (template != null) {
-					document.setEditRange(null, null);
+					document.setEditRange(null, null, false);
 					template = null;
 				}
 	    }

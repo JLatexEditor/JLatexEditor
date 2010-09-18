@@ -448,6 +448,13 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     return false;
   }
 
+	/**
+	 * Removes the edit range without logging it in the undo manager.
+	 */
+	public void removeEditRangeSilently() {
+		ui.codeHelperPane.endTemplateEditing(true);
+	}
+
   /**
    * Returns the popup for code assistants.
    *

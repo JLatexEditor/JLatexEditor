@@ -88,6 +88,15 @@ public class SCEDocumentEvent {
     return (eventType & EVENT_REMOVE) != 0;
   }
 
+	/**
+	 * Check if the event is an edit range event.
+	 *
+	 * @return true, if edit range event
+	 */
+	public boolean isEditRange() {
+	  return (eventType & EVENT_EDITRANGE) != 0;
+	}
+
   /**
    * Sets the EVENT_REMOVE flag of event type.
    */

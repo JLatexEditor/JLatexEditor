@@ -327,9 +327,9 @@ public class SCEDocument {
    * @param start the edit range start
    * @param end   the edit range end
    */
-  public void setEditRange(SCEDocumentPosition start, SCEDocumentPosition end) {
+  public void setEditRange(SCEDocumentPosition start, SCEDocumentPosition end, boolean undo) {
     SCEDocumentEvent event = new SCEDocumentEvent();
-    event.setEventType(SCEDocumentEvent.EVENT_EDITRANGE);
+    event.setEventType(SCEDocumentEvent.EVENT_EDITRANGE | (undo ? SCEDocumentEvent.EVENT_UNDO : 0));
 
     if (start == null || end == null) {
       editRangeStart = null;
