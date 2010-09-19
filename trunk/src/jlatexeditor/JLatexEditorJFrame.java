@@ -238,6 +238,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     vcMenu.setMnemonic('E');
     menuBar.add(windowMenu);
 
+    windowMenu.add(createMenuItem("Set as master document", "set master document", 'm'));
+    windowMenu.addSeparator();
     windowMenu.add(createMenuItem("Next tab", "next tab", 'n'));
     windowMenu.add(createMenuItem("Previous tab", "previous tab", 'p'));
 
@@ -1063,6 +1065,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 				}
 				statusBar.showMessage("SVN commit", "<html>SVN commit:<br><br>" + result.second + "</html>");
 			}
+		} else if (action.equals("set master document")) {
+			setMasterDocument(getActiveEditor().getResource());
 		} else if (action.equals("next tab")) {
 			// select the right tab
 			int index = tabbedPane.getSelectedIndex() + 1;
@@ -1237,6 +1241,18 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       }
     }
   }
+
+	private void setMasterDocument(Doc doc) {
+		int mainEditorTab = getTab(doc);
+		mainEditor = getEditor(mainEditorTab);
+		for (int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
+		  tabbedPane.getTabComponentAt(tab).setForeground(Color.BLACK);
+		}
+		tabbedPane.getTabComponentAt(mainEditorTab).setForeground(Color.RED);
+
+		backgroundParser.parse();
+		statusBar.checkForUpdates();
+	}
 
 	public void searchChanged(SCESearch search) {
 		lastSearch = search;
@@ -1452,14 +1468,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     public void mouseClicked(MouseEvent e) {
       tabbedPane.setSelectedIndex(getTab(doc));
       if (e.getClickCount() >= 2) {
-        mainEditor = getEditor(getTab(doc));
-        for (int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
-          tabbedPane.getTabComponentAt(tab).setForeground(Color.BLACK);
-        }
-        label.setForeground(Color.RED);
-
-        backgroundParser.parse();
-        statusBar.checkForUpdates();
+	      setMasterDocument(doc);
       }
       if (closeIcon.contains(e.getX() - closeIcon.getX(), e.getY() - closeIcon.getY())) {
         closeTab(getTab(doc));
