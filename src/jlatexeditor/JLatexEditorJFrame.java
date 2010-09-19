@@ -242,6 +242,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     windowMenu.addSeparator();
     windowMenu.add(createMenuItem("Next tab", "next tab", 'n'));
     windowMenu.add(createMenuItem("Previous tab", "previous tab", 'p'));
+    windowMenu.add(createMenuItem("Move tab to the left", "move tab to left", 'l'));
+    windowMenu.add(createMenuItem("Move tab to the right", "move tab to right", 'r'));
 
     JMenu settingsMenu = new JMenu("Settings");
     settingsMenu.setMnemonic('S');
@@ -1077,6 +1079,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 			int index = tabbedPane.getSelectedIndex() - 1;
 			if (index < 0) index = tabbedPane.getTabCount() - 1;
 			tabbedPane.setSelectedIndex(index);
+		} else if (action.equals("move tab to left")) {
+			moveTabToLeft();
+		} else if (action.equals("move tab to right")) {
+			moveTabToRight();
 		} else if (action.equals("font")) {
 			SCEFontWindow fontDialog = new SCEFontWindow(GProperties.getEditorFont().getFamily(), GProperties.getEditorFont().getSize(), this);
 			fontDialog.setVisible(true);
@@ -1252,6 +1258,36 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 		backgroundParser.parse();
 		statusBar.checkForUpdates();
+	}
+
+	private void moveTabToLeft() {
+		Component focusOwner = this.getFocusOwner();
+		int tab = tabbedPane.getSelectedIndex();
+		if (tab <= 0) return;
+		SourceCodeEditor<Doc> editor = getEditor(tab);
+		Component tabComponent = tabbedPane.getTabComponentAt(tab);
+		tabbedPane.removeChangeListener(this);
+		tabbedPane.remove(tab);
+		tabbedPane.insertTab(editor.getResource().getName(), null, editor, null, tab-1);
+		tabbedPane.setTabComponentAt(tab-1, tabComponent);
+		tabbedPane.setSelectedIndex(tab-1);
+		tabbedPane.addChangeListener(this);
+		focusOwner.requestFocus();
+	}
+
+	private void moveTabToRight() {
+		Component focusOwner = this.getFocusOwner();
+		int tab = tabbedPane.getSelectedIndex();
+		if (tab >= tabbedPane.getTabCount()-1) return;
+		SourceCodeEditor<Doc> editor = getEditor(tab);
+		Component tabComponent = tabbedPane.getTabComponentAt(tab);
+		tabbedPane.removeChangeListener(this);
+		tabbedPane.remove(tab);
+		tabbedPane.insertTab(editor.getResource().getName(), null, editor, null, tab+1);
+		tabbedPane.setTabComponentAt(tab+1, tabComponent);
+		tabbedPane.setSelectedIndex(tab+1);
+		tabbedPane.addChangeListener(this);
+		focusOwner.requestFocus();
 	}
 
 	public void searchChanged(SCESearch search) {

@@ -174,6 +174,8 @@ public class GProperties {
 	  properties.addEntry(new Def("shortcut.set master document", SHORTCUT, ""));
     properties.addEntry(new Def("shortcut.next tab", SHORTCUT, "alt RIGHT"));
     properties.addEntry(new Def("shortcut.previous tab", SHORTCUT, "alt LEFT"));
+	  properties.addEntry(new Def("shortcut.move tab to left", SHORTCUT, "control alt LEFT"));
+	  properties.addEntry(new Def("shortcut.move tab to right", SHORTCUT, "control alt RIGHT"));
     properties.addEntry(new Comment(" Initiate update"));
     properties.addEntry(new Def("shortcut.update", SHORTCUT, ""));
     properties.addEntry(new Comment(" About screen"));
