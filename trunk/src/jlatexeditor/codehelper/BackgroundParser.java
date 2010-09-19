@@ -65,7 +65,17 @@ public class BackgroundParser extends Thread {
 
   public void run() {
     while (true) {
-      SourceCodeEditor<Doc> editor = jle.getMainEditor();
+	    SourceCodeEditor<Doc> editor;
+	    try {
+        editor = jle.getMainEditor();
+	    } catch (ArrayIndexOutOfBoundsException e) {
+		    try {
+			    sleep(1000);
+		    } catch (InterruptedException e2) {
+			    return;
+		    }
+		    continue;
+	    }
       AbstractResource resource = editor.getResource();
       if (!(resource instanceof Doc.FileDoc)) continue;
 

@@ -147,7 +147,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     if (e.isConsumed()) return;
 
     // is control down?
-    if (e.isControlDown()) {
+    if (e.isControlDown() && !e.isAltDown()) {
       keyControlDown(e);
       if (!isModifierKey(e.getKeyCode())) return;
     }
