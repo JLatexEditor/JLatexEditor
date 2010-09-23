@@ -231,19 +231,20 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     vcMenu.setMnemonic('o');
     menuBar.add(vcMenu);
 
-    vcMenu.add(createMenuItem("SVN update", "svn update", 'u'));
-    vcMenu.add(createMenuItem("SVN commit", "svn commit", 'c'));
+    vcMenu.add(createMenuItem("SVN Update", "svn update", 'u'));
+    vcMenu.add(createMenuItem("SVN Commit", "svn commit", 'c'));
 
     JMenu windowMenu = new JMenu("Editors");
     vcMenu.setMnemonic('E');
     menuBar.add(windowMenu);
 
-    windowMenu.add(createMenuItem("Set as master document", "set master document", 'm'));
+    windowMenu.add(createMenuItem("Set as Master Document", "set master document", 'm'));
     windowMenu.addSeparator();
-    windowMenu.add(createMenuItem("Next tab", "next tab", 'n'));
-    windowMenu.add(createMenuItem("Previous tab", "previous tab", 'p'));
-    windowMenu.add(createMenuItem("Move tab to the left", "move tab to left", 'l'));
-    windowMenu.add(createMenuItem("Move tab to the right", "move tab to right", 'r'));
+    windowMenu.add(createMenuItem("Select Next Tab", "select next tab", 'n'));
+    windowMenu.add(createMenuItem("Select Previous tab", "select previous tab", 'p'));
+	  windowMenu.addSeparator();
+    windowMenu.add(createMenuItem("Move Tab Left", "move tab left", 'l'));
+    windowMenu.add(createMenuItem("Move Tab Right", "move tab right", 'r'));
 
     JMenu settingsMenu = new JMenu("Settings");
     settingsMenu.setMnemonic('S');
@@ -1069,19 +1070,19 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 			}
 		} else if (action.equals("set master document")) {
 			setMasterDocument(getActiveEditor().getResource());
-		} else if (action.equals("next tab")) {
+		} else if (action.equals("select next tab")) {
 			// select the right tab
 			int index = tabbedPane.getSelectedIndex() + 1;
 			if (index >= tabbedPane.getTabCount()) index = 0;
 			tabbedPane.setSelectedIndex(index);
-		} else if (action.equals("previous tab")) {
+		} else if (action.equals("select previous tab")) {
 			// select the left tab
 			int index = tabbedPane.getSelectedIndex() - 1;
 			if (index < 0) index = tabbedPane.getTabCount() - 1;
 			tabbedPane.setSelectedIndex(index);
-		} else if (action.equals("move tab to left")) {
+		} else if (action.equals("move tab left")) {
 			moveTabToLeft();
-		} else if (action.equals("move tab to right")) {
+		} else if (action.equals("move tab right")) {
 			moveTabToRight();
 		} else if (action.equals("font")) {
 			SCEFontWindow fontDialog = new SCEFontWindow(GProperties.getEditorFont().getFamily(), GProperties.getEditorFont().getSize(), this);

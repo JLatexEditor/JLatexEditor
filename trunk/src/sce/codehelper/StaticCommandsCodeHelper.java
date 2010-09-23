@@ -66,7 +66,7 @@ public class StaticCommandsCodeHelper extends PatternHelper {
       } else
 
       if (commandXML.getName().equals("environment")) {
-	      String envName = commandXML.getAttribute("name");
+	      String envName = decode(commandXML.getAttribute("name"));
 	      if (envName == null) {
 	        System.out.println("Error in commands.xml: environment must have a name");
 		      continue;
@@ -91,7 +91,7 @@ public class StaticCommandsCodeHelper extends PatternHelper {
   }
 
 	private CHCommand getCommand(XMLElement commandXML) {
-		String commandName = commandXML.getAttribute("name");
+		String commandName = decode(commandXML.getAttribute("name"));
 		if (commandName == null) {
 		  System.out.println("Error in commands.xml: command must have a name");
 			return null;
@@ -99,10 +99,8 @@ public class StaticCommandsCodeHelper extends PatternHelper {
 
 		// create the command and set usage + hint
 		CHCommand command = new CHCommand(commandName);
-		String usage = commandXML.getAttribute("usage");
-		if (usage != null) usage = usage.replaceAll("&nl;", "\n");
-		command.setUsage(usage);
-		command.setHint(commandXML.getAttribute("hint"));
+		command.setUsage(decode(commandXML.getAttribute("usage")));
+		command.setHint(decode(commandXML.getAttribute("hint")));
 
 		// read the arguments
 		for (XMLElement argumentXML : commandXML.getChildElements()) {
@@ -110,16 +108,16 @@ public class StaticCommandsCodeHelper extends PatternHelper {
 		    System.out.println("Error in commands.xml: expected element 'argument' - " + argumentXML.getName());
 		    continue;
 		  }
-		  String argumentName = argumentXML.getAttribute("name");
+		  String argumentName = decode(argumentXML.getAttribute("name"));
 		  if (argumentName == null) {
 		    System.out.println("Error in commands.xml: argument must have a name");
 		    continue;
 		  }
-			String argumentValue = argumentXML.getAttribute("value");
+			String argumentValue = decode(argumentXML.getAttribute("value"));
 			if (argumentValue == null) {
 				argumentValue = argumentName;
 			}
-			String argumentCompletionString = argumentXML.getAttribute("completion");
+			String argumentCompletionString = decode(argumentXML.getAttribute("completion"));
 			boolean argumentCompletion = argumentCompletionString != null && argumentCompletionString.equals("true");
 
 		  // check if the argument is optional
@@ -150,11 +148,11 @@ public class StaticCommandsCodeHelper extends PatternHelper {
 
 		  // create the argument
 		  CHCommandArgument argument = new CHCommandArgument(argumentName, argumentValue, optional, secondOptional, argumentCompletion);
-		  argument.setHint(argumentXML.getAttribute("hint"));
+		  argument.setHint(decode(argumentXML.getAttribute("hint")));
 
 		  // read the suggested values if there are some
 		  for (XMLElement valueXML : argumentXML.getChildElements()) {
-		    argument.addValue(valueXML.getAttribute("value"));
+		    argument.addValue(decode(valueXML.getAttribute("value")));
 		  }
 
 		  // add the argument to the command
@@ -225,4 +223,9 @@ public class StaticCommandsCodeHelper extends PatternHelper {
 
     return completion;
   }
+
+	private String decode(String htmlString) {
+		if (htmlString == null) return null;
+		return htmlString.replaceAll("&nbsp;", " ").replaceAll("&lt;", "<").replaceAll("&gt;", ">").replaceAll("&nl;", "\n").replaceAll("&quot;", "\"").replaceAll("&amp;", "&");
+	}
 }

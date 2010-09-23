@@ -1,3 +1,26 @@
+<!DOCTYPE commandList [
+		<!ELEMENT commandList (environment|command)+>
+
+		<!ELEMENT environment (command)*>
+		<!ATTLIST environment name CDATA #REQUIRED>
+
+		<!ELEMENT command (argument)*>
+		<!ATTLIST command name CDATA #REQUIRED
+				              usage CDATA #IMPLIED
+				              hint CDATA #IMPLIED>
+
+		<!ELEMENT argument (argumentValue)*>
+		<!ATTLIST argument name CDATA #REQUIRED
+		                   hint CDATA #IMPLIED
+		                   value CDATA #IMPLIED
+		                   completion CDATA #IMPLIED>
+
+		<!ELEMENT argumentValue EMPTY>
+		<!ATTLIST argumentValue value CDATA #REQUIRED
+		                        hint CDATA #IMPLIED>
+
+		<!ENTITY nl "@newline@">
+]>
 <commandList>
   <command name="\ " hint="force ordinary space"/>
   <command name="\@" hint="following period ends sentence"/>
@@ -955,7 +978,7 @@
     </command>
   </environment>
 
-  <environment name="array & table">
+	<environment name="array &amp; table">
     <command name="\multicolumn" usage="\multicolumn{@cols@}{@pos@}{@text@}"
              hint="used to make an entry that spans several columns">
       <argument name="cols" hint="the number of columns to span">
