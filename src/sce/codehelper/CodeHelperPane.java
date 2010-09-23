@@ -226,7 +226,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 	  Pair<String, SCEDocumentPosition> pair = getTransformedTemplate(templateWithAt, arguments, row, column);
 		templateWithAt = pair.first;
 
-	  if (arguments.size() == 0) {
+	  if (arguments.size() == 0 && !templateWithAt.contains("\n")) {
 		  caret.moveTo(pair.second);
 		  document.clearSelection();
 		  return;

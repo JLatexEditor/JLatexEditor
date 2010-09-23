@@ -18,7 +18,9 @@
   </command>
   <command name="tikz" usage="\begin{tikzpicture}&nl;  @|@&nl;\end{tikzpicture}" hint="tikz picture environment">
   </command>
-  <command name="fig" usage="\begin{figure}&nl;  @|@&nl;\end{figure}" hint="figure environment">
+  <command name="fig" usage="\begin{figure}&nl;  @|@&nl;  \caption{@caption@}&nl;  \label{fig:@label@}&nl;\end{figure}" hint="figure environment">
+	  <argument name="caption"/>
+	  <argument name="label"/>
   </command>
   <command name="center" usage="\begin{center}&nl;  @|@&nl;\end{center}" hint="center environment">
   </command>
