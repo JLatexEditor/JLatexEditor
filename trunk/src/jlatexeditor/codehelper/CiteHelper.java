@@ -10,7 +10,7 @@ public class CiteHelper extends PatternHelper {
 
   public CiteHelper(BackgroundParser backgroundParser) {
     this.backgroundParser = backgroundParser;
-    pattern = new PatternPair("\\\\cite\\{([^{},]+,)*([^{},]*)");
+    pattern = new PatternPair("\\\\cite(?:\\[.*\\])?\\{([^{},]+,)*([^{},]*)");
   }
 
   @Override
