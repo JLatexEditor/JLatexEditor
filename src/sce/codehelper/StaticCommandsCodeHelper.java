@@ -150,6 +150,13 @@ public class StaticCommandsCodeHelper extends PatternHelper {
 		  CHCommandArgument argument = new CHCommandArgument(argumentName, argumentValue, optional, secondOptional, argumentCompletion);
 		  argument.setHint(decode(argumentXML.getAttribute("hint")));
 
+			String argumentValues = decode(argumentXML.getAttribute("values"));
+			if (argumentValues != null) {
+				for (String value : argumentValues.split("\\|")) {
+					argument.addValue(value);
+				}
+			}
+
 		  // read the suggested values if there are some
 		  for (XMLElement valueXML : argumentXML.getChildElements()) {
 		    argument.addValue(decode(valueXML.getAttribute("value")));

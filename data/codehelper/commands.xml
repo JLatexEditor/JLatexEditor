@@ -13,6 +13,7 @@
 		<!ATTLIST argument name CDATA #REQUIRED
 		                   hint CDATA #IMPLIED
 		                   value CDATA #IMPLIED
+		                   values CDATA #IMPLIED
 		                   completion CDATA #IMPLIED>
 
 		<!ELEMENT argumentValue EMPTY>
@@ -130,6 +131,14 @@
     <argument name="cite_key"
               hint="mnemonic consisting of any sequence of letters, numbers, and punctuation symbols not containing a comma"/>
   </command>
+
+	<command name="\bibliography" usage="\bibliography{@file@}" hint="set bibliography file">
+		<argument name="file" value="" completion="true" hint="filename of the bibliography file"/>
+	</command>
+
+	<command name="\bibliographystyle" usage="\bibliographystyle{@style@}" hint="sets the bibliography style">
+		<argument name="style" value="" values="alpha|abbrv|plain|unsrt" hint="bibliography style"/>
+	</command>
 
   <command name="\bigskip" hint="equivalent to \vspace{\bigskipamount}">
   </command>
