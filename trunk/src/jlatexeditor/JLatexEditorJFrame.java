@@ -61,7 +61,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       version = StreamUtils.readFile("version.txt");
 	    updateDisabled = false;
 
-	    version = StreamUtils.readFile("updateDisabled.txt");
+	    StreamUtils.readFile("updateDisabled.txt");
 	    updateDisabled = true;
     } catch (IOException ignored) {
     }
