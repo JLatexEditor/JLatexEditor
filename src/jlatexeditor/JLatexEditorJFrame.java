@@ -53,13 +53,16 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private ArrayList<String> recentFiles = new ArrayList<String>();
 
   private static String version = "*Bleeding Edge*";
-  private static boolean devVersion = true;
+  private static boolean updateDisabled = true;
   private static String windowTitleSuffix;
 
   static {
     try {
       version = StreamUtils.readFile("version.txt");
-      devVersion = false;
+	    updateDisabled = false;
+
+	    version = StreamUtils.readFile("updateDisabled.txt");
+	    updateDisabled = true;
     } catch (IOException ignored) {
     }
     windowTitleSuffix = "JLatexEditor " + version;
@@ -186,6 +189,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     fileMenu.add(createMenuItem("Save", "save", 'S'));
     fileMenu.add(createMenuItem("Save As...", "save as", 'A'));
     fileMenu.add(createMenuItem("Close", "close", 'C'));
+    fileMenu.addSeparator();
     fileMenu.add(createMenuItem("Exit", "exit", 'E'));
 
     JMenu editMenu = new JMenu("Edit");
@@ -260,7 +264,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     helpMenu.addSeparator();
 
     JMenuItem updateMenuItem = createMenuItem("Check for update", "update", 'u');
-    if (devVersion) updateMenuItem.setVisible(false);
+    if (updateDisabled) updateMenuItem.setVisible(false);
     helpMenu.add(updateMenuItem);
     helpMenu.add(createMenuItem("About", "about", 'A'));
 
@@ -307,7 +311,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     modificationTimer.start();
 
     // search for updates in the background
-    if (!devVersion) {
+    if (!updateDisabled) {
       new Thread() {
         public void run() {
           checkForUpdates(true);
