@@ -3,6 +3,8 @@
 <project name="JLatexEditor" default="runJLatexEditor" basedir=".">
   <!-- Update if needed. -->
   <property name="jle.version" value="0.1"/>
+	<property name="program.name" value="${ant.project.name}"/>
+	<property name="program.cname" value="jlatexeditor"/>
   <property name="program.jar" value="${ant.project.name}.jar"/>
 
   <!-- Locations -->
@@ -22,6 +24,32 @@
       <include name="*.jar"/>
     </fileset>
   </path>
+
+  <path id="ant-deb.classpath">
+    <fileset dir="dist-resources/linux/deb-libs" includes="*.jar"/>
+  </path>
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  |
+  |  Task definitions
+  |
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <!-- Creates a linux desktopEntry-->
+  <taskdef name="desktopEntry"
+           classname="com.googlecode.ant_deb_task.DesktopEntry"
+           classpathref="ant-deb.classpath"/>
+
+  <!-- Creates an Ubuntu package-->
+  <taskdef name="deb"
+           classname="com.googlecode.ant_deb_task.Deb"
+           classpathref="ant-deb.classpath"/>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	|
+	|  Normal targets
+	|
+	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <!-- Run application. -->
   <target name="runJLatexEditor" depends="compile">
@@ -94,7 +122,7 @@
   </target>
 
   <!-- Build all files needed for deployment. -->
-  <target name="create_release" depends="clean,jar">
+  <target name="create_release" depends="clean,jar,dist-linux-deb">
     <mkdir dir="${releases}"/>
 
     <exec executable="scripts/create_release">
@@ -108,4 +136,98 @@
       <arg value="JLatexEditor-${jle.version}.${build.number}"/>
     </exec>
   </target>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	|
+	|  OS dependent targets
+	|
+	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<property name="runtime.dir" value="${build}/runtime"/>
+	<property name="default.runtime.dir" value="${runtime.dir}/default"/>
+
+	<property name="win.runtime.dir" value="${runtime.dir}/win"/>
+	<property name="linux.runtime.dir" value="${runtime.dir}/linux"/>
+
+	<!-- Creates the desktop entry file for Linux platforms -->
+	<target name="desktop-entry">
+		<mkdir dir="${linux.runtime.dir}"/>
+		<desktopEntry
+			toFile="${linux.runtime.dir}/${program.cname}.desktop"
+			name="${program.name}"
+			icon="images/icon_128.png"
+			exec="${program.cname}.sh"
+			tryExec="${program.cname}.sh"
+			categories="Office;"
+			type="Application"
+		>
+			<name lang="de" value="${program.name}"/>
+			<genericname value="Intelligent Latex Editor"/>
+			<genericname lang="de" value="Intelligenter Latex-Editor"/>
+			<comment value="Intelligent and configurable Latex Editor - written in Java"/>
+			<comment lang="de" value="Intelligenter und anpassbarer Latex-Editor - geschrieben in Java"/>
+		</desktopEntry>
+	</target>
+
+	<!-- Creates the desktop entry file for Debian/Ubuntu platform -->
+	<target name="desktop-entry-deb">
+		<mkdir dir="${linux.runtime.dir}"/>
+		<desktopEntry
+			toFile="${linux.runtime.dir}/${program.cname}.desktop"
+			name="${program.name}"
+			icon="/usr/share/${program.cname}/images/icon_128.png"
+			exec="${program.cname}"
+			categories="Office;"
+			type="Application"
+		>
+			<name lang="de" value="${program.name}"/>
+			<genericname value="Intelligent LaTeX Editor"/>
+			<genericname lang="de" value="Intelligenter LaTeX-Editor"/>
+			<comment value="Intelligent and configurable LaTeX Editor - written in Java"/>
+			<comment lang="de" value="Intelligenter und anpassbarer LaTeX-Editor - geschrieben in Java"/>
+		</desktopEntry>
+	</target>
+
+	<target name="dist-linux-deb" depends="jar, runtime-linux, desktop-entry-deb" description="Creates binaries for Debian platforms">
+		<mkdir dir="${releases}"/>
+
+		<echo message="${jle.version}.${build.number}"/>
+		<deb
+				todir="${releases}"
+				package="${program.cname}"
+				section="utils"
+				depends="sun-java6-jre | openjdk-6-jre | sun-java7-jre | openjdk-7-jre | default-jre"
+				recommends="sun-java6-jre">
+
+			<version upstream="${jle.version}.${build.number}"/>
+			<maintainer name="Stefan Endrullis" email="stefan@endrullis.de"/>
+
+			<!-- do not indent the description, otherwise the indent will be visible in the package manager and other tools -->
+			<description synopsis="Intelligent LaTeX Editor">Intelligent and Configurable LaTeX Editor - written in Java.</description>
+
+			<tarfileset dir="${linux.runtime.dir}" prefix="usr/share/${program.cname}">
+				<include name="images/**"/>
+				<exclude name="${program.cname}"/>
+				<exclude name="${program.cname}.sh"/>
+				<exclude name="${program.cname}.desktop"/>
+				<include name="*"/>
+			</tarfileset>
+			<tarfileset dir="${linux.runtime.dir}" prefix="usr/share/${program.cname}" filemode="755" includes="${program.cname}.sh" />
+			<tarfileset dir="${linux.runtime.dir}" prefix="usr/share/applications" includes="${program.cname}.desktop"/>
+			<tarfileset dir="${linux.runtime.dir}" prefix="usr/bin" filemode="755" includes="${program.cname}" />
+		</deb>
+	</target>
+
+	<target name="runtime-linux">
+		<delete dir="${linux.runtime.dir}"/>
+		<mkdir dir="${linux.runtime.dir}/images"/>
+		<copy todir="${linux.runtime.dir}">
+			<fileset dir="dist-resources/linux/deb"/>
+			<fileset file="dist/JLatexEditor_prepare/JLatexEditor.jar"/>
+		</copy>
+		<copy file="images/icon/5_object_128.png" tofile="${linux.runtime.dir}/images/icon_128.png"/>
+		<echo file="${linux.runtime.dir}/updateDisabled.txt"/>
+		<chmod perm="+x" file="${linux.runtime.dir}/${program.cname}.sh"/>
+		<chmod perm="+x" file="${linux.runtime.dir}/${program.cname}"/>
+	</target>
 </project>

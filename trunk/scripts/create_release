@@ -1,6 +1,7 @@
 #!/bin/bash
 
 programName=JLatexEditor
+programCName=jlatexeditor
 svnRepo=https://endrullis.de/svn/JLatexEditor
 
 version=$1
@@ -30,5 +31,7 @@ for ext in zip tar.gz; do
 	[ -e $programName-latest.$ext ] && rm $programName-latest.$ext
 	ln -s $prefix.$ext $programName-latest.$ext
 done
+[ -e $programCName-latest.deb ] && rm $programCName-latest.deb
+ln -s ${programCName}_$version-1_all.deb $programCName-latest.deb
 
 cd ../..
