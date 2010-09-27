@@ -157,31 +157,24 @@ public class LatexStyles {
     if (styleElement.getAttribute("style").equals("bold,italic") ||
             styleElement.getAttribute("style").equals("italic,bold")) style.put(TextAttribute.FONT, fontBoldItalic);
 
-    XMLElement foreground = styleElement.getChildElement("foreground");
+    String foreground = styleElement.getAttribute("foreground");
     if (foreground != null) {
-      style.put(TextAttribute.FOREGROUND, getColor(foreground.getChildElement("color")));
+      style.put(TextAttribute.FOREGROUND, hex2color(foreground));
     }
 
-    XMLElement background = styleElement.getChildElement("background");
+    String background = styleElement.getAttribute("background");
     if (background != null) {
-      style.put(TextAttribute.BACKGROUND, getColor(background.getChildElement("color")));
+      style.put(TextAttribute.BACKGROUND, hex2color(background));
     }
 
     return style;
   }
 
-  private static Color getColor(XMLElement color) {
-    if (color.getAttribute("rgb") != null) {
-      return new Color(Integer.parseInt(color.getAttribute("rgb"), 16));
-    } else {
-      int r = Integer.parseInt(color.getAttribute("r"));
-      int g = Integer.parseInt(color.getAttribute("g"));
-      int b = Integer.parseInt(color.getAttribute("b"));
-      return new Color(r, g, b);
-    }
-  }
+	private static Color hex2color(String hexColor) {
+		return new Color(Integer.parseInt(hexColor, 16));
+	}
 
-  // (command style, parameter style) pair
+	// (command style, parameter style) pair
   public static class CommandStyle {
     public byte commandStyle;
     public byte parameterStyle;
