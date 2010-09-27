@@ -103,6 +103,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private HashMap<URI, Doc> docMap = new HashMap<URI, Doc>();
 	private File lastDocDir;
 	private SCESearch lastSearch;
+	private LatexCommandCodeHelper commandsCodeHelper = new LatexCommandCodeHelper("(\\\\[a-zA-Z]*)", "data/codehelper/commands.xml");
+	private LatexCommandCodeHelper tabCompletion = new LatexCommandCodeHelper("([a-zA-Z]*)", "data/codehelper/tabCompletion.xml");
 
 	public static void main(String args[]) {
     /*
@@ -442,7 +444,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 			codeHelper.addPatternHelper(new LabelCodeHelper(backgroundParser));
 	  }
     codeHelper.addPatternHelper(new IncludeCodeHelper());
-    codeHelper.addPatternHelper(new LatexCommandCodeHelper("(\\\\[a-zA-Z]*)", "data/codehelper/commands.xml"));
+    codeHelper.addPatternHelper(commandsCodeHelper);
 	  if (backgroundParser != null) {
 	    codeHelper.addPatternHelper(new WordCompletion(backgroundParser));
 	  }
@@ -450,7 +452,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  codeHelper.setAutoCompletionMinLetters(GProperties.getInt("editor.auto_completion.min_number_of_letters"));
 	  codeHelper.setAutoCompletionDelay(GProperties.getInt("editor.auto_completion.delay"));
     scePane.setCodeHelper(codeHelper);
-    scePane.setTabCompletion(new LatexCommandCodeHelper("([a-zA-Z]*)", "data/codehelper/tabCompletion.xml"));
+    scePane.setTabCompletion(tabCompletion);
     scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
 
 	  CombinedCodeAssistant codeAssistant = new CombinedCodeAssistant();
@@ -510,7 +512,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 			codeHelper.addPatternHelper(new BibCodeHelper());
 		}
 		codeHelper.addPatternHelper(new IncludeCodeHelper());
-		codeHelper.addPatternHelper(new LatexCommandCodeHelper("(\\\\[a-zA-Z]*)", "data/codehelper/commands.xml"));
+		codeHelper.addPatternHelper(commandsCodeHelper);
 		if (backgroundParser != null) {
 			codeHelper.addPatternHelper(new WordCompletion(backgroundParser));
 		}
@@ -518,7 +520,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		codeHelper.setAutoCompletionMinLetters(GProperties.getInt("editor.auto_completion.min_number_of_letters"));
 		codeHelper.setAutoCompletionDelay(GProperties.getInt("editor.auto_completion.delay"));
 		scePane.setCodeHelper(codeHelper);
-		scePane.setTabCompletion(new LatexCommandCodeHelper("([a-zA-Z]*)", "data/codehelper/tabCompletion.xml"));
+		scePane.setTabCompletion(tabCompletion);
 		scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
 
 		CombinedCodeAssistant codeAssistant = new CombinedCodeAssistant();
