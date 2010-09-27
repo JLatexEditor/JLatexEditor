@@ -128,6 +128,22 @@ public class Trie<T> {
     return list;
   }
 
+  public List<T> getObjects(String prefix, int count) {
+    // navigate to the trie node that represents the end of the prefix
+    char[] chars = truncate(prefix).toCharArray();
+    Trie<T> t = this;
+    for (char aChar : chars) {
+      t = t.map.get(aChar);
+      if (t == null) {
+        return null;
+      }
+    }
+
+    ArrayList<T> list = new ArrayList<T>();
+    t.addObjects(list, prefix, count);
+    return list;
+  }
+
   private int addStrings(List<String> list, String prefix, int remaining) {
     if (count > 0) {
       list.add(prefix);
@@ -136,6 +152,18 @@ public class Trie<T> {
     for (Map.Entry<Character, Trie<T>> entry : map.entrySet()) {
       if (remaining == 0) break;
       remaining = entry.getValue().addStrings(list, prefix + entry.getKey(), remaining);
+    }
+    return remaining;
+  }
+
+  private int addObjects(List<T> list, String prefix, int remaining) {
+    if (count > 0) {
+      list.add(object);
+      remaining--;
+    }
+    for (Map.Entry<Character, Trie<T>> entry : map.entrySet()) {
+      if (remaining == 0) break;
+      remaining = entry.getValue().addObjects(list, prefix + entry.getKey(), remaining);
     }
     return remaining;
   }

@@ -5,10 +5,12 @@ import my.XML.XMLDocument;
 import my.XML.XMLElement;
 import my.XML.XMLParser;
 import util.StreamUtils;
+import util.Trie;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Provides a code completion with static commands (command templates).
@@ -18,7 +20,7 @@ import java.util.HashMap;
  */
 public class StaticCommandsCodeHelper extends PatternHelper {
   /** The command reference. */
-  protected ArrayList<CHCommand> commands = null;
+  protected Trie<CHCommand> commands = null;
 	/** Maps an environment name to a list of commands. */
 	protected HashMap<String,ArrayList<CHCommand>> environments = new HashMap<String, ArrayList<CHCommand>>();
   /**
@@ -36,7 +38,7 @@ public class StaticCommandsCodeHelper extends PatternHelper {
    * @param filename the filename
    */
   public void readCommands(String filename) {
-    commands = new ArrayList<CHCommand>();
+    commands = new Trie<CHCommand>();
 
     XMLParser xmlParser = new XMLParser();
     XMLDocument commandsDocument;
@@ -62,7 +64,7 @@ public class StaticCommandsCodeHelper extends PatternHelper {
 	      if (command == null) continue;
 
 	      // add the command to the commands list
-	      commands.add(command);
+	      commands.add(command.getName(), command);
       } else
 
       if (commandXML.getName().equals("environment")) {
@@ -87,7 +89,7 @@ public class StaticCommandsCodeHelper extends PatternHelper {
       }
     }
 
-    Collections.sort(commands);
+    //Collections.sort(commands);
   }
 
 	private CHCommand getCommand(XMLElement commandXML) {
@@ -193,11 +195,12 @@ public class StaticCommandsCodeHelper extends PatternHelper {
   }
 
   public Iterable<CHCommand> getCompletions(String prefix) {
-    ArrayList<CHCommand> commandsFiltered = new ArrayList<CHCommand>(commands.size());
-    for (CHCommand command : commands) {
-      if (command.getName().startsWith(prefix)) commandsFiltered.add(command);
-    }
-    return commandsFiltered;
+	  List<CHCommand> objects = commands.getObjects(prefix, 1000);
+	  if (objects != null) {
+	    return objects;
+	  } else {
+		  return new ArrayList<CHCommand>();
+	  }
   }
 
   /**
@@ -207,28 +210,12 @@ public class StaticCommandsCodeHelper extends PatternHelper {
    * @return the completion suggestion (without the prefix)
    */
   public String getMaxCommonPrefix(String prefix) {
-    int prefixLength = prefix.length();
-    String completion = null;
-
-    for (CHCommand command : getCompletions(prefix)) {
-      String commandName = command.getName();
-      if (commandName.startsWith(prefix)) {
-        if (completion == null) {
-          completion = commandName;
-        } else {
-          // find the common characters
-          int commonIndex = prefixLength;
-          int commonLength = Math.min(completion.length(), commandName.length());
-          while (commonIndex < commonLength) {
-            if (completion.charAt(commonIndex) != commandName.charAt(commonIndex)) break;
-            commonIndex++;
-          }
-          completion = completion.substring(0, commonIndex);
-        }
-      }
-    }
-
-    return completion;
+	  String maxCommonPrefix = commands.getMaxCommonPrefix(prefix);
+	  if (maxCommonPrefix.length() < prefix.length()) {
+		  return null;
+	  } else {
+		  return maxCommonPrefix;
+	  }
   }
 
 	private String decode(String htmlString) {
