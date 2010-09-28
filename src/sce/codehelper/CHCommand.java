@@ -11,8 +11,11 @@ public class CHCommand implements Comparable {
   private String name = null;
   // the usage string
   private String usage = null;
+	/** Style of the command. */
+	private String style = null;
   // the hint and arguments
   private String hint = null;
+	/** Arguments. */
   private ArrayList<CHCommandArgument> arguments = new ArrayList<CHCommandArgument>();
 
   /**
@@ -47,7 +50,25 @@ public class CHCommand implements Comparable {
     return usage;
   }
 
-  /**
+	/**
+	 * Returns the command style.
+	 *
+	 * @return command style
+	 */
+	public String getStyle() {
+		return style;
+	}
+
+	/**
+	 * Sets the command style.
+	 *
+	 * @param style command style
+	 */
+	public void setStyle(String style) {
+		this.style = style;
+	}
+
+	/**
    * Sets the usage string of this command.
    *
    * @param usage the usage string

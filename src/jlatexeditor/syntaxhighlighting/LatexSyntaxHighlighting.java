@@ -6,14 +6,18 @@ package jlatexeditor.syntaxhighlighting;
 
 import jlatexeditor.syntaxhighlighting.states.MathMode;
 import jlatexeditor.syntaxhighlighting.states.RootState;
+import sce.codehelper.CHCommand;
+import sce.codehelper.CHCommandArgument;
 import sce.component.*;
 import sce.syntaxhighlighting.ParserState;
 import sce.syntaxhighlighting.ParserStateStack;
 import sce.syntaxhighlighting.SyntaxHighlighting;
 import util.SpellChecker;
+import util.Trie;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,6 +29,7 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
   // text pane and document
   private SCEPane pane = null;
   private SCEDocument document = null;
+	private Trie<CHCommand> commands;
 
   // do we need to parse
   private boolean parseNeeded = false;
@@ -32,10 +37,11 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 
 	private SpellChecker spellChecker;
 
-  public LatexSyntaxHighlighting(SCEPane pane, SpellChecker spellChecker) {
+  public LatexSyntaxHighlighting(SCEPane pane, SpellChecker spellChecker, Trie<CHCommand> commands) {
 	  super("LatexSyntaxHighlighting");
     this.pane = pane;
 	  this.spellChecker = spellChecker;
+	  this.commands = commands;
     document = pane.getDocument();
     document.addSCEDocumentListener(this);
 
@@ -124,7 +130,7 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
    */
   private void parseRow(int row_nr, int rowsCount, SCEDocumentRow rows[]) {
     boolean ready = false;
-    LatexStyles.CommandStyle lastCommandStyle = null;
+	  Iterator<CHCommandArgument> argumentsIterator = null;
 
     while (!ready && row_nr < rowsCount) {
       SCEDocumentRow row = rows[row_nr];
@@ -150,13 +156,15 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
         if (c == '\\') {
           String command = getWord(row, char_nr + 1, true);
 
-          lastCommandStyle = LatexStyles.getCommandStyle(command);
-          // highlight the command
-          byte commandStyle = stateStyles[lastCommandStyle.commandStyle];
-          for (int i = 0; i <= command.length(); i++) {
-            chars[char_nr + i].style = commandStyle;
-          }
-          char_nr += command.length();
+	        // todo: style of command
+	        CHCommand chCommand = commands.get("\\" + command);
+	        if (chCommand != null) {
+		        argumentsIterator = chCommand.getArguments().iterator();
+	        }
+
+	        // highlight the command
+          byte commandStyle = stateStyles[getStyle(chCommand == null ? null : chCommand.getStyle(), LatexStyles.COMMAND)];
+	        char_nr = setStyle(command, commandStyle, chars, char_nr);
 
           continue;
         }
@@ -179,11 +187,31 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
             stateStack.push(state = new MathMode(doubleMath));
           }
 
+	        argumentsIterator = null;
           continue;
         }
 
         // search for '{' and '}'
         if (c == '{') {
+	        String argumentType = getArgumentType(argumentsIterator);
+
+	        if (argumentType != null) {
+		        if (argumentType.equals("title") || argumentType.equals("italic") || argumentType.equals("bold")) {
+			        String param = getStringUpToClosingBracket(row, char_nr + 1);
+
+							// highlight the command
+							byte style = stateStyles[getStyle(argumentType, LatexStyles.TEXT)];
+							char_nr = setStyle(param, style, chars, char_nr);
+		        } else
+		        if (argumentType.equals("file")) {
+			        String param = getStringUpToClosingBracket(row, char_nr + 1);
+
+							// highlight the command
+							byte style = stateStyles[getStyle("file_exists", LatexStyles.TEXT)];
+							char_nr = setStyle(param, style, chars, char_nr);
+		        }
+	        }
+
           sce_char.style = stateStyles[LatexStyles.BRACKET];
           continue;
         }
@@ -257,7 +285,27 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
     }
   }
 
-  /**
+	private String getArgumentType(Iterator<CHCommandArgument> argumentsIterator) {
+		if (argumentsIterator != null && argumentsIterator.hasNext()) {
+			CHCommandArgument argument = argumentsIterator.next();
+			return argument.getType();
+		}
+		return null;
+	}
+
+	private int setStyle(String text, byte style, SCEDocumentChar[] chars, int offset) {
+		for (int i = 0; i <= text.length(); i++) {
+		  chars[offset + i].style = style;
+		}
+		return offset + text.length();
+	}
+
+	private byte getStyle(String st, byte default_) {
+		Byte style = LatexStyles.getStyle(st);
+		return style != null ? style : default_;
+	}
+
+	/**
    * Returns the word found at the given position (after '\').
    *
    * @param row    the row
@@ -320,6 +368,26 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 
     return word;
   }
+
+	private String getStringUpToClosingBracket(SCEDocumentRow row, int offset) {
+		SCEDocumentChar chars[] = row.chars;
+		int end_offset = offset;
+		int level = 1;
+		for (; end_offset < row.length; end_offset++) {
+		  char character = chars[end_offset].character;
+			if (character == '{') {
+				level++;
+			} else
+			if (character == '}') {
+				level--;
+				if (level == 0)
+					break;
+			}
+		}
+
+		SCEString sceCommand = new SCEString(chars, offset, end_offset - offset);
+		return sceCommand.toString();
+	}
 
   // SCEDocumentListener methods
 

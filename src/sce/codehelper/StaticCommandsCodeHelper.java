@@ -102,6 +102,7 @@ public class StaticCommandsCodeHelper extends PatternHelper {
 		// create the command and set usage + hint
 		CHCommand command = new CHCommand(commandName);
 		command.setUsage(decode(commandXML.getAttribute("usage")));
+		command.setStyle(decode(commandXML.getAttribute("style")));
 		command.setHint(decode(commandXML.getAttribute("hint")));
 
 		// read the arguments
@@ -150,6 +151,7 @@ public class StaticCommandsCodeHelper extends PatternHelper {
 
 		  // create the argument
 		  CHCommandArgument argument = new CHCommandArgument(argumentName, argumentValue, optional, secondOptional, argumentCompletion);
+		  argument.setType(decode(argumentXML.getAttribute("type")));
 		  argument.setHint(decode(argumentXML.getAttribute("hint")));
 
 			String argumentValues = decode(argumentXML.getAttribute("values"));

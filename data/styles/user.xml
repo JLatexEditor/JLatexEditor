@@ -1,5 +1,7 @@
 <styles>
   <element name="text" style="plain" foreground="000000"/>
+  <element name="italic" style="italic" foreground="000000"/>
+  <element name="bold" style="bold" foreground="000000"/>
   <element name="command" style="plain" foreground="0000ff"/>
   <element name="comment" style="italic" foreground="808080"/>
   <element name="bracket" style="bold" foreground="2fbf53"/>
@@ -12,6 +14,15 @@
   <element name="section" style="bold" foreground="f00000"/>
   <element name="important_command" style="plain" foreground="f00000"/>
 
+  <element name="title" style="bold" foreground="000000"/>
+
+  <element name="label_exists" style="plain" foreground="800080"/>
+  <element name="label_not_found" style="plain" foreground="ff0000"/>
+
+  <element name="file_exists" style="plain" foreground="800080"/>
+  <element name="file_not_found" style="plain" foreground="ff0000"/>
+
+	<!--
   <special>
     <command name="begin" style="begin"/>
     <command name="end" style="begin"/>
@@ -24,4 +35,5 @@
     <command name="eqref" style="important_command"/>
     <command name="cite" style="important_command"/>
   </special>
+  -->
 </styles>

@@ -1,6 +1,8 @@
 package jlatexeditor.codehelper;
 
+import sce.codehelper.CHCommand;
 import sce.codehelper.StaticCommandsCodeHelper;
+import util.Trie;
 
 /**
  * Code completion for LaTeX.
@@ -14,4 +16,8 @@ public class LatexCommandCodeHelper extends StaticCommandsCodeHelper {
     // collect all commands
     readCommands(commandsXml);
   }
+
+	public Trie<CHCommand> getCommands() {
+		return commands;
+	}
 }
