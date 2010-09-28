@@ -173,7 +173,7 @@ public class BackgroundParser extends Thread {
       commandNames.add(command);
 
       // newcommand
-      if (command.equals("newcommand") || command.equals("renewcommand")) {
+      if (command.equals("newcommand") || command.equals("renewcommand") || command.equals("DeclareRobustCommand")) {
         String name = ParseUtil.parseBalanced(tex, index+1, '}');
         index += 2 + name.length();
         // number of arguments
