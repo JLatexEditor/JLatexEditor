@@ -25,7 +25,10 @@ import java.util.Random;
  * Performance measurement.
  */
 public class Performance {
-  public static void main(String[] args) throws IOException, FileNotFoundException {
+	private static LatexCommandCodeHelper commandsCodeHelper = new LatexCommandCodeHelper("(\\\\[a-zA-Z]*)", "data/codehelper/commands.xml");
+	private static LatexCommandCodeHelper tabCompletion = new LatexCommandCodeHelper("([a-zA-Z]*)", "data/codehelper/tabCompletion.xml");
+
+	public static void main(String[] args) throws IOException, FileNotFoundException {
     File file = new File("./src/jlatexeditor/performance/test.tex");
     SourceCodeEditor editor = new SourceCodeEditor(new Doc.FileDoc(file));
 
@@ -39,11 +42,11 @@ public class Performance {
 	  SpellChecker spellChecker = Aspell.getInstance(GProperties.getAspellLang());
 	  //if (spellChecker == null) throw new Exception("Initialization of the spell check suggester failed!");
 
-    SyntaxHighlighting syntaxHighlighting = new LatexSyntaxHighlighting(pane, spellChecker);
+    SyntaxHighlighting syntaxHighlighting = new LatexSyntaxHighlighting(pane, spellChecker, commandsCodeHelper.getCommands());
     syntaxHighlighting.start();
 
-    pane.setCodeHelper(new LatexCommandCodeHelper("(\\\\[a-zA-Z]*)", "data/codehelper/commands.xml"));
-    pane.setTabCompletion(new LatexCommandCodeHelper("([a-zA-Z]*)", "data/codehelper/tabCompletion.xml"));
+    pane.setCodeHelper(commandsCodeHelper);
+    pane.setTabCompletion(tabCompletion);
     pane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
 
 		if (spellChecker != null) {

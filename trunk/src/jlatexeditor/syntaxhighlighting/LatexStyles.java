@@ -86,6 +86,10 @@ public class LatexStyles {
     return style != null ? style : NORMAL_COMMAND_STYLE;
   }
 
+	public static Byte getStyle(String style) {
+		return name2Id.get(style);
+	}
+
   public static void load() {
     load(styleFile);
   }

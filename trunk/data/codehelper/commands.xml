@@ -7,14 +7,16 @@
 		<!ELEMENT command (argument)*>
 		<!ATTLIST command name CDATA #REQUIRED
 				              usage CDATA #IMPLIED
-				              hint CDATA #IMPLIED>
+				              hint CDATA #IMPLIED
+				              style CDATA #IMPLIED>
 
 		<!ELEMENT argument (argumentValue)*>
 		<!ATTLIST argument name CDATA #REQUIRED
 		                   hint CDATA #IMPLIED
 		                   value CDATA #IMPLIED
 		                   values CDATA #IMPLIED
-		                   completion CDATA #IMPLIED>
+		                   completion CDATA #IMPLIED
+		                   type CDATA #IMPLIED>
 
 		<!ELEMENT argumentValue EMPTY>
 		<!ATTLIST argumentValue value CDATA #REQUIRED
@@ -173,7 +175,7 @@
     <argument name="diameter"/>
   </command>
 
-  <command name="\cite" usage="\cite[@text@]{@key_list@}"
+  <command name="\cite" usage="\cite[@text@]{@key_list@}" style="important_command"
            hint="in-text citation to the references associated with the keys in key_list">
     <argument name="text"/>
     <argument name="key_list" value="" completion="true" hint="list of citation keys"/>
@@ -315,7 +317,7 @@
   </command>
 
   <command name="\input" usage="\input{@file@}" hint="causes the indicated file to be read and processed">
-    <argument name="file" value="" completion="true"/>
+    <argument name="file" type="file" value="" completion="true"/>
   </command>
 
   <command name="\it" usage="{\it @|@}" hint="italics typeface">
@@ -328,7 +330,7 @@
   <command name="\kill" hint="set tab stops without producing text">
   </command>
 
-  <command name="\label" usage="\label{@key@}" hint="assigns to the key the number of the current sectional unit">
+  <command name="\label" usage="\label{@key@}" hint="assigns to the key the number of the current sectional unit" style="important_command">
     <argument name="key"/>
   </command>
 
@@ -548,7 +550,7 @@
   <command name="\par" hint="equivalent to a blank line">
   </command>
 
-  <command name="\paragraph" usage="\paragraph{@title@}" hint="starts a new paragraph in the document structure">
+  <command name="\paragraph" usage="\paragraph{@title@}" hint="starts a new paragraph in the document structure" style="section">
     <argument name="title">
     </argument>
   </command>
@@ -616,9 +618,14 @@
     </argument>
   </command>
 
-  <command name="\ref" usage="\ref{@key@}"
+  <command name="\ref" usage="\ref{@key@}" style="important_command"
            hint="produces the number of the sectional unit, equation number, ... of the corresponding \label command">
-    <argument name="key" value="" completion="true" hint="corresponding label"/>
+    <argument name="key" value="" completion="true" type="label" hint="corresponding label"/>
+  </command>
+
+  <command name="\eqref" usage="\eqref{@key@}" style="important_command"
+           hint="produces the number of the sectional unit, equation number, ... of the corresponding \label command">
+    <argument name="key" value="" completion="true" type="label" hint="corresponding label"/>
   </command>
 
   <command name="\right" hint="')' (math mode)">
@@ -667,9 +674,8 @@
   <command name="\scriptsize" hint="second smallest of 10 typefaces available">
   </command>
 
-  <command name="\section" usage="\section{@title@}" hint="starts a new section in the document structure">
-    <argument name="title">
-    </argument>
+  <command name="\section" usage="\section{@title@}" hint="starts a new section in the document structure" style="section">
+    <argument name="title" type="title"/>
   </command>
 
   <command name="\setcounter" usage="\setcounter{@counter@}{@value@}" hint="sets the value of the specified counter">
@@ -748,19 +754,16 @@
     </argument>
   </command>
 
-  <command name="\subparagraph" usage="\subparagraph{@title@}"
-           hint="starts a new subparagraph in the document structure">
-    <argument name="title">
+  <command name="\subparagraph" usage="\subparagraph{@title@}" hint="starts a new subparagraph in the document structure" style="section">
+    <argument name="title" type="title">
     </argument>
   </command>
 
-  <command name="\subsection" usage="\subsection{@title@}" hint="starts a new subsection in the document structure">
-    <argument name="title">
-    </argument>
+  <command name="\subsection" usage="\subsection{@title@}" hint="starts a new subsection in the document structure" style="section">
+    <argument name="title"/>
   </command>
 
-  <command name="\subsubsection" usage="\subsubsection{@title@}"
-           hint="starts a new subsubsection in the document structure">
+  <command name="\subsubsection" usage="\subsubsection{@title@}" hint="starts a new subsubsection in the document structure" style="section">
     <argument name="title">
     </argument>
   </command>
@@ -771,6 +774,14 @@
   <command name="\telephone" usage="\telephone{@number@}" hint="this is your telephone number">
     <argument name="number">
     </argument>
+  </command>
+
+  <command name="\textit" usage="\textit{@text@}" hint="italic text">
+	  <argument name="text" type="italic"/>
+  </command>
+
+  <command name="\textbf" usage="\textbf{@text@}" hint="bold text">
+	  <argument name="text" type="bold"/>
   </command>
 
   <command name="\textwidth" hint="is the normal width of the text on a page">
@@ -886,7 +897,7 @@
     </argument>
   </command>
 
-  <command name="\begin" usage="\begin{@environment@}@|@&nl;\end{@environment@}" hint="paragraph-making environments">
+  <command name="\begin" usage="\begin{@environment@}@|@&nl;\end{@environment@}" hint="paragraph-making environments" style="begin">
     <argument name="environment">
       <argumentValue value="abstract"/>
       <argumentValue value="array"/>
@@ -917,6 +928,10 @@
       <argumentValue value="verse"/>
     </argument>
   </command>
+
+	<command name="\begin" usage="\end{@environment@}" hint="closing environment" style="begin">
+	  <argument name="environment"/>
+	</command>
 
   <environment name="picture">
     <command name="\line" usage="\line(@x-slope@,@y-slope@){@length@}"
