@@ -166,8 +166,7 @@
   </command>
 
   <command name="\chapter" usage="\chapter{@title@}" hint="starts a new chapter in the document structure">
-    <argument name="title">
-    </argument>
+    <argument name="title" type="title"/>
   </command>
 
   <command name="\circle" usage="\circle[@*@]{@diameter@}" hint="produces a circle of the specified diameter">
@@ -300,7 +299,7 @@
   </command>
 
   <command name="\include" usage="\include{@file@}" hint="selective inclusion of files">
-    <argument name="file" value="" completion="true"/>
+    <argument name="file" type="file" value="" completion="true"/>
   </command>
 
   <command name="\includeonly" usage="\includeonly{@file_list@}"
@@ -310,7 +309,7 @@
 
   <command name="\includegraphics" usage="\includegraphics[@opt@]{@file@}" hint="includes a graphic; requires package 'graphicx'">
 	  <argument name="opt"/>
-	  <argument name="file" value="" completion="true"/>
+	  <argument name="file" type="file" value="" completion="true"/>
   </command>
 
   <command name="\indent" hint="produces a horizontal space whose width equals the width of the paragraph indentation">
@@ -620,12 +619,12 @@
 
   <command name="\ref" usage="\ref{@key@}" style="important_command"
            hint="produces the number of the sectional unit, equation number, ... of the corresponding \label command">
-    <argument name="key" value="" completion="true" type="label" hint="corresponding label"/>
+    <argument name="key" type="label" value="" completion="true" hint="corresponding label"/>
   </command>
 
   <command name="\eqref" usage="\eqref{@key@}" style="important_command"
            hint="produces the number of the sectional unit, equation number, ... of the corresponding \label command">
-    <argument name="key" value="" completion="true" type="label" hint="corresponding label"/>
+    <argument name="key" type="label" value="" completion="true" hint="corresponding label"/>
   </command>
 
   <command name="\right" hint="')' (math mode)">
@@ -760,11 +759,11 @@
   </command>
 
   <command name="\subsection" usage="\subsection{@title@}" hint="starts a new subsection in the document structure" style="section">
-    <argument name="title"/>
+    <argument name="title" type="title"/>
   </command>
 
   <command name="\subsubsection" usage="\subsubsection{@title@}" hint="starts a new subsubsection in the document structure" style="section">
-    <argument name="title">
+    <argument name="title" type="title">
     </argument>
   </command>
 

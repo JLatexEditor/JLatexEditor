@@ -434,7 +434,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  } catch (Exception ignored) {}
 
     // syntax highlighting
-    SyntaxHighlighting syntaxHighlighting = new LatexSyntaxHighlighting(scePane, spellChecker, commandsCodeHelper.getCommands());
+    SyntaxHighlighting syntaxHighlighting = new LatexSyntaxHighlighting(scePane, spellChecker, commandsCodeHelper.getCommands(), backgroundParser);
     syntaxHighlighting.start();
 
     // code completion and quick help

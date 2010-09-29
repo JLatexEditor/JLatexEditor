@@ -4,6 +4,7 @@
 
 package sce.component;
 
+import jlatexeditor.Doc;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
 import sce.syntaxhighlighting.BracketHighlighting;
 import util.StreamUtils;
