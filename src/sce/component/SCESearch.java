@@ -368,7 +368,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
   }
 
   public void keyPressed(KeyEvent e) {
-	  if (isVisible()) {
+	  if (e.getSource() == input) {
 			if (e.getModifiers() == 0) {
 				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					setVisible(false);
