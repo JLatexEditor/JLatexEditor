@@ -32,6 +32,7 @@ public class BackgroundParser extends Thread {
   private Trie<FilePos> commandNames = new Trie<FilePos>();
   private Trie<Command> commands = new Trie<Command>();
   private Trie<FilePos> labels = new Trie<FilePos>();
+	private Trie<BibEntry> cites = new Trie<BibEntry>();
 
   private DefaultTreeModel structure = new DefaultTreeModel(new DefaultMutableTreeNode());
 
@@ -47,7 +48,7 @@ public class BackgroundParser extends Thread {
     return bibEntries;
   }
 
-  public Trie<? extends Object> getWords() {
+	public Trie<? extends Object> getWords() {
     return words;
   }
 
@@ -62,6 +63,10 @@ public class BackgroundParser extends Thread {
   public Trie<FilePos> getLabels() {
     return labels;
   }
+
+	public Trie<BibEntry> getCites() {
+		return cites;
+	}
 
   public void run() {
     while (true) {
@@ -249,6 +254,10 @@ public class BackgroundParser extends Thread {
     bibModified = bibFile.lastModified();
 
     bibEntries = BibParser.parseBib(bibFile);
+	  cites = new Trie<BibEntry>();
+	  for (BibEntry bibEntry : bibEntries) {
+		  cites.add(bibEntry.getEntryName(), bibEntry);
+	  }
   }
 
   public ArrayList<BibEntry> getBibEntries(String search) {

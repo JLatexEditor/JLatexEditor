@@ -1,6 +1,7 @@
 package jlatexeditor.performance;
 
 import jlatexeditor.Doc;
+import jlatexeditor.codehelper.BackgroundParser;
 import jlatexeditor.codehelper.LatexCommandCodeHelper;
 import jlatexeditor.codehelper.SpellCheckSuggester;
 import jlatexeditor.gproperties.GProperties;
@@ -27,6 +28,7 @@ import java.util.Random;
 public class Performance {
 	private static LatexCommandCodeHelper commandsCodeHelper = new LatexCommandCodeHelper("(\\\\[a-zA-Z]*)", "data/codehelper/commands.xml");
 	private static LatexCommandCodeHelper tabCompletion = new LatexCommandCodeHelper("([a-zA-Z]*)", "data/codehelper/tabCompletion.xml");
+	private static BackgroundParser backgroundParser = null;
 
 	public static void main(String[] args) throws IOException, FileNotFoundException {
     File file = new File("./src/jlatexeditor/performance/test.tex");
@@ -42,7 +44,7 @@ public class Performance {
 	  SpellChecker spellChecker = Aspell.getInstance(GProperties.getAspellLang());
 	  //if (spellChecker == null) throw new Exception("Initialization of the spell check suggester failed!");
 
-    SyntaxHighlighting syntaxHighlighting = new LatexSyntaxHighlighting(pane, spellChecker, commandsCodeHelper.getCommands());
+    SyntaxHighlighting syntaxHighlighting = new LatexSyntaxHighlighting(pane, spellChecker, commandsCodeHelper.getCommands(), backgroundParser);
     syntaxHighlighting.start();
 
     pane.setCodeHelper(commandsCodeHelper);

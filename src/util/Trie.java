@@ -181,4 +181,8 @@ public class Trie<T> {
 			return s;
 		}
 	}
+
+	public boolean contains(String key) {
+		return get(key) != null;
+	}
 }

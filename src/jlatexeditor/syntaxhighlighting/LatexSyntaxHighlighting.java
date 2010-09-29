@@ -4,6 +4,7 @@
 
 package jlatexeditor.syntaxhighlighting;
 
+import jlatexeditor.codehelper.BackgroundParser;
 import jlatexeditor.syntaxhighlighting.states.MathMode;
 import jlatexeditor.syntaxhighlighting.states.RootState;
 import sce.codehelper.CHCommand;
@@ -15,6 +16,7 @@ import sce.syntaxhighlighting.SyntaxHighlighting;
 import util.SpellChecker;
 import util.Trie;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -30,6 +32,7 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
   private SCEPane pane = null;
   private SCEDocument document = null;
 	private Trie<CHCommand> commands;
+	private BackgroundParser backgroundParser;
 
   // do we need to parse
   private boolean parseNeeded = false;
@@ -37,11 +40,12 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 
 	private SpellChecker spellChecker;
 
-  public LatexSyntaxHighlighting(SCEPane pane, SpellChecker spellChecker, Trie<CHCommand> commands) {
+  public LatexSyntaxHighlighting(SCEPane pane, SpellChecker spellChecker, Trie<CHCommand> commands, BackgroundParser backgroundParser) {
 	  super("LatexSyntaxHighlighting");
     this.pane = pane;
 	  this.spellChecker = spellChecker;
 	  this.commands = commands;
+	  this.backgroundParser = backgroundParser;
     document = pane.getDocument();
     document.addSCEDocumentListener(this);
 
@@ -196,19 +200,38 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 	        String argumentType = getArgumentType(argumentsIterator);
 
 	        if (argumentType != null) {
+		        String param = getStringUpToClosingBracket(row, char_nr + 1);
+
 		        if (argumentType.equals("title") || argumentType.equals("italic") || argumentType.equals("bold")) {
-			        String param = getStringUpToClosingBracket(row, char_nr + 1);
 
 							// highlight the command
 							byte style = stateStyles[getStyle(argumentType, LatexStyles.TEXT)];
-							char_nr = setStyle(param, style, chars, char_nr);
+			        char_nr = setStyle(param, style, chars, char_nr);
 		        } else
 		        if (argumentType.equals("file")) {
-			        String param = getStringUpToClosingBracket(row, char_nr + 1);
+			        boolean fileExists = false;
+			        if (param.startsWith("/")) {
+				        fileExists = new File(param).exists();
+			        } else {
+				        File docFile = pane.getSourceCodeEditor().getFile();
+				        if (docFile.exists()) {
+					        String pathname = docFile.getParentFile().getAbsolutePath() + "/" + param;
+					        fileExists = new File(pathname).exists();
+				        }
+			        }
 
-							// highlight the command
-							byte style = stateStyles[getStyle("file_exists", LatexStyles.TEXT)];
-							char_nr = setStyle(param, style, chars, char_nr);
+			        // highlight the command
+							byte style = stateStyles[getStyle(fileExists ? "file_exists" : "file_not_found", LatexStyles.TEXT)];
+			        char_nr = setStyle(param, style, chars, char_nr);
+		        } else
+		        if (argumentType.equals("label")) {
+			        boolean labelExists = backgroundParser.getLabels().contains(param);
+			        byte style = stateStyles[getStyle(labelExists ? "label_exists" : "label_not_found", LatexStyles.TEXT)];
+			        char_nr = setStyle(param, style, chars, char_nr);
+		        } else
+		        if (argumentType.equals("cite")) {
+			        boolean citeExists = backgroundParser.getCites().contains(param);
+			        byte style = stateStyles[getStyle(citeExists ? "cite_exists" : "cite_not_found", LatexStyles.TEXT)];
 		        }
 	        }
 
