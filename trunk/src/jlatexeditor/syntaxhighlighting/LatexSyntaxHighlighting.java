@@ -229,9 +229,11 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 			        byte style = stateStyles[getStyle(labelExists ? "label_exists" : "label_not_found", LatexStyles.TEXT)];
 			        char_nr = setStyle(param, style, chars, char_nr);
 		        } else
-		        if (argumentType.equals("cite")) {
+		        if (argumentType.equals("cite_key_list")) {
+			        System.out.println(param);
 			        boolean citeExists = backgroundParser.getCites().contains(param);
 			        byte style = stateStyles[getStyle(citeExists ? "cite_exists" : "cite_not_found", LatexStyles.TEXT)];
+			        char_nr = setStyle(param, style, chars, char_nr);
 		        }
 	        }
 
@@ -311,6 +313,10 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 	private String getArgumentType(Iterator<CHCommandArgument> argumentsIterator) {
 		if (argumentsIterator != null && argumentsIterator.hasNext()) {
 			CHCommandArgument argument = argumentsIterator.next();
+			if (argument.isOptional()) {
+				argumentsIterator.hasNext();
+				argument = argumentsIterator.next();
+			}
 			return argument.getType();
 		}
 		return null;

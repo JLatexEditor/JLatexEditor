@@ -177,7 +177,7 @@
   <command name="\cite" usage="\cite[@text@]{@key_list@}" style="important_command"
            hint="in-text citation to the references associated with the keys in key_list">
     <argument name="text"/>
-    <argument name="key_list" value="" completion="true" hint="list of citation keys"/>
+    <argument name="key_list" type="cite_key_list" value="" completion="true" hint="list of citation keys"/>
   </command>
 
   <command name="\cleardoublepage" hint="ends the current page and causes all figures and tables to be printed">
@@ -468,7 +468,7 @@
   </command>
 
   <command name="\nocite" usage="\nocite{@key_list@}" hint="produces no text, but writes a key list on the aux file">
-    <argument name="key_list" hint="the key list">
+    <argument name="key_list" type="cite_key_list" value="" completion="true" hint="the key list">
     </argument>
   </command>
 
