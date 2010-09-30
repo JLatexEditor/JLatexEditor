@@ -160,7 +160,6 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
         if (c == '\\') {
           String command = getWord(row, char_nr + 1, true);
 
-	        // todo: style of command
 	        CHCommand chCommand = commands.get("\\" + command);
 	        if (chCommand != null) {
 		        argumentsIterator = chCommand.getArguments().iterator();
@@ -203,7 +202,6 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 		        String param = getStringUpToClosingBracket(row, char_nr + 1);
 
 		        if (argumentType.equals("title") || argumentType.equals("italic") || argumentType.equals("bold")) {
-
 							// highlight the command
 							byte style = stateStyles[getStyle(argumentType, LatexStyles.TEXT)];
 			        char_nr = setStyle(param, style, chars, char_nr);
