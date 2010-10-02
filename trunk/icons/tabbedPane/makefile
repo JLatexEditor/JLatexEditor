@@ -3,7 +3,7 @@ texs := $(wildcard *.tex)
 pdfs := $(texs:%.tex=%.pdf)
 pngs := $(texs:%.tex=%.png)
 
-default: tabs
+default: tabs close_button
 
 pdfs: $(pdfs)
 
@@ -13,8 +13,18 @@ pngs: $(pngs)
 	pdflatex $*.tex
 	@rm $*.aux $*.log  >/dev/null 2>&1 || true
 
-%.png: %.pdf
-	convert $*.pdf +repage -trim -resize 1024x26 +repage $*.png
+%.ps: %.tex
+	latex $*.tex
+	dvips $*.dvi
+
+tabs.png: tabs.pdf
+	convert tabs.pdf +repage -trim -resize 1024x26 +repage tabs.png
+
+tab_close.png: tab_close.ps
+	echo "TODO: needed ???"
+
+tab_close_over.png: tab_close_over.ps
+	echo "TODO"
 
 clean:
 	@rm $(pdfs) $(pngs) >/dev/null 2>&1 || true
@@ -36,3 +46,5 @@ tabs: pngs
 	convert tabs.png +repage -crop 20x26+197+0 tab_inactive_active.png
 	convert tabs.png +repage -crop 20x26+247+0 tab_active_inactive.png
 	convert tabs.png +repage -crop 20x26+297+0 tab_inactive_inactive.png
+
+close_button: tab_close_over.png

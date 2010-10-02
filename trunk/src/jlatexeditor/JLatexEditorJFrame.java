@@ -1482,7 +1482,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       setOpaque(false);
 
       label = new JLabel(doc.getName());
-      closeIcon = new JLabel(new ImageIcon("icons/tab_close_over.png"));
+      closeIcon = new JLabel(new ImageIcon("icons/tabbedPane/tab_close_over.png"));
       closeIcon.setVerticalAlignment(SwingConstants.CENTER);
 
       BorderLayout layout = new BorderLayout(4, 1);
