@@ -1,0 +1,245 @@
+<html>
+
+<head>
+
+    <title>Help On LaTeX Lengths</title>
+
+    <link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
+
+</head>
+
+<body>
+
+
+<h2>Lengths</h2>
+
+
+<p>A length is a measure of distance. Many LaTeX commands take
+
+    a length as an argument. A length of one inch is specified by
+
+    typing <tt>1in</tt> or, to specify the same length using metric
+
+    units, by typing <tt>2.54cm</tt>.</p>
+
+
+<h3>Units</h3>
+
+
+<p>LaTeX knows about the following common units.</p>
+
+
+<ul>
+
+    <li><tt>in</tt> - inches</li>
+
+    <li><tt>mm</tt> - millimeters</li>
+
+    <li><tt>cm</tt> - centimeters</li>
+
+    <li><tt>pt</tt> - points (about 1/72 inch)</li>
+
+    <li><tt>em</tt> - approximately the width of an "M"
+
+        <em>in the current font</em></li>
+
+    <li><tt>ex</tt> - approximately the height of an "x"
+
+        <em>in the current font</em></li>
+
+</ul>
+
+
+<p>And the following less common units</p>
+
+
+<ul>
+
+    <li><tt>pc</tt> - pica (12pt/pc)</li>
+
+    <li><tt>bp</tt> - big pt (72bp/in)</li>
+
+    <li><tt>dd</tt> - did&ocirc;t (1157dd = 1238pt)</li>
+
+    <li><tt>cc</tt> - c&icirc;cero (12dd/cc)</li>
+
+    <li><tt>sp</tt> - scaled point (65536sp/pt)</li>
+
+</ul>
+
+
+<p>Lengths may also be negative, for example, <tt>-1.5em</tt>.</p>
+
+
+<p>Note that the number <tt>0</tt> by itself is not a length;
+
+    it must be specified as <tt>0in</tt> or <tt>0pt</tt>, for example.</p>
+
+
+<h3><a name="lencmd">Length commands</a></h3>
+
+
+<p>A length may also be specified by a <em>length command</em>.
+
+    An example is <tt>\parindent</tt> whose value specifies the
+
+    current width of the indentation which begins paragraphs.
+
+    Multiples of such length commands may be specified, for example
+
+    by writing <tt>2.5\parindent</tt> or <tt>-0.1\parindent</tt>.</p>
+
+
+<p>Some length commands are</p>
+
+
+<ul>
+
+    <li><tt>\parindent</tt> - normal paragraph indentation</li>
+
+    <li><tt><a href="baselineskip.html">\baselineskip</a></tt> -
+
+        normal vertical distance between lines in a paragraph
+
+        <ul>
+
+            <li><tt><a href="baselineskip.html">\baselinestretch</a></tt> -
+
+                multiplies <tt>\baselineskip</tt>
+
+        </ul>
+    </li>
+
+    <li><tt><a href="parskip.html">\parskip</a></tt> -
+
+        the <strong>extra</strong> vertical space between paragraphs
+    </li>
+
+    <li><tt><a href="textwidth.html">\textwidth</a></tt> -
+
+        the width of text on the page
+    </li>
+
+    <li><tt><a href="textwidth.html">\linewidth</a></tt> -
+
+        width of a line in the <strong>local</strong> environment
+    </li>
+
+    <li><tt>\textheight</tt> - the height of text on the page
+
+    <li><tt><a href="unitlength.html">\unitlength</a></tt> - units of
+
+        length in <a href="ltx-43.html">Picture</a> Environment
+    </li>
+
+</ul>
+
+
+<p>All length commands are robust and <strong>should not</strong>
+
+    be preceded by a <tt>\protect</tt> command.</p>
+
+
+<h3><a name="rubber">Rubber lengths</a></h3>
+
+
+<p>Most lengths have a fixed value. However, LaTeX also allows
+
+    for "rubber" lengths; these have a natural length plus a degree
+
+    of elasticity. For example, the <tt>\fill</tt> length command
+
+    has a natural length of zero but is infinitely stretchable, so
+
+    that a space of width <tt>\fill</tt> will try to stretch as much
+
+    as possible. Multiplying a rubber length by a fixed factor
+
+    destroys its elasticity: <tt>0.5\fill</tt> becomes a rigid
+
+    length with a value of zero.</p>
+
+
+<h3>Setting values for length commands</h3>
+
+
+<p>The following LaTeX commands define and manipulate the value
+
+    of length commands</p>
+
+
+<ul>
+
+    <li><tt><a href="ltx-87.html">\newlength</a></tt> -
+
+        define a new length command
+    </li>
+
+</ul>
+
+
+<ul>
+
+    <li><tt><a href="ltx-88.html">\setlength</a></tt></li>
+
+    <li><tt><a href="ltx-89.html">\addtolength</a></tt></li>
+
+</ul>
+
+
+<ul>
+
+    <li><tt><a href="ltx-90.html">\settowidth</a></tt></li>
+
+    <li><tt><a href="ltx-311.html">\settoheight</a></tt></li>
+
+    <li><tt><a href="ltx-312.html">\settodepth</a></tt></li>
+
+</ul>
+
+
+<h3>Commands that add space</h3>
+
+
+<ul>
+
+    <li>Horizontal space
+
+        <ul>
+
+            <li><tt><a href="ltx-238.html">\hfill</a></tt></li>
+
+            <li><tt><a href="ltx-241.html">\hspace</a></tt></li>
+
+        </ul>
+    </li>
+
+    <li>Vertical Space
+
+        <ul>
+
+            <li><tt><a href="ltx-198.html">\addvspace</a></tt></li>
+
+            <li><tt><a href="ltx-318.html">\smallskip</a></tt></li>
+
+            <li><tt><a href="ltx-266.html">\medskip</a></tt></li>
+
+            <li><tt><a href="ltx-206.html">\bigskip</a></tt></li>
+
+            <li><tt><a href="ltx-345.html">\vfill</a></tt></li>
+
+            <li><tt><a href="ltx-347.html">\vspace</a></tt></li>
+
+        </ul>
+    </li>
+
+</ul>
+
+
+<hr noshade="noshade" size="1">
+
+
+<p>
+
+</body>
+</html>

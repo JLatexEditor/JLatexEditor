@@ -1,0 +1,80 @@
+<html>
+<head>
+    <title>Help On LaTeX Lists</title>
+    <link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
+</head>
+<body>
+
+<h3>Hypertext Help with LaTeX</h3>
+
+<h2>Lists</h2>
+
+<p>LaTeX provides several List-Making Environments. These may be
+    nested up to four deep. </p>
+
+<p>The items in the list are given by
+    <tt><a href="item.html">\item</a></tt> commands. A blank line
+    before an <tt>\item</tt> command has no effect.</p>
+
+
+<h3>List-Making Enviroments</h3>
+
+<dl>
+    <dt><b><a href="ltx-31.html">Description</a></b></dt>
+    <dd>Typically used for giving short definitions or
+        descriptions; the <tt>label</tt> argument of the
+        <tt><a href="item.html">\item</a></tt> command generally
+        giving the term being described (although it
+        <strong>can</strong> be left blank, it will look strange).
+        The text of the <tt><a href="item.html">\item</a></tt>
+        command is indented.
+    </dd>
+
+    <dt><b><a href="ltx-222.html">Enumerate</a></b></dt>
+    <dd>Typically used for numbered lists.
+        <a href="ltx-3.html">Counters</a> for these lists are
+        provided by <tt>enumi, emumii, enumiii, enumiv</tt>,
+        respectively, for the four levels of nesting.
+    </dd>
+
+    <dt><b><a href="ltx-250.html">Itemize</a></b></dt>
+    <dd>Typically used for unnumbered lists. The default
+        <tt>label</tt> argument of the
+        <tt><a href="item.html">\item</a></tt> command produces
+        "tick-marks" which vary by level of nesting, generally
+        "bullets" for the first level.
+    </dd>
+
+    <dt><b><a href="ltx-260.html">List</a></b></dt>
+    <dd>Produces a list of labeled items and has required
+        arguments that allow a great deal of flexibility in layout.
+        It is generally used to define new environments with the
+        <tt><a href="ltx-19.html">\newenvironment</a></tt> command,
+        or to set up one-of-a-kind lists.
+    </dd>
+
+    <dt><b><a href="trivlist.html">Trivlist</a></b></dt>
+    <dd>Like the List Environment, using the currently defined
+        values of list-making parameters; normally used to define an
+        environment with a single item, with an
+        <tt><a href="item.html">\item</a></tt> command as part of
+        the environment definition.
+    </dd>
+
+</DL>
+
+<hr noshade="noshade" size="1">
+
+<p>
+    See also <tt><a href="item.html">\item</a></tt><br>
+    See also <a href="ltx-3.html">Counters</a>,
+    <a href="ltx-27.html">Environments</a><br>
+    Go to <a href="ltx-2.html">LaTeX Table of Contents</a>
+</p>
+
+<hr noshade="noshade" size="1">
+<address>
+    Revised 18 May 1995.
+</address>
+</body>
+</html>
