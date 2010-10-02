@@ -44,6 +44,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.net.URI;
+import java.net.URL;
 import java.util.*;
 
 public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener, TreeSelectionListener, SearchChangeListener {
@@ -932,7 +933,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 		// find
 		if (action.equals("find")) {
-			getActiveEditor().search();
+			getActiveEditor().toggleSearch();
 		} else
 		// replace
 		if (action.equals("replace")) {
@@ -1482,7 +1483,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       setOpaque(false);
 
       label = new JLabel(doc.getName());
-      closeIcon = new JLabel(new ImageIcon(getClass().getResource("icons/tabbedPane/tab_close_over.png")));
+	    closeIcon = new JLabel(new ImageIcon(getClass().getResource("/images/tabbedPane/tab_close_over.png")));
       closeIcon.setVerticalAlignment(SwingConstants.CENTER);
 
       BorderLayout layout = new BorderLayout(4, 1);
