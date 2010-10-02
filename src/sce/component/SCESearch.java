@@ -368,12 +368,14 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
   }
 
   public void keyPressed(KeyEvent e) {
+	  if (isVisible()) {
+		  if (e.getKeyCode() == KeyEvent.VK_ESCAPE && e.getModifiers() == 0) {
+			  setVisible(false);
+			  e.consume();
+		  }
+	  }
 	  if (e.getSource() == input) {
 			if (e.getModifiers() == 0) {
-				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					setVisible(false);
-					e.consume();
-				}
 				if (e.getKeyCode() == KeyEvent.VK_UP) {
 					previous();
 					e.consume();
@@ -383,7 +385,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 					e.consume();
 				}
 			}
-			if (e.getModifiers() == KeyEvent.CONTAINER_EVENT_MASK) {
+			if (e.getModifiers() == KeyEvent.CTRL_MASK) {
 				if (e.getKeyCode() == KeyEvent.VK_HOME) {
 					first();
 					e.consume();
