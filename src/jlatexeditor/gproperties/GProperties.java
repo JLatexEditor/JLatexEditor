@@ -39,6 +39,7 @@ public class GProperties {
 
   public static final Range INT = BetterProperties2.INT;
   public static final Range INT_GT_0 = BetterProperties2.INT_GT_0;
+  public static final Range INT_GT_100 = BetterProperties2.INT_GT_100;
   public static final Range DOUBLE = BetterProperties2.DOUBLE;
   public static final Range DOUBLE_0_TO_1 = BetterProperties2.DOUBLE_0_TO_1;
   public static final Range BOOLEAN = BetterProperties2.BOOLEAN;
@@ -106,8 +107,8 @@ public class GProperties {
 	  properties.addEntry(new Comment(" Position, width, and height of the main window"));
 	  properties.addEntry(new Def("main_window.x", INT_GT_0, "0"));
 	  properties.addEntry(new Def("main_window.y", INT_GT_0, "0"));
-	  properties.addEntry(new Def("main_window.width", INT_GT_0, "1024"));
-	  properties.addEntry(new Def("main_window.height", INT_GT_0, "800"));
+	  properties.addEntry(new Def("main_window.width", INT_GT_100, "1024"));
+	  properties.addEntry(new Def("main_window.height", INT_GT_100, "800"));
 	  properties.addEntry(new Def("main_window.maximized_state", INT_GT_0, "" + JFrame.MAXIMIZED_BOTH));
 	  properties.addEntry(new Comment(" Width of the symbols panel as part of the main window"));
 	  properties.addEntry(new Def("main_window.symbols_panel.width", INT_GT_0, "220"));
@@ -326,8 +327,8 @@ public class GProperties {
 		return new Rectangle(
 				properties.getInt("main_window.x"),
 				properties.getInt("main_window.y"),
-				properties.getInt("main_window.width"),
-				properties.getInt("main_window.height")
+				Math.max(properties.getInt("main_window.width"), 100),
+				Math.max(properties.getInt("main_window.height"), 100)
 		);
 	}
 

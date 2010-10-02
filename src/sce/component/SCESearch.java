@@ -195,7 +195,12 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     buttonReplaceAll.setVisible(showReplace);
   }
 
-  public void focus() {
+	@Override
+	public boolean hasFocus() {
+		return input.hasFocus();
+	}
+
+	public void focus() {
     input.requestFocusInWindow();
   }
 

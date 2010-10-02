@@ -4,7 +4,6 @@
 
 package sce.component;
 
-import jlatexeditor.Doc;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
 import sce.syntaxhighlighting.BracketHighlighting;
 import util.StreamUtils;
@@ -258,19 +257,23 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
   /**
    * Show search field.
    */
-  public void search() {
-    add(search, BorderLayout.NORTH);
-    search.setVisible(true);
-    validate();
-    search.focus();
-    search.setShowReplace(false);
+  public void toggleSearch() {
+	  if (search.hasFocus()) {
+		  textPane.requestFocusInWindow();
+	  } else {
+			add(search, BorderLayout.NORTH);
+			search.setVisible(true);
+			validate();
+			search.focus();
+			search.setShowReplace(false);
+	  }
   }
 
   /**
    * Show replace field.
    */
   public void replace() {
-    search();
+    toggleSearch();
     search.setShowReplace(true);
   }
 
