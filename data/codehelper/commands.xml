@@ -330,7 +330,7 @@
   </command>
 
   <command name="\label" usage="\label{@key@}" hint="assigns to the key the number of the current sectional unit" style="important_command">
-    <argument name="key"/>
+    <argument name="key" type="label_def"/>
   </command>
 
   <command name="\large" usage="{\large @|@}" hint="slightly larger than default typeface size">
@@ -619,12 +619,12 @@
 
   <command name="\ref" usage="\ref{@key@}" style="important_command"
            hint="produces the number of the sectional unit, equation number, ... of the corresponding \label command">
-    <argument name="key" type="label" value="" completion="true" hint="corresponding label"/>
+    <argument name="key" type="label_ref" value="" completion="true" hint="corresponding label"/>
   </command>
 
   <command name="\eqref" usage="\eqref{@key@}" style="important_command"
            hint="produces the number of the sectional unit, equation number, ... of the corresponding \label command">
-    <argument name="key" type="label" value="" completion="true" hint="corresponding label"/>
+    <argument name="key" type="label_ref" value="" completion="true" hint="corresponding label"/>
   </command>
 
   <command name="\right" hint="')' (math mode)">
