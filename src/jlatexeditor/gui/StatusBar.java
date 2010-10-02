@@ -7,10 +7,7 @@ import util.ColorUtil;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.util.ArrayList;
@@ -128,6 +125,13 @@ public class StatusBar extends JPanel implements ActionListener, MouseListener {
 
       setBackground(COLOR_BACKGROUND);
       setPreferredSize(new Dimension(100, 20));
+
+	    addMouseListener(new MouseAdapter(){
+		    @Override
+		    public void mouseClicked(MouseEvent e) {
+			    System.gc();
+		    }
+	    });
     }
 
     public void paint(Graphics g) {
