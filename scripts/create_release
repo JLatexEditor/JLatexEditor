@@ -35,3 +35,8 @@ done
 ln -s ${programCName}_$version-1_all.deb $programCName-latest.deb
 
 cd ../..
+
+# add deb packages to Debian/Ubuntu repositories
+for repo in sid lucid; do
+	reprepro -b /home/stefan/www/apt.endrullis.de includedeb $repo /home/stefan/programmierung/java/JLatexEditor/dist/releases/${programCName}_$version-1_all.deb
+done
