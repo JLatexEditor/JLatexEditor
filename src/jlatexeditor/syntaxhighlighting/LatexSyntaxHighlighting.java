@@ -13,6 +13,7 @@ import sce.component.*;
 import sce.syntaxhighlighting.ParserState;
 import sce.syntaxhighlighting.ParserStateStack;
 import sce.syntaxhighlighting.SyntaxHighlighting;
+import util.Function1;
 import util.SpellChecker;
 import util.Trie;
 
@@ -27,6 +28,7 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
   private static final Pattern TERM_PATTERN = Pattern.compile("(\\\\?[\\wäöüÄÖÜß_\\-\\^]+)");
   private static final Pattern BAD_TERM_CHARS = Pattern.compile("[\\\\\\d_\\-\\^]");
   private static final Pattern TODO_PATTERN = Pattern.compile("\\btodo\\b");
+  private static final Pattern LIST_PATTERN = Pattern.compile("[^, ]+[^,]*");
 
   // text pane and document
   private SCEPane pane = null;
@@ -149,12 +151,12 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
       row.modified = false;
 
       // parse the row
-      SCEDocumentChar chars[] = row.chars;
+      final SCEDocumentChar chars[] = row.chars;
       for (int char_nr = 0; char_nr < row.length; char_nr++) {
         SCEDocumentChar sce_char = chars[char_nr];
         char c = sce_char.character;
 
-        byte[] stateStyles = state.getStyles();
+        final byte[] stateStyles = state.getStyles();
 
         // search for a backslash '\'
         if (c == '\\') {
@@ -167,7 +169,7 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 
 	        // highlight the command
           byte commandStyle = stateStyles[getStyle(chCommand == null ? null : chCommand.getStyle(), LatexStyles.COMMAND)];
-	        char_nr = setStyle(command, commandStyle, chars, char_nr);
+	        char_nr = setStyle(command.length() + 1, commandStyle, chars, char_nr);
 
           continue;
         }
@@ -199,12 +201,12 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 	        String argumentType = getArgumentType(argumentsIterator);
 
 	        if (argumentType != null) {
-		        String param = getStringUpToClosingBracket(row, char_nr + 1);
+		        final String param = getStringUpToClosingBracket(row, char_nr + 1);
 
 		        if (argumentType.equals("title") || argumentType.equals("italic") || argumentType.equals("bold")) {
 							// highlight the command
 							byte style = stateStyles[getStyle(argumentType, LatexStyles.TEXT)];
-			        char_nr = setStyle(param, style, chars, char_nr);
+			        char_nr = setStyle(param, style, chars, char_nr + 1);
 		        } else
 		        if (argumentType.equals("file")) {
 			        boolean fileExists = false;
@@ -220,21 +222,26 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 
 			        // highlight the command
 							byte style = stateStyles[getStyle(fileExists ? "file_exists" : "file_not_found", LatexStyles.TEXT)];
-			        char_nr = setStyle(param, style, chars, char_nr);
+			        char_nr = setStyle(param, style, chars, char_nr + 1);
 		        } else
 		        if (argumentType.equals("label_def")) {
 			        byte style = stateStyles[getStyle("label_exists", LatexStyles.TEXT)];
-			        char_nr = setStyle(param, style, chars, char_nr);
+			        char_nr = setStyle(param, style, chars, char_nr + 1);
 		        } else
 		        if (argumentType.equals("label_ref")) {
 			        boolean labelExists = backgroundParser.getLabels().contains(param);
 			        byte style = stateStyles[getStyle(labelExists ? "label_exists" : "label_not_found", LatexStyles.TEXT)];
-			        char_nr = setStyle(param, style, chars, char_nr);
+			        char_nr = setStyle(param, style, chars, char_nr + 1);
 		        } else
 		        if (argumentType.equals("cite_key_list")) {
-			        boolean citeExists = backgroundParser.getCites().contains(param);
-			        byte style = stateStyles[getStyle(citeExists ? "cite_exists" : "cite_not_found", LatexStyles.TEXT)];
-			        char_nr = setStyle(param, style, chars, char_nr);
+			        matchAndStyle(char_nr + 1, chars, param, LIST_PATTERN, new Function1<String, Byte>(){
+				        @Override
+				        public Byte apply(String a1) {
+					        boolean citeExists = backgroundParser.getCites().contains(a1);
+					        return stateStyles[getStyle(citeExists ? "cite_exists" : "cite_not_found", LatexStyles.TEXT)];
+				        }
+			        });
+							char_nr += param.length();
 		        }
 	        }
 
@@ -311,6 +318,18 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
     }
   }
 
+	private void matchAndStyle(int start, SCEDocumentChar[] chars, String param, Pattern pattern, Function1<String, Byte> styleFunc) {
+		Matcher matcher = pattern.matcher(param);
+		int i = 0;
+		while (matcher.find()) {
+			setStyle(matcher.start() - i, LatexStyles.TEXT, chars, start + i);
+			i = matcher.start();
+			String group = matcher.group();
+			setStyle(group, styleFunc.apply(group), chars, start + i);
+			i += group.length();
+		}
+	}
+
 	private String getArgumentType(Iterator<CHCommandArgument> argumentsIterator) {
 		if (argumentsIterator != null && argumentsIterator.hasNext()) {
 			CHCommandArgument argument = argumentsIterator.next();
@@ -324,10 +343,14 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 	}
 
 	private int setStyle(String text, byte style, SCEDocumentChar[] chars, int offset) {
-		for (int i = 0; i <= text.length(); i++) {
+		return setStyle(text.length(), style, chars, offset);
+	}
+
+	private int setStyle(int count, byte style, SCEDocumentChar[] chars, int offset) {
+		for (int i = 0; i < count; i++) {
 		  chars[offset + i].style = style;
 		}
-		return offset + text.length();
+		return offset + count - 1;
 	}
 
 	private byte getStyle(String st, byte default_) {
