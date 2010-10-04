@@ -1,0 +1,126 @@
+<html>
+
+<head>
+
+    <title>Help On LaTeX Styles</title>
+
+    <link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
+
+</head>
+
+<body>
+
+
+<h2>Styles</h2>
+
+
+<p>The following type style commands are supported by LaTeX.
+
+    Note that <a href="versions.html">LaTeX2e</a> differs on this
+
+    point, having instead a <a href="fonts2e.html">Font Selection</a>
+
+    scheme, but the following should still work (certainly in 2.09
+
+    mode).</p>
+
+
+<ul>
+
+    <li><tt><a href="ltx-304.html">\rm</a></tt> - Roman</li>
+
+    <li><tt><a href="ltx-249.html">\it</a></tt> - Italics</li>
+
+    <li><tt><a href="ltx-221.html">\em</a></tt> - Emphasis
+
+        (toggles between <tt>\it</tt> and <tt>\rm</tt>)
+    </li>
+
+    <li><tt><a href="emph.html">\emph</a></tt> (LaTeX2e emphasis command)</li>
+
+    <li><tt><a href="ltx-204.html">\bf</a></tt> - Boldface</li>
+
+    <li><tt><a href="ltx-316.html">\sl</a></tt> - Slanted</li>
+
+    <li><tt><a href="ltx-313.html">\sf</a></tt> - Sans serif</li>
+
+    <li><tt><a href="ltx-308.html">\sc</a></tt> - Small caps</li>
+
+    <li><tt><a href="ltx-331.html">\tt</a></tt> - Typewriter</li>
+
+</ul>
+
+
+<ul>
+
+    <li><tt><a href="boldmath.html">\boldmath</a></tt> and
+
+        <tt><a href="boldmath.html">\unboldmath</a></tt>
+
+        (affects math mode fonts only)
+    </li>
+
+</ul>
+
+
+<p>These are LaTeX
+
+    <a href="declarations.html"><em>delcarations</em></a> (with the
+
+    exception of <tt><a href="emph.html">\emph</a></tt>), i.e., they
+
+    do not act on an argument, but change the way LaTeX prints the
+
+    following text. The <em>scope</em> of a declaration is ended by
+
+    a right brace (<tt>}</tt>) or an <tt>\end{}</tt> command whose
+
+    matching left brace (<tt>{</tt>) or <tt>\begin{}</tt> precedes
+
+    the declaration.</p>
+
+
+<p>Thus, for a short piece of italics or bold-face text one would use</p>
+
+
+
+<pre>
+
+    This is {\it italics} and this is {\bf in boldface}.
+
+</pre>
+
+
+<p>which would be set as "This is <em>italics</em> and this is
+
+    <strong>in boldface</strong>.</p>
+
+
+<p>In LaTeX2e the <tt><a href="emph.html">\emph</a></tt> command
+
+    is considered more suitable for short stretches of emphasized
+
+    text. A typical use would be</p>
+
+
+
+<pre>
+
+    This is \emph{emphasized text}.
+
+</pre>
+
+
+<hr noshade="noshade" size="1">
+
+
+<p>
+
+    See also Typeface <a href="ltx-178.html">Sizes</a><br>
+
+    LaTeX2e <a href="fonts2e.html">Font Selection</a><br>
+
+    See also <a href="mathfonts.html">Math fonts and styles</a><br>
+
+</body>
+</html>
