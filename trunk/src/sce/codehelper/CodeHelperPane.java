@@ -238,9 +238,6 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
     // initialize the argument values and occurrences
     for (CHCommandArgument argument : arguments) {
-	    //todo
-      //argument.setValue(argument.getName());
-
       // find occurrences
       ArrayList<SCEDocumentRange> occurrences = new ArrayList<SCEDocumentRange>();
       int index = -1;

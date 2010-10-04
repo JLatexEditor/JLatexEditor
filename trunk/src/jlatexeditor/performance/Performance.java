@@ -2,12 +2,13 @@ package jlatexeditor.performance;
 
 import jlatexeditor.Doc;
 import jlatexeditor.codehelper.BackgroundParser;
-import jlatexeditor.codehelper.LatexCommandCodeHelper;
 import jlatexeditor.codehelper.SpellCheckSuggester;
 import jlatexeditor.gproperties.GProperties;
 import jlatexeditor.quickhelp.LatexQuickHelp;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
+import sce.codehelper.StaticCommandsCodeHelper;
+import sce.codehelper.StaticCommandsReader;
 import sce.component.SCECaret;
 import sce.component.SCEDocument;
 import sce.component.SCEPane;
@@ -26,8 +27,8 @@ import java.util.Random;
  * Performance measurement.
  */
 public class Performance {
-	private static LatexCommandCodeHelper commandsCodeHelper = new LatexCommandCodeHelper("(\\\\[a-zA-Z]*)", "data/codehelper/commands.xml");
-	private static LatexCommandCodeHelper tabCompletion = new LatexCommandCodeHelper("([a-zA-Z]*)", "data/codehelper/tabCompletion.xml");
+	private static StaticCommandsReader latexCommands = new StaticCommandsReader("data/codehelper/commands.xml");
+	private static StaticCommandsReader tabCompletions = new StaticCommandsReader("data/codehelper/tabCompletion.xml");
 	private static BackgroundParser backgroundParser = null;
 
 	public static void main(String[] args) throws IOException, FileNotFoundException {
@@ -44,11 +45,11 @@ public class Performance {
 	  SpellChecker spellChecker = Aspell.getInstance(GProperties.getAspellLang());
 	  //if (spellChecker == null) throw new Exception("Initialization of the spell check suggester failed!");
 
-    SyntaxHighlighting syntaxHighlighting = new LatexSyntaxHighlighting(pane, spellChecker, commandsCodeHelper.getCommands(), backgroundParser);
+    SyntaxHighlighting syntaxHighlighting = new LatexSyntaxHighlighting(pane, spellChecker, latexCommands.getCommands(), backgroundParser);
     syntaxHighlighting.start();
 
-    pane.setCodeHelper(commandsCodeHelper);
-    pane.setTabCompletion(tabCompletion);
+    pane.setCodeHelper(new StaticCommandsCodeHelper("(\\\\[a-zA-Z]*)", latexCommands));
+    pane.setTabCompletion(new StaticCommandsCodeHelper("([a-zA-Z]*)", tabCompletions));
     pane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
 
 		if (spellChecker != null) {
