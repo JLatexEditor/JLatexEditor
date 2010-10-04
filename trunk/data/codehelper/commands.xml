@@ -216,6 +216,10 @@
   <command name="\em" hint="emphasis (toggles between \it and \rm)">
   </command>
 
+  <command name="\emph" usage="\emph{@text@}" hint="emphasis the given text">
+	  <argument name="text"/>
+  </command>
+
   <command name="\ensuremath" usage="\ensuremath{@text set in math mode@}"
            hint="the argument is always set in math mode, regardless of the current mode (LaTeX2e)">
     <argument name="text set in math mode"/>
