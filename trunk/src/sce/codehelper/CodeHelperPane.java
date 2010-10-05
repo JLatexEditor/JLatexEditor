@@ -271,15 +271,14 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 			  SCEDocumentRange range = argument.getOccurrences().get(0);
 			  SCEPosition start = range.getStartPosition().relative(0, 1);
 			  SCEDocumentPosition end = range.getEndPosition();
-			  String value = document.getText(start, end);
 			  document.replace(start, end, argument.getValue());
 		  }
 	  }
 
     // line breaks
     String indentation = spaces.substring(0, column);
-    int linebreakPos = -1;
-    while ((linebreakPos = template.indexOf('\n', linebreakPos + 1)) != -1) {
+    int lineBreakPos = -1;
+    while ((lineBreakPos = template.indexOf('\n', lineBreakPos + 1)) != -1) {
       document.insert(indentation, ++row, 0);
     }
 
