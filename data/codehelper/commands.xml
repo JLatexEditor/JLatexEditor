@@ -932,7 +932,7 @@
     </argument>
   </command>
 
-	<command name="\begin" usage="\end{@environment@}" hint="closing environment" style="begin">
+	<command name="\end" usage="\end{@environment@}" hint="closing environment" style="begin">
 	  <argument name="environment"/>
 	</command>
 
