@@ -276,7 +276,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 	  }
 
     // line breaks
-    String indentation = spaces.substring(0, column);
+    String indentation = getSpaceString(column);
     int lineBreakPos = -1;
     while ((lineBreakPos = template.indexOf('\n', lineBreakPos + 1)) != -1) {
       document.insert(indentation, ++row, 0);
@@ -288,6 +288,19 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     // start editing with argument number 0
     editTemplate(0);
   }
+
+	/**
+	 * Returns a string with the given number of space characters.
+	 *
+	 * @param spaceCount number of space characters
+	 * @return string with the given number of space characters
+	 */
+	private String getSpaceString(int spaceCount) {
+		if (spaceCount < spaces.length())
+			return spaces.substring(0, spaceCount);
+		else
+			return spaces;
+	}
 
 	private Pair<String, SCEDocumentPosition> getTransformedTemplate(String templateWithAt, ArrayList<CHCommandArgument> arguments, int row, int column) {
 		int cursorIndex = templateWithAt.lastIndexOf("@|@");
