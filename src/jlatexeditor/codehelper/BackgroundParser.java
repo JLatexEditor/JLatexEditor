@@ -317,6 +317,11 @@ public class BackgroundParser extends Thread {
 		public int getLineNr() {
 			return lineNr;
 		}
+
+		@Override
+		public String toString() {
+			return name;
+		}
 	}
 
   public static class StructureEntry extends FilePos {
