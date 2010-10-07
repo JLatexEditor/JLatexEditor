@@ -779,6 +779,10 @@
     </argument>
   </command>
 
+	<command name="\text" usage="\text{@text@}" hint="include normal text in math environments">
+		<argument name="text"/>
+	</command>
+
   <command name="\textit" usage="\textit{@text@}" hint="italic text">
 	  <argument name="text" type="italic"/>
   </command>
