@@ -217,7 +217,7 @@
   </command>
 
   <command name="\emph" usage="\emph{@text@}" hint="emphasis the given text">
-	  <argument name="text"/>
+	  <argument name="text" type="italic"/>
   </command>
 
   <command name="\ensuremath" usage="\ensuremath{@text set in math mode@}"
