@@ -3,24 +3,25 @@ package jlatexeditor.codehelper;
 import sce.codehelper.CHCommand;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
+import util.Function0;
 import util.Trie;
 import jlatexeditor.codehelper.BackgroundParser.FilePos;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class LabelCodeHelper extends PatternHelper {
+public class GenericCodeHelper extends PatternHelper {
   protected WordWithPos label;
-  protected BackgroundParser backgroundParser;
+	protected Function0<Trie<?>> getCompletionTrie;
 
-  public LabelCodeHelper(BackgroundParser backgroundParser) {
-    this.backgroundParser = backgroundParser;
-    pattern = new PatternPair("\\\\(ref|eqref)\\{([^{}]*)");
+  public GenericCodeHelper(String pattern, Function0<Trie<?>> getCompletionTrie) {
+    this.pattern = new PatternPair(pattern);
+	  this.getCompletionTrie = getCompletionTrie;
   }
 
   public boolean matches() {
     if (super.matches()) {
-      label = params.get(1);
+      label = params.get(0);
       return true;
     }
     return false;
@@ -31,10 +32,10 @@ public class LabelCodeHelper extends PatternHelper {
   }
 
   public Iterable<? extends CHCommand> getCompletions() {
-    Trie<FilePos> labels = backgroundParser.getLabels();
+    Trie<?> trie = getCompletionTrie.apply();
 
     ArrayList<CHCommand> commands = new ArrayList<CHCommand>();
-    List<String> strings = labels.getStrings(label.word, 100);
+    List<String> strings = trie.getStrings(label.word, 100);
     if (strings == null) return commands;
 
     for (String string : strings) commands.add(new CHCommand(string));
@@ -43,7 +44,7 @@ public class LabelCodeHelper extends PatternHelper {
   }
 
   public String getMaxCommonPrefix() {
-    Trie labels = backgroundParser.getLabels();
-    return labels.getMaxCommonPrefix(label.word);
+	  Trie<?> trie = getCompletionTrie.apply();
+    return trie.getMaxCommonPrefix(label.word);
   }
 }
