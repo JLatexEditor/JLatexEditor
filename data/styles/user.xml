@@ -1,3 +1,12 @@
+<!DOCTYPE styles [
+		<!ELEMENT styles (element)+>
+
+		<!ELEMENT element EMPTY>
+		<!ATTLIST element name CDATA #REQUIRED
+		                style CDATA #REQUIRED
+		                foreground CDATA #IMPLIED
+		                background CDATA #IMPLIED>
+]>
 <styles>
   <element name="text" style="plain" foreground="000000"/>
   <element name="italic" style="italic" foreground="000000"/>
@@ -26,18 +35,4 @@
 	<element name="cite_exists" style="plain" foreground="800080"/>
 	<element name="cite_not_found" style="plain" foreground="ff0000"/>
 
-	<!--
-  <special>
-    <command name="begin" style="begin"/>
-    <command name="end" style="begin"/>
-    <command name="section" style="section"/>
-    <command name="subsection" style="section"/>
-    <command name="subsubsection" style="section"/>
-    <command name="paragraph" style="important_command"/>
-    <command name="label" style="important_command"/>
-    <command name="ref" style="important_command"/>
-    <command name="eqref" style="important_command"/>
-    <command name="cite" style="important_command"/>
-  </special>
-  -->
 </styles>
