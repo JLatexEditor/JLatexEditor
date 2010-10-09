@@ -46,7 +46,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.net.URI;
-import java.net.URL;
 import java.util.*;
 
 public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener, TreeSelectionListener, SearchChangeListener {
@@ -444,7 +443,18 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     CombinedCodeHelper codeHelper = new CombinedCodeHelper();
 	  if (backgroundParser != null) {
 			codeHelper.addPatternHelper(new CiteHelper(backgroundParser));
-			codeHelper.addPatternHelper(new LabelCodeHelper(backgroundParser));
+		  // add completion for \ref and \eqref
+			codeHelper.addPatternHelper(new GenericCodeHelper("\\\\(?:ref|eqref)\\{([^{}]*)", new Function0<Trie<?>>() {
+				public Trie<?> apply() {
+					return backgroundParser.getLabelDefs();
+				}
+			}));
+		  // add completion for \label
+			codeHelper.addPatternHelper(new GenericCodeHelper("\\\\label\\{([^{}]*)", new Function0<Trie<?>>() {
+				public Trie<?> apply() {
+					return backgroundParser.getLabelRefs();
+				}
+			}));
 	  }
     codeHelper.addPatternHelper(new IncludeCodeHelper());
     codeHelper.addPatternHelper(new StaticCommandsCodeHelper("(\\\\[a-zA-Z]*)", latexCommands));

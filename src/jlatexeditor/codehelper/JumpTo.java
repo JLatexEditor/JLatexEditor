@@ -80,7 +80,7 @@ public class JumpTo implements KeyListener, MouseListener {
 
 		    // if \ref or \eqref -> try to jump to label definition
 		    if (command.equals("ref") || command.equals("eqref")) {
-			    BackgroundParser.FilePos filePos = backgroundParser.getLabels().get(word.word);
+			    BackgroundParser.FilePos filePos = backgroundParser.getLabelDefs().get(word.word);
 			    if (filePos != null) {
 						jLatexEditorJFrame.open(new FileDoc(new File(filePos.getFile())), filePos.getLineNr());
 						return;
