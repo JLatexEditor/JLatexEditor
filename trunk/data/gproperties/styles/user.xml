@@ -3,9 +3,9 @@
 
 		<!ELEMENT element EMPTY>
 		<!ATTLIST element name CDATA #REQUIRED
-		                style CDATA #REQUIRED
-		                foreground CDATA #IMPLIED
-		                background CDATA #IMPLIED>
+		                  style CDATA #REQUIRED
+		                  foreground CDATA #IMPLIED
+		                  background CDATA #IMPLIED>
 ]>
 <styles>
   <element name="text" style="plain" foreground="000000"/>
