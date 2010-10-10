@@ -1,4 +1,4 @@
-import xml.XML
+import scala.xml.XML
 
 val xml = XML.loadFile("../data/codehelper/tabCompletion.xml")
 
@@ -14,5 +14,5 @@ for (command <- commands) {
 		usage = usage.replaceAll("@" + arg + "@", "<i>" + arg + "</i>")
 	}
 
-	println("<tr><td>{{{" + name + """}}}</td><td><pre class="wiki">""" + usage + "</pre></td></tr>")
+	println("<tr><td>" + name + """</td><td><pre class="wiki">""" + usage + "</pre></td></tr>")
 }

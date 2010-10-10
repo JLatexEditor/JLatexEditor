@@ -16,6 +16,8 @@
   </command>
   <command name="enum" usage="\begin{enumerate}&nl;  \item @|@&nl;\end{enumerate}" hint="enumerate environment">
   </command>
+	<command name="i" usage="\item " hint="item in itemization or enumeration">
+	</command>
   <command name="tikz" usage="\begin{tikzpicture}&nl;  @|@&nl;\end{tikzpicture}" hint="tikz picture environment">
   </command>
   <command name="fig" usage="\begin{figure}&nl;  @|@&nl;  \caption{@caption@}&nl;  \label{fig:@label@}&nl;\end{figure}" hint="figure environment">
@@ -69,7 +71,5 @@
 	<command name="env" usage="\begin{@env@}@opt@&nl;  @|@&nl;\end{@env@}" hint="tabular environment">
 		<argument name="env"/>
 		<argument name="opt"/>
-	</command>
-	<command name="i" usage="\item " hint="item in itemization or enumeration">
 	</command>
 </commandList>
