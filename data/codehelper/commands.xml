@@ -859,8 +859,13 @@
 
   <command name="\usecounter" usage="\usecounter{@counter@}"
            hint="used in the second argument of the list environment to allow the counter specified to be used to number the list items">
-    <argument name="counter">
-    </argument>
+    <argument name="counter"/>
+  </command>
+
+  <command name="\usepackage" usage="\usepackage[@options@]{@packages@}"
+           hint="loads the given LaTeX packages">
+    <argument name="options"/>
+    <argument name="packages"/>
   </command>
 
   <command name="\value" usage="\value{@counter@}"
