@@ -240,14 +240,12 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
       int row = caret.getRow();
       int column = caret.getColumn();
 
-      String line = document.getRow(row);
+      String line = document.getRow(row).substring(0, column);
       document.insert("\n", row, column);
-      for (int x = 0; x < line.length(); x++) {
-        if (line.charAt(x) != ' ') {
-          document.insert(line.substring(0, x), row + 1, 0);
-          break;
-        }
-      }
+	    // take over indentation of last line
+	    int indentCount = 0;
+	    while (indentCount < line.length() && line.charAt(indentCount) == ' ') indentCount++;
+			document.insert(line.substring(0, indentCount), row + 1, 0);
       e.consume();
     }
 
