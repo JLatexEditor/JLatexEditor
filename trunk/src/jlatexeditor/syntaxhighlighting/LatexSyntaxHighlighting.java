@@ -25,8 +25,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDocumentListener {
-  private static final Pattern TERM_PATTERN = Pattern.compile("(\\\\?[\\wäöüÄÖÜß_\\-\\^]+)");
-  private static final Pattern BAD_TERM_CHARS = Pattern.compile("[\\\\\\d_\\-\\^]");
+  private static final Pattern TERM_PATTERN = Pattern.compile("(\\\\?[\\wäöüÄÖÜß_\\^]+)");
+  private static final Pattern BAD_TERM_CHARS = Pattern.compile("[\\\\\\d_\\^]");
   private static final Pattern TODO_PATTERN = Pattern.compile("\\btodo\\b");
   private static final Pattern LIST_PATTERN = Pattern.compile("[^, ]+[^,]*");
 
