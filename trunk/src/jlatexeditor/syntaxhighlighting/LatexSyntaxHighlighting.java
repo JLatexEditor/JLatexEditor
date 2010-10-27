@@ -334,8 +334,7 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 	private String getArgumentType(Iterator<CHCommandArgument> argumentsIterator) {
 		if (argumentsIterator != null && argumentsIterator.hasNext()) {
 			CHCommandArgument argument = argumentsIterator.next();
-			if (argument.isOptional()) {
-				argumentsIterator.hasNext();
+			if (argument.isOptional() && argumentsIterator.hasNext()) {
 				argument = argumentsIterator.next();
 			}
 			return argument.getType();
