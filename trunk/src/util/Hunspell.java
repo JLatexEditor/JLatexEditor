@@ -288,7 +288,7 @@ public final class Hunspell implements SpellChecker {
 	  // full list
     List<String> fullDicts = new ArrayList<String>();
     String line;
-	  while (!r.readLine().startsWith("AVAILABLE DICTIONARIES"));
+	  while ((line = r.readLine()) != null && line.startsWith("AVAILABLE DICTIONARIES"));
 
     while ((line = r.readLine()) != null) {
 	    if (line.equals("LOADED DICTIONARY:")) break;
