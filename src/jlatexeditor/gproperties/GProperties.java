@@ -121,7 +121,7 @@ public class GProperties {
     properties.addEntry(new Comment(" Font settings"));
     properties.addEntry(new Def(EDITOR_FONT_NAME, new PSet(MONOSPACE_FONTS_ARRAY), "Monospaced"));
     properties.addEntry(new Def(EDITOR_FONT_SIZE, INT_GT_0, "13"));
-    properties.addEntry(new Def(EDITOR_FONT_ANTIALIASING, new PSet(TEXT_ANTIALIAS_KEYS), "Off"));
+    properties.addEntry(new Def(EDITOR_FONT_ANTIALIASING, new PSet(TEXT_ANTIALIAS_KEYS), "On"));
     properties.addEntry(new Def("editor.columns_per_row", INT_GT_0, "80"));
     properties.addEntry(new Comment(" Spell checker settings"));
     properties.addEntry(new Def("editor.spell_checker", new PSet("none", "aspell", "hunspell"), "aspell"));
