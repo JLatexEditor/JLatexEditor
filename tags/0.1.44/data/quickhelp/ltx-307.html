@@ -1,0 +1,65 @@
+<html>
+
+<head>
+
+    <title>Help On LaTeX \savebox</title>
+
+    <link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
+
+</head>
+
+<body>
+
+
+<h2>\savebox</h2>
+
+
+<p><tt>\sbox{cmd}{text}</tt><br>
+
+    <tt>\savebox{cmd}[width][pos]{text}</tt></p>
+
+
+<p>These commands typeset <tt>text</tt> in a box just as for
+
+    <tt><a href="ltx-265.html">\mbox</a></tt> or
+
+    <tt><a href="ltx-262.html">\makebox</a></tt>. However, instead
+
+    of printing the resulting box, they save it in the LaTeX command
+
+    <tt>cmd</tt>, which must have been declared with
+
+    <tt><a href="ltx-277.html">\newsavebox</a></tt>. The saved
+
+    <tt>text</tt> is accessed by a
+
+    <tt><a href="ltx-337.html">\usebox</a></tt> command.</p>
+
+
+<p>The <tt>\sbox</tt> and <tt>\savebox</tt> commands are
+
+    <a href="declarations.html">declarations</a> with the usual
+
+    rules for scope.</p>
+
+
+<p>The <tt>\sbox</tt> command is
+
+    <a href="fragile.html">robust</a>; the <tt>\savebox</tt> command
+
+    is <a href="fragile.html">fragile</a>.</p>
+
+
+<hr noshade="noshade" size="1">
+
+
+<p>
+
+    See <a href="ltx-143.html">Spaces and Boxes</a><br>
+
+    See <tt><a href="ltx-277.html">\newsavebox</a></tt>,
+
+    <tt><a href="ltx-337.html">\usebox</a></tt><br>
+
+</body>
+</html>
