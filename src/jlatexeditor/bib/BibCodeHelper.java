@@ -46,7 +46,7 @@ public class BibCodeHelper extends PatternHelper {
       BibEntry entry = BibEntry.getEntry("@" + state.getEntryType());
       if(entry == null) return false;
 
-      ArrayList<String> params = new ArrayList();
+      ArrayList<String> params = new ArrayList<String>();
       params.addAll(Arrays.asList(entry.getRequired()));
       params.addAll(Arrays.asList(entry.getOptional()));
       for(String param : params) {
