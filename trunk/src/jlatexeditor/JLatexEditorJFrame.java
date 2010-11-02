@@ -1028,7 +1028,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         SourceCodeEditor editor = getActiveEditor();
         int line = editor.getTextPane().getCaret().getRow()+1;
         String texfile = editor.getFile().getAbsolutePath();
-        String file = texfile.substring(0, texfile.lastIndexOf(".tex"));;
+        String file = getMainEditor().getFile().getAbsolutePath().substring(0, texfile.lastIndexOf(".tex")-1);;
 
         ArrayList<String> list = StringUtils.tokenize(GProperties.getString("viewer.forward search"));
         String[] array = new String[list.size()];
@@ -1041,6 +1041,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
           token = token.replaceAll("%texfile", texfile);
           token = token.replaceAll("&nbsp;", " ");
           array[index] = token;
+          System.out.println(token);
         }
         ProcessUtil.exec(array, mainEditor.getFile().getParentFile());
       } catch(Exception ex) {
