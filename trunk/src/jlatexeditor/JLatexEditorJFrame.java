@@ -264,7 +264,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     JMenu forwardSearch = new JMenu("Forward Search"); {
       forwardSearch.add(createMenuItem("Skim", "forward search: /Applications/Skim.app/Contents/SharedSupport/displayline %line \"%file.pdf\" \"%texfile\"", null));
       forwardSearch.add(createMenuItem("xdvi", "forward search: xdvi -sourceposition \"%line&nbsp;%file.dvi\" -nofork", null));
-      forwardSearch.add(createMenuItem("kdvi", "forward search: kdvi \"file:%file.dvi#src:%line&nbsp;%texfile\"", null));
+      forwardSearch.add(createMenuItem("kdvi", "forward search: kdvi \"file:%file.dvi#src:%line&nbsp;%file\"", null));
     }
     settingsMenu.add(forwardSearch);
     settingsMenu.add(createMenuItem("Global Settings", "global settings", 'G'));
@@ -1028,7 +1028,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         SourceCodeEditor editor = getActiveEditor();
         int line = editor.getTextPane().getCaret().getRow()+1;
         String texfile = editor.getFile().getAbsolutePath();
-        String file = getMainEditor().getFile().getAbsolutePath().substring(0, texfile.lastIndexOf(".tex")-1);;
+	      String mainFile = getMainEditor().getFile().getAbsolutePath();
+        String file = mainFile.substring(0, mainFile.lastIndexOf(".tex"));
 
         ArrayList<String> list = StringUtils.tokenize(GProperties.getString("viewer.forward search"));
         String[] array = new String[list.size()];
