@@ -214,6 +214,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     editMenu.add(createMenuItem("Comment", "comment", 'o'));
     editMenu.add(createMenuItem("Uncomment", "uncomment", 'u'));
     editMenu.addSeparator();
+    editMenu.add(createMenuItem("Forward Search", "forward search", null));
+    editMenu.addSeparator();
     editMenu.add(createMenuItem("Diff", "diff", 'D'));
 
     JMenu viewMenu = new JMenu("View");
@@ -259,6 +261,12 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     menuBar.add(settingsMenu);
 
     settingsMenu.add(createMenuItem("Font", "font", 'F'));
+    JMenu forwardSearch = new JMenu("Forward Search"); {
+      forwardSearch.add(createMenuItem("Skim", "forward search: /Applications/Skim.app/Contents/SharedSupport/displayline %line \"%file.pdf\" \"%texfile\"", null));
+      forwardSearch.add(createMenuItem("xdvi", "forward search: xdvi -sourceposition \"%line&nbsp;%file.dvi\" -nofork", null));
+      forwardSearch.add(createMenuItem("kdvi", "forward search: kdvi \"file:%file.dvi#src:%line&nbsp;%texfile\"", null));
+    }
+    settingsMenu.add(forwardSearch);
     settingsMenu.add(createMenuItem("Global Settings", "global settings", 'G'));
 
     JMenu helpMenu = new JMenu("Help");
@@ -1008,6 +1016,37 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		if (action.equals("status bar")) {
 			statusBar.setVisible(!statusBar.isVisible());
 		} else
+
+    // forward search
+    if (action.startsWith("forward search: ")) {
+      String command = action.substring("forward search: ".length());
+      GProperties.set("viewer.forward search", command);
+    } else
+
+    if (action.equals("forward search")) {
+      try {
+        SourceCodeEditor editor = getActiveEditor();
+        int line = editor.getTextPane().getCaret().getRow()+1;
+        String texfile = editor.getFile().getAbsolutePath();
+        String file = texfile.substring(0, texfile.lastIndexOf(".tex"));;
+
+        ArrayList<String> list = StringUtils.tokenize(GProperties.getString("viewer.forward search"));
+        String[] array = new String[list.size()];
+        list.toArray(array);
+
+        for(int index = 0; index < array.length; index++) {
+          String token = array[index];
+          token = token.replaceAll("%line", line+"");
+          token = token.replaceAll("%file", file);
+          token = token.replaceAll("%texfile", texfile);
+          token = token.replaceAll("&nbsp;", " ");
+          array[index] = token;
+        }
+        ProcessUtil.exec(array, mainEditor.getFile().getParentFile());
+      } catch(Exception ex) {
+        System.err.println("Forward search failed: " + ex.getMessage());
+      }
+    } else
 
 		// diff
 		if (action.equals("diff")) {
