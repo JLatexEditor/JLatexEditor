@@ -264,7 +264,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     JMenu forwardSearch = new JMenu("Forward Search"); {
       forwardSearch.add(createMenuItem("Skim", "forward search: /Applications/Skim.app/Contents/SharedSupport/displayline %line \"%file.pdf\" \"%texfile\"", null));
       forwardSearch.add(createMenuItem("xdvi", "forward search: xdvi -sourceposition \"%line&nbsp;%file.dvi\" -nofork", null));
-      forwardSearch.add(createMenuItem("kdvi", "forward search: kdvi \"file:%file.dvi#src:%line&nbsp;%texfile\"", null));
+      forwardSearch.add(createMenuItem("kdvi", "forward search: kdvi --unique \"file:%file.dvi#src:%line&nbsp;%texfile\"", null));
     }
     settingsMenu.add(forwardSearch);
     settingsMenu.add(createMenuItem("Global Settings", "global settings", 'G'));
