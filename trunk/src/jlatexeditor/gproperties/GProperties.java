@@ -155,6 +155,7 @@ public class GProperties {
     properties.addEntry(new Def("shortcut.comment", SHORTCUT, "control D"));
     properties.addEntry(new Def("shortcut.uncomment", SHORTCUT, "control shift D"));
     properties.addEntry(new Def("shortcut.diff", SHORTCUT, "alt D"));
+    properties.addEntry(new Def("shortcut.forward search", SHORTCUT, "control shift F"));
     properties.addEntry(new Comment(" View"));
     properties.addEntry(new Def("shortcut.symbols", SHORTCUT, "alt Y"));
     properties.addEntry(new Def("shortcut.structure", SHORTCUT, "alt X"));
@@ -185,10 +186,12 @@ public class GProperties {
 	  properties.addEntry(new Comment("\n## Compiler settings"));
     properties.addEntry(new Comment(" pdflatex"));
     properties.addEntry(new Def("compiler.pdflatex.executable", STRING, "pdflatex"));
-    properties.addEntry(new Def("compiler.pdflatex.parameters", STRING, ""));
+    properties.addEntry(new Def("compiler.pdflatex.parameters", STRING, "-synctex=1"));
     properties.addEntry(new Comment(" latex"));
     properties.addEntry(new Def("compiler.latex.executable", STRING, "latex"));
-    properties.addEntry(new Def("compiler.latex.parameters", STRING, ""));
+    properties.addEntry(new Def("compiler.latex.parameters", STRING, "--src-specials"));
+    properties.addEntry(new Comment(" forward search"));
+    properties.addEntry(new Def("viewer.forward search", STRING, ""));
 
     load();
     save();
