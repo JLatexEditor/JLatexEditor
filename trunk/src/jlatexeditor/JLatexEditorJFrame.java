@@ -45,6 +45,8 @@ import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URI;
 import java.util.*;
 
@@ -345,6 +347,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     GProperties.addPropertyChangeListener("editor.font.name", fontChangeListener);
     GProperties.addPropertyChangeListener("editor.font.size", fontChangeListener);
     GProperties.addPropertyChangeListener("editor.font.antialiasing", fontChangeListener);
+
+    // inverse search
+    new Seek(GProperties.getInt("inverse search.port")).start();
   }
 
   /**
@@ -355,19 +360,23 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       BufferedReader reader = new BufferedReader(new FileReader(FILE_LAST_SESSION));
       String line;
       while ((line = reader.readLine()) != null) {
-        int colon = line.lastIndexOf(':');
-        if (colon == -1) colon = line.length();
-
-        File file = new File(line.substring(0, colon));
-        int lineNr = colon >= line.length() ? 0 : Integer.parseInt(line.substring(colon + 1));
-
-        if (file.exists() && file.isFile()) {
-          SourceCodeEditor<Doc> editor = open(new Doc.FileDoc(file));
-          editor.getTextPane().getCaret().moveTo(lineNr, 0);
-        }
+       openSeek(line);
       }
       reader.close();
     } catch (IOException ignored) {
+    }
+  }
+
+  private void openSeek(String seek) {
+    int colon = seek.lastIndexOf(':');
+    if (colon == -1) colon = seek.length();
+
+    File file = new File(seek.substring(0, colon));
+    int lineNr = colon >= seek.length() ? 0 : Integer.parseInt(seek.substring(colon + 1));
+
+    if (file.exists() && file.isFile()) {
+      SourceCodeEditor<Doc> editor = open(new Doc.FileDoc(file));
+      editor.getTextPane().getCaret().moveTo(lineNr, 0);
     }
   }
 
@@ -1020,7 +1029,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // forward search
     if (action.startsWith("forward search: ")) {
       String command = action.substring("forward search: ".length());
-      GProperties.set("viewer.forward search", command);
+      GProperties.set("forward search.viewer", command);
     } else
 
     if (action.equals("forward search")) {
@@ -1031,7 +1040,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	      String mainFile = getMainEditor().getFile().getAbsolutePath();
         String file = mainFile.substring(0, mainFile.lastIndexOf(".tex"));
 
-        ArrayList<String> list = StringUtils.tokenize(GProperties.getString("viewer.forward search"));
+        ArrayList<String> list = StringUtils.tokenize(GProperties.getString("forward search.viewer"));
         String[] array = new String[list.size()];
         list.toArray(array);
 
@@ -1590,10 +1599,36 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     }
 
     // SCEModificationStateListener
-
     public void modificationStateChanged(boolean modified) {
       label.setText(modified ? "*" + doc.getName() : doc.getName());
     }
   }
 
+  // inverse search
+  private class Seek extends Thread {
+    private int port;
+
+    public Seek(int port) {
+      this.port = port;
+      this.setDaemon(true);
+    }
+
+    public void run() {
+      try {
+        ServerSocket server = new ServerSocket(port);
+
+        while(true) {
+          Socket socket = server.accept();
+          BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+          String seek = reader.readLine();
+          System.out.println(seek);
+          if(seek != null) openSeek(seek);
+          reader.close();
+          socket.close();
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
 }
