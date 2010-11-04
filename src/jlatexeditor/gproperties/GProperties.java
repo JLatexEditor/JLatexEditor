@@ -192,7 +192,7 @@ public class GProperties {
     properties.addEntry(new Def("compiler.latex.parameters", STRING, "--src-specials"));
     properties.addEntry(new Comment(" forward search"));
     properties.addEntry(new Def("forward search.viewer", STRING, ""));
-    properties.addEntry(new Def("inverse search.port", INT, "7001"));
+    properties.addEntry(new Def("inverse search.port", INT_GT_0, "13231"));
 
     load();
     save();
