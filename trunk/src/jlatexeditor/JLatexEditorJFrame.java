@@ -18,6 +18,7 @@ import jlatexeditor.gproperties.GPropertiesStyles;
 import jlatexeditor.gproperties.GPropertiesSyntaxHighlighting;
 import jlatexeditor.gui.*;
 import jlatexeditor.quickhelp.LatexQuickHelp;
+import jlatexeditor.remote.NetworkNode;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
 import jlatexeditor.tools.SVN;
@@ -349,7 +350,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     GProperties.addPropertyChangeListener("editor.font.antialiasing", fontChangeListener);
 
     // inverse search
-    new Seek(GProperties.getInt("inverse search.port")).start();
+    //new Seek(GProperties.getInt("inverse search.port")).start();
+	  new NetworkNode(this).start();
   }
 
   /**
@@ -714,7 +716,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 	public SourceCodeEditor<Doc> open(Doc doc, int lineNr) {
 		SourceCodeEditor<Doc> editor = open(doc);
-		editor.getTextPane().getCaret().moveTo(lineNr, 0);
+		if (lineNr > 0) {
+			editor.getTextPane().getCaret().moveTo(lineNr, 0);
+		}
 
 		return editor;
 	}
@@ -891,7 +895,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
   private void closeTab(int tab) {
     SourceCodeEditor<Doc> editor = getEditor(tab);
-    if (tabbedPane.getTabCount() > 1) {
+	  docMap.remove(editor.getResource().getUri());
+	  if (tabbedPane.getTabCount() > 1) {
       tabbedPane.removeTabAt(tab);
     } else {
       try {
@@ -903,7 +908,28 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     editor.getTextPane().setText("");
   }
 
-  // ActionListener methods
+	public boolean isOpen(File file) {
+		return docMap.containsKey(file.toURI());
+	}
+
+	/**
+	 * Returns true if this JLE instance is responsible for the given file.
+	 *
+	 * @param file file
+	 * @return true if this JLE instance is responsible for the given file
+	 */
+	public boolean isResponsibleFor(File file) {
+		// did we open the file already?                  or is file referenced by the main document?
+		return isOpen(file) || backgroundParser.isResponsibleFor(file);
+	}
+
+	@Override
+	public void requestFocus() {
+		super.requestFocus();
+		getActiveEditor().getFocusedPane().requestFocus();
+	}
+
+	// ActionListener methods
 
   public void actionPerformed(ActionEvent e) {
     String action = e.getActionCommand();
@@ -1398,7 +1424,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     }
   }
 
-  private class ShutdownHook extends Thread {
+	private class ShutdownHook extends Thread {
 	  private JLatexEditorJFrame mainWindow;
 
 	  private ShutdownHook(JLatexEditorJFrame mainWindow) {

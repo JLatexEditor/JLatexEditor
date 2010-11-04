@@ -28,6 +28,7 @@ public class BackgroundParser extends Thread {
   private long bibModified = 0;
   private ArrayList<BibEntry> bibEntries = new ArrayList<BibEntry>();
 
+	private HashSet<File> files = new HashSet<File>();
   private Trie<? extends Object> words = new Trie<Object>();
   private Trie<FilePos> commandNames = new Trie<FilePos>();
   private Trie<Command> commands = new Trie<Command>();
@@ -39,7 +40,7 @@ public class BackgroundParser extends Thread {
 
   private ArrayList<TODO> todos = new ArrayList<TODO>();
 
-  public BackgroundParser(JLatexEditorJFrame jle) {
+	public BackgroundParser(JLatexEditorJFrame jle) {
 	  super("BackgroundParser");
     this.jle = jle;
     setPriority(Thread.MIN_PRIORITY);
@@ -92,6 +93,7 @@ public class BackgroundParser extends Thread {
       File file = ((Doc.FileDoc) resource).getFile();
       File directory = file.getParentFile();
 
+	    HashSet<File> files = new HashSet<File>();
 	    Trie words = new Trie();
       Trie<FilePos> commandNames = new Trie<FilePos>();
       Trie<FilePos> labelDefs = new Trie<FilePos>();
@@ -101,8 +103,9 @@ public class BackgroundParser extends Thread {
       ArrayList<StructureEntry> structureStack = new ArrayList<StructureEntry>();
       structureStack.add(new StructureEntry("Project", 0, resource.getName(), 0));
 
-      parseTex(directory, file.getName(), words, commandNames, commands, labelDefs, labelRefs, structureStack, new HashSet<String>());
+      parseTex(directory, file.getName(), files, words, commandNames, commands, labelDefs, labelRefs, structureStack, new HashSet<String>());
 
+	    this.files = files;
 	    this.words = words;
       this.commandNames = commandNames;
       this.commands = commands;
@@ -123,7 +126,7 @@ public class BackgroundParser extends Thread {
     notify();
   }
 
-  private void parseTex(File directory, String fileName, Trie words, Trie<FilePos> commandNames, Trie<Command> commands,
+  private void parseTex(File directory, String fileName, HashSet<File> files, Trie words, Trie<FilePos> commandNames, Trie<Command> commands,
                         Trie<FilePos> labelDefs, Trie<FilePos> labelRefs, ArrayList<StructureEntry> structure, HashSet<String> done) {
     if (done.contains(fileName)) return;
     else done.add(fileName);
@@ -131,6 +134,8 @@ public class BackgroundParser extends Thread {
     File file = new File(directory, fileName);
     if (!file.exists()) file = new File(directory, fileName + ".tex");
     if (!file.exists()) return;
+
+	  files.add(file);
 
     String tex;
     String fileCanonicalPath;
@@ -224,7 +229,7 @@ public class BackgroundParser extends Thread {
         } else if (command.equals("bibliography")) {
           parseBib(directory, Command.unfoldRecursive(argument, commands, 10));
         } else {
-          parseTex(directory, Command.unfoldRecursive(argument, commands, 10), words, commandNames, commands, labelDefs, labelRefs, structure, done);
+          parseTex(directory, Command.unfoldRecursive(argument, commands, 10), files, words, commandNames, commands, labelDefs, labelRefs, structure, done);
         }
       // sections
       } else if (command.equals("chapter") || command.equals("section") || command.equals("subsection") || command.equals("subsubsection")) {
@@ -293,7 +298,17 @@ public class BackgroundParser extends Thread {
     return structure;
   }
 
-  public static class TODO {
+	/**
+	 * Returns true if the file is referenced by the master document.
+	 *
+	 * @param file file
+	 * @return true if the file is referenced by the master document
+	 */
+	public boolean isResponsibleFor(File file) {
+		return files.contains(file);
+	}
+
+	public static class TODO {
     private String msg;
     private File file;
     private int line;
