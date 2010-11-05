@@ -4,6 +4,7 @@ import jlatexeditor.Doc;
 import jlatexeditor.JLatexEditorJFrame;
 import jlatexeditor.gproperties.GProperties;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.File;
@@ -63,8 +64,7 @@ public class MasterNode {
 					if (file.exists() && file.isFile()) {
 						// check if master has opened this file
 						if (jle.isOpen(file)) {
-							jle.open(new Doc.FileDoc(file), lineNr);
-							jle.requestFocus();
+              open(file, lineNr);
 						} else {
 							// check if a slave has opened the file
 							boolean found = false;
@@ -80,8 +80,7 @@ public class MasterNode {
 							if (!found) {
 								// check if master is responsible for the file
 								if (jle.isResponsibleFor(file)) {
-									jle.open(new Doc.FileDoc(file), lineNr);
-									jle.requestFocus();
+                  open(file, lineNr);
 								} else {
 									// check if a slave has opened the file
 									found = false;
@@ -95,10 +94,7 @@ public class MasterNode {
 									}
 
 									// if no one want to be responsible the master editor has to open the file
-									if (!found) {
-										jle.open(new Doc.FileDoc(file), lineNr);
-										jle.requestFocus();
-									}
+									if (!found) open(file, lineNr);
 								}
 							}
 						}
@@ -111,4 +107,13 @@ public class MasterNode {
 			}
 		}
 	}
+
+  private void open(final File file, final int lineNr) {
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        jle.open(new Doc.FileDoc(file), lineNr);
+        jle.requestFocus();
+      }
+    });
+  }
 }
