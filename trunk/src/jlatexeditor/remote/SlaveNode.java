@@ -3,6 +3,7 @@ package jlatexeditor.remote;
 import jlatexeditor.Doc;
 import jlatexeditor.JLatexEditorJFrame;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -68,10 +69,18 @@ public class SlaveNode {
 				int lineNr = fileLineNr.lineNr - 1;
 
 				if (file.exists() && file.isFile()) {
-					jle.open(new Doc.FileDoc(file), lineNr);
-					jle.requestFocus();
+					open(file, lineNr);
 				}
 			}
 		}
 	}
+
+  private void open(final File file, final int lineNr) {
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        jle.open(new Doc.FileDoc(file), lineNr);
+        jle.requestFocus();
+      }
+    });
+  }
 }

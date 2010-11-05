@@ -350,7 +350,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     GProperties.addPropertyChangeListener("editor.font.antialiasing", fontChangeListener);
 
     // inverse search
-    //new Seek(GProperties.getInt("inverse search.port")).start();
 	  new NetworkNode(this).start();
   }
 
@@ -1627,34 +1626,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // SCEModificationStateListener
     public void modificationStateChanged(boolean modified) {
       label.setText(modified ? "*" + doc.getName() : doc.getName());
-    }
-  }
-
-  // inverse search
-  private class Seek extends Thread {
-    private int port;
-
-    public Seek(int port) {
-      this.port = port;
-      this.setDaemon(true);
-    }
-
-    public void run() {
-      try {
-        ServerSocket server = new ServerSocket(port);
-
-        while(true) {
-          Socket socket = server.accept();
-          BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-          String seek = reader.readLine();
-          System.out.println(seek);
-          if(seek != null) openSeek(seek);
-          reader.close();
-          socket.close();
-        }
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
     }
   }
 }
