@@ -9,33 +9,25 @@ import java.net.Socket;
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 public class RemoteSlave {
-	private Socket socket;
-	private BufferedWriter writer;
-	private BufferedReader reader;
+	private SocketConnection conn;
 
-	public RemoteSlave (Socket socket, BufferedReader reader) throws IOException {
-		this.socket = socket;
-		this.reader = reader;
-		this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+	public RemoteSlave (SocketConnection conn) throws IOException {
+		this.conn = conn;
 
-		writer.write("registered\n");
-		writer.flush();
+		conn.send("registered");
 	}
 
 	public boolean isOpen(String fileString) throws IOException {
-		writer.write("is open?: " + fileString + "\n");
-		writer.flush();
-		return reader.readLine().equals("true");
+		conn.send("is open?: " + fileString);
+		return conn.receive().equals("true");
 	}
 
 	public boolean isResponsibleForFile(String fileString) throws IOException {
-		writer.write("is responsible for?: " + fileString + "\n");
-		writer.flush();
-		return reader.readLine().equals("true");
+		conn.send("is responsible for?: " + fileString);
+		return conn.receive().equals("true");
 	}
 
 	public void open(String fileString) throws IOException {
-		writer.write("open: " + fileString + "\n");
-		writer.flush();
+		conn.send("open: " + fileString);
 	}
 }

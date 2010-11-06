@@ -40,19 +40,18 @@ public class MasterNode {
 			//serverSocket.bind(InetAddress.getLocalHost());
 			Socket socket = serverSocket.accept();
 
-			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			String line = reader.readLine();
+			SocketConnection conn = new SocketConnection(socket);
+			String line = conn.receive();
 			logger.info("reading: " + line);
 
 			if (line == null) {
-				reader.close();
-				socket.close();
+				conn.close();
 				continue;
 			}
 
 			if (line.equals("register")) {
 				// client as slave node
-				slaves.add(new RemoteSlave(socket, reader));
+				slaves.add(new RemoteSlave(conn));
 			} else {
 				if (line.startsWith("open: ")) {
 					String fileString = line.substring("open: ".length());
@@ -102,8 +101,7 @@ public class MasterNode {
 					}
 				}
 
-				reader.close();
-				socket.close();
+				conn.close();
 			}
 		}
 	}
