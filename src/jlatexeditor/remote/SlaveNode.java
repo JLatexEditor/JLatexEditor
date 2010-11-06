@@ -19,25 +19,20 @@ public class SlaveNode {
 	private static Logger logger = Logger.getLogger(SlaveNode.class.getName());
 
 	private JLatexEditorJFrame jle;
-	private Socket socket;
-	private BufferedWriter writer;
-	private BufferedReader reader;
+	private SocketConnection conn;
 
 	public SlaveNode (JLatexEditorJFrame jle, int port) throws IOException {
 		this.jle = jle;
-		this.socket = new Socket(InetAddress.getLocalHost(), port);
-		reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-
-		writer.write("register\n");
-		writer.flush();
+		Socket socket = new Socket(InetAddress.getLocalHost(), port);
+		conn = new SocketConnection(socket);
+		conn.send("register");
 
 		run();
 	}
 
 	public void run() throws IOException {
 		while (true) {
-			String line = reader.readLine();
+			String line = conn.receive();
 			logger.info("reading: " + line);
 			if (line == null) throw new IOException("InputStream closed");
 
@@ -45,23 +40,13 @@ public class SlaveNode {
 				FileLineNr fileLineNr = new FileLineNr(line.substring("is open?: ".length()));
 				File file = fileLineNr.file;
 
-				if (jle.isOpen(file)) {
-					writer.write("true\n");
-				} else {
-					writer.write("false\n");
-				}
-				writer.flush();
+				conn.send(jle.isOpen(file) ? "true" : "false");
 			} else
 			if (line.startsWith("is responsible for?: ")) {
 				FileLineNr fileLineNr = new FileLineNr(line.substring("is responsible for?: ".length()));
 				File file = fileLineNr.file;
 
-				if (jle.isResponsibleFor(file)) {
-					writer.write("true\n");
-				} else {
-					writer.write("false\n");
-				}
-				writer.flush();
+				conn.send(jle.isResponsibleFor(file) ? "true" : "false");
 			} else
 			if (line.startsWith("open: ")) {
 				FileLineNr fileLineNr = new FileLineNr(line.substring("open: ".length()));
