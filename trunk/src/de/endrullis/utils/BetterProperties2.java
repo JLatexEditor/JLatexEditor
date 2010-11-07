@@ -622,4 +622,5 @@ public class BetterProperties2 extends Properties {
 	public static final Range BOOLEAN       = new PBoolean();
 	public static final Range STRING        = new PString();
 	public static final Range SHORTCUT      = new PShortcut();
+	public static final Range LOGLEVEL      = new PSet("<default>", "OFF", "SEVERE", "WARNING", "INFO", "CONFIG", "FINE", "FINER", "FINEST", "ALL");
 }

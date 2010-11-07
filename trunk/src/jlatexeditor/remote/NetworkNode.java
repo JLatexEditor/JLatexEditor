@@ -5,6 +5,7 @@ import jlatexeditor.gproperties.GProperties;
 
 import java.io.IOException;
 import java.net.BindException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -32,26 +33,26 @@ public class NetworkNode extends Thread {
 		while (!isInterrupted() && tries < 20) {
 			// first try to start master node
 			try {
-				logger.info("Running in master mode...");
+				logger.fine("Running in master mode...");
 				new MasterNode(jle, PORT);
 			} catch (BindException e) {
-				logger.info("Master port in use.  Working as slave.");
+				logger.fine("Master port in use");
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.log(Level.FINE, "Connection failure in master node", e);
 			}
 
 			// if master node fails try to start slave node
 			try {
-				logger.info("Running in slave mode...");
+				logger.fine("Running in slave mode...");
 				new SlaveNode(jle, PORT);
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.log(Level.FINE, "Connection to master node failed", e);
 			}
 
-			logger.info("Restarting network mode");
+			logger.fine("Restarting network mode");
 
 			try {
-				Thread.sleep(500);
+				Thread.sleep(tries*500);
 			} catch (InterruptedException e) {
 				break;
 			}

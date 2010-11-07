@@ -21,7 +21,7 @@ public class GPropertiesCodeHelper extends PatternHelper {
   @Override
   public boolean matches() {
     if (super.matches()) {
-      key = params.get(0).word;
+      key = params.get(0).word.replaceAll("\\\\ ", " ");
       value = params.get(1);
 
       range = GProperties.getRange(key);

@@ -50,13 +50,17 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URI;
 import java.util.*;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener, TreeSelectionListener, SearchChangeListener {
   public static final File FILE_LAST_SESSION = new File(System.getProperty("user.home") + "/.jlatexeditor/last.session");
   public static final File FILE_RECENT = new File(System.getProperty("user.home") + "/.jlatexeditor/recent");
-  private JMenu recentFilesMenu;
-  private ArrayList<String> recentFiles = new ArrayList<String>();
 
+	/** Logger. */
+	private static Logger logger = Logger.getLogger(JLatexEditorJFrame.class.getName());
   private static String version = "*Bleeding Edge*";
   private static boolean updateDisabled = true;
   private static String windowTitleSuffix;
@@ -74,6 +78,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   }
 
   private JMenuBar menuBar = null;
+	private JMenu recentFilesMenu;
+	private ArrayList<String> recentFiles = new ArrayList<String>();
   private JTabbedPane tabbedPane = null;
   private JSplitPane textToolsSplit = null;
   private JTabbedPane toolsTab = null;
@@ -138,6 +144,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     } catch (Exception e) { }
     */
 
+		// init logging
+		initLogging();
+
     UIManager.put("TabbedPaneUI", "util.gui.SCETabbedPaneUI");
     UIManager.put("List.timeFactor", 200L);
     /*
@@ -153,7 +162,23 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     latexEditor.setVisible(true);
   }
 
-  public JLatexEditorJFrame(String args[]) {
+	private static void initLogging() {
+		try {
+			LogManager.getLogManager().readConfiguration(JLatexEditorJFrame.class.getResourceAsStream("/logging.properties"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		String jleLogLevel = GProperties.getString("log level.jlatexeditor");
+		if (!jleLogLevel.equals("<default>")) {
+			Logger.getLogger("jlatexeditor").setLevel(Level.parse(jleLogLevel));
+		}
+		String sceLogLevel = GProperties.getString("log level.sce");
+		if (!sceLogLevel.equals("<default>")) {
+			Logger.getLogger("sce").setLevel(Level.parse(sceLogLevel));
+		}
+	}
+
+	public JLatexEditorJFrame(String args[]) {
     super(windowTitleSuffix);
     this.args = args;
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -707,8 +732,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       editorChanged();
       return editor;
     } catch (IOException exc) {
-      System.out.println("Error opening file");
-      exc.printStackTrace();
+      logger.log(Level.SEVERE, "Error opening file", exc);
     }
     return null;
   }
@@ -805,7 +829,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
             diff_writer.write(Diff.diffPlain(text, backup));
           }
         } catch (Exception diffException) {
-          System.err.println("Local history, error starting diff: " + diffException.getMessage());
+          logger.log(Level.SEVERE, "Local history, error starting diff" + diffException);
         }
 
         diff_writer.println(LocalHistory.REVISION + Calendar.getInstance().getTime());
@@ -922,9 +946,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		return isOpen(file) || backgroundParser.isResponsibleFor(file);
 	}
 
-	@Override
-	public void requestFocus() {
-		super.requestFocus();
+	public void bringToFront() {
+		toFront();
 		getActiveEditor().getFocusedPane().requestFocus();
 	}
 
@@ -1080,7 +1103,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         }
         ProcessUtil.exec(array, mainEditor.getFile().getParentFile());
       } catch(Exception ex) {
-        System.err.println("Forward search failed: " + ex.getMessage());
+        logger.log(Level.SEVERE, "Forward search failed", ex);
       }
     } else
 
@@ -1552,7 +1575,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
     public void propertyChange(PropertyChangeEvent evt) {
       String shortcut = (String) evt.getNewValue();
-      System.out.println(shortcut);
       if (shortcut == null) {
         shortcut = "";
       }

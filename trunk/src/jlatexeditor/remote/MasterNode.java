@@ -2,18 +2,12 @@ package jlatexeditor.remote;
 
 import jlatexeditor.Doc;
 import jlatexeditor.JLatexEditorJFrame;
-import jlatexeditor.gproperties.GProperties;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -42,7 +36,7 @@ public class MasterNode {
 
 			SocketConnection conn = new SocketConnection(socket);
 			String line = conn.receive();
-			logger.info("reading: " + line);
+			logger.fine("reading: " + line);
 
 			if (line == null) {
 				conn.close();
@@ -110,7 +104,7 @@ public class MasterNode {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         jle.open(new Doc.FileDoc(file), lineNr);
-        jle.requestFocus();
+        jle.bringToFront();
       }
     });
   }
