@@ -33,7 +33,7 @@ public class SlaveNode {
 	public void run() throws IOException {
 		while (true) {
 			String line = conn.receive();
-			logger.info("reading: " + line);
+			logger.fine("reading: " + line);
 			if (line == null) throw new IOException("InputStream closed");
 
 			if (line.startsWith("is open?: ")) {
@@ -64,7 +64,7 @@ public class SlaveNode {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         jle.open(new Doc.FileDoc(file), lineNr);
-        jle.requestFocus();
+        jle.bringToFront();
       }
     });
   }

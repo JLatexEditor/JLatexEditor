@@ -45,6 +45,7 @@ public class GProperties {
   public static final Range BOOLEAN = BetterProperties2.BOOLEAN;
   public static final Range STRING = BetterProperties2.STRING;
   public static final Range SHORTCUT = BetterProperties2.SHORTCUT;
+  public static final Range LOGLEVEL = BetterProperties2.LOGLEVEL;
 
   private static final String EDITOR_FONT_NAME = "editor.font.name";
   private static final String EDITOR_FONT_SIZE = "editor.font.size";
@@ -193,6 +194,11 @@ public class GProperties {
     properties.addEntry(new Comment(" forward search"));
     properties.addEntry(new Def("forward search.viewer", STRING, ""));
     properties.addEntry(new Def("inverse search.port", INT_GT_0, "13231"));
+
+	  properties.addEntry(new Comment("\n## Debugging"));
+    properties.addEntry(new Comment(" global log level"));
+	  properties.addEntry(new Def("log level.jlatexeditor", LOGLEVEL, "<default>"));
+	  properties.addEntry(new Def("log level.sce", LOGLEVEL, "<default>"));
 
     load();
     save();
