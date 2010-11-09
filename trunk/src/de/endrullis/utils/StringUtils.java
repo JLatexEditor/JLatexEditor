@@ -94,7 +94,7 @@ public class StringUtils{
 	}
 
 	/**
-	 * Tokenizes a text.
+	 * Tokenizes a text by using white spaces as delimiters and with respect to quoted strings.
 	 *
 	 * @param text text
 	 * @return list of tokens
