@@ -26,22 +26,10 @@ public class ProcessUtil {
   }
 
 	public static Process exec(String command, File dir) throws IOException {
-	  Process process;
-
-	  ArrayList<String> env = new ArrayList<String>();
-	  for (Map.Entry<String, String> entry : System.getenv().entrySet()) {
-	    if (entry.getKey().equalsIgnoreCase("PWD")) continue;
-	    env.add(entry.getKey() + "=" + entry.getValue());
-	  }
-	  String[] envArray = new String[env.size()];
-	  env.toArray(envArray);
-
 		ArrayList<String> list = StringUtils.tokenize(command);
 		String[] array = new String[list.size()];
 		list.toArray(array);
 
-	  process = Runtime.getRuntime().exec(array, envArray, dir);
-
-	  return process;
+	  return exec(array, dir);
 	}
 }
