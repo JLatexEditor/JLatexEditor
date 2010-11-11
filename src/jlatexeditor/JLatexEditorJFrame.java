@@ -293,6 +293,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       forwardSearch.add(createMenuItem("Skim", "forward search: /Applications/Skim.app/Contents/SharedSupport/displayline %line \"%file.pdf\" \"%texfile\"", null));
       forwardSearch.add(createMenuItem("xdvi", "forward search: xdvi -sourceposition \"%line&nbsp;%file.dvi\" -nofork", null));
       forwardSearch.add(createMenuItem("kdvi", "forward search: kdvi --unique \"file:%file.dvi#src:%line&nbsp;%texfile\"", null));
+      forwardSearch.add(createMenuItem("okular", "forward search: okular --unique \"file:%file.pdf#src:%line&nbsp;%texfile\"", null));
     }
     settingsMenu.add(forwardSearch);
     settingsMenu.add(createMenuItem("Global Settings", "global settings", 'G'));
@@ -1101,7 +1102,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
           array[index] = token;
           System.out.println(token);
         }
-        ProcessUtil.exec(array, mainEditor.getFile().getParentFile());
+        ProcessUtil.exec(array, getMainEditor().getFile().getParentFile());
       } catch(Exception ex) {
         logger.log(Level.SEVERE, "Forward search failed", ex);
       }
