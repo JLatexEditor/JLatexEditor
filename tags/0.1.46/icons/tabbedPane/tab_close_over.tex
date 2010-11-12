@@ -1,0 +1,32 @@
+
+\documentclass[times,10pt,twocolumn]{article} 
+\usepackage[english]{babel}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,amstext,amsthm}
+\usepackage{comment}
+\usepackage{color}
+\usepackage{wrapfig}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,automata,backgrounds,calc,chains,fadings,folding,decorations.fractals,decorations.pathreplacing,fit,patterns,positioning,mindmap,shadows,shapes.geometric,shapes.symbols,through,trees,plotmarks}
+
+\colorlet{mgray}{black!60}
+
+\begin{document}
+\pagestyle{empty}
+\scalebox{5}{
+  \begin{tikzpicture}[very thick,mgray]
+    \coordinate (center) at (0,0);
+    \coordinate (ul) at (-1mm,1mm);
+    \coordinate (ur) at (1mm,1mm);
+    \coordinate (ll) at (-1mm,-1mm);
+    \coordinate (lr) at (1mm,-1mm);
+    \shadedraw [draw=none,top color=mgray!25,bottom color=mgray,shading=axis,shading angle=45] (center) circle (2mm);
+    \draw [white] (ul) -- (lr);
+    \draw [white] (ur) -- (ll);
+  \end{tikzpicture}
+}
+\end{document}
+
+
