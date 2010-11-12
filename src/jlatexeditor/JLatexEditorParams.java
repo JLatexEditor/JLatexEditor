@@ -14,6 +14,7 @@ public class JLatexEditorParams extends ParamsExt2 {
 			"[" + underline("File2") + "[" + bold(":") + underline("LineNumber") + "]] ...]");
 	}
 
-	public Option help  = option("help",  'h', "prints help dialog");
-	public Option color = option("color", 'c', "sets color mode for output (" + bold("on") + ", " + bold("off") + ", or " + bold("auto") + ")", 1);
+	public Option color   = option("color",    'c', "sets color mode for output (" + bold("on") + ", " + bold("off") + ", or " + bold("auto") + ")", 1);
+	public Option help    = option("help",     'h', "prints help dialog");
+	public Option version = option("version",  'v', "prints version of " + bold("JLatexEditor"));
 }

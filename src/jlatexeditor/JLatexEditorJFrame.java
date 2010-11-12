@@ -153,6 +153,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 			params.printHelp();
 			System.exit(0);
 		}
+		if (params.version.isSet()) {
+			System.out.println("JLatexEditor " + version);
+			System.exit(0);
+		}
 
 		UIManager.put("TabbedPaneUI", "util.gui.SCETabbedPaneUI");
     UIManager.put("List.timeFactor", 200L);
