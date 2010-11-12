@@ -1,0 +1,63 @@
+<html>
+
+<head>
+
+    <title>Help On LaTeX \vector</title>
+
+    <link rel="stylesheet" type="text/css" title="Help with LaTeX" href="latex.css">
+
+</head>
+
+<body>
+
+
+<h2>\vector</h2>
+
+
+<p><tt>\vector(x-slope,y-slope){length}</tt></p>
+
+
+<p>The <tt>\vector</tt> command draws an arrow of the specified
+
+    length and slope with the arrow head at the opposite end of the
+
+    line from the reference point (see
+
+    <tt><a href="ltx-296.html">\put</a></tt>).</p>
+
+
+<p>The slope is determined by <tt>(x-slope,y-slope)</tt> which
+
+    are signed integers of magnitude less than or equal to 4 and
+
+    which have no common divisor except for plus or minus one; For
+
+    example (1,0) is a horizontal arrow pointing right; (1,1) gives
+
+    a slope of 45 degress; (0,1) is a vertical arrow pointing up;
+
+    (-1,1) is at 135 degrees.</p>
+
+
+<p>The <strong>horizontal</strong> extent of the arrow is given
+
+    by the <tt>length</tt> parameter, except in the case of a
+
+    vertical arrow in which case <tt>length</tt> specifies the
+
+    vertical height.</p>
+
+
+<hr noshade="noshade" size="1">
+
+
+<p>
+
+    See also <a href="ltx-27.html">Environments</a>,
+
+    <a href="ltx-43.html">picture</a><br>
+
+    See also <tt><a href="ltx-257.html">\line</a></tt><br>
+
+</body>
+</html>
