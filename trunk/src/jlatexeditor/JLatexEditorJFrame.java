@@ -1424,7 +1424,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
         // open files given in command line
         for (String arg : args) {
-          open(new Doc.FileDoc(new File(arg)));
+          openSeek(arg);
         }
         openDialog.setDialogTitle("Open");
         if (args.length > 0) {
