@@ -1,0 +1,648 @@
+%
+% In this section we define a translation function for flat and friendly nesting stream specifications $\atrs$.
+% Thereby the root $\rootsc$ of $\atrs$ 
+% is mapped to a production term $\trnsl{\rootsc}$ 
+% with the property that if\/ $\atrs$ is flat (friendly nesting), 
+% then the \daob{} production of $\rootsc$ in $\atrs$ 
+% equals (is bounded from below by) 
+% the production of $\trnsl{\rootsc}$.
+%
+In this section we define a translation 
+from stream constants in flat
+ % from terms with a stream constant at the root in flat
+or friendly nesting specifications to production terms.
+In particular, the root $\rootsc$ of a specification $\atrs$ 
+is mapped by the translation to a production term $\trnsl{\rootsc}$ 
+with the property that if\/ $\atrs$ is flat (friendly nesting), 
+then the \daob{} lower bound on the production of $\rootsc$ in $\atrs$ 
+equals (is bounded from below by) 
+the production of~$\trnsl{\rootsc}$.
+
+\subsection{Translation of Flat and Friendly Nesting Symbols}\label{sec:translation:subsec:functions}
+
+%
+% As a first step of the translation, 
+% we describe how for a stream function symbol $\astrfun$ 
+% in a flat stream specification $\atrs$ 
+% the \daob{} lower bound on the production of $\astrfun$, % (Def.~\ref{def:doRng:fun}),
+% a periodically increasing function $\sdtrnsl{\astrfun}$,
+% can be calculated.
+% 
+
+% The translation for terms with a stream constant at the root, described
+% in Subsec.~\ref{sec:translation:subsec:constants} will make use
+% of the 
+
+As a first step of the translation, 
+we describe how for a flat (or friendly nesting) 
+stream function symbol $\astrfun$ in a stream specification $\atrs$ 
+a periodically increasing function $\sdtrnsl{\astrfun}$
+can be calculated
+that is (that bounds from below)
+the \daob{} lower bound on the production of $\astrfun$
+in $\atrs$. % (Def.~\ref{def:doRng:fun}).
+%
+%Before presenting the formal definition of the translation of stream functions,
+%First we consider our running example from Fig.~\ref{fig:Pascal} with the rules
+\pagebreak
+
+Let us again consider the rules
+(i)~$\funap{\astrfun}{\strcns{\numsuc{x}}{\strcns{y}{\astr}}} 
+  \red \strcns{\numadd{\numsuc{x}}{y}}{\funap{\astrfun}{\strcns{y}{\astr}}}$,
+and
+(ii)~$\funap{\astrfun}{\strcns{\numzer}{\astr}} 
+  \red \strcns{\numzer}{\strcns{\numsuc{\numzer}}{\funap{\astrfun}{\astr}}}$
+  from Fig.~\ref{fig:pascal}.
+We model the \daob{} lower bound on the production of $\astrfun$ 
+by a function from $\conat$ to $\conat$ %$\sdtrnsl{\astrfun} \funin \conat \to \conat$
+defined as the unique solution for $\specvar{\astrfun}$ of the following system of equations.
+We disregard what the concrete stream elements are,
+and therefore we take the infimum over all possible traces:
+%\pagebreak
+\[
+  \specvarap{\astrfun}{n} 
+  = \inf\, \big\{ \specvarap{\astrfun,\text{(i)}}{n}, \specvarap{\astrfun,\text{(ii)}}{n} \big\}
+\]
+where the solutions for $\specvar{\astrfun,\text{(i)}}$ and $\specvar{\astrfun,\text{(ii)}}$
+are the \daob{} lower bounds of $\astrfun$ assuming
+that the first rule applied in the rewrite sequence is (i) or (ii), respectively.
+The rule~(i) consumes two elements, produces one element 
+and feeds one element back to the recursive call.
+For rule~(ii) these numbers are 1, 2, 0 respectively.
+Therefore we get:
+\begin{align*}
+  \specvarap{\astrfun,\text{(i)}}{n} 
+  & = \letin{n' \defdby n-2},\;
+      \text{if $n' < 0$ then $0$ else $1 + \specvarap{\astrfun}{n'+1}$}
+  \punc,
+  \\
+  \specvarap{\astrfun,\text{(ii)}}{n} 
+  & = \letin{n' \defdby n-1},\; 
+      \text{if $n' < 0$ then $0$ else $2 + \specvarap{\astrfun}{n'+0}$}
+  \punc.
+\end{align*}
+The unique solution for $\specvar{\astrfun}$ is $n \mapsto \cosubtr{n}{1}$, 
+represented by the \ioterm{} $\ios{-}{-+}$. \label{trans:Pascal:f}
+
+In general, functions may have multiple arguments, 
+which during rewriting may get permuted,  duplicated or deleted.
+The idea is to track single arguments, and take the infimum 
+over all branches in case an argument is duplicated.
+
+For example, the rule 
+$\funap{\strff{zip}}{\strcns{x}{\astr}, \bstr} \to \strcns{x}{\funap{\strff{zip}}{\bstr,\astr}}$
+with a permutation of the stream arguments, gives rise to the following specification:
+\begin{align*}
+  \specvarap{\strff{zip},1}{n}
+    &= \letin{n' \defdby n-1},\;
+       \text{if $n' < 0$ then $0$ else $1 + \specvarap{\strff{zip},2}{n'}$}
+  \\
+  \specvarap{\strff{zip},2}{n}
+    &= \letin{n' \defdby n-0},\;
+       \text{if $n' < 0$ then $0$ else $1 + \specvarap{\strff{zip},1}{n'}$}
+  \punc,
+\end{align*}
+and duplication of arguments like in the rule
+$\funap{\astrfun}{\strcns{x}{\astr}} \to \funap{\bstrfun}{\astr, \strcns{x}{\astr}}$
+yields:
+\begin{align*}
+  \specvarap{\astrfun,1}{n}
+    &= \letin{n' \defdby n-1},\;
+       \text{if $n' < 0$ then $0$ else $\inf\, \big\{ \specvarap{\bstrfun,1}{n'}, \specvarap{\bstrfun,2}{1+n'} \big\}$}
+  \punc.
+\end{align*}
+
+For a recursion variable $\sspecvar$ let $\suniqsolrecvar{\sspecvar}$ be the unique solution for $\sspecvar$.
+The intuition behind the recursion variables is as follows.
+Let $\astrfun$ be a flat stream function symbol with stream arity $k$.
+%and data arity $0$. %, and, for simplicity, with data arity $0$.
+%
+Then the solution $\suniqsolrecvar{\specvar{\astrfun}}$ for $\specvar{\astrfun}$
+models the \daob{} lower bound on the production of $\astrfun$,
+that is, $\suniqsolrecvar{\specvar{\astrfun}} = \doLow{\atrs}{\astrfun}$.
+%
+Furthermore, the variables $\specvar{\astrfun,i}$ for $1 \le i \le k$
+describe how the consumption from the $i$-th argument of $\astrfun$
+`retards' the production of $\astrfun$, more precisely, 
+\(
+  \suniqsolrecvar{\specvar{\astrfun,i}} 
+  = \mylam{n}{
+      \doLow{\atrs}{
+        \funap{\astrfun}{
+          \trspeb^{\conattop},\ldots,\trspeb^{\conattop},
+          \trspeb^{n},
+          \trspeb^{\conattop},\ldots,\trspeb^{\conattop}
+        }
+      }
+    }
+\).
+%
+
+Finally, 
+%as an example of deletion, % of stream arguments,
+consider
+$\funap{\cstrfun}{\strcns{x}{\astr}} \to \strcf{Y}$,
+$\strcf{Y} \to \strcns{0}{\strcf{Z}}$ and
+$\strcf{Z} \to \strcf{Z}$,
+a specification illustrating the case of deletion of stream arguments. % get deleted.
+To translate stream functions like $\cstrfun$
+we extend the translation of flat stream functions to include flat stream constants.
+To cater for the case that there are no stream arguments or all stream arguments get deleted during reduction,
+we introduce fresh recursion variables $\specvar{\astrfun,\argnone}$ for every stream symbol $\astrfun$.
+The variable $\specvar{\astrfun,\argnone}$ expresses
+the production of $\astrfun$ assuming infinite supply in each argument, that is,
+\(
+  \suniqsolrecvar{\specvar{\astrfun,\argnone}} 
+  = \doLow{\atrs}{\funap{\astrfun}{\trspeb^{\conattop},\ldots,\trspeb^{\conattop}}}
+\).
+
+Therefore in the definition of the translation of stream functions, 
+we need to distinguish the cases according to whether a symbol is weakly guarded or not.
+
+\begin{definition}\normalfont\label{def:weaklyguarded}
+%Let $\pair{\Sigma}{R}$ be a stream specification.
+We define the \emph{dependency relation $\sugsfsleadsto$} between symbols in $\Ssmincns$ by
+\(
+  {\sugsfsleadsto} 
+  \defdby 
+  \{ 
+    \pair{\strff{f}}{\strff{g}} \in {\Ssmincns\times\Ssmincns}
+    \where 
+    {
+      \funap{\strff{f}}{\vec{\astrtrm},\vec{\adattrm}} 
+      \to 
+      \funap{\strff{g}}{\vec{\bstrtrm},\vec{\bdattrm}} 
+    } 
+    \in \Rs
+    %,\; \text{`$\sstrcns$'} \neq \rootsymb{r} \in \Ssmincns 
+    %\pair{\rootsymb{\ell}}{\rootsymb{r}} 
+    %\where {\ell\to r} \in \Rs,\; \text{`$\sstrcns$'} \neq \rootsymb{r} \in \Ssmincns 
+  \}
+\)
+(remember that $\text{`$\sstrcns$'}\not\in\Ssmincns$).
+%
+We say that a symbol $\astrfun \in \Ssmincns$ is \emph{weakly guarded}
+\pagebreak
+if $\astrfun$ is strongly normalising with respect to $\sugsfsleadsto$ 
+and \emph{unguarded}, otherwise.
+\end{definition}
+
+%
+% The translation of a stream function symbol
+% is defined as the unique solution of a (potentially infinite) 
+% system of defining equations where the unknowns are functions.
+% More precisely, for each symbol $\astrfun \in \Ssf$ of a flat,
+% or friendly nesting, stream specification, 
+% this system has a \pein{} function 
+% $\sdtrnsl{\astrfun}$ %\funin(\conat)^{\arityS{\astrfun}}\to\conat$
+% as a solution for $\specvar{\astrfun}$, which is unique among the continuous functions.
+% In~\cite{endr:grab:hend:2008} we present an algorithm that effectively calculates 
+% these solutions in the form of gates. % $\trmrep{\sdtrnsl{\astrfun}}$. %\ioterm{s}.
+%
+The translation of a stream function symbol
+is defined as the unique solution of a (potentially infinite) 
+system of defining equations where the unknowns are functions.
+More precisely, for each symbol $\astrfun \in \Sfnest \supseteq \Ssf$ of a flat
+or friendly nesting stream specification, 
+this system has a \pein{} function 
+$\sdtrnsl{\astrfun}$ %\funin(\conat)^{\arityS{\astrfun}}\to\conat$
+as a solution for $\specvar{\astrfun}$, 
+which is unique among the continuous functions.
+In~\cite{endr:grab:hend:2008} we present an algorithm that effectively calculates 
+these solutions in the form of gates. % $\trmrep{\sdtrnsl{\astrfun}}$. %\ioterm{s}.
+%
+\begin{definition}\normalfont\label{def:transl:nnSFS}\label{def:transl:frSFS}
+  %
+  Let $\pair{\Sigma}{R}$ be a stream specification.
+  % Let $\pair{\Sigma}{R}$ be a friendly nesting (or flat) stream specification.
+  For each flat or friendly nesting symbol
+  $\astrfun \in \Sfnest \supseteq \Sflat$ with 
+  arities $k = \arityS{\astrfun}$ and $\ell = \arityD{\astrfun}$
+  we define $\sdtrnsl{\astrfun}\funin\conat^{\,k}\to\conat$, 
+  the \emph{translation of\/ $\astrfun$}, as 
+  $\sdtrnsl{\astrfun} \defdby \suniqsolrecvar{\specvar{\astrfun}}$
+  where $\suniqsolrecvar{\specvar{\astrfun}}$ is the unique solution  
+  for $\specvar{\astrfun}$ of the following system of equations:\\
+  For all $n_1,\ldots,n_k\in\conat$, $i \in \{1,\ldots,k\}$, and $n\in\nat$:
+  %
+  \begin{gather*}
+    \specvarap{\astrfun}{n_1,\ldots,n_k}
+    = \inf\, \big\{
+        \specvar{\astrfun,\argnone},
+        \specvarap{\astrfun,1}{n_1},
+        \ldots,
+        \specvarap{\astrfun,k}{n_k}
+      \big\}
+    \punc{,}
+    \\
+    \specvar{\astrfun,\argnone}
+    = \begin{cases}
+        \inf\,
+          \big\{
+            \specvar{\astrfun,\argnone,\rho}
+            \where \text{$\rho$ a defining rule of $\astrfun$}
+          \big\}
+        & \text{if $\astrfun$ is weakly guarded,} \\[-0.4ex]
+        0 & \text{if $\astrfun$ is unguarded,}
+      \end{cases}
+    \\
+    \specvarap{\astrfun,i}{n}
+    = \begin{cases}
+        \inf\,
+          \big\{
+            \specvarap{\astrfun,i,\rho}{n}
+            \where \text{$\rho$ a defining rule of $\astrfun$}
+          \big\}
+        & \text{if $\astrfun$ is weakly guarded,} \\[-0.4ex]
+        0 & \text{if $\astrfun$ is unguarded.}
+      \end{cases}
+  \end{gather*}
+  %%
+  We write $\strcns{\vec{\adattrm}_i}{\astr_i}$ for 
+  $\strcns{\adattrm_{i,1}}{\strcns{\ldots}{\strcns{\adattrm_{i,p}}{\astr_i}}}$,
+  and $\lstlength{\vec{\adattrm}_i}$ for $p$.
+  %
+  For $\specvar{\astrfun,\argnone,\rho}$ and $\specvar{\astrfun,i,\rho}$ 
+  we distinguish the possible forms the rule $\rho$ can have.
+  If $\rho$ is nesting, then
+  $\specvar{\astrfun,\argnone,\rho} = \conattop$,
+  and 
+  $\specvarap{\astrfun,i,\rho}{n} = n$ for all $n \in \conat$.
+  Otherwise, $\rho$ is non-nesting and of the form:
+  \[
+    \funap{\astrfun}{
+      (\strcns{\vec{\adattrm}_1}{\astr_1}),
+      \ldots,
+      (\strcns{\vec{\adattrm}_{k}}{\astr_{k}}),
+      \bdattrm_1,\ldots,\bdattrm_{\ell}
+    }
+    \red
+    \strcns{\cdattrm_{1}}{\strcns{\ldots}{\strcns{\cdattrm_{m}}{\astrtrm}}}
+    \punc,
+  \]
+  where either (a)~$\astrtrm \equiv \astr_j$, or
+  (b)~\(
+        \astrtrm \equiv
+        \funap{\bstrfun}{
+        (\strcns{\vec{\ddattrm}_{\!1}}{\astr_{\permut{1}}}),
+        \ldots,
+        (\strcns{\vec{\ddattrm}_{\!k'}}{\astr_{\permut{k'}}}),
+        \edattrm_1,\ldots,\edattrm_{\ell'}}
+      \)
+  with $k' = \arityS{\bstrfun}$, $\ell' = \arityD{\bstrfun}$, and
+  $\spermut \funin \{1,\ldots,k'\} \to \{1,\ldots,k\}$.
+  Then we add: %Let:
+  \begin{align*}
+    \specvar{\astrfun,\argnone,\rho} = \
+      &
+      \begin{cases}
+        \conattop &\text{case~(a)} \\
+        m + \specvar{\bstrfun,\argnone} &\text{case~(b)}
+      \end{cases}
+    \\
+    \specvarap{\astrfun,i,\rho}{n} = \
+      &\letin{n' \defdby n - \lstlength{\vec{\adattrm}_i}}
+      \text{, if $n' < 0$ then $0$ else }\\
+      &
+      m +
+      \begin{cases}
+        n'
+        &\text{case~(a), $i = j$} \\
+        \conattop
+        &\text{case~(a), $i \neq j$} \\
+        \inf\,
+          \big\{
+            \specvar{\bstrfun,\argnone},\;
+            \specvarap{\bstrfun,j}{n' + \lstlength{\vec{\ddattrm}_{\!j}}}
+            \where j \in {\funap{\invfun{\spermut}}{i}}
+          \big\}
+        &\text{case~(b)}
+        \punc.
+      \end{cases}
+  \end{align*}
+  %
+  %where we agree $\inf \setemp = \conattop$.
+\end{definition}
+%
+
+\begin{proposition}
+  %
+  Let $\atrs$ be a stream specification,
+  and $\astrfun \in \Sfnest \supseteq \Sflat$ a stream function
+  symbol with $k = \arityS{\astrfun}$. 
+  The system of recursive equations described 
+  in Def.~\ref{def:transl:nnSFS} has 
+  a \mbox{$k$-ary} \pein~function
+  as its unique solution for $\specvar{\astrfun}$,
+  which we denote by $\sdtrnsl{\astrfun}$.
+  Furthermore, the gate representation $\trmrep{\sdtrnsl{\astrfun}}$ of $\sdtrnsl{\astrfun}$ can be computed.
+%   and for which  the gate representation
+%   $\trmrep{\sdtrnsl{\astrfun}}$ can be computed. 
+  %
+\end{proposition}
+
+
+
+% For the translation of friendly nesting %defining 
+% rules we use that their production is bounded below by `$\min$'.
+% These bounds are not necessarily optimal,
+% but can be used to show productivity of examples like 
+% $\strcf{X} \to \strcns{\datf{0}}{\funap{\astrfun}{\strcf{X}}}$ with
+% $\funap{\astrfun}{\strcns{x}{\astr}} \to \strcns{x}{\funap{\astrfun}{\funap{\astrfun}{\astr}}}$.
+%
+Concerning non-nesting rules on which defining rules for 
+friendly nesting symbols depend via $\sdependson$,
+this translation uses the fact that 
+their production is bounded below by `$\min$'.
+These bounds are not necessarily optimal,
+but can be used to show productivity of examples like Ex.~\ref{ex:ff}.
+
+\begin{example}\label{ex:pure}
+  Consider a pure stream specification with the function layer: % consisting of the rules:
+  %
+  \begin{gather*}
+    \funap{\astrfun}{\strcns{x}{\astr}} \to \strcns{x}{\tfunap{\bstrfun}{\astr}{\astr}{\astr}} \punc,
+    \\
+    \tfunap{\bstrfun}{\strcns{x}{\strcns{y}{\astr}}}{\bstr}{\cstr} 
+    \to \strcns{x}{\tfunap{\bstrfun}{\strcns{y}{\bstr}}{\strcns{y}{\cstr}}{\strcns{y}{\astr}}} \punc.
+  \end{gather*}
+  %
+  The translation of $\astrfun$ is $\sdtrnsl{\astrfun}$,
+  the unique solution for $\specvar{\astrfun}$ of the system:
+  %
+  \begin{align*}
+    \specvarap{\astrfun}{n} 
+    =\ &\inf\, \big\{ \specvar{\astrfun,\argnone},\, \specvarap{\astrfun,1}{n} \big\}\\
+    \specvarap{\astrfun,1}{n}
+    =\ &\letin{n' \defdby n-1}\\
+      &\text{if $n' < 0$ then $0$ else } 
+      1 + 
+      \inf\, \big\{ \specvar{\bstrfun,\argnone},\, \specvarap{\bstrfun,1}{n'},\, \specvarap{\bstrfun,2}{n'},\, 
+                 \specvarap{\bstrfun,3}{n'} \big\}
+    \\
+    \specvar{\astrfun,\argnone}
+    =\ &1 + \specvar{\bstrfun,\argnone}
+    \\
+    \specvarap{\bstrfun,1}{n}
+    =\ &\letin{n' \defdby n-2},\;
+      \text{if $n' < 0$ then $0$ else $1 + \inf\, \big\{ \specvar{\bstrfun,\argnone},\, \specvarap{\bstrfun,3}{1 + n'} \big\}$}
+    \\
+    \specvarap{\bstrfun,2}{n}
+    =\ &1 + \inf\, \big\{ \specvar{\bstrfun,\argnone},\, \specvarap{\bstrfun,1}{1 + n} \big\}
+    \\
+    \specvarap{\bstrfun,3}{n}
+    =\ &1 + \inf\, \big\{ \specvar{\bstrfun,\argnone},\, \specvarap{\bstrfun,2}{1 + n} \big\}
+    \\
+    \specvar{\bstrfun,\argnone}
+    =\ &1 + \specvar{\astrfun,\argnone}
+  \end{align*}
+  %
+  An algorithm for solving such systems of equations is described
+  in~\cite{endr:grab:hend:2008}; here we solve the system directly.
+  Note that $\specvar{\astrfun,\argnone} = \specvar{\bstrfun,\argnone} = \conattop$,
+  and therefore
+  $\specvarap{\bstrfun,3}{n} = 1 + \specvarap{\bstrfun,2}{n+1} = 2 + \specvarap{\bstrfun,1}{n+2} = 3 + \specvarap{\bstrfun,3}{n}$,
+  hence $\myall{n \in \nat}{\specvarap{\bstrfun,3}{n} = \conattop}$.
+  Likewise we obtain $\specvarap{\bstrfun,2}{n} = \conattop$ if $n \ge 1$ and $1$ for $n = 0$,
+  and $\specvarap{\bstrfun,1}{n} = \conattop$ if $n \ge 2$ and $0$ for $n \le 1$.
+  Then if follows that $\dtrnsl{\astrfun}{0}=0$, $\dtrnsl{\astrfun}{1}=\dtrnsl{\astrfun}{2}=1$,
+  and $\dtrnsl{\astrfun}{n}=\conattop$ for all $n\geq 2$,
+  represented by the gate $\trmrep{\sdtrnsl{\astrfun}}=\netgate{\ios{-+--}{+}}$.
+  The gate corresponding to $\bstrfun$ is 
+  $\trmrep{\sdtrnsl{\bstrfun}}=\netgate{\ios{--}{+},\ios{+-}{+},\ios{}{+}}$.
+  \end{example}
+  %
+  %
+  \begin{example}\label{ex:flat}
+  Consider a flat stream function specification
+  with the following rules which use % make use of 
+  pattern matching on the data constructors $\datf{0}$ and $\datf{1}$:
+  \begin{align*}
+    \funap{\astrfun}{\strcns{\datf{0}}{\astr}} &\to \funap{\bstrfun}{\astr}
+    &
+    \funap{\astrfun}{\strcns{\datf{1}}{\strcns{x}{\astr}}} &\to \strcns{x}{\funap{\bstrfun}{\astr}}
+    &
+    \funap{\bstrfun}{\strcns{x}{\strcns{y}{\astr}}} &\to \strcns{x}{\strcns{y}{\funap{\bstrfun}{\astr}}}
+  \end{align*}
+  %
+  denoted $\rho_{\astrfunsub_\datf{0}}$, $\rho_{\astrfunsub_\datf{1}}$, 
+  and $\rho_{\bstrfunsub}$, respectively.
+  Then, $\sdtrnsl{\astrfun}$ is the solution for $\specvar{\astrfun,1}$ of:
+  %
+  \begin{align*}
+    \specvarap{\astrfun}{n} 
+    &= \inf\, \big\{ \specvar{\astrfun,\argnone},\, \specvarap{\astrfun,1}{n} \big\}\\
+    \specvarap{\astrfun,1}{n} 
+    &= 
+    \inf\, \big\{
+      \specvarap{\astrfun,1,\rho_{\astrfunsub_\datf{0}}}{n},\,
+      \specvarap{\astrfun,1,\rho_{\astrfunsub_\datf{1}}}{n} \big\}
+    \\
+    \specvarap{\astrfun,1,\rho_{\astrfunsub_\datf{0}}}{n}
+    & = 
+    \letin{n' \defdby n-1},\;
+    \text{if $n' < 0$ then $0$ else $\big\{ \specvar{\bstrfun,\argnone},\, \specvarap{\bstrfun,1}{n'} \big\}$}
+    \\
+    \specvarap{\astrfun,1,\rho_{\astrfunsub_\datf{1}}}{n}
+    &=
+    \letin{n' \defdby n-2},\;
+    \text{if $n' < 0$ then $0$ else $1 + \big\{ \specvar{\bstrfun,\argnone},\, \specvarap{\bstrfun,1}{n'} \big\}$}
+    \\
+    \specvar{\astrfun,\argnone}
+    &= \inf\, \big\{ \specvar{\bstrfun,\argnone},\, 1 + \specvar{\bstrfun,\argnone} \big\}
+    \\
+    \specvarap{\bstrfun,1}{n}
+    &=
+    \letin{n' \defdby n-2},\;
+    \text{if $n' < 0$ then $0$ else $2 + \big\{ \specvar{\bstrfun,\argnone},\, \specvarap{\bstrfun,1}{n'} \big\}$}
+    \\
+    \specvar{\bstrfun,\argnone}
+    &= 2 + \specvar{\bstrfun,\argnone}
+    \punc.
+  \end{align*}
+  As solution we obtain an overlapping of both traces 
+  $\sdtrnsli{\astrfun}{1,\rho_{\astrfunsub_\datf{0}}}$ and 
+  $\sdtrnsli{\astrfun}{1,\rho_{\astrfunsub_\datf{1}}}$,
+  that is, 
+  $\dtrnsli{\astrfun}{1}{n} = \cosubtr{n}{2}$
+  represented by the gate %\ioterm{}
+  $\trmrep{\sdtrnsl{\astrfun}} = \netgate{\ios{--}{-+}}$.
+\end{example}
+
+The following lemma states that the translation $\sdtrnsl{\astrfun}$ 
+of a flat stream function symbol $\astrfun$ (as defined in Def.~\ref{def:transl:frSFS})
+is the \daob{} lower bound on the production function of $\astrfun$.
+For friendly nesting stream symbols $\astrfun$ it states
+that $\sdtrnsl{\astrfun}$ pointwisely bounds from below
+the \daob{} lower bound on the production function of $\astrfun$.
+
+\begin{lemma}\label{lem:transl:soundness}
+  Let $\atrs$ be a stream specification, 
+  and let\/ $\astrfun \in \Sfnest \supseteq \Sflat$.
+  %
+  \begin{enumerate}
+    \item If\/ $\astrfun$ is flat, then:\/
+      $\sdtrnsl{\astrfun} = \doLow{\atrs}{\astrfun}$.
+      Hence, $\doLow{\atrs}{\astrfun}$ is periodically increasing.
+    \item If\/ $\astrfun$ is friendly nesting, then it holds:\/
+      $\sdtrnsl{\astrfun} \le \doLow{\atrs}{\astrfun}$
+      (pointwise inequality).
+  \end{enumerate}
+  %
+\end{lemma}
+
+% \begin{proposition}\label{cor:transl:soundness}
+%   Let $\atrs$ be a flat, or friendly nesting, stream specification. 
+%   Then $\{\trnsl{\astrfun}\}_{\astrfun\in\Ssf}$
+%   is a family of gates 
+%   that bounds from below the production of the symbols in $\Ssf$.
+% \end{proposition}
+
+
+\subsection{Translation of Stream Constants}
+  \label{sec:translation:subsec:constants}
+
+% In the second step, we define a translation of stream constants
+% in a flat or friendly nesting stream specification into production terms.
+% Here the idea is that the recursive definition of a stream constant 
+% $\msf{M}$ is unfolded step by step;
+% the terms thus arising are translated according to their
+% structure using gate translations of the stream function symbols
+% from a given family of gates;
+% whenever a stream constant is met that has been unfolded before,
+% the translation stops after establishing a binding to a $\mu$-binder 
+% created earlier.
+
+In the second step, we now define a translation of 
+  % stream constant terms
+  stream constants
+in a flat or friendly nesting stream specification into production terms
+under the assumption that gate translations for the stream functions are given.
+Here the idea is that the recursive definition of a stream constant 
+$\msf{M}$ is unfolded step by step;
+the terms thus arising are translated according to their
+structure using gate translations of the stream function symbols
+from a given family of gates;
+whenever a stream constant is met that has been unfolded before,
+the translation stops after establishing a binding to a $\mu$-binder 
+created earlier.
+
+
+\begin{definition}\label{def:trnsl:nets}\normalfont
+  %
+  Let $\atrs$ be a stream specification, $\astrcon \in \Ssc$,
+  and $\afam = \{\fgate\}_{\astrfun\in\Ssf}$ a family of gates.
+  % associated with the symbols in $\Ssf$.
+  %
+  The \emph{translation $\trnslF{\astrcon}{\afam}\in\net$
+  of $\astrcon$ with respect to $\afam$}
+  is defined by
+  $\trnslF{\astrcon}{\afam} \defdby \trnsliF{\astrcon}{\setemp}{\afam}$,
+  where, for every $\astrcon \in \Ssc$
+  and every $\alst \subseteq \Ssc$ we define:
+  % $\alst$ a set of stream constant symbols
+  %
+  \begin{gather*}
+    %
+    \begin{aligned}
+    %
+    \trnsliF{\funap{\astrcon}{\vec{\adattrm}}}{\alst}{\afam} 
+    \defdby
+    \trnsliF{\astrcon}{\alst}{\afam} 
+    &\defdby
+      \begin{cases}
+      \netrec{M}{\snetmeet\; \{ \trnsliF{r}{\setunion{\alst}{\{\astrcon\}}}{\afam} 
+                         \where \funap{\astrcon}{\vec{\bdattrm}} \to r \in R\} } 
+      &\text{if $\astrcon\not\in\alst$}
+      \\
+      M 
+      &\text{if $\astrcon\in\alst$}
+      \end{cases}
+    \\
+    %
+    \trnsliF{\strcns{\adattrm}{\astrtrm}}{\alst}{\afam} 
+    &\defdby \netpeb{\trnsliF{\astrtrm}{\alst}{\afam}}
+    %
+    \end{aligned}
+    %
+    \\
+    %
+    \trnsliF{\funap{\msf{f}}{\astrtrm_1,\ldots,\astrtrm_{\arityS{\astrfun}},\adattrm_1,\ldots,\adattrm_{\arityD{\astrfun}}}}%
+            {\alst}{\afam} 
+    \defdby
+    \funap{\fgate}
+       {\trnsliF{\astrtrm_1}{\alst}{\afam},\ldots,
+          \trnsliF{\astrtrm_{\arityS{\astrfun}}}{\alst}{\afam}}
+    %
+  \end{gather*}
+\end{definition}
+
+\begin{figure}[h!]
+  \begin{center}
+  \begin{tikzpicture}[level distance=7mm,inner sep=1mm]
+    \node {$\treelam{f}$} \annotatednode{$\treeap$}{1}
+      child { node {$\treeap$}
+        child { node {$f$} }
+        child { node {$\treeap$} \annotatednode{$\treeap$}{1}
+          child { node {$f$} }
+          child { node {$\treeap$} \annotatednode{$\treeap$}{1}
+            child { node {$f$} }
+            child { node {$\treeap$} \annotatednode{$\treeap$}{1}
+              child { node {\ldots} }
+            }
+          }
+        }
+      };
+  \end{tikzpicture}
+  \begin{tikzpicture}[level distance=7mm,inner sep=1mm]
+    \node {$\treelam{f}$} \annotatednode{$\treeap$}{1}
+      child { node {$\treeap$}
+        child { node {$f$} }
+        child { node {$\treeap$} \annotatednode{$\treeap$}{2}
+          child { node {$f$} }
+          child { node {$\treeap$} \annotatednode{$\treeap$}{2}
+            child { node {$f$} }
+            child { node {$\treeap$} \annotatednode{$\treeap$}{2}
+              child { node {\ldots} }
+            }
+          }
+        }
+      };
+  \end{tikzpicture}
+  \caption{Clocked \bohm{} trees of $\boldsymbol{\fpcC}$ and $\boldsymbol{\fpcT}$.}
+  \label{fig:boem:y0:y1}
+  \end{center}
+\end{figure}
+
+\begin{example}
+  As an example we translate Pascal's triangle, see Fig.~\ref{fig:pascal}.
+  The translation of the stream function symbols is
+  $\afam = \{\trmrep{\sdtrnsl{\astrfun}} = \netgate{\ios{-}{-+}}\}$,
+  cf.\ page~\pageref{trans:Pascal:f}.
+  Hence we obtain
+  $\trnslF{\strcf{P}}{\afam} = \netrec{P}{\netpeb{\netpeb{\netbox{\ios{-}{-+}}{P}}}}$
+  as the translation of $\strcf{P}$.
+\end{example}
+
+The following lemma is the basis of our main results in Sec.~\ref{sec:results}.
+It entails that if we use gates that represent \daobly{} optimal lower bounds 
+on the production of the stream functions,
+then the translation of a stream constant $\astrcon$ 
+yields a production term that rewrites to the d-o lower bound of the production of $\astrcon$.
+%
+\begin{lemma}\label{lem:outsourcing}
+  Let $\atrs = \pair{\Sigma}{R}$ be a stream specification, and
+  $\afam = \{\fgate\}_{\astrfun\in\Ssf}$ a family of gates.
+  %
+  If $\siosqprd{\fgate} = \doLow{\atrs}{\astrfun}$ for all\/ $\astrfun \in \Ssf$,
+  then for all\/ $\astrcon\in\Ssc$:
+  $\netprd{\trnslF{\astrcon}{\afam}} = \doLow{\atrs}{\astrcon} $.
+  Hence, $\atrs$ is \daobly{} productive
+  if and only if\/ $\netprd{\trnslF{\rootsc}{\afam}} = \infty$.
+
+  If $\siosqprd{\fgate} \le \doLow{\atrs}{\astrfun}$ for all\/ $\astrfun \in \Ssf$,
+  then for all\/ $\astrcon\in\Ssc$:
+  $\netprd{\trnslF{\astrcon}{\afam}} \le \doLow{\atrs}{\astrcon} $.
+  Consequently, $\atrs$ is \daobly{} productive
+  if\/ $\netprd{\trnslF{\rootsc}{\afam}} = \infty$.
+\end{lemma}
