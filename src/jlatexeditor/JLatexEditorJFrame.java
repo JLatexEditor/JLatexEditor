@@ -18,6 +18,7 @@ import jlatexeditor.gproperties.GPropertiesStyles;
 import jlatexeditor.gproperties.GPropertiesSyntaxHighlighting;
 import jlatexeditor.gui.*;
 import jlatexeditor.quickhelp.LatexQuickHelp;
+import jlatexeditor.remote.FileLineNr;
 import jlatexeditor.remote.NetworkNode;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
@@ -1430,8 +1431,11 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
         // open files given in command line
         for (String arg : args) {
-          openSeek(arg);
+	        FileLineNr fileLineNr = new FileLineNr(arg);
+	        open(new Doc.FileDoc(fileLineNr.file), fileLineNr.lineNr-1);
         }
+	      getActiveEditor().getFocusedPane().requestFocus();
+
         openDialog.setDialogTitle("Open");
         if (args.length > 0) {
           openDialog.setCurrentDirectory(new File(new File(args[0]).getParent()));
