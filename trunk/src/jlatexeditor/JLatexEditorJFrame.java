@@ -46,11 +46,8 @@ import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.net.URI;
 import java.util.*;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -147,7 +144,16 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		// init logging
 		initLogging();
 
-    UIManager.put("TabbedPaneUI", "util.gui.SCETabbedPaneUI");
+		Shell.setColoredOrNot(args);
+		JLatexEditorParams params = new JLatexEditorParams();
+		params.init(args);
+
+		if (params.help.isSet()) {
+			params.printHelp();
+			System.exit(0);
+		}
+
+		UIManager.put("TabbedPaneUI", "util.gui.SCETabbedPaneUI");
     UIManager.put("List.timeFactor", 200L);
     /*
     UIManager.put("Menu.background", SCETabbedPaneUI.BLUE);
