@@ -284,7 +284,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     vcMenu.add(createMenuItem("SVN Commit", "svn commit", 'c'));
 
     JMenu windowMenu = new JMenu("Editors");
-    vcMenu.setMnemonic('E');
+    windowMenu.setMnemonic('t');
     menuBar.add(windowMenu);
 
     windowMenu.add(createMenuItem("Set as Master Document", "set master document", 'm'));
