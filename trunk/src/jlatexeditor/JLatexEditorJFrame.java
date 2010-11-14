@@ -879,7 +879,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		openDialog.setDialogTitle("Save " + doc.getName());
 		openDialog.setDialogType(JFileChooser.SAVE_DIALOG);
 		openDialog.setCurrentDirectory(lastDocDir);
-		if (openDialog.showDialog(this, "Save") != JFileChooser.APPROVE_OPTION) return true;
+		if (openDialog.showDialog(this, "Save") != JFileChooser.APPROVE_OPTION) return false;
 		File file = openDialog.getSelectedFile();
 		if (file == null) return false;
 
