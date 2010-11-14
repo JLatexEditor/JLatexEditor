@@ -76,19 +76,20 @@ public class BackgroundParser extends Thread {
 
   public void run() {
     while (true) {
-	    SourceCodeEditor<Doc> editor;
+	    SourceCodeEditor<Doc> editor = null;
 	    try {
         editor = jle.getMainEditor();
-	    } catch (ArrayIndexOutOfBoundsException e) {
-		    try {
-			    sleep(1000);
-		    } catch (InterruptedException e2) {
-			    return;
-		    }
-		    continue;
+	    } catch (ArrayIndexOutOfBoundsException ignored) {
+	    } catch (NullPointerException ignored) {
 	    }
-      AbstractResource resource = editor.getResource();
-      if (!(resource instanceof Doc.FileDoc)) {
+
+	    AbstractResource resource = null;
+	    if (editor != null) {
+		    resource = editor.getResource();
+	    }
+
+	    // wait a second if we could not determine a saved master document
+      if (resource == null || !(resource instanceof Doc.FileDoc)) {
 	      try {
 		      sleep(1000);
 	      } catch (InterruptedException e2) {
