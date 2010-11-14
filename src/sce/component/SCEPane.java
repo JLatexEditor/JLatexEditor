@@ -234,11 +234,6 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
       selectionHighlight.paint(g2D, this, document.getSelectionStart(), document.getSelectionEnd());
     }
 
-    // draw the selection
-    if (document.hasEditRange()) {
-      editRangeHighlight.paint(g2D, this, document.getEditRangeStart(), document.getEditRangeEnd());
-    }
-
     // draw the text
     for (int line = startRow; line < endRow; line++) {
       AttributedString attributedString = document.getRowAttributed(line, startCol, endCol);
@@ -247,6 +242,11 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
       int posy = line * lineHeight + lineAscent - 1;
       g2D.drawString(attributedString.getIterator(), posx, posy);
     }
+
+	  // draw the edit range
+	  if (document.hasEditRange()) {
+	    editRangeHighlight.paint(g2D, this, document.getEditRangeStart(), document.getEditRangeEnd());
+	  }
 
     // draw the border
     g2D.setColor(Color.lightGray);
