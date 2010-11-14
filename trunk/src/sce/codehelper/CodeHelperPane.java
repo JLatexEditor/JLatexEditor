@@ -483,6 +483,11 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
     // if the code helper is visible
     if (isVisible()) {
+	    if (list.getModel().getSize() == 0) {
+		    setVisible(false);
+		    return;
+	    }
+
 			// hide on cursor movement
 			if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
 				setVisible(false);
@@ -518,8 +523,6 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
 			// enter
 			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-				if (model.size() == 0) return;
-
 				WordWithPos oldWord = wordPos;
 				setVisible(false);
 
