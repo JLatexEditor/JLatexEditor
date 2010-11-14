@@ -489,7 +489,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 	    }
 
 			// hide on cursor movement
-			if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_TAB) {
 				setVisible(false);
 			}
 
