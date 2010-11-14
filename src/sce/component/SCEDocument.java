@@ -442,6 +442,8 @@ public class SCEDocument {
         if (row_nr == selectionStart.getRow() && column_nr < selectionStart.getColumn()) continue;
         if (row_nr == selectionEnd.getRow() && column_nr >= selectionEnd.getColumn()) continue;
 
+	      // background must be set here too to override other background colors
+        attributedString.addAttribute(TextAttribute.BACKGROUND, SCEPane.selectionHighlightColor, column_nr - col_start, column_nr + 1 - col_start);
         attributedString.addAttribute(TextAttribute.FOREGROUND, Color.WHITE, column_nr - col_start, column_nr + 1 - col_start);
       }
     }
