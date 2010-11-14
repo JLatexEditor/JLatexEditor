@@ -88,7 +88,14 @@ public class BackgroundParser extends Thread {
 		    continue;
 	    }
       AbstractResource resource = editor.getResource();
-      if (!(resource instanceof Doc.FileDoc)) continue;
+      if (!(resource instanceof Doc.FileDoc)) {
+	      try {
+		      sleep(1000);
+	      } catch (InterruptedException e2) {
+		      return;
+	      }
+	      continue;
+      }
 
       File file = ((Doc.FileDoc) resource).getFile();
       File directory = file.getParentFile();
