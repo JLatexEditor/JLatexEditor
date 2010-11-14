@@ -326,6 +326,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     toolsTab.addTab("Compile", errorView);
     toolsTab.addTab("Local History", new LocalHistory(this));
 
+		// background parser
+		backgroundParser = new BackgroundParser(this);
+		backgroundParser.start();
+		
     // tabs for the files
     tabbedPane = new JTabbedPane();
     try {
@@ -370,10 +374,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         }
       }.start();
     }
-
-    // background parser
-    backgroundParser = new BackgroundParser(this);
-    backgroundParser.start();
 
     structureTree.setModel(backgroundParser.getStructure());
 
