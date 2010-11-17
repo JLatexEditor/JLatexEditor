@@ -103,6 +103,8 @@ public class GProperties {
     properties.addEntry(new Comment("\n## General properties"));
     properties.addEntry(new Comment(" Check for updates"));
     properties.addEntry(new Def("check_for_updates", BOOLEAN, "true"));
+	  properties.addEntry(new Comment(" When closing the editor"));
+    properties.addEntry(new Def("ask_for_saving_files_before_closing", BOOLEAN, "true"));
 
 	  properties.addEntry(new Comment("\n## Window properties"));
 	  properties.addEntry(new Comment(" Position, width, and height of the main window"));
