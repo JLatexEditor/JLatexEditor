@@ -1,5 +1,7 @@
 package sce.component;
 
+import jlatexeditor.gproperties.GProperties;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -252,6 +254,9 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
       results.clear();
 	    searchPositions.clear();
 	    // todo: clear selection?
+	    if (GProperties.getBoolean("editor.clear_selection_when_closing_search")) {
+	      document.clearSelection();
+	    }
     }
     clearHighlights(visibility, selectionOnly.isSelected());
     super.setVisible(visibility);
