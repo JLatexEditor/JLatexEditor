@@ -1,8 +1,6 @@
 package jlatexeditor.gproperties;
 
 import de.endrullis.utils.BetterProperties2.*;
-import jlatexeditor.gproperties.GProperties;
-import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.syntaxhighlighting.states.RootState;
 import sce.component.*;
 import sce.syntaxhighlighting.ParserState;
@@ -138,9 +136,9 @@ public class GPropertiesSyntaxHighlighting extends SyntaxHighlighting implements
 
         byte[] stateStyles = state.getStyles();
 
-        // search for '#' (comment)
+        // search for '\' (comment)
         if (c == '\\') {
-          sce_char.style = stateStyles[LatexStyles.COMMENT];
+          sce_char.style = stateStyles[GPropertiesStyles.COMMENT];
 	        char_nr++;
           chars[char_nr].style = parsingKey ? GPropertiesStyles.KEY : GPropertiesStyles.TEXT;
           continue;
@@ -148,13 +146,13 @@ public class GPropertiesSyntaxHighlighting extends SyntaxHighlighting implements
 
         // search for '#' (comment)
         if (c == '#') {
-          byte commentStyle = stateStyles[LatexStyles.COMMENT];
+          byte commentStyle = stateStyles[GPropertiesStyles.COMMENT];
           while (char_nr < row.length) chars[char_nr++].style = commentStyle;
           continue;
         }
 
         if (parsingKey) {
-          // search for a backslash '\'
+          // search for a backslash '='
           if (c == '=') {
             sce_char.style = stateStyles[GPropertiesStyles.TEXT];
             parsingKey = false;
