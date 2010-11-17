@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,11 +36,13 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 	/** Listeners: searchChangeListeners of type SearchChangeListener. */
 	private ArrayList<SearchChangeListener> searchChangeListeners = new ArrayList<SearchChangeListener>();
 
-  // search update thread
+  /** Search update thread. */
   private UpdateThread updateThread = new UpdateThread();
 
-  // search results
+  /** Search results. */
   private ArrayList<SCEDocumentRange> results = new ArrayList<SCEDocumentRange>();
+	/** Maps the search terms to the selection index in results. */
+	private LinkedHashMap<String,Integer> searchPositions = new LinkedHashMap<String, Integer>();
 
   // selection before searching
   private SCEDocumentRange selection = null;
@@ -247,6 +250,8 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
       }
     } else {
       results.clear();
+	    searchPositions.clear();
+	    // todo: clear selection?
     }
     clearHighlights(visibility, selectionOnly.isSelected());
     super.setVisible(visibility);
@@ -575,20 +580,13 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 
           int index = -1;
           while ((index = text.indexOf(search, index + 1)) != -1) {
-            int rowNr = text2row[index];
-            int columnNr = text2column[index];
+            int rowStart = text2row[index];
+            int columnStart = text2column[index];
 
-            SCEDocumentPosition start = document.createDocumentPosition(rowNr, columnNr);
-            SCEDocumentPosition end = document.createDocumentPosition(rowNr, columnNr + length);
-            if (!filter(start, end)) continue;
+	          int rowEnd = rowStart;
+	          int columnEnd = columnStart + length;
 
-            if (caret.getRow() == rowNr && caret.getColumn() == columnNr) {
-              moveCaret = false;
-              selectionRange = new SCERange(rowNr, columnNr, rowNr, columnNr + length);
-            }
-            resultsTemp.add(new SCEDocumentRange(start, end));
-            pane.addTextHighlight(new SCETextHighlight(pane, start, end, Color.YELLOW));
-            markerBar.addMarker(new SCEMarkerBar.Marker(SCEMarkerBar.TYPE_SEARCH, rowNr, columnNr, ""));
+	          selectionRange = processOccurrence(resultsTemp, document, markerBar, pane, caret, selectionRange, rowStart, columnStart, rowEnd, columnEnd);
           }
         } else {
           // regexp search
@@ -597,7 +595,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
           while (matcher.find()) {
             int startIndex = matcher.start();
             int endIndex = matcher.end();
-            // skip maches of length 0
+            // skip matches of length 0
             if (startIndex == endIndex) continue;
 
             int rowStart = text2row[startIndex];
@@ -606,19 +604,12 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
             int rowEnd = text2row[endIndex];
             int columnEnd = text2column[endIndex];
 
-            SCEDocumentPosition start = document.createDocumentPosition(rowStart, columnStart);
-            SCEDocumentPosition end = document.createDocumentPosition(rowEnd, columnEnd);
-            if (!filter(start, end)) continue;
-
-            if (caret.getRow() == rowStart && caret.getColumn() == columnStart) {
-              moveCaret = false;
-              selectionRange = new SCERange(rowStart, columnStart, rowEnd, columnEnd);
-            }
-            resultsTemp.add(new SCEDocumentRange(start, end));
-            pane.addTextHighlight(new SCETextHighlight(pane, start, end, Color.YELLOW));
-            markerBar.addMarker(new SCEMarkerBar.Marker(SCEMarkerBar.TYPE_SEARCH, rowStart, columnEnd, ""));
+	          selectionRange = processOccurrence(resultsTemp, document, markerBar, pane, caret, selectionRange, rowStart, columnStart, rowEnd, columnEnd);
           }
         }
+	      if (selection != null) {
+		      moveCaret = false;
+	      }
       } else {
         document.clearSelection();
       }
@@ -632,14 +623,30 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
         // set the selection
         if(selectionRange != null && setSelection) document.setSelectionRange(selectionRange);
 
-        if (move && moveCaret) next(false, true);
+        if (move && moveCaret) next(true, true);
       }
 
       markerBar.repaint();
       pane.repaint();
     }
 
-    private boolean filter(SCEDocumentPosition start, SCEDocumentPosition end) {
+		private SCERange processOccurrence(ArrayList<SCEDocumentRange> resultsTemp, SCEDocument document, SCEMarkerBar markerBar, SCEPane pane, SCECaret caret, SCERange selectionRange, int rowStart, int columnStart, int rowEnd, int columnEnd) {
+			SCEDocumentPosition start = document.createDocumentPosition(rowStart, columnStart);
+			SCEDocumentPosition end = document.createDocumentPosition(rowEnd, columnEnd);
+
+			if (filter(start, end)) {
+				resultsTemp.add(new SCEDocumentRange(start, end));
+				pane.addTextHighlight(new SCETextHighlight(pane, start, end, Color.YELLOW));
+				markerBar.addMarker(new SCEMarkerBar.Marker(SCEMarkerBar.TYPE_SEARCH, rowStart, columnStart, ""));
+
+				if (caret.getRow() == rowStart && caret.getColumn() == columnStart) {
+					selectionRange = new SCERange(rowStart, columnStart, rowEnd, columnEnd);
+				}
+			}
+			return selectionRange;
+		}
+
+		private boolean filter(SCEDocumentPosition start, SCEDocumentPosition end) {
       if (!selectionOnly.isSelected() || selection == null) return true;
       if (start.compareTo(selection.getStartPosition()) < 0) return false;
       if (end.compareTo(selection.getEndPosition()) > 0) return false;
