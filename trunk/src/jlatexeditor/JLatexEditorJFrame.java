@@ -911,7 +911,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		return true;
 	}
 
-	public void compile(int type) {
+	public void compile(LatexCompiler.Type type) {
 	  showTool(0);
 
     SourceCodeEditor<Doc> editor = mainEditor;
@@ -1138,16 +1138,16 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		// compile
 		if (action.equals("pdf")) {
 			saveAll();
-			compile(LatexCompiler.TYPE_PDF);
+			compile(LatexCompiler.Type.pdf);
 		} else if (action.equals("dvi")) {
 			saveAll();
-			compile(LatexCompiler.TYPE_DVI);
+			compile(LatexCompiler.Type.dvi);
 		} else if (action.equals("dvi + ps")) {
 			saveAll();
-			compile(LatexCompiler.TYPE_DVI_PS);
+			compile(LatexCompiler.Type.dvi_ps);
 		} else if (action.equals("dvi + ps + pdf")) {
 			saveAll();
-			compile(LatexCompiler.TYPE_DVI_PS_PDF);
+			compile(LatexCompiler.Type.dvi_ps_pdf);
 		} else
 
 		// svn update
