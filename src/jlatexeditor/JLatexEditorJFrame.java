@@ -1121,7 +1121,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         int line = editor.getTextPane().getCaret().getRow()+1;
         String texfile = editor.getFile().getAbsolutePath();
 	      String mainFile = getMainEditor().getFile().getAbsolutePath();
-        String file = mainFile.substring(0, mainFile.lastIndexOf(".tex"));
+	      int extensionIndex = mainFile.lastIndexOf(".tex");
+	      if (extensionIndex == -1) return; // no tex file
+				String file = mainFile.substring(0, extensionIndex);
 
         ArrayList<String> list = StringUtils.tokenize(GProperties.getString("forward search.viewer"));
         String[] array = new String[list.size()];
