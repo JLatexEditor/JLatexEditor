@@ -23,12 +23,9 @@ import java.util.regex.Pattern;
  * @author Jörg Endrullis
  */
 public class LatexCompiler extends Thread {
-  public static int TYPE_PDF = 0;
-  public static int TYPE_DVI = 1;
-  public static int TYPE_DVI_PS = 2;
-  public static int TYPE_DVI_PS_PDF = 3;
+	public enum Type {pdf, dvi, dvi_ps, dvi_ps_pdf}
 
-  private int type = 0;
+  private Type type = Type.pdf;
   private SourceCodeEditor editor;
   private ErrorView errorView;
 
@@ -43,13 +40,13 @@ public class LatexCompiler extends Thread {
   private Process latexCompiler = null;
   private Process bibtex = null;
 
-  private LatexCompiler(int type, SourceCodeEditor editor, ErrorView errorView) {
+  private LatexCompiler(Type type, SourceCodeEditor editor, ErrorView errorView) {
     this.type = type;
     this.editor = editor;
     this.errorView = errorView;
   }
 
-  public static synchronized LatexCompiler createInstance(int type, SourceCodeEditor editor, ErrorView errorView) {
+  public static synchronized LatexCompiler createInstance(Type type, SourceCodeEditor editor, ErrorView errorView) {
     if (instance != null) instance.halt();
     instance = new LatexCompiler(type, editor, errorView);
     return instance;
@@ -73,7 +70,7 @@ public class LatexCompiler extends Thread {
 
     // Command line shell
     try {
-      if (type == TYPE_PDF) {
+      if (type == Type.pdf) {
 	      // build commandline string
 	      String exe = GProperties.getString("compiler.pdflatex.executable");
 	      String additionalParameters = GProperties.getString("compiler.pdflatex.parameters");
@@ -284,11 +281,11 @@ public class LatexCompiler extends Thread {
       bibtex = ProcessUtil.exec(new String[]{"bibtex", baseName}, file.getParentFile());
       bibtex.waitFor();
 
-      if (type == TYPE_DVI_PS || type == TYPE_DVI_PS_PDF) {
+      if (type == Type.dvi_ps || type == Type.dvi_ps_pdf) {
         Process dvips = ProcessUtil.exec(new String[]{"dvips", baseName + ".dvi"}, file.getParentFile());
         dvips.waitFor();
       }
-      if (type == TYPE_DVI_PS_PDF) {
+      if (type == Type.dvi_ps_pdf) {
         Process ps2pdf = ProcessUtil.exec(new String[]{"ps2pdf", baseName + ".ps"}, file.getParentFile());
         ps2pdf.waitFor();
       }
