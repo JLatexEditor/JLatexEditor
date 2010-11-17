@@ -253,7 +253,6 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     } else {
       results.clear();
 	    searchPositions.clear();
-	    // todo: clear selection?
 	    if (GProperties.getBoolean("editor.clear_selection_when_closing_search")) {
 	      document.clearSelection();
 	    }
