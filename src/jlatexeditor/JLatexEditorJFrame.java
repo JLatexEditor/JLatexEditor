@@ -911,7 +911,30 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		return true;
 	}
 
+	public boolean hasDocumentClass(SCEDocument document) {
+		// search in the first 100 lines
+		for (int lineNr=0; lineNr<100 && lineNr<document.getRowsCount(); lineNr++) {
+			// ignore comments
+			String line = document.getRow(lineNr).replaceAll("%.*", "");
+
+			if (line.contains("\\documentclass") || line.contains("\\input") || line.contains("\\include")) {
+				return true;
+			}
+			if (line.contains("\\usepackage")) {
+				return false;
+			}
+		}
+		return false;
+	}
+
 	public void compile(LatexCompiler.Type type) {
+		if (!hasDocumentClass(getMainEditor().getTextPane().getDocument())) {
+			if (JOptionPane.showConfirmDialog(this, "Could not find a \\documentclass in your document.  Compile anyway?",
+				"Compile without \\documentclass ?", JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
+				return;
+			}
+		}
+
 	  showTool(0);
 
     SourceCodeEditor<Doc> editor = mainEditor;
