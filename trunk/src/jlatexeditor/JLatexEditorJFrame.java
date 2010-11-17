@@ -192,7 +192,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	public JLatexEditorJFrame(String args[]) {
     super(windowTitleSuffix);
     this.args = args;
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     addWindowListener(this);
     Runtime.getRuntime().addShutdownHook(new ShutdownHook(this));
 
@@ -1494,7 +1494,17 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   }
 
   public void windowClosing(WindowEvent e) {
-    System.exit(0);
+	  if (anyModifications()) {
+		  int answer = JOptionPane.showConfirmDialog(this, "Some files have been modified.  Do you want to save them?", "Save modified files?", JOptionPane.YES_NO_CANCEL_OPTION);
+		  switch (answer) {
+			  case JOptionPane.YES_OPTION:
+				  if (saveAll()) {
+				    System.exit(0);
+				  }
+				case JOptionPane.NO_OPTION:
+					System.exit(0);
+		  }
+	  }
   }
 
   public void windowClosed(WindowEvent e) {
