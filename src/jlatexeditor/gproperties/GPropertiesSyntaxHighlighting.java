@@ -139,6 +139,14 @@ public class GPropertiesSyntaxHighlighting extends SyntaxHighlighting implements
         byte[] stateStyles = state.getStyles();
 
         // search for '#' (comment)
+        if (c == '\\') {
+          sce_char.style = stateStyles[LatexStyles.COMMENT];
+	        char_nr++;
+          chars[char_nr].style = parsingKey ? GPropertiesStyles.KEY : GPropertiesStyles.TEXT;
+          continue;
+        }
+
+        // search for '#' (comment)
         if (c == '#') {
           byte commentStyle = stateStyles[LatexStyles.COMMENT];
           while (char_nr < row.length) chars[char_nr++].style = commentStyle;
