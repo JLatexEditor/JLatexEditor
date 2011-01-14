@@ -1,10 +1,10 @@
 package util;
 
-public class Pair<S, T> {
+public class Tuple<S, T> {
   public S first;
   public T second;
 
-  public Pair(S first, T second) {
+  public Tuple(S first, T second) {
     this.first = first;
     this.second = second;
   }

@@ -1,7 +1,7 @@
 package sce.codehelper;
 
 import sce.component.*;
-import util.Pair;
+import util.Tuple;
 
 import javax.swing.*;
 import java.awt.*;
@@ -223,7 +223,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     document.insert(newTemplate, row, column);
 
 		// set the caret position and remove it from template
-	  Pair<String, SCEDocumentPosition> pair = getTransformedTemplate(templateWithAt, arguments, row, column);
+	  Tuple<String, SCEDocumentPosition> pair = getTransformedTemplate(templateWithAt, arguments, row, column);
 		templateWithAt = pair.first;
 
 	  if (arguments.size() == 0 && !templateWithAt.contains("\n")) {
@@ -302,7 +302,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 			return spaces;
 	}
 
-	private Pair<String, SCEDocumentPosition> getTransformedTemplate(String templateWithAt, ArrayList<CHCommandArgument> arguments, int row, int column) {
+	private Tuple<String, SCEDocumentPosition> getTransformedTemplate(String templateWithAt, ArrayList<CHCommandArgument> arguments, int row, int column) {
 		int cursorIndex = templateWithAt.lastIndexOf("@|@");
 		if (cursorIndex != -1) {
 		  templateWithAt = templateWithAt.substring(0, cursorIndex) + templateWithAt.substring(cursorIndex + 1);
@@ -323,7 +323,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 		  }
 		}
 
-		return new Pair<String,SCEDocumentPosition>(templateWithAt, document.createDocumentPosition(caret_row, caret_column));
+		return new Tuple<String,SCEDocumentPosition>(templateWithAt, document.createDocumentPosition(caret_row, caret_column));
 	}
 
 	/**

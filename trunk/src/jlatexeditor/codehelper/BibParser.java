@@ -11,8 +11,8 @@ import java.util.ArrayList;
  * Bib parser.
  */
 public class BibParser {
-  public static ArrayList<BibEntry> parseBib(File file) {
-    ArrayList<BibEntry> results = new ArrayList<BibEntry>();
+  public static ArrayList<BackgroundParser.FilePos<BibEntry>> parseBib(File file) {
+    ArrayList<BackgroundParser.FilePos<BibEntry>> results = new ArrayList<BackgroundParser.FilePos<BibEntry>>();
 
     String bib;
     try {
@@ -21,8 +21,12 @@ public class BibParser {
       return results;
     }
 
+	  int lineNr = 0;
+	  int lastAt = 0;
     int at = -1;
     while ((at = bib.indexOf("@", at + 1)) != -1) {
+	    lineNr += countNewLinesBetween(bib, lastAt, at);
+
       int openBracket = bib.indexOf('{', at);
       if (openBracket == -1) break;
       String type = bib.substring(at + 1, openBracket).trim();
@@ -35,6 +39,7 @@ public class BibParser {
       String name = block.substring(0, comma).trim();
 
       BibEntry entry = new BibEntry();
+	    BackgroundParser.FilePos<BibEntry> filePos = new BackgroundParser.FilePos<BibEntry>(name, file.getAbsolutePath(), lineNr, entry);
 
       int index = comma + 1;
       while (index < block.length()) {
@@ -59,13 +64,23 @@ public class BibParser {
                       entry.getAuthors() + " " +
                       entry.getYear()
       );
-      results.add(entry);
+      results.add(filePos);
+
+	    lastAt = at;
     }
 
     return results;
   }
 
-  private static String removeBraces(String string) {
+	private static int countNewLinesBetween(String bib, int start, int end) {
+		int count = 0;
+		for (int i = start; i < end; i++) {
+			if (bib.charAt(i) == '\n') count++;
+		}
+		return count;
+	}
+
+	private static String removeBraces(String string) {
     if (string.startsWith("{") || string.startsWith("\"")) string = string.substring(1);
     if (string.endsWith("}") || string.endsWith("\"")) string = string.substring(0, string.length() - 1);
     return string;

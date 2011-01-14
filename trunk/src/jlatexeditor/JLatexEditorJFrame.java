@@ -1212,7 +1212,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 							null,
 							"");
 			if (message != null) {
-				Pair<Boolean, String> result = null;
+				Tuple<Boolean, String> result = null;
 				try {
 					result = SVN.getInstance().commit(getMainEditor().getFile().getParentFile(), message);
 				} catch (Exception exception) {

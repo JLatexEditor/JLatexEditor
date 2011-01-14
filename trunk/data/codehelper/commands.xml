@@ -135,7 +135,7 @@
   </command>
 
 	<command name="\bibliography" usage="\bibliography{@file@}" hint="set bibliography file">
-		<argument name="file" value="" completion="true" hint="filename of the bibliography file"/>
+		<argument name="file" type="file" value="" completion="true" hint="filename of the bibliography file"/>
 	</command>
 
 	<command name="\bibliographystyle" usage="\bibliographystyle{@style@}" hint="sets the bibliography style">
