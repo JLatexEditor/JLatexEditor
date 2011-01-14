@@ -26,7 +26,7 @@ public class BackgroundParser extends Thread {
   private JLatexEditorJFrame jle;
 
   private long bibModified = 0;
-  private ArrayList<BibEntry> bibEntries = new ArrayList<BibEntry>();
+  private ArrayList<FilePos<BibEntry>> bibEntries = new ArrayList<FilePos<BibEntry>>();
 
 	private HashSet<File> files = new HashSet<File>();
   private Trie<? extends Object> words = new Trie<Object>();
@@ -34,7 +34,7 @@ public class BackgroundParser extends Thread {
   private Trie<Command> commands = new Trie<Command>();
   private Trie<FilePos> labelDefs = new Trie<FilePos>();
 	private Trie<FilePos> labelRefs = new Trie<FilePos>();
-	private Trie<BibEntry> cites = new Trie<BibEntry>();
+	private Trie<FilePos<BibEntry>> cites = new Trie<FilePos<BibEntry>>();
 
   private DefaultTreeModel structure = new DefaultTreeModel(new DefaultMutableTreeNode());
 
@@ -46,7 +46,7 @@ public class BackgroundParser extends Thread {
     setPriority(Thread.MIN_PRIORITY);
   }
 
-  public ArrayList<BibEntry> getBibEntries() {
+  public ArrayList<FilePos<BibEntry>> getBibEntries() {
     return bibEntries;
   }
 
@@ -70,7 +70,7 @@ public class BackgroundParser extends Thread {
 		return labelRefs;
 	}
 
-	public Trie<BibEntry> getCites() {
+	public Trie<FilePos<BibEntry>> getCites() {
 		return cites;
 	}
 
@@ -278,9 +278,9 @@ public class BackgroundParser extends Thread {
     bibModified = bibFile.lastModified();
 
     bibEntries = BibParser.parseBib(bibFile);
-	  cites = new Trie<BibEntry>();
-	  for (BibEntry bibEntry : bibEntries) {
-		  cites.add(bibEntry.getEntryName(), bibEntry);
+	  cites = new Trie<FilePos<BibEntry>>();
+	  for (FilePos<BibEntry> bibEntry : bibEntries) {
+		  cites.add(bibEntry.getName(), bibEntry);
 	  }
   }
 
@@ -288,15 +288,15 @@ public class BackgroundParser extends Thread {
     ArrayList<String> keys = ParseUtil.splitBySpace(search);
     ArrayList<BibEntry> entries = new ArrayList<BibEntry>();
 
-    for (BibEntry entry : bibEntries) {
+    for (FilePos<BibEntry> entry : bibEntries) {
       boolean all = true;
       for (String key : keys) {
-        if (entry.getText().toLowerCase().indexOf(key) == -1) {
+        if (entry.getElement().getText().toLowerCase().indexOf(key) == -1) {
           all = false;
           break;
         }
       }
-      if (all) entries.add(entry);
+      if (all) entries.add(entry.getElement());
     }
 
     return entries;
@@ -328,16 +328,26 @@ public class BackgroundParser extends Thread {
     }
   }
 
-	public static class FilePos extends DefaultMutableTreeNode {
+	public static class FilePos<E> extends DefaultMutableTreeNode {
 		private String name;
 
 		private String file;
 		private int lineNr;
 
+		private E element;
+
 		public FilePos(String name, String file, int lineNr) {
 			this.name = name;
 			this.file = file;
 			this.lineNr = lineNr;
+		}
+
+		public FilePos(String name, String file, int lineNr, E element) {
+			super(element);
+			this.name = name;
+			this.file = file;
+			this.lineNr = lineNr;
+			this.element = element;
 		}
 
 		public String getName() {
@@ -350,6 +360,10 @@ public class BackgroundParser extends Thread {
 
 		public int getLineNr() {
 			return lineNr;
+		}
+
+		public E getElement() {
+			return element;
 		}
 
 		@Override

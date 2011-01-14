@@ -1,6 +1,6 @@
 package jlatexeditor.tools;
 
-import util.Pair;
+import util.Tuple;
 import util.ProcessUtil;
 import util.StreamUtils;
 
@@ -61,7 +61,7 @@ public class SVN {
     return results;
   }
 
-	public synchronized Pair<Boolean, String> commit(File dir, String message) throws Exception {
+	public synchronized Tuple<Boolean, String> commit(File dir, String message) throws Exception {
     message = message.replace('"', ' ');
     message = message.replace('\\', ' ');
 
@@ -91,7 +91,7 @@ public class SVN {
 
 		checkProcessResult(svn, "SVN update");
 
-    return new Pair<Boolean, String>(success, builder.toString());
+    return new Tuple<Boolean, String>(success, builder.toString());
   }
 
   public synchronized ArrayList<StatusResult> status(File dir) throws Exception {
