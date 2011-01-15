@@ -238,7 +238,7 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 			        matchAndStyle(char_nr + 1, chars, param, LIST_PATTERN, new Function1<String, Byte>(){
 				        @Override
 				        public Byte apply(String a1) {
-					        boolean citeExists = backgroundParser.getCites().contains(a1);
+					        boolean citeExists = backgroundParser.getBibKeys2bibEntries().contains(a1);
 					        return stateStyles[getStyle(citeExists ? "cite_exists" : "cite_not_found", LatexStyles.TEXT)];
 				        }
 			        });
