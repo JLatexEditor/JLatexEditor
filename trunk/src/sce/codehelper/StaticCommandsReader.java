@@ -141,7 +141,9 @@ public class StaticCommandsReader {
 
 			// create the argument
 			CHCommandArgument argument = new CHCommandArgument(argumentName, argumentValue, optional, secondOptional, argumentCompletion);
-			argument.setType(decode(argumentXML.getAttribute("type")));
+			if (argumentXML.getAttribute("type") != null) {
+				argument.setType(new CHArgumentType(decode(argumentXML.getAttribute("type"))));
+			}
 			argument.setHint(decode(argumentXML.getAttribute("hint")));
 
 			String argumentValues = decode(argumentXML.getAttribute("values"));

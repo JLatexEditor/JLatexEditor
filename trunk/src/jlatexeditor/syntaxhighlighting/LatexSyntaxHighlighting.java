@@ -7,6 +7,7 @@ package jlatexeditor.syntaxhighlighting;
 import jlatexeditor.codehelper.BackgroundParser;
 import jlatexeditor.syntaxhighlighting.states.MathMode;
 import jlatexeditor.syntaxhighlighting.states.RootState;
+import sce.codehelper.CHArgumentType;
 import sce.codehelper.CHCommand;
 import sce.codehelper.CHCommandArgument;
 import sce.component.*;
@@ -198,25 +199,28 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 
         // search for '{' and '}'
         if (c == '{') {
-	        String argumentType = getArgumentType(argumentsIterator);
+	        CHArgumentType argumentType = getArgumentType(argumentsIterator);
 
 	        if (argumentType != null) {
+		        String argumentTypeName = argumentType.getName();
 		        final String param = getStringUpToClosingBracket(row, char_nr + 1);
 
-		        if (argumentType.equals("title") || argumentType.equals("italic") || argumentType.equals("bold")) {
+		        if (argumentTypeName.equals("title") || argumentTypeName.equals("italic") || argumentTypeName.equals("bold")) {
 							// highlight the command
-							byte style = stateStyles[getStyle(argumentType, LatexStyles.TEXT)];
+							byte style = stateStyles[getStyle(argumentTypeName, LatexStyles.TEXT)];
 			        char_nr = setStyle(param, style, chars, char_nr + 1);
 		        } else
-		        if (argumentType.equals("file")) {
+		        if (argumentTypeName.equals("file")) {
+			        String defaultExtension = argumentType.getProperty("defaultExtension");
 			        boolean fileExists = false;
 			        if (param.startsWith("/")) {
-				        fileExists = new File(param).exists();
+				        fileExists = new File(param).exists() || new File(param + "." + defaultExtension).exists();
 			        } else {
 				        File docFile = pane.getSourceCodeEditor().getFile();
 				        if (docFile.exists()) {
 					        String pathname = docFile.getParentFile().getAbsolutePath() + "/" + param;
-					        fileExists = new File(pathname).exists();
+					        String extPathname = pathname + "." +  defaultExtension;
+					        fileExists = new File(pathname).exists() || new File(extPathname).exists();
 				        }
 			        }
 
@@ -224,17 +228,17 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 							byte style = stateStyles[getStyle(fileExists ? "file_exists" : "file_not_found", LatexStyles.TEXT)];
 			        char_nr = setStyle(param, style, chars, char_nr + 1);
 		        } else
-		        if (argumentType.equals("label_def")) {
+		        if (argumentTypeName.equals("label_def")) {
 			        boolean labelReferenced = backgroundParser.getLabelRefs().contains(param);
 			        byte style = stateStyles[getStyle(labelReferenced ? "label_exists" : "label_not_referenced", LatexStyles.TEXT)];
 			        char_nr = setStyle(param, style, chars, char_nr + 1);
 		        } else
-		        if (argumentType.equals("label_ref")) {
+		        if (argumentTypeName.equals("label_ref")) {
 			        boolean labelExists = backgroundParser.getLabelDefs().contains(param);
 			        byte style = stateStyles[getStyle(labelExists ? "label_exists" : "label_not_found", LatexStyles.TEXT)];
 			        char_nr = setStyle(param, style, chars, char_nr + 1);
 		        } else
-		        if (argumentType.equals("cite_key_list")) {
+		        if (argumentTypeName.equals("cite_key_list")) {
 			        matchAndStyle(char_nr + 1, chars, param, LIST_PATTERN, new Function1<String, Byte>(){
 				        @Override
 				        public Byte apply(String a1) {
@@ -331,7 +335,7 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 		}
 	}
 
-	private String getArgumentType(Iterator<CHCommandArgument> argumentsIterator) {
+	private CHArgumentType getArgumentType(Iterator<CHCommandArgument> argumentsIterator) {
 		if (argumentsIterator != null && argumentsIterator.hasNext()) {
 			CHCommandArgument argument = argumentsIterator.next();
 			if (argument.isOptional() && argumentsIterator.hasNext()) {

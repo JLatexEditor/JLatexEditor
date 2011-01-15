@@ -135,7 +135,7 @@
   </command>
 
 	<command name="\bibliography" usage="\bibliography{@file@}" hint="set bibliography file">
-		<argument name="file" type="file" value="" completion="true" hint="filename of the bibliography file"/>
+		<argument name="file" type="file|defaultExtension=bib" value="" completion="true" hint="filename of the bibliography file"/>
 	</command>
 
 	<command name="\bibliographystyle" usage="\bibliographystyle{@style@}" hint="sets the bibliography style">
@@ -303,7 +303,7 @@
   </command>
 
   <command name="\include" usage="\include{@file@}" hint="selective inclusion of files">
-    <argument name="file" type="file" value="" completion="true"/>
+    <argument name="file" type="file|defaultExtension=tex" value="" completion="true"/>
   </command>
 
   <command name="\includeonly" usage="\includeonly{@file_list@}"
@@ -313,14 +313,14 @@
 
   <command name="\includegraphics" usage="\includegraphics[@opt@]{@file@}" hint="includes a graphic; requires package 'graphicx'">
 	  <argument name="opt"/>
-	  <argument name="file" type="file" value="" completion="true"/>
+	  <argument name="file" type="file|defaultExtension=png" value="" completion="true"/>
   </command>
 
   <command name="\indent" hint="produces a horizontal space whose width equals the width of the paragraph indentation">
   </command>
 
   <command name="\input" usage="\input{@file@}" hint="causes the indicated file to be read and processed">
-    <argument name="file" type="file" value="" completion="true"/>
+    <argument name="file" type="file|defaultExtension=tex" value="" completion="true"/>
   </command>
 
   <command name="\it" usage="{\it @|@}" hint="italics typeface">

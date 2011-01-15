@@ -15,7 +15,7 @@ public class CHCommandArgument {
 	private boolean secondOptional = false;
 	private boolean completion;
 	/** Argument type used for completion and for style selection. */
-	private String type = null;
+	private CHArgumentType type = null;
   // the hint
   private String hint = null;
   // possible values
@@ -93,7 +93,7 @@ public class CHCommandArgument {
 	 *
 	 * @return argument type
 	 */
-	public String getType() {
+	public CHArgumentType getType() {
 		return type;
 	}
 
@@ -102,7 +102,7 @@ public class CHCommandArgument {
 	 *
 	 * @param type argument type
 	 */
-	public void setType(String type) {
+	public void setType(CHArgumentType type) {
 		this.type = type;
 	}
 
