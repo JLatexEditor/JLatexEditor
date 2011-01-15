@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +22,7 @@ import java.util.regex.Pattern;
  * Parsing files in background.
  */
 public class BackgroundParser extends Thread {
+	// TODO: allow all unicode letters (enable with flags?)
   private static final Pattern WORD_PATTERN = Pattern.compile("[a-zA-ZäöüÄÖÜß]*");
   private static final Pattern TODO_PATTERN = Pattern.compile("\\btodo\\b");
   private JLatexEditorJFrame jle;
@@ -34,7 +36,8 @@ public class BackgroundParser extends Thread {
   private Trie<Command> commands = new Trie<Command>();
   private Trie<FilePos> labelDefs = new Trie<FilePos>();
 	private Trie<FilePos> labelRefs = new Trie<FilePos>();
-	private Trie<FilePos<BibEntry>> cites = new Trie<FilePos<BibEntry>>();
+	private Trie<FilePos<BibEntry>> bibKeys2bibEntries = new Trie<FilePos<BibEntry>>();
+	private Trie<BibEntry> bibWords2bibEntries = new Trie<BibEntry>();
 
   private DefaultTreeModel structure = new DefaultTreeModel(new DefaultMutableTreeNode());
 
@@ -70,8 +73,8 @@ public class BackgroundParser extends Thread {
 		return labelRefs;
 	}
 
-	public Trie<FilePos<BibEntry>> getCites() {
-		return cites;
+	public Trie<FilePos<BibEntry>> getBibKeys2bibEntries() {
+		return bibKeys2bibEntries;
 	}
 
   public void run() {
@@ -278,26 +281,52 @@ public class BackgroundParser extends Thread {
     bibModified = bibFile.lastModified();
 
     bibEntries = BibParser.parseBib(bibFile);
-	  cites = new Trie<FilePos<BibEntry>>();
+	  bibKeys2bibEntries = new Trie<FilePos<BibEntry>>();
 	  for (FilePos<BibEntry> bibEntry : bibEntries) {
-		  cites.add(bibEntry.getName(), bibEntry);
+		  bibKeys2bibEntries.add(bibEntry.getName(), bibEntry);
+	  }
+	  bibWords2bibEntries = new Trie<BibEntry>();
+	  for (FilePos<BibEntry> filePos : bibEntries) {
+		  BibEntry bibEntry = filePos.element;
+		  bibWords2bibEntries.add(bibEntry.getEntryName().toLowerCase(), bibEntry);
+		  bibWords2bibEntries.add(bibEntry.getYear(), bibEntry);
+
+		  addBibWords(bibEntry.getAuthors().toLowerCase(), bibEntry);
+		  addBibWords(bibEntry.getTitle().toLowerCase(), bibEntry);
+		  addBibWords(bibEntry.getText().toLowerCase(), bibEntry);
 	  }
   }
 
-  public ArrayList<BibEntry> getBibEntries(String search) {
-    ArrayList<String> keys = ParseUtil.splitBySpace(search);
-    ArrayList<BibEntry> entries = new ArrayList<BibEntry>();
+	private void addBibWords(String authors, BibEntry bibEntry) {
+		Matcher matcher = WORD_PATTERN.matcher(authors);
+		while (matcher.find()) {
+			String author = matcher.group();
+			bibWords2bibEntries.add(author, bibEntry);
+		}
+	}
 
-    for (FilePos<BibEntry> entry : bibEntries) {
-      boolean all = true;
-      for (String key : keys) {
-        if (entry.getElement().getText().toLowerCase().indexOf(key) == -1) {
-          all = false;
-          break;
-        }
-      }
-      if (all) entries.add(entry.getElement());
-    }
+	public List<BibEntry> getBibEntries(String search) {
+    ArrayList<String> keys = ParseUtil.splitBySpace(search.toLowerCase());
+		ArrayList<BibEntry> entries = new ArrayList<BibEntry>();
+
+		if (keys.size() > 0) {
+			List<BibEntry> selectedEntries = bibWords2bibEntries.getObjects(keys.get(0), 100);
+
+			if (selectedEntries != null) {
+				for (BibEntry entry : selectedEntries) {
+					boolean all = true;
+					for (String key : keys) {
+						if (entry.getText().toLowerCase().indexOf(key) == -1) {
+							all = false;
+							break;
+						}
+					}
+					if (all) entries.add(entry);
+				}
+			}
+		} else {
+			return bibWords2bibEntries.getObjects("", 100);
+		}
 
     return entries;
   }

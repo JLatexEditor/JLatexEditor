@@ -87,7 +87,7 @@ public class JumpTo implements KeyListener, MouseListener {
 			    }
 		    } else
 		    if (command.equals("cite")) {
-			    BackgroundParser.FilePos filePos = backgroundParser.getCites().get(word.word);
+			    BackgroundParser.FilePos filePos = backgroundParser.getBibKeys2bibEntries().get(word.word);
 			    if (filePos != null) {
 						jLatexEditorJFrame.open(new FileDoc(new File(filePos.getFile())), filePos.getLineNr());
 						return;
