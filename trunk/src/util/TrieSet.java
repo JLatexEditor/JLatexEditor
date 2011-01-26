@@ -11,7 +11,6 @@ public class TrieSet<T> {
 	private HashSet<T> objects = new HashSet<T>();
 
 	public TrieSet() {
-	  this(null);
 	}
 
 	public TrieSet(T object) {
@@ -39,7 +38,10 @@ public class TrieSet<T> {
 	}
 
 	private int add(char[] chars, int i, T object) {
-	  if(i == chars.length) { objects.add(object); return objects.size(); }
+	  if(i == chars.length) {
+		  objects.add(object);
+		  return objects.size();
+	  }
 
 	  TrieSet<T> next = map.get(chars[i]);
 	  if (next == null) {
@@ -94,7 +96,7 @@ public class TrieSet<T> {
 	    return getMaxCommonPrefix();
 	  }
 
-	  TrieSet next = map.get(chars[i]);
+	  TrieSet<T> next = map.get(chars[i]);
 	  if (next == null) {
 	    return "";
 	  }
@@ -137,13 +139,18 @@ public class TrieSet<T> {
 	    }
 	  }
 
-	  ArrayList<T> list = new ArrayList<T>();
-	  t.addObjects(list, prefix, count);
+		LinkedHashSet<T> set = new LinkedHashSet<T>();
+	  t.addObjects(set, prefix, count);
+
+		ArrayList<T> list = new ArrayList<T>();
+		for (T object : set) {
+			list.add(object);
+		}
 	  return list;
 	}
 
 	private int addStrings(List<String> list, String prefix, int remaining) {
-	  if (count > 0) {
+	  if (objects.size() > 0) {
 	    list.add(prefix);
 	    remaining--;
 	  }
@@ -154,10 +161,13 @@ public class TrieSet<T> {
 	  return remaining;
 	}
 
-	private int addObjects(List<T> list, String prefix, int remaining) {
-	  if (count > 0) {
-	    list.add(object);
-	    remaining--;
+	private int addObjects(LinkedHashSet<T> list, String prefix, int remaining) {
+	  if (objects.size() > 0) {
+		  for (T object : objects) {
+			  list.add(object);
+			  remaining--;
+			  if (remaining == 0) break;
+		  }
 	  }
 	  for (Map.Entry<Character, TrieSet<T>> entry : map.entrySet()) {
 	    if (remaining == 0) break;

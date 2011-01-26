@@ -7,6 +7,7 @@ import sce.component.SourceCodeEditor;
 import util.ParseUtil;
 import util.StreamUtils;
 import util.Trie;
+import util.TrieSet;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -285,7 +286,7 @@ public class BackgroundParser extends Thread {
 	  for (FilePos<BibEntry> bibEntry : bibEntries) {
 		  bibKeys2bibEntries.add(bibEntry.getName(), bibEntry);
 	  }
-	  bibWords2bibEntries = new Trie<BibEntry>();
+	  bibWords2bibEntries = new TrieSet<BibEntry>();
 	  for (FilePos<BibEntry> filePos : bibEntries) {
 		  BibEntry bibEntry = filePos.element;
 		  bibWords2bibEntries.add(bibEntry.getEntryName().toLowerCase(), bibEntry);
@@ -310,12 +311,14 @@ public class BackgroundParser extends Thread {
 		ArrayList<BibEntry> entries = new ArrayList<BibEntry>();
 
 		if (keys.size() > 0) {
-			List<BibEntry> selectedEntries = bibWords2bibEntries.getObjects(keys.get(0), 100);
+			int count = keys.size() < 2 ? 10 : 100;
+			List<BibEntry> selectedEntries = bibWords2bibEntries.getObjects(keys.get(0), count);
 
 			if (selectedEntries != null) {
 				for (BibEntry entry : selectedEntries) {
 					boolean all = true;
-					for (String key : keys) {
+					for (int i = 1; i < keys.size(); i++) {
+						String key = keys.get(i);
 						if (entry.getText().toLowerCase().indexOf(key) == -1) {
 							all = false;
 							break;
@@ -325,7 +328,7 @@ public class BackgroundParser extends Thread {
 				}
 			}
 		} else {
-			return bibWords2bibEntries.getObjects("", 100);
+			return bibWords2bibEntries.getObjects("", 10);
 		}
 
     return entries;
