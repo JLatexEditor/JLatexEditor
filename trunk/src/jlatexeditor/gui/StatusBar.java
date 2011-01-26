@@ -1,6 +1,7 @@
 package jlatexeditor.gui;
 
 import jlatexeditor.JLatexEditorJFrame;
+import jlatexeditor.gproperties.GProperties;
 import jlatexeditor.tools.SVN;
 import util.ColorUtil;
 
@@ -50,7 +51,9 @@ public class StatusBar extends JPanel implements ActionListener, MouseListener {
     right.add(new MemoryUsage());
     setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 
-    updateChecker.start();
+	  if (GProperties.getBoolean("check_for_svn_updates")) {
+      updateChecker.start();
+	  }
   }
 
   public synchronized void showMessage(String shortMessage, String message) {
@@ -165,16 +168,15 @@ public class StatusBar extends JPanel implements ActionListener, MouseListener {
     }
 
     public void run() {
-      while (true) {
-        checkForUpdates_();
+	    try {
+				while (!isInterrupted()) {
+					checkForUpdates_();
 
-        try {
-          synchronized (this) {
-            wait(120000);
-          }
-        } catch (InterruptedException e) {
-        }
-      }
+					synchronized (this) {
+						wait(120000);
+					}
+				}
+	    } catch (InterruptedException ignored) {}
     }
   }
 }
