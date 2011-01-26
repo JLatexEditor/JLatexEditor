@@ -37,7 +37,7 @@ public class BackgroundParser extends Thread {
   private Trie<FilePos> labelDefs = new Trie<FilePos>();
 	private Trie<FilePos> labelRefs = new Trie<FilePos>();
 	private Trie<FilePos<BibEntry>> bibKeys2bibEntries = new Trie<FilePos<BibEntry>>();
-	private Trie<BibEntry> bibWords2bibEntries = new Trie<BibEntry>();
+	private TrieSet<BibEntry> bibWords2bibEntries = new TrieSet<BibEntry>();
 
   private DefaultTreeModel structure = new DefaultTreeModel(new DefaultMutableTreeNode());
 
