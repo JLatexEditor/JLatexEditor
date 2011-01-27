@@ -406,6 +406,12 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   }
 
   private void openSeek(String seek) {
+	  // * at end marks master document
+	  boolean masterDoc = seek.endsWith(":*");
+	  if (masterDoc) {
+		  seek = seek.substring(0, seek.length() - 2);
+	  }
+
     int colon = seek.lastIndexOf(':');
     if (colon == -1) colon = seek.length();
 
@@ -413,7 +419,11 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     int lineNr = colon >= seek.length() ? 0 : Integer.parseInt(seek.substring(colon + 1));
 
     if (file.exists() && file.isFile()) {
-      SourceCodeEditor<Doc> editor = open(new Doc.FileDoc(file));
+	    Doc.FileDoc doc = new Doc.FileDoc(file);
+	    SourceCodeEditor<Doc> editor = open(doc);
+	    if (masterDoc) {
+	      setMasterDocument(doc);
+	    }
       editor.getTextPane().getCaret().moveTo(lineNr, 0);
     }
   }
@@ -1505,7 +1515,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         for (int tabNr = 0; tabNr < tabbedPane.getTabCount(); tabNr++) {
           SourceCodeEditor<Doc> editor = getEditor(tabNr);
           if (!(editor.getResource() instanceof Doc.FileDoc)) continue;
-          writerLast.println(editor.getFile().getCanonicalPath() + ":" + editor.getTextPane().getCaret().getRow());
+	        boolean masterDoc = editor.equals(mainEditor);
+          writerLast.println(editor.getFile().getCanonicalPath() + ":" + editor.getTextPane().getCaret().getRow() + (masterDoc ? ":*" : ""));
         }
         writerLast.close();
 
