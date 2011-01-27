@@ -3,7 +3,6 @@ package de.endrullis.utils;
 import javax.swing.*;
 import java.io.*;
 import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * BetterProperties2 is an improved implementation of {@link de.endrullis.utils.BetterProperties} and
@@ -71,7 +70,19 @@ public class BetterProperties2 extends Properties {
     loadDefaults();
 
     super.load(reader);
+
+	  checkRanges();
   }
+
+	@Override
+	public void load(InputStream inputStream) throws IOException {
+	  // initialize map with defaults
+	  loadDefaults();
+
+	  super.load(inputStream);
+
+		checkRanges();
+	}
 
   public void loadDefaults() {
 	  for (Def def : defMap.values()) {
@@ -91,16 +102,6 @@ public class BetterProperties2 extends Properties {
 			}
 		}
 	}
-
-  @Override
-  public void load(InputStream inputStream) throws IOException {
-    // initialize map with defaults
-    loadDefaults();
-
-    super.load(inputStream);
-
-	  checkRanges();
-  }
 
 	@Override
   public void store(Writer writer, String comments) throws IOException {
