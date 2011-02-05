@@ -55,7 +55,6 @@ public class SCEUndoManager implements SCEDocumentListener {
         document.insert(text, start.getRow(), start.getColumn(), SCEDocumentEvent.EVENT_UNDO);
       }
 	    if (event.isEditRange()) {
-		    // todo: http://jle.cc/ticket/99
 		    pane.removeEditRangeSilently();
 	    }
 

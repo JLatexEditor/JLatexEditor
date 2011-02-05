@@ -6,6 +6,9 @@ import sce.quickhelp.QuickHelp;
 import sce.quickhelp.QuickHelpPane;
 
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.*;
 
 /**
@@ -19,6 +22,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
   private SCEPane pane = null;
   private SCEDocument document = null;
   private SCECaret caret = null;
+	private Clipboard selectionClipboard = Toolkit.getDefaultToolkit().getSystemSelection();
 
   // quick help
   QuickHelpPane quickHelpPane = null;
@@ -146,10 +150,12 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
   public void keyPressed(KeyEvent e) {
     if (e.isConsumed()) return;
 
-    // is control down?
+	  int keyCode = e.getKeyCode();
+
+	  // is control down?
     if (e.isControlDown() && !e.isAltDown()) {
       keyControlDown(e);
-      if (!isModifierKey(e.getKeyCode())) return;
+      if (!isModifierKey(keyCode)) return;
     }
 
     // is alt down?
@@ -159,16 +165,21 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     }
 
     // delete and back space
-    if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-      if (caret.getRow() == 0 && caret.getColumn() == 0) return;
-      if (!document.hasSelection()) caret.move(SCECaret.DIRECTION_LEFT);
-      e.setKeyCode(KeyEvent.VK_DELETE);
+    if (keyCode == KeyEvent.VK_BACK_SPACE) {
+      if (document.hasSelection()) {
+	      removeSelection();
+      } else {
+	      if (caret.getRow() == 0 && caret.getColumn() == 0) return;
+	      caret.move(SCECaret.DIRECTION_LEFT, false);
+	      keyCode = KeyEvent.VK_DELETE;
+      }
       e.consume();
     }
-    if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+    if (keyCode == KeyEvent.VK_DELETE) {
       // selection to remove?
       if (document.hasSelection()) {
         removeSelection();
+	      e.consume();
         return;
       }
 
@@ -182,60 +193,70 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
       return;
     }
 
-    // caret movement
-    if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
-      int direction = e.getKeyCode() == KeyEvent.VK_UP ? SCECaret.DIRECTION_UP : SCECaret.DIRECTION_DOWN;
-      caret.move(direction);
-      e.consume();
-    }
-    if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-      caret.move(SCECaret.DIRECTION_LEFT);
-      e.consume();
-    }
-    if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-      caret.move(SCECaret.DIRECTION_RIGHT);
-      e.consume();
-    }
-    if (e.getKeyCode() == KeyEvent.VK_PAGE_UP || e.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
-      int jump = e.getKeyCode() == KeyEvent.VK_PAGE_UP ? -pane.getVisibleRowsCount() : pane.getVisibleRowsCount();
-      scrollVisibleRect(jump);
-      caret.moveTo(caret.getRow() + jump, caret.getColumn());
-      e.consume();
-    }
-    if (e.getKeyCode() == KeyEvent.VK_HOME) {
-      if (caret.getColumn() != 0) {
-        caret.moveTo(caret.getRow(), 0);
-      } else {
-        // move caret to the first non-space character
-        char[] chars = document.getRow(caret.getRow()).toCharArray();
-        for (int i = 0; i < chars.length; i++) {
-          if (chars[i] != ' ' && chars[i] != '\t') {
-            caret.moveTo(caret.getRow(), i);
-            break;
-          }
-        }
-      }
-      e.consume();
-    }
-    if (e.getKeyCode() == KeyEvent.VK_END) {
-      int rowLength = document.getRowLength(caret.getRow());
-      if (caret.getColumn() != rowLength) {
-        caret.moveTo(caret.getRow(), rowLength);
-      } else {
-        // move caret to first non-space character
-        char[] chars = document.getRow(caret.getRow()).toCharArray();
-        for (int i = rowLength; i > 0; i--) {
-          if (chars[i - 1] != ' ' && chars[i - 1] != '\t') {
-            caret.moveTo(caret.getRow(), i);
-            break;
-          }
-        }
-      }
-      e.consume();
-    }
+	  // navigation keys
+	  if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_DOWN ||
+		    keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_RIGHT ||
+		    keyCode == KeyEvent.VK_PAGE_UP || keyCode == KeyEvent.VK_PAGE_DOWN ||
+		    keyCode == KeyEvent.VK_HOME || keyCode == KeyEvent.VK_END) {
+
+			// remove selection if shift not pressed
+		  boolean keepSelection = e.isShiftDown();
+
+			// caret movement
+			if (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_DOWN) {
+				int direction = keyCode == KeyEvent.VK_UP ? SCECaret.DIRECTION_UP : SCECaret.DIRECTION_DOWN;
+				caret.move(direction, keepSelection);
+				e.consume();
+			}
+			if (keyCode == KeyEvent.VK_LEFT) {
+				caret.move(SCECaret.DIRECTION_LEFT, keepSelection);
+				e.consume();
+			}
+			if (keyCode == KeyEvent.VK_RIGHT) {
+				caret.move(SCECaret.DIRECTION_RIGHT, keepSelection);
+				e.consume();
+			}
+			if (keyCode == KeyEvent.VK_PAGE_UP || keyCode == KeyEvent.VK_PAGE_DOWN) {
+				int jump = keyCode == KeyEvent.VK_PAGE_UP ? -pane.getVisibleRowsCount() : pane.getVisibleRowsCount();
+				scrollVisibleRect(jump);
+				caret.moveTo(caret.getRow() + jump, caret.getColumn(), keepSelection);
+				e.consume();
+			}
+			if (keyCode == KeyEvent.VK_HOME) {
+				if (caret.getColumn() != 0) {
+					caret.moveTo(caret.getRow(), 0, keepSelection);
+				} else {
+					// move caret to the first non-space character
+					char[] chars = document.getRow(caret.getRow()).toCharArray();
+					for (int i = 0; i < chars.length; i++) {
+						if (chars[i] != ' ' && chars[i] != '\t') {
+							caret.moveTo(caret.getRow(), i, keepSelection);
+							break;
+						}
+					}
+				}
+				e.consume();
+			}
+			if (keyCode == KeyEvent.VK_END) {
+				int rowLength = document.getRowLength(caret.getRow());
+				if (caret.getColumn() != rowLength) {
+					caret.moveTo(caret.getRow(), rowLength, keepSelection);
+				} else {
+					// move caret to first non-space character
+					char[] chars = document.getRow(caret.getRow()).toCharArray();
+					for (int i = rowLength; i > 0; i--) {
+						if (chars[i - 1] != ' ' && chars[i - 1] != '\t') {
+							caret.moveTo(caret.getRow(), i, keepSelection);
+							break;
+						}
+					}
+				}
+				e.consume();
+			}
+	  }
 
     // enter
-    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+    if (keyCode == KeyEvent.VK_ENTER) {
       if (document.hasSelection()) removeSelection();
       int row = caret.getRow();
       int column = caret.getColumn();
@@ -250,7 +271,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     }
 
     // tab
-    if (e.getKeyCode() == KeyEvent.VK_TAB) {
+    if (keyCode == KeyEvent.VK_TAB) {
       if (!document.hasSelection()) {
         if (!e.isShiftDown()) {
           document.insert("  ", caret.getRow(), caret.getColumn());
@@ -258,7 +279,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
           int row = caret.getRow();
           int col = caret.getColumn();
           removeIndentation(caret.getRow());
-          caret.moveTo(row, Math.max(col - 2, 0));
+          caret.moveTo(row, Math.max(col - 2, 0), false);
           caret.removeSelectionMark();
           pane.repaint();
         }
@@ -285,19 +306,22 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
           endCol = Math.max(endCol, 0);
         }
         endSel = new SCEDocumentPosition(endSel.getRow(), endCol);
-        caret.moveTo(endSel.getRow(), endCol);
+        caret.moveTo(endSel.getRow(), endCol, false);
         document.setSelectionRange(startSel, endSel);
       }
       e.consume();
       return;
     }
 
+	  // TODO: remove
+	  /*
     // selection
     if (e.isShiftDown()) {
       if (caret.getSelectionMark() == null) caret.setSelectionMark();
     } else {
       if (caret.getSelectionMark() != null && e.isActionKey()) clearSelection();
     }
+    */
   }
 
   private void keyAltDown(KeyEvent e) {
@@ -344,31 +368,27 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
       int minRow = visibleRect.y / pane.getLineHeight();
       int maxRow = (visibleRect.y + visibleRect.height) / pane.getLineHeight();
 
-      if (caret.getRow() < minRow + 2) caret.move(SCECaret.DIRECTION_DOWN);
-      if (caret.getRow() > maxRow - 2) caret.move(SCECaret.DIRECTION_UP);
+      if (caret.getRow() < minRow + 2) caret.move(SCECaret.DIRECTION_DOWN, e.isShiftDown());
+      if (caret.getRow() > maxRow - 2) caret.move(SCECaret.DIRECTION_UP, e.isShiftDown());
       e.consume();
     }
     if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-      caret.moveTo(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), -1));
+      caret.moveTo(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), -1), e.isShiftDown());
       e.consume();
-      if (!e.isShiftDown()) clearSelection();
     }
     if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-      caret.moveTo(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), 1));
+      caret.moveTo(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), 1), e.isShiftDown());
       e.consume();
-      if (!e.isShiftDown()) clearSelection();
     }
     if (e.getKeyCode() == KeyEvent.VK_HOME) {
-      caret.moveTo(0, 0);
+      caret.moveTo(0, 0, e.isShiftDown());
       e.consume();
-      if (!e.isShiftDown()) clearSelection();
     }
     if (e.getKeyCode() == KeyEvent.VK_END) {
       int row = document.getRowsCount() - 1;
       int column = document.getRowLength(row);
-      caret.moveTo(row, column);
+      caret.moveTo(row, column, e.isShiftDown());
       e.consume();
-      if (!e.isShiftDown()) clearSelection();
     }
 
 	  if (!e.isShiftDown()) {
@@ -378,10 +398,10 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 					document.remove(caret.getRow(), 0, caret.getRow() + 1, 0);
 				} else if (caret.getRow() > 0) {
 					document.remove(caret.getRow() - 1, document.getRowLength(caret.getRow() - 1), caret.getRow(), document.getRowLength(caret.getRow()));
-					caret.moveTo(caret.getRow() - 1, caret.getColumn());
+					caret.moveTo(caret.getRow() - 1, caret.getColumn(), false);
 				} else {
 					document.remove(0, 0, 0, document.getRowLength(0));
-					caret.moveTo(0, 0);
+					caret.moveTo(0, 0, false);
 				}
 				e.consume();
 			}
@@ -430,7 +450,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     // mouse button 1
     if ((e.getModifiers() & MouseEvent.BUTTON1_MASK) != 0) {
       if (caret.getRow() != position.getRow() || caret.getColumn() != position.getColumn()) {
-        caret.moveTo(position.getRow(), position.getColumn());
+        caret.moveTo(position.getRow(), position.getColumn(), e.isShiftDown());
       } else {
         // select the word or line
         int left = pane.findSplitterInRow(caret.getRow(), caret.getColumn(), -1);
@@ -450,18 +470,25 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
         } else {
           document.setSelectionRange(leftPosition, rightPosition);
         }
-        caret.setSelectionMark();
         pane.repaint();
 
         lastMouseClick = System.currentTimeMillis();
         return;
       }
+    } else
 
-      if (!e.isShiftDown() && document.hasSelection()) {
-        caret.removeSelectionMark();
-        pane.repaint();
-      }
-    }
+    // mouse button 2
+	  if ((e.getModifiers() & MouseEvent.BUTTON2_MASK) != 0) {
+		  // insert content of select clipboard (middle mouse button under X11)
+		  try {
+			  caret.moveTo(position.getRow(), position.getColumn(), false);
+			  Transferable transfer = selectionClipboard.getContents( null );
+			  String data = (String) transfer.getTransferData( DataFlavor.stringFlavor );
+		    document.insert(data, caret.getRow(), caret.getColumn());
+		  } catch (Exception ignored) {}
+	  } else
+
+    // mouse button 3
     if ((e.getModifiers() & MouseEvent.BUTTON3_MASK) != 0) {
       pane.addTextHighlight(new SCETextHighlight(pane, position, position, Color.red));
     }
@@ -485,7 +512,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
       if (caret.getSelectionMark() == null) caret.setSelectionMark();
 
       SCEDocumentPosition position = pane.viewToModel(e.getX(), e.getY());
-      caret.moveTo(position.getRow(), position.getColumn());
+      caret.moveTo(position.getRow(), position.getColumn(), true);
     }
   }
 

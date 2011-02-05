@@ -76,21 +76,21 @@ public class SCECaret implements SCEPosition, Comparable, ActionListener {
    *
    * @param direction a direction constant
    */
-  public void move(int direction) {
-    if (direction == DIRECTION_UP) moveTo(getRow() - 1, virtualColumn, false);
-    if (direction == DIRECTION_DOWN) moveTo(getRow() + 1, virtualColumn, false);
+  public void move(int direction, boolean selection) {
+    if (direction == DIRECTION_UP) moveToVirt(getRow() - 1, virtualColumn, selection, false);
+    if (direction == DIRECTION_DOWN) moveToVirt(getRow() + 1, virtualColumn, selection, false);
     if (direction == DIRECTION_LEFT) {
       if (getColumn() == 0 && getRow() > 0) {
-        moveTo(getRow() - 1, document.getRowLength(getRow() - 1));
+        moveTo(getRow() - 1, document.getRowLength(getRow() - 1), selection);
       } else {
-        moveTo(getRow(), getColumn() - 1);
+        moveTo(getRow(), getColumn() - 1, selection);
       }
     }
     if (direction == DIRECTION_RIGHT) {
       if (getColumn() == document.getRowLength(getRow()) && getRow() < document.getRowsCount() - 1) {
-        moveTo(getRow() + 1, 0);
+        moveTo(getRow() + 1, 0, selection);
       } else {
-        moveTo(getRow(), getColumn() + 1);
+        moveTo(getRow(), getColumn() + 1, selection);
       }
     }
 
@@ -102,8 +102,8 @@ public class SCECaret implements SCEPosition, Comparable, ActionListener {
    * @param row    the row
    * @param column the column
    */
-  public void moveTo(int row, int column) {
-    moveTo(row, column, true);
+  public void moveTo(int row, int column, boolean keepSelection) {
+	  moveToVirt(row, column, keepSelection, true);
   }
 
   /**
@@ -111,8 +111,8 @@ public class SCECaret implements SCEPosition, Comparable, ActionListener {
    *
    * @param pos position
    */
-  public void moveTo(SCEPosition pos) {
-    moveTo(pos.getRow(), pos.getColumn());
+  public void moveTo(SCEPosition pos, boolean keepSelection) {
+    moveTo(pos.getRow(), pos.getColumn(), keepSelection);
   }
 
   /**
@@ -122,17 +122,19 @@ public class SCECaret implements SCEPosition, Comparable, ActionListener {
    * @param column              the column
    * @param updateVirtualColumn true, if the virtual column should be updated
    */
-  private void moveTo(int row, int column, boolean updateVirtualColumn) {
+  private void moveToVirt(int row, int column, boolean keepSelection, boolean updateVirtualColumn) {
     // remember the last position
     int lastRow = getRow();
     int lastColumn = getColumn();
 
     showCursor(false);
 
+	  // set new position
     int new_row = Math.max(Math.min(row, document.getRowsCount() - 1), 0);
     int new_column = Math.max(Math.min(column, document.getRowLength(new_row)), 0);
     position.setPosition(new_row, new_column);
 
+	  // ensure we stay within edit range
 	  if (document.hasEditRange()) {
 		  if (this.compareTo(document.getEditRangeStart()) < 0) {
 			  position.setPosition(document.getEditRangeStart());
@@ -146,8 +148,17 @@ public class SCECaret implements SCEPosition, Comparable, ActionListener {
 
     showCursor(true);
 
-    // update the documents selection range
-    document.setSelectionRange(position, selectionMark);
+	  if (keepSelection) {
+			// update the documents selection range
+			document.setSelectionRange(position, selectionMark);
+	  } else {
+		  // remove selection
+		  if (document.hasSelection()) {
+				document.clearSelection();
+				pane.repaint();
+		  }
+		  setSelectionMark();
+	  }
 
     // inform listeners
     for (SCECaretListener caretListener : caretListeners) {

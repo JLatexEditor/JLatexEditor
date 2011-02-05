@@ -227,8 +227,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 		templateWithAt = pair.first;
 
 	  if (arguments.size() == 0 && !templateWithAt.contains("\n")) {
-		  caret.moveTo(pair.second);
-		  document.clearSelection();
+		  caret.moveTo(pair.second, false);
 		  return;
 	  }
 
@@ -366,8 +365,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 	    endTemplateEditing(false);
 
       // set the caret to the end position
-      caret.removeSelectionMark();
-      caret.moveTo(templateCaretPosition);
+      caret.moveTo(templateCaretPosition, false);
 
       return;
     }
@@ -398,9 +396,8 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     document.setEditRange(start, end, false);
 
     // select the argument value
-    caret.moveTo(start);
-    caret.setSelectionMark();
-    caret.moveTo(end);
+    caret.moveTo(start, false);
+    caret.moveTo(end, true);
 
 	  if (argument.isCompletion()) {
 		  callCodeHelperWithCompletion();

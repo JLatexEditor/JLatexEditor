@@ -94,7 +94,7 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
     this.resource = resource;
 
     textPane.setText(text);
-    textPane.getCaret().moveTo(0, 0);
+    textPane.getCaret().moveTo(0, 0, false);
     textPane.getUndoManager().clear();
     textPane.getDocument().setModified(false);
   }
@@ -215,7 +215,7 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
   public void moveTo(int row, int column) {
     Point pos = textPane.modelToView(row, column);
     scrollPane.scrollRectToVisible(new Rectangle(pos.x - 150, pos.y - 300, 300, pos.y - pos.y + 300));
-    textPane.getCaret().moveTo(row, column);
+    textPane.getCaret().moveTo(row, column, false);
   }
 
   private boolean hasDiffFocus() {

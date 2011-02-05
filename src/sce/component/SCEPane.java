@@ -382,8 +382,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
       int row = caret.getRow();
       int col = caret.getColumn();
       document.insert(commentPrefix, caret.getRow(), 0);
-      caret.moveTo(row, col + commentPrefix.length());
-      caret.removeSelectionMark();
+      caret.moveTo(row, col + commentPrefix.length(), false);
     } else {
       SCEDocumentPosition startSel = document.getSelectionStart();
       SCEDocumentPosition endSel = document.getSelectionEnd();
@@ -397,7 +396,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
       int endCol = endSel.getColumn();
       endCol = endCol == 0 ? endCol : endCol + 2;
       endSel = new SCEDocumentPosition(endSel.getRow(), endCol);
-      caret.moveTo(endSel.getRow(), endCol);
+      caret.moveTo(endSel.getRow(), endCol, false);
       document.setSelectionRange(startSel, endSel);
     }
   }
@@ -412,10 +411,8 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
       int row = caret.getRow();
       int col = caret.getColumn();
       if (removeComment(commentPrefix, caret.getRow())) {
-        caret.moveTo(row, Math.max(col - commentPrefix.length(), 0));
+        caret.moveTo(row, Math.max(col - commentPrefix.length(), 0), false);
       }
-      caret.removeSelectionMark();
-      repaint();
     } else {
       SCEDocumentPosition startSel = document.getSelectionStart();
       SCEDocumentPosition endSel = document.getSelectionEnd();
@@ -433,7 +430,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
       endCol = Math.max(endCol, 0);
       endSel = new SCEDocumentPosition(endSel.getRow(), endCol);
       if (moveCaret) {
-        caret.moveTo(endSel.getRow(), endCol);
+        caret.moveTo(endSel.getRow(), endCol, false);
       }
       document.setSelectionRange(startSel, endSel);
     }
@@ -759,17 +756,15 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 
     // update the caret position
     if (event.isInsert() && !freezeCaret) {
-      caret.moveTo(end.getRow(), end.getColumn());
-      if (caret.getSelectionMark() != null) {
-        caret.removeSelectionMark();
-        caret.setSelectionMark();
-      }
+      caret.moveTo(end.getRow(), end.getColumn(), false);
+	    // TODO: repaint here is new. hopefully correct
+	    repaint();
     }
     if (event.isRemove() && !freezeCaret) {
-      caret.moveTo(start.getRow(), start.getColumn());
+      caret.moveTo(start.getRow(), start.getColumn(), false);
+	    // TODO: repaint here is new. hopefully correct
+	    repaint();
     }
-
-    repaint();
   }
 
   // sce.component.SCECaretListener methods

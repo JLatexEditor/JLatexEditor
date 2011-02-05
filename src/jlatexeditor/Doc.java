@@ -70,6 +70,7 @@ public abstract class Doc implements AbstractResource, SCEDocumentListener {
 	@Override
 	public void documentChanged(SCEDocument sender, SCEDocumentEvent event) {
 		// TODO
+		/*
 		if (event.isInsert()) {
 			String text = event.getText();
 			int newLines = 0;
@@ -79,6 +80,7 @@ public abstract class Doc implements AbstractResource, SCEDocumentListener {
 				}
 			}
 		}
+		*/
 		//currLines.insertElementAt();
 	}
 

@@ -80,7 +80,7 @@ public class SCEDiff extends JPanel implements ComponentListener {
 
     splitPane.setUI(new SCEDiffUI());
 
-    right.getCaret().moveTo(0, 0);
+    right.getCaret().moveTo(0, 0, false);
     right.getUndoManager().clear();
     right.getDocument().setModified(false);
     right.getDocument().setEditable(false);
@@ -135,7 +135,7 @@ public class SCEDiff extends JPanel implements ComponentListener {
 
     for (int modi = modifications.size() - 1; modi >= 0; modi--) {
       if (modifications.get(modi).getTargetStartIndex() < currRow) {
-        left.getCaret().moveTo(modifications.get(modi).getTargetStartIndex(), 0);
+        left.getCaret().moveTo(modifications.get(modi).getTargetStartIndex(), 0, false);
         break;
       }
     }
@@ -147,7 +147,7 @@ public class SCEDiff extends JPanel implements ComponentListener {
 
     for (Modification modification : modifications) {
       if (modification.getTargetStartIndex() > currRow) {
-        left.getCaret().moveTo(modification.getTargetStartIndex(), 0);
+        left.getCaret().moveTo(modification.getTargetStartIndex(), 0, false);
         break;
       }
     }
@@ -159,7 +159,7 @@ public class SCEDiff extends JPanel implements ComponentListener {
 
     for (int modi = modifications.size() - 1; modi >= 0; modi--) {
       if (modifications.get(modi).getSourceStartIndex() < currRow) {
-        right.getCaret().moveTo(modifications.get(modi).getSourceStartIndex(), 0);
+        right.getCaret().moveTo(modifications.get(modi).getSourceStartIndex(), 0, false);
         break;
       }
     }
@@ -171,7 +171,7 @@ public class SCEDiff extends JPanel implements ComponentListener {
 
     for (Modification modification : modifications) {
       if (modification.getSourceStartIndex() > currRow) {
-        right.getCaret().moveTo(modification.getSourceStartIndex(), 0);
+        right.getCaret().moveTo(modification.getSourceStartIndex(), 0, false);
         break;
       }
     }
