@@ -63,7 +63,7 @@ public class Performance {
     for (int i = 0; i < 200000; i++) {
       int row = random.nextInt(document.getRowsCount());
       int column = random.nextInt(document.getRowLength(row) + 1);
-      caret.moveTo(row, column);
+      caret.moveTo(row, column, false);
 
       if (random.nextBoolean()) {
         char c = chars.charAt(random.nextInt(chars.length() - 1));

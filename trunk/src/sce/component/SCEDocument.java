@@ -7,6 +7,10 @@ package sce.component;
 import jlatexeditor.gproperties.GProperties;
 
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.font.TextAttribute;
 import java.text.AttributedString;
 import java.util.ArrayList;
@@ -44,6 +48,8 @@ public class SCEDocument {
 
   // Has the document been modified since the last save?
   private boolean modified = false;
+
+	private Clipboard selectionClipboard = Toolkit.getDefaultToolkit().getSystemSelection();
 
   /**
    * Creates a SCEDocument (the model SCEPane).
@@ -841,6 +847,13 @@ public class SCEDocument {
    * Informs the listeners about the selection change.
    */
   private void selectionChanged() {
+	  // update selection clipboard
+	  if (selectionStart != null && selectionEnd != null && !selectionStart.equals(selectionEnd)) {
+		  StringSelection data = new StringSelection(getSelectedText());
+		  selectionClipboard.setContents(data, data);
+	  }
+
+	  // inform listeners
     for (SCESelectionListener selectionListener : selectionListeners) {
       selectionListener.selectionChanged(this, selectionStart, selectionEnd);
     }

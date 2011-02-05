@@ -424,7 +424,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	    if (masterDoc) {
 	      setMasterDocument(doc);
 	    }
-      editor.getTextPane().getCaret().moveTo(lineNr, 0);
+      editor.getTextPane().getCaret().moveTo(lineNr, 0, false);
     }
   }
 
@@ -762,7 +762,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	public SourceCodeEditor<Doc> open(Doc doc, int lineNr) {
 		SourceCodeEditor<Doc> editor = open(doc);
 		if (lineNr > 0) {
-			editor.getTextPane().getCaret().moveTo(lineNr, 0);
+			editor.getTextPane().getCaret().moveTo(lineNr, 0, false);
 		}
 
 		return editor;
@@ -1492,7 +1492,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     File file = new File(structureEntry.getFile());
     if (file.exists() && file.isFile()) {
       SourceCodeEditor<Doc> editor = open(new Doc.FileDoc(file));
-      editor.getTextPane().getCaret().moveTo(structureEntry.getLineNr(), 0);
+      editor.getTextPane().getCaret().moveTo(structureEntry.getLineNr(), 0, false);
     }
   }
 
