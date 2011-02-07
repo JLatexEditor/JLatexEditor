@@ -67,7 +67,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     if (start == null || end == null) return;
 
     document.remove(start.getRow(), start.getColumn(), end.getRow(), end.getColumn());
-    caret.removeSelectionMark();
+    caret.setSelectionMark();
   }
 
   /**
@@ -340,7 +340,8 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 
   private void clearSelection() {
     caret.removeSelectionMark();
-    pane.repaint();
+	  caret.setSelectionMark();
+    //pane.repaint();
   }
 
   private void removeIndentation(int row) {
@@ -419,13 +420,13 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 			// control+backspace
 			if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
 				document.remove(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), -1), caret);
-				document.clearSelection();
+				clearSelection();
 				e.consume();
 			}
 			// control+delete
 			if (e.getKeyCode() == KeyEvent.VK_DELETE) {
 				document.remove(caret, pane.findSplitterPosition(caret.getRow(), caret.getColumn(), 1));
-				document.clearSelection();
+				clearSelection();
 				e.consume();
 			}
 	  }
