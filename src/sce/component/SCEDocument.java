@@ -848,7 +848,7 @@ public class SCEDocument {
    */
   private void selectionChanged() {
 	  // update selection clipboard
-	  if (selectionStart != null && selectionEnd != null && !selectionStart.equals(selectionEnd)) {
+	  if (selectionStart != null && selectionEnd != null && !selectionStart.equals(selectionEnd) && selectionClipboard != null) {
 		  StringSelection data = new StringSelection(getSelectedText());
 		  selectionClipboard.setContents(data, data);
 	  }
