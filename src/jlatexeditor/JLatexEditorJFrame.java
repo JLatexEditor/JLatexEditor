@@ -52,6 +52,8 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener, TreeSelectionListener, SearchChangeListener {
   public static final File FILE_LAST_SESSION = new File(System.getProperty("user.home") + "/.jlatexeditor/last.session");
@@ -249,6 +251,11 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     editMenu.add(createMenuItem("Cut", "cut", null));
     editMenu.add(createMenuItem("Copy", "copy", null));
     editMenu.add(createMenuItem("Paste", "paste", null));
+    editMenu.addSeparator();
+		editMenu.add(createMenuItem("Rename Element", "rename element", null));
+		editMenu.add(createMenuItem("Close Environment", "close environment", null));
+    editMenu.addSeparator();
+		editMenu.add(createMenuItem("Realign Table Columns", "realign table columns", null));
     editMenu.addSeparator();
     editMenu.add(createMenuItem("Comment", "comment", 'o'));
     editMenu.add(createMenuItem("Uncomment", "uncomment", 'u'));
@@ -1076,15 +1083,27 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		if (action.equals("cut")) {
 			getActiveEditor().cut();
 		} else
-
 		// copy
 		if (action.equals("copy")) {
 			getActiveEditor().copy();
 		} else
-
 		// paste
 		if (action.equals("paste")) {
 			getActiveEditor().paste();
+		} else
+
+		// rename element
+		if (action.equals("rename element")) {
+			renameElement();
+		} else
+		// close environment
+		if (action.equals("close environment")) {
+			closeEnvironment();
+		} else
+
+		// realign table columns
+		if (action.equals("realign table columns")) {
+			realignTableColumns();
 		} else
 
 		// lineComment
@@ -1270,6 +1289,86 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 			checkExternalModification(true);
 		}
   }
+
+	private void renameElement() {
+		//
+		// CursorElement cursorElement = elementUnderCursor();
+	}
+
+	private void closeEnvironment() {
+		String envName = getCurrentEnviroment();
+		System.out.println(envName);
+	}
+
+	private String getCurrentEnviroment() {
+		SCEPane pane = getActiveEditor().getTextPane();
+		SCECaret caret = pane.getCaret();
+		SCEDocument document = pane.getDocument();
+
+		Pattern beginEnvPattern = Pattern.compile("\\\\begin\\{\\w+\\}");
+
+		String row = document.getRow(caret.getRow()).substring(0, caret.getColumn());
+		Matcher matcher = beginEnvPattern.matcher(row);
+		while (matcher.find());
+		System.out.println(matcher.groupCount());
+		return matcher.group(1);
+	}
+
+	private void realignTableColumns() {
+		SCEDocument doc = getActiveEditor().getTextPane().getDocument();
+		if (doc.hasSelection()) {
+			SCEDocumentPosition starPos = doc.getSelectionStart();
+			SCEDocumentPosition endPos = doc.getSelectionEnd();
+
+			String selectedText = doc.getSelectedText();
+			String[] lines = selectedText.split("\n");
+			String[][] columns = new String[lines.length][];
+			int maxColumns = 0;
+			for (int i = 0; i < lines.length; i++) {
+				String line = lines[i];
+				columns[i] = line.split("&");
+				maxColumns = Math.max(maxColumns, columns[i].length);
+			}
+			int[] columnWidths = new int[maxColumns];
+			for (int colNr = 0; colNr < columnWidths.length; colNr++) {
+				int width = 0;
+				for (int lineNr = 0; lineNr < lines.length; lineNr++) {
+					if (colNr < columns[lineNr].length) {
+						width = Math.max(width, columns[lineNr][colNr].length());
+					}
+				}
+				columnWidths[colNr] = width;
+			}
+
+			StringBuffer sb = new StringBuffer();
+			for (int lineNr = 0; lineNr < columns.length; lineNr++) {
+				String[] column = columns[lineNr];
+				for (int colNr = 0; colNr < column.length; colNr++) {
+					sb.append(fillWithSpaces(column[colNr], columnWidths[colNr]));
+					if (colNr < maxColumns - 1) {
+						sb.append('&');
+					}
+				}
+				sb.append('\n');
+			}
+
+			doc.replace(starPos, endPos, sb.toString());
+		} else {
+			JOptionPane.showMessageDialog(this, "Before using this function you have to select the lines that shall be realigned.");
+		}
+	}
+
+	private String fillWithSpaces(String text, int length) {
+		if (text.length() == length) return text;
+
+		StringBuffer sb = new StringBuffer(length);
+		sb.append(text);
+		for(int i=text.length(); i<length; i++) {
+			sb.append(' ');
+		}
+
+		return sb.toString();
+	}
 
 	private void ensureOpenSearch() {
 		if (!getActiveEditor().getSearch().isVisible()) {
