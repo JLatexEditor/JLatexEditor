@@ -62,12 +62,9 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
    * Removes the selected text from the document.
    */
   public void removeSelection() {
-    SCEDocumentPosition start = document.getSelectionStart();
-    SCEDocumentPosition end = document.getSelectionEnd();
-    if (start == null || end == null) return;
-
-    document.remove(start.getRow(), start.getColumn(), end.getRow(), end.getColumn());
-    caret.setSelectionMark();
+	  if (document.removeSelection()) {
+		  caret.setSelectionMark();
+	  }
   }
 
   /**

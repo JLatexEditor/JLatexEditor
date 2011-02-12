@@ -158,6 +158,9 @@ public class GProperties {
     properties.addEntry(new Def("shortcut.cut", SHORTCUT, "control X"));
     properties.addEntry(new Def("shortcut.copy", SHORTCUT, "control C"));
     properties.addEntry(new Def("shortcut.paste", SHORTCUT, "control V"));
+    properties.addEntry(new Def("shortcut.rename element", SHORTCUT, "F6"));
+    properties.addEntry(new Def("shortcut.close environment", SHORTCUT, "control alt E"));
+    properties.addEntry(new Def("shortcut.realign table columns", SHORTCUT, ""));
     properties.addEntry(new Def("shortcut.comment", SHORTCUT, "control D"));
     properties.addEntry(new Def("shortcut.uncomment", SHORTCUT, "control shift D"));
     properties.addEntry(new Def("shortcut.diff", SHORTCUT, "alt D"));

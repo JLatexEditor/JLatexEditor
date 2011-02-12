@@ -11,4 +11,12 @@ fi
 
 svn up
 ant compile
-java -Xprof -cp build/classes/ jlatexeditor.JLatexEditorJFrame "$@" > debug.log 2> error.log &
+
+# rename debug.log / error.log to last_debug.log / last_error.log
+for f in debug error; do
+	if [ -e $f.log ]; then
+		mv $f.log last_$f.log
+	fi
+done
+
+java -Xmx200M -cp build/classes/ jlatexeditor.JLatexEditorJFrame "$@" > debug.log 2> error.log &

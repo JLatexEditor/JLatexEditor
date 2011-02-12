@@ -675,6 +675,18 @@ public class SCEDocument {
     }
   }
 
+	/**
+	 * Removes the selected text from the document.
+	 *
+	 * @return true if there was a selection to remove
+	 */
+	public boolean removeSelection() {
+	  if (selectionStart == null || selectionEnd == null) return false;
+
+	  remove(selectionStart, selectionEnd);
+		return true;
+	}
+
   /**
    * Replaces the text between the given positions with the new text.
    *
