@@ -327,6 +327,16 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     this.freezeCaret = freezeCaret;
   }
 
+	/**
+	 * Inserts the given text.
+	 *
+	 * @param text text to insert
+	 */
+	public void insert(String text) {
+		if (document.hasSelection()) ui.removeSelection();
+		document.insert(text, caret.getRow(), caret.getColumn());
+	}
+
   /**
    * Insert text from clipboard.
    */
@@ -334,9 +344,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     Transferable content = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
     try {
       String string = (String) content.getTransferData(DataFlavor.stringFlavor);
-      string = string.replaceAll("\t", "  ");
-      if (document.hasSelection()) ui.removeSelection();
-      document.insert(string, caret.getRow(), caret.getColumn());
+	    insert(string.replaceAll("\t", "  "));
     } catch (Exception ignored) {
     }
   }

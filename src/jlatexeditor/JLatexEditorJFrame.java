@@ -7,9 +7,11 @@ package jlatexeditor;
 
 import de.endrullis.utils.ProgramUpdater;
 import de.endrullis.utils.StringUtils;
+import jlatexeditor.addon.AddOn;
 import jlatexeditor.bib.BibCodeHelper;
 import jlatexeditor.bib.BibSyntaxHighlighting;
 import jlatexeditor.codehelper.*;
+import jlatexeditor.cursorelement.CursorElement;
 import jlatexeditor.errorhighlighting.LatexCompiler;
 import jlatexeditor.errorhighlighting.LatexErrorHighlighting;
 import jlatexeditor.gproperties.GProperties;
@@ -58,6 +60,7 @@ import java.util.regex.Pattern;
 public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener, TreeSelectionListener, SearchChangeListener {
   public static final File FILE_LAST_SESSION = new File(System.getProperty("user.home") + "/.jlatexeditor/last.session");
   public static final File FILE_RECENT = new File(System.getProperty("user.home") + "/.jlatexeditor/recent");
+	private static final Pattern envPattern = Pattern.compile("\\\\(begin|end)\\{(\\w+)\\}");
 
 	/** Logger. */
 	private static Logger logger = Logger.getLogger(JLatexEditorJFrame.class.getName());
@@ -108,6 +111,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private HashMap<File, Long> lastModified = new HashMap<File, Long>();
 
   private final ProgramUpdater updater = new ProgramUpdater("JLatexEditor update", "http://endrullis.de/JLatexEditor/update/");
+	private LinkedHashMap<String,AddOn> addOns = AddOn.getAllAddOnsMap();
 
   // background parser
   private BackgroundParser backgroundParser;
@@ -254,8 +258,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     editMenu.addSeparator();
 		editMenu.add(createMenuItem("Rename Element", "rename element", null));
 		editMenu.add(createMenuItem("Close Environment", "close environment", null));
-    editMenu.addSeparator();
-		editMenu.add(createMenuItem("Realign Table Columns", "realign table columns", null));
+//    editMenu.addSeparator();
+//		editMenu.add(createMenuItem("Realign Table Columns", "realign table columns", null));
     editMenu.addSeparator();
     editMenu.add(createMenuItem("Comment", "comment", 'o'));
     editMenu.add(createMenuItem("Uncomment", "uncomment", 'u'));
@@ -282,6 +286,14 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     buildMenu.add(createMenuItem("dvi", "dvi", null));
     buildMenu.add(createMenuItem("dvi + ps", "dvi + ps", null));
     buildMenu.add(createMenuItem("dvi + ps + pdf", "dvi + ps + pdf", null));
+
+    JMenu latexMenu = new JMenu("LaTeX");
+    latexMenu.setMnemonic('l');
+    menuBar.add(latexMenu);
+
+		for (AddOn addOn : addOns.values()) {
+			latexMenu.add(createMenuItem(addOn.getLabel(), addOn.getKey(), null));
+		}
 
     JMenu vcMenu = new JMenu("Version Control");
     vcMenu.setMnemonic('o');
@@ -1008,6 +1020,15 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   public void actionPerformed(ActionEvent e) {
     String action = e.getActionCommand();
 
+		// timer
+		if (action.equals("timer")) {
+			checkExternalModification(true);
+		} else
+
+	  if (addOns.containsKey(action)) {
+		  addOns.get(action).run(this);
+	  } else
+
     // new file
     if (action.equals("new")) {
       try {
@@ -1099,11 +1120,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		// close environment
 		if (action.equals("close environment")) {
 			closeEnvironment();
-		} else
-
-		// realign table columns
-		if (action.equals("realign table columns")) {
-			realignTableColumns();
 		} else
 
 		// lineComment
@@ -1282,11 +1298,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 			aboutDialog.showIt();
 		} else if (action.equals("stack trace")) {
 			new ThreadInfoWindow();
-		} else
-
-		// timer
-		if (action.equals("timer")) {
-			checkExternalModification(true);
 		}
   }
 
@@ -1296,78 +1307,78 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	}
 
 	private void closeEnvironment() {
-		String envName = getCurrentEnviroment();
-		System.out.println(envName);
+		CursorElement env = getCurrentEnviroment();
+		if (env != null) {
+			getActiveEditor().getTextPane().insert("\\end{" + env.word + "}");
+		}
 	}
 
-	private String getCurrentEnviroment() {
+	private CursorElement getCurrentEnviroment() {
 		SCEPane pane = getActiveEditor().getTextPane();
 		SCECaret caret = pane.getCaret();
 		SCEDocument document = pane.getDocument();
 
-		Pattern beginEnvPattern = Pattern.compile("\\\\begin\\{\\w+\\}");
+		LinkedList<CursorElement> openEnvStack = new LinkedList<CursorElement>();
+		LinkedList<String> closeEnvStack = new LinkedList<String>();
 
-		String row = document.getRow(caret.getRow()).substring(0, caret.getColumn());
-		Matcher matcher = beginEnvPattern.matcher(row);
-		while (matcher.find());
-		System.out.println(matcher.groupCount());
-		return matcher.group(1);
-	}
+		// caret row
+		int rowNr = caret.getRow();
+		String row = document.getRow(rowNr).substring(0, caret.getColumn());
 
-	private void realignTableColumns() {
-		SCEDocument doc = getActiveEditor().getTextPane().getDocument();
-		if (doc.hasSelection()) {
-			SCEDocumentPosition starPos = doc.getSelectionStart();
-			SCEDocumentPosition endPos = doc.getSelectionEnd();
+		parseEnvs(openEnvStack, closeEnvStack, rowNr, row);
 
-			String selectedText = doc.getSelectedText();
-			String[] lines = selectedText.split("\n");
-			String[][] columns = new String[lines.length][];
-			int maxColumns = 0;
-			for (int i = 0; i < lines.length; i++) {
-				String line = lines[i];
-				columns[i] = line.split("&");
-				maxColumns = Math.max(maxColumns, columns[i].length);
+		if (openEnvStack.size() == 0) {
+			// search above cursor
+			for(rowNr--; rowNr >= 0; rowNr--) {
+				row = document.getRow(rowNr);
+				parseEnvs(openEnvStack, closeEnvStack, rowNr, row);
+				if (!openEnvStack.isEmpty()) break;
 			}
-			int[] columnWidths = new int[maxColumns];
-			for (int colNr = 0; colNr < columnWidths.length; colNr++) {
-				int width = 0;
-				for (int lineNr = 0; lineNr < lines.length; lineNr++) {
-					if (colNr < columns[lineNr].length) {
-						width = Math.max(width, columns[lineNr][colNr].length());
-					}
-				}
-				columnWidths[colNr] = width;
-			}
-
-			StringBuffer sb = new StringBuffer();
-			for (int lineNr = 0; lineNr < columns.length; lineNr++) {
-				String[] column = columns[lineNr];
-				for (int colNr = 0; colNr < column.length; colNr++) {
-					sb.append(fillWithSpaces(column[colNr], columnWidths[colNr]));
-					if (colNr < maxColumns - 1) {
-						sb.append('&');
-					}
-				}
-				sb.append('\n');
-			}
-
-			doc.replace(starPos, endPos, sb.toString());
-		} else {
-			JOptionPane.showMessageDialog(this, "Before using this function you have to select the lines that shall be realigned.");
-		}
-	}
-
-	private String fillWithSpaces(String text, int length) {
-		if (text.length() == length) return text;
-
-		StringBuffer sb = new StringBuffer(length);
-		sb.append(text);
-		for(int i=text.length(); i<length; i++) {
-			sb.append(' ');
 		}
 
-		return sb.toString();
+		return openEnvStack.peek();
+	}
+
+	/**
+	 * Parses the row for environment openings and closings and updates the envStack correspondingly.
+	 *
+	 * @param openEnvStack open env stack
+	 * @param closeEnvStack close env stack
+	 * @param rowNr rowNr
+	 * @param row row
+	 */
+	private void parseEnvs(LinkedList<CursorElement> openEnvStack, LinkedList<String> closeEnvStack, int rowNr, String row) {
+		LinkedList<String> tmpCloseEnvStack = null;
+
+		Matcher matcher = envPattern.matcher(row);
+		while (matcher.find()) {
+			if(matcher.group(1).equals("begin")) {
+				if (closeEnvStack.isEmpty()) {
+					openEnvStack.push(new CursorElement(matcher.group(2), rowNr, matcher.start(2)));
+				} else {
+					closeEnvStack.pop();
+				}
+			} else
+			if(matcher.group(1).equals("end")) {
+				if (!openEnvStack.isEmpty()) {
+					if (openEnvStack.peek().word.equals(matcher.group(2))) {
+						openEnvStack.pop();
+					}
+				} else {
+					if (tmpCloseEnvStack == null) {
+						tmpCloseEnvStack = new LinkedList<String>();
+					}
+					tmpCloseEnvStack.push(matcher.group(2));
+				}
+			}
+		}
+
+		if (tmpCloseEnvStack != null) {
+			while (!tmpCloseEnvStack.isEmpty()) {
+				String elem = tmpCloseEnvStack.pop();
+				closeEnvStack.add(elem);
+			}
+		}
 	}
 
 	private void ensureOpenSearch() {
