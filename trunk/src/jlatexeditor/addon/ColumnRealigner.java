@@ -70,7 +70,6 @@ public class ColumnRealigner extends AddOn {
 			}
 
 			doc.setSelectionRange(new SCERange(env.openWord.getStartRow()+1, 0, env.closeWord.getEndRow(), 0));
-			pane.repaint();
 
 //			JOptionPane.showMessageDialog(jle, "Before using this function you have to select the lines that shall be realigned.");
 		}
@@ -125,7 +124,7 @@ public class ColumnRealigner extends AddOn {
 					row.cols.add("");
 				}
 			}
-
+			                                                                                tidy up
 			String indentString = fillWithSpaces("", Col.Ori.l, indentation);
 
 			StringBuffer sb = new StringBuffer();
