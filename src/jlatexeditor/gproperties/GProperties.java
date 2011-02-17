@@ -5,6 +5,7 @@ import de.endrullis.utils.BetterProperties2.Comment;
 import de.endrullis.utils.BetterProperties2.Def;
 import de.endrullis.utils.BetterProperties2.Range;
 import de.endrullis.utils.BetterProperties2.PSet;
+import jlatexeditor.addon.AddOn;
 import util.Aspell;
 import util.Hunspell;
 
@@ -160,7 +161,6 @@ public class GProperties {
     properties.addEntry(new Def("shortcut.paste", SHORTCUT, "control V"));
     properties.addEntry(new Def("shortcut.rename element", SHORTCUT, "F6"));
     properties.addEntry(new Def("shortcut.close environment", SHORTCUT, "control alt E"));
-    properties.addEntry(new Def("shortcut.realign table columns", SHORTCUT, ""));
     properties.addEntry(new Def("shortcut.comment", SHORTCUT, "control D"));
     properties.addEntry(new Def("shortcut.uncomment", SHORTCUT, "control shift D"));
     properties.addEntry(new Def("shortcut.diff", SHORTCUT, "alt D"));
@@ -171,6 +171,10 @@ public class GProperties {
     properties.addEntry(new Def("shortcut.compile", SHORTCUT, "alt L"));
     properties.addEntry(new Def("shortcut.local history", SHORTCUT, ""));
 	  properties.addEntry(new Def("shortcut.status bar", SHORTCUT, ""));
+    properties.addEntry(new Comment(" LaTeX menu"));
+	  for (AddOn addOn : AddOn.getAllAddOnsMap().values()) {
+		  properties.addEntry(new Def("shortcut." + addOn.getKey(), SHORTCUT, addOn.getShortcut()));
+	  }
     properties.addEntry(new Comment(" Build menu"));
     properties.addEntry(new Def("shortcut.pdf", SHORTCUT, "alt 1"));
     properties.addEntry(new Def("shortcut.dvi", SHORTCUT, "alt 2"));
