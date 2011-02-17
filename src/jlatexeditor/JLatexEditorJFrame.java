@@ -253,11 +253,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     editMenu.add(createMenuItem("Copy", "copy", null));
     editMenu.add(createMenuItem("Paste", "paste", null));
     editMenu.addSeparator();
-		editMenu.add(createMenuItem("Rename Element", "rename element", null));
-		//editMenu.add(createMenuItem("Close Environment", "close environment", null));
-//    editMenu.addSeparator();
-//		editMenu.add(createMenuItem("Realign Table Columns", "realign table columns", null));
-    editMenu.addSeparator();
     editMenu.add(createMenuItem("Comment", "comment", 'o'));
     editMenu.add(createMenuItem("Uncomment", "uncomment", 'u'));
     editMenu.addSeparator();
@@ -1108,10 +1103,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		// paste
 		if (action.equals("paste")) {
 			getActiveEditor().paste();
-		} else
-
-		// rename element
-		if (action.equals("rename element")) {
 		} else
 
 		// lineComment

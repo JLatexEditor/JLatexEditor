@@ -159,7 +159,6 @@ public class GProperties {
     properties.addEntry(new Def("shortcut.cut", SHORTCUT, "control X"));
     properties.addEntry(new Def("shortcut.copy", SHORTCUT, "control C"));
     properties.addEntry(new Def("shortcut.paste", SHORTCUT, "control V"));
-    properties.addEntry(new Def("shortcut.rename element", SHORTCUT, "F6"));
     properties.addEntry(new Def("shortcut.comment", SHORTCUT, "control D"));
     properties.addEntry(new Def("shortcut.uncomment", SHORTCUT, "control shift D"));
     properties.addEntry(new Def("shortcut.diff", SHORTCUT, "alt D"));
@@ -170,15 +169,15 @@ public class GProperties {
     properties.addEntry(new Def("shortcut.compile", SHORTCUT, "alt L"));
     properties.addEntry(new Def("shortcut.local history", SHORTCUT, ""));
 	  properties.addEntry(new Def("shortcut.status bar", SHORTCUT, ""));
-    properties.addEntry(new Comment(" LaTeX menu"));
-	  for (AddOn addOn : AddOn.getAllAddOnsMap().values()) {
-		  properties.addEntry(new Def("shortcut." + addOn.getKey(), SHORTCUT, addOn.getShortcut()));
-	  }
     properties.addEntry(new Comment(" Build menu"));
     properties.addEntry(new Def("shortcut.pdf", SHORTCUT, "alt 1"));
     properties.addEntry(new Def("shortcut.dvi", SHORTCUT, "alt 2"));
     properties.addEntry(new Def("shortcut.dvi + ps", SHORTCUT, "alt 3"));
     properties.addEntry(new Def("shortcut.dvi + ps + pdf", SHORTCUT, "alt 4"));
+	  properties.addEntry(new Comment(" LaTeX menu"));
+		for (AddOn addOn : AddOn.getAllAddOnsMap().values()) {
+			properties.addEntry(new Def("shortcut." + addOn.getKey(), SHORTCUT, addOn.getShortcut()));
+		}
     properties.addEntry(new Comment(" Version control menu"));
     properties.addEntry(new Def("shortcut.svn update", SHORTCUT, "alt U"));
     properties.addEntry(new Def("shortcut.svn commit", SHORTCUT, "alt C"));

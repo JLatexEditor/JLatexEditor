@@ -7,6 +7,8 @@ import sce.component.SCEPane;
 import java.util.Iterator;
 
 /**
+ * Close current environment.
+ *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 public class CloseEnvironment extends AddOn {
