@@ -30,6 +30,7 @@ public class ColumnRealigner extends AddOn {
 		if (!doc.hasSelection()) {
 			Iterator<EnvironmentUtils.Env> envIterator = EnvironmentUtils.getEnvIterator(pane);
 			EnvironmentUtils.Env env = envIterator.next();
+			if (env == null) return;
 
 			int row = env.openWord.getStartRow();
 			int col = env.openWord.getEndCol();
