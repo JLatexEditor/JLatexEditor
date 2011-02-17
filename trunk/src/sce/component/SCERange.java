@@ -11,7 +11,7 @@ public class SCERange {
   protected int endRow;
   protected int endCol;
 
-  protected SCERange(int startRow, int startCol, int endRow, int endCol) {
+  public SCERange(int startRow, int startCol, int endRow, int endCol) {
     this.startRow = startRow;
     this.startCol = startCol;
     this.endRow = endRow;
