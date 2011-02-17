@@ -8,6 +8,7 @@ package jlatexeditor;
 import de.endrullis.utils.ProgramUpdater;
 import de.endrullis.utils.StringUtils;
 import jlatexeditor.addon.AddOn;
+import jlatexeditor.addon.EnvironmentUtils;
 import jlatexeditor.bib.BibCodeHelper;
 import jlatexeditor.bib.BibSyntaxHighlighting;
 import jlatexeditor.codehelper.*;
@@ -26,10 +27,7 @@ import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
 import jlatexeditor.tools.SVN;
 import jlatexeditor.tools.ThreadInfoWindow;
-import sce.codehelper.CombinedCodeAssistant;
-import sce.codehelper.CombinedCodeHelper;
-import sce.codehelper.StaticCommandsCodeHelper;
-import sce.codehelper.StaticCommandsReader;
+import sce.codehelper.*;
 import sce.component.*;
 import sce.syntaxhighlighting.SyntaxHighlighting;
 import util.*;
@@ -60,7 +58,6 @@ import java.util.regex.Pattern;
 public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener, TreeSelectionListener, SearchChangeListener {
   public static final File FILE_LAST_SESSION = new File(System.getProperty("user.home") + "/.jlatexeditor/last.session");
   public static final File FILE_RECENT = new File(System.getProperty("user.home") + "/.jlatexeditor/recent");
-	private static final Pattern envPattern = Pattern.compile("\\\\(begin|end)\\{(\\w+)\\}");
 
 	/** Logger. */
 	private static Logger logger = Logger.getLogger(JLatexEditorJFrame.class.getName());
@@ -1307,77 +1304,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	}
 
 	private void closeEnvironment() {
-		CursorElement env = getCurrentEnviroment();
+		Iterator<WordWithPos> openEnvIterator = EnvironmentUtils.getOpenEnvIterator(getActiveEditor().getTextPane());
+		WordWithPos env = openEnvIterator.next();
 		if (env != null) {
 			getActiveEditor().getTextPane().insert("\\end{" + env.word + "}");
-		}
-	}
-
-	private CursorElement getCurrentEnviroment() {
-		SCEPane pane = getActiveEditor().getTextPane();
-		SCECaret caret = pane.getCaret();
-		SCEDocument document = pane.getDocument();
-
-		LinkedList<CursorElement> openEnvStack = new LinkedList<CursorElement>();
-		LinkedList<String> closeEnvStack = new LinkedList<String>();
-
-		// caret row
-		int rowNr = caret.getRow();
-		String row = document.getRow(rowNr).substring(0, caret.getColumn());
-
-		parseEnvs(openEnvStack, closeEnvStack, rowNr, row);
-
-		if (openEnvStack.size() == 0) {
-			// search above cursor
-			for(rowNr--; rowNr >= 0; rowNr--) {
-				row = document.getRow(rowNr);
-				parseEnvs(openEnvStack, closeEnvStack, rowNr, row);
-				if (!openEnvStack.isEmpty()) break;
-			}
-		}
-
-		return openEnvStack.peek();
-	}
-
-	/**
-	 * Parses the row for environment openings and closings and updates the envStack correspondingly.
-	 *
-	 * @param openEnvStack open env stack
-	 * @param closeEnvStack close env stack
-	 * @param rowNr rowNr
-	 * @param row row
-	 */
-	private void parseEnvs(LinkedList<CursorElement> openEnvStack, LinkedList<String> closeEnvStack, int rowNr, String row) {
-		LinkedList<String> tmpCloseEnvStack = null;
-
-		Matcher matcher = envPattern.matcher(row);
-		while (matcher.find()) {
-			if(matcher.group(1).equals("begin")) {
-				if (closeEnvStack.isEmpty()) {
-					openEnvStack.push(new CursorElement(matcher.group(2), rowNr, matcher.start(2)));
-				} else {
-					closeEnvStack.pop();
-				}
-			} else
-			if(matcher.group(1).equals("end")) {
-				if (!openEnvStack.isEmpty()) {
-					if (openEnvStack.peek().word.equals(matcher.group(2))) {
-						openEnvStack.pop();
-					}
-				} else {
-					if (tmpCloseEnvStack == null) {
-						tmpCloseEnvStack = new LinkedList<String>();
-					}
-					tmpCloseEnvStack.push(matcher.group(2));
-				}
-			}
-		}
-
-		if (tmpCloseEnvStack != null) {
-			while (!tmpCloseEnvStack.isEmpty()) {
-				String elem = tmpCloseEnvStack.pop();
-				closeEnvStack.add(elem);
-			}
 		}
 	}
 
