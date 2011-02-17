@@ -124,7 +124,7 @@ public class ColumnRealigner extends AddOn {
 					row.cols.add("");
 				}
 			}
-			                                                                                tidy up
+
 			String indentString = fillWithSpaces("", Col.Ori.l, indentation);
 
 			StringBuffer sb = new StringBuffer();
