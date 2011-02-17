@@ -254,7 +254,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     editMenu.add(createMenuItem("Paste", "paste", null));
     editMenu.addSeparator();
 		editMenu.add(createMenuItem("Rename Element", "rename element", null));
-		editMenu.add(createMenuItem("Close Environment", "close environment", null));
+		//editMenu.add(createMenuItem("Close Environment", "close environment", null));
 //    editMenu.addSeparator();
 //		editMenu.add(createMenuItem("Realign Table Columns", "realign table columns", null));
     editMenu.addSeparator();
@@ -1112,11 +1112,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 		// rename element
 		if (action.equals("rename element")) {
-			renameElement();
-		} else
-		// close environment
-		if (action.equals("close environment")) {
-			closeEnvironment();
 		} else
 
 		// lineComment
@@ -1297,19 +1292,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 			new ThreadInfoWindow();
 		}
   }
-
-	private void renameElement() {
-		//
-		// CursorElement cursorElement = elementUnderCursor();
-	}
-
-	private void closeEnvironment() {
-		Iterator<WordWithPos> openEnvIterator = EnvironmentUtils.getOpenEnvIterator(getActiveEditor().getTextPane());
-		WordWithPos env = openEnvIterator.next();
-		if (env != null) {
-			getActiveEditor().getTextPane().insert("\\end{" + env.word + "}");
-		}
-	}
 
 	private void ensureOpenSearch() {
 		if (!getActiveEditor().getSearch().isVisible()) {
