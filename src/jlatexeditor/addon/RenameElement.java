@@ -33,7 +33,41 @@ public class RenameElement extends AddOn {
 		SCEPane pane = editor.getTextPane();
 
 	  // cursor placed under command parameter?
-	  List<WordWithPos> words = CodePattern.parameterPattern.find(pane);
+		List<WordWithPos> words = CodePattern.commandPattern.find(pane);
+	  if (words != null) {
+		  String oldCommandName = words.get(0).word;
+
+			// start background parser to update document states
+			jle.getBackgroundParser().parse();
+
+			// ask user for new command name
+			String newCommandName = JOptionPane.showInputDialog(jle, "Command name: ", oldCommandName);
+			if (newCommandName == null || newCommandName.equals(oldCommandName)) return;
+
+			// wait for background parser to finish
+			try {
+				jle.getBackgroundParser().waitForParseFinished();
+			} catch (InterruptedException e) {
+				return;
+			}
+
+		  List<String> fileNames = jle.getBackgroundParser().getCommandsAndFiles().getObjects(oldCommandName, 1000);
+		  HashSet<File> files = new HashSet<File>();
+		  if (fileNames != null) {
+			  for (String fileName : fileNames) {
+				  files.add(new File(fileName));
+			  }
+		  }
+
+		  replaceInAllFiles(jle, files, "\\\\" + oldCommandName + "([^\\p{L}]|$)", "\\\\" + newCommandName + "$1");
+
+		  // start background parser to update document states
+			jle.getBackgroundParser().parse();
+
+		  return;
+	  }
+
+	  words = CodePattern.parameterPattern.find(pane);
     if (words != null) {
 	    // extract the parameter
       WordWithPos parameter = words.get(0);
@@ -64,23 +98,9 @@ public class RenameElement extends AddOn {
 			    if (filePoses == null) {
 				    filePoses = new ArrayList<BackgroundParser.FilePos>();
 			    }
-					filePoses.add(jle.getBackgroundParser().getLabelDefs().get(parameter.word));
-			    // put them into a set
-			    HashSet<SourceCodeEditor<Doc>> editors = new HashSet<SourceCodeEditor<Doc>>();
-			    for (BackgroundParser.FilePos filePos : filePoses) {
-				    editors.add(jle.open(new Doc.FileDoc(new File(filePos.getFile())), false));
-			    }
-			    // add active editor to this set, since we will anyway process this file
-			    editors.add(jle.getActiveEditor());
+			    filePoses.add(jle.getBackgroundParser().getLabelDefs().get(oldLabel));
 
-			    // replace in all files/editors
-			    for (SourceCodeEditor<Doc> ed : editors) {
-				    // open these files
-				    ed.getTextPane().getDocument().replaceInAllRows("\\\\(label|ref|eqref)\\{" + oldLabel + "\\}", "\\\\$1{" + newLabel + "}");
-			    }
-
-			    // start background parser to update document states
-			    jle.getBackgroundParser().parse();
+			    replaceInAllFiles(jle, filePoses, "\\\\(label|ref|eqref)\\{" + oldLabel + "\\}", "\\\\$1{" + newLabel + "}");
 
 					return;
 		    } else
@@ -130,5 +150,43 @@ public class RenameElement extends AddOn {
         }
       }
     }
+	}
+
+	private void replaceInAllFiles(JLatexEditorJFrame jle, List<BackgroundParser.FilePos> filePoses, String from, String to) {
+		HashSet<File> files = new HashSet<File>();
+
+		if (filePoses != null) {
+			// put them into a set
+			for (BackgroundParser.FilePos filePos : filePoses) {
+				if (filePos != null) {
+					files.add(new File(filePos.getFile()));
+				}
+			}
+		}
+
+		replaceInAllFiles(jle, files, from, to);
+	}
+
+	private void replaceInAllFiles(JLatexEditorJFrame jle, HashSet<File> files, String from, String to) {
+		// put them into a set
+		HashSet<SourceCodeEditor<Doc>> editors = new HashSet<SourceCodeEditor<Doc>>();
+		if (files != null) {
+			for (File file : files) {
+				if (file != null) {
+					editors.add(jle.open(new Doc.FileDoc(file), false));
+				}
+			}
+		}
+		// add active editor to this set, since we will anyway process this file
+		editors.add(jle.getActiveEditor());
+
+		// replace in all files/editors
+		for (SourceCodeEditor<Doc> ed : editors) {
+			// open these files
+			ed.getTextPane().getDocument().replaceInAllRows(from, to);
+		}
+
+		// start background parser to update document states
+		jle.getBackgroundParser().parse();
 	}
 }

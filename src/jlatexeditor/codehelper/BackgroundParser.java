@@ -5,7 +5,6 @@ import jlatexeditor.JLatexEditorJFrame;
 import sce.component.AbstractResource;
 import sce.component.SourceCodeEditor;
 import util.ParseUtil;
-import util.StreamUtils;
 import util.Trie;
 import util.TrieSet;
 
@@ -33,7 +32,8 @@ public class BackgroundParser extends Thread {
 
 	private HashSet<File> files = new HashSet<File>();
   private Trie<? extends Object> words = new Trie<Object>();
-  private Trie<FilePos> commandNames = new Trie<FilePos>();
+  private Trie<String> commandNames = new Trie<String>();
+  private TrieSet<String> commandsAndFiles = new TrieSet<String>();
   private Trie<Command> commands = new Trie<Command>();
   private Trie<FilePos> labelDefs = new Trie<FilePos>();
 	private Trie<FilePos> labelRefs = new Trie<FilePos>();
@@ -61,11 +61,15 @@ public class BackgroundParser extends Thread {
     return words;
   }
 
-  public Trie<FilePos> getCommandNames() {
+  public Trie<String> getCommandNames() {
     return commandNames;
   }
 
-  public Trie<Command> getCommands() {
+	public TrieSet<String> getCommandsAndFiles() {
+		return commandsAndFiles;
+	}
+
+	public Trie<Command> getCommands() {
     return commands;
   }
 
@@ -110,7 +114,8 @@ public class BackgroundParser extends Thread {
 
 	    HashSet<File> files = new HashSet<File>();
 	    Trie words = new Trie();
-      Trie<FilePos> commandNames = new Trie<FilePos>();
+      Trie<String> commandNames = new Trie<String>();
+      TrieSet<String> commandsAndFiles = new TrieSet<String>();
       Trie<FilePos> labelDefs = new Trie<FilePos>();
       Trie<FilePos> labelRefs = new Trie<FilePos>();
       Trie<Command> commands = new Trie<Command>();
@@ -118,11 +123,12 @@ public class BackgroundParser extends Thread {
       ArrayList<StructureEntry> structureStack = new ArrayList<StructureEntry>();
       structureStack.add(new StructureEntry("Project", 0, resource.getName(), 0));
 
-      parseTex(directory, file.getName(), files, words, commandNames, commands, labelDefs, labelRefs, structureStack, new HashSet<String>());
+      parseTex(directory, file.getName(), files, words, commandNames, commandsAndFiles, commands, labelDefs, labelRefs, structureStack, new HashSet<String>());
 
 	    this.files = files;
 	    this.words = words;
       this.commandNames = commandNames;
+      this.commandsAndFiles = commandsAndFiles;
       this.commands = commands;
       this.labelDefs = labelDefs;
       this.labelRefs = labelRefs;
@@ -154,7 +160,8 @@ public class BackgroundParser extends Thread {
 		}
 	}
 
-  private void parseTex(File directory, String fileName, HashSet<File> files, Trie words, Trie<FilePos> commandNames, Trie<Command> commands,
+  private void parseTex(File directory, String fileName, HashSet<File> files, Trie words, Trie<String> commandNames,
+                        TrieSet<String> commandsAndFiles, Trie<Command> commands,
                         Trie<FilePos> labelDefs, Trie<FilePos> labelRefs, ArrayList<StructureEntry> structure, HashSet<String> done) {
     if (done.contains(fileName)) return;
     else done.add(fileName);
@@ -216,7 +223,8 @@ public class BackgroundParser extends Thread {
 
       // the command
       String command = tex.substring(begin, index);
-      commandNames.add(command);
+      commandNames.add(command, null);
+	    commandsAndFiles.add(command, file.getAbsolutePath());
 
       // newcommand
       if (command.equals("newcommand") || command.equals("renewcommand") || command.equals("DeclareRobustCommand")) {
@@ -245,6 +253,8 @@ public class BackgroundParser extends Thread {
 	      }
         name = name.substring(1);
         commands.add(name, new Command(name, fileCanonicalPath, line, numberOfArgs, optional, body));
+	      commandsAndFiles.add(name, file.getAbsolutePath());
+	      // commandNames.add(name);
       // label, input, include
       } else if (command.equals("label") || command.equals("bibliography") || command.equals("input") || command.equals("include") ||
 	               command.equals("ref")) {
@@ -257,7 +267,7 @@ public class BackgroundParser extends Thread {
         } else if (command.equals("bibliography")) {
           parseBib(directory, Command.unfoldRecursive(argument, commands, 10));
         } else {
-          parseTex(directory, Command.unfoldRecursive(argument, commands, 10), files, words, commandNames, commands, labelDefs, labelRefs, structure, done);
+          parseTex(directory, Command.unfoldRecursive(argument, commands, 10), files, words, commandNames, commandsAndFiles, commands, labelDefs, labelRefs, structure, done);
         }
       // sections
       } else if (command.equals("chapter") || command.equals("section") || command.equals("subsection") || command.equals("subsubsection")) {
