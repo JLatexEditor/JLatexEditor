@@ -10,6 +10,6 @@ import java.util.List;
  */
 public class CodePattern {
 	public static final PatternPair parameterPattern = new PatternPair("\\{([^\\{]*)", "([^\\}]*)\\}");
-	public static final PatternPair commandParamPattern = new PatternPair("\\\\(\\w+)\\{[^\\{]*");
-	public static final PatternPair commandPattern = new PatternPair("\\\\(\\w*)", "(\\w+)");
+	public static final PatternPair commandParamPattern = new PatternPair("\\\\(\\p{L}+)\\{[^\\{]*");
+	public static final PatternPair commandPattern = new PatternPair("\\\\(\\p{L}*)", "(\\p{L}+)");
 }
