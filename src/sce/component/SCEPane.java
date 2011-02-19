@@ -1,12 +1,11 @@
 package sce.component;
 
 import jlatexeditor.gproperties.GProperties;
-import sce.codehelper.CodeAssistant;
-import sce.codehelper.CodeHelper;
-import sce.codehelper.SCEPopup;
+import sce.codehelper.*;
 import sce.quickhelp.QuickHelp;
 
 import javax.swing.*;
+import java.util.List;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
@@ -460,6 +459,25 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 		ui.codeHelperPane.endTemplateEditing(true);
 	}
 
+	public void editAsTemplate(List<List<WordWithPos>> wordGroups) {
+		ArrayList<CHCommandArgument> arguments = new ArrayList<CHCommandArgument>(wordGroups.size());
+
+		for (List<WordWithPos> wordGroup : wordGroups) {
+			CHCommandArgument argument = new CHCommandArgument("", "", false);
+			ArrayList<SCEDocumentRange> occurrences = new ArrayList<SCEDocumentRange>();
+			for (WordWithPos word : wordGroup) {
+				SCEDocumentPosition occurrenceStart = document.createDocumentPosition(word.startRow, word.startCol - 1);
+				SCEDocumentPosition occurrenceEnd = document.createDocumentPosition(word.endRow, word.endCol, 0);
+				occurrences.add(new SCEDocumentRange(occurrenceStart, occurrenceEnd));
+			}
+			argument.setOccurrences(occurrences);
+			arguments.add(argument);
+		}
+
+		SCEDocumentPosition caretEndPosition = arguments.get(arguments.size() - 1).getOccurrences().get(0).getEndPosition();
+		ui.codeHelperPane.editAsTemplate(arguments, caretEndPosition);
+	}
+
   /**
    * Returns the popup for code assistants.
    *
@@ -530,6 +548,15 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   public int getVisibleRowsCount() {
     return (int) ((getVisibleRect().getHeight() / lineHeight) - 1);
   }
+
+	/**
+	 * Returns the pane UI.
+	 *
+	 * @return pane UI
+	 */
+	public SCEPaneUI getPaneUI() {
+		return ui;
+	}
 
   /**
    * Sets the text in this pane.

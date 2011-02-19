@@ -5,6 +5,7 @@
 package sce.component;
 
 import jlatexeditor.gproperties.GProperties;
+import sun.misc.Regexp;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -16,6 +17,7 @@ import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class SCEDocument {
   // optimization
@@ -905,5 +907,18 @@ public class SCEDocument {
    */
   public void removeSCEModificationStateListener(SCEModificationStateListener listener) {
     modificationStateListeners.remove(listener);
+	}
+
+	public void replaceInAllRows(String from, String to) {
+		Pattern fromPattern = Pattern.compile(from);
+
+		// replace all occurrences in all rows
+		for (int i = 0; i < rows.length; i++) {
+			String rowString = rows[i].toString();
+			if (fromPattern.matcher(rowString).find()) {
+				String newRowString = rowString.replaceAll(from, to);
+				replace(i, 0, i, rowString.length(), newRowString);
+			}
+		}
 	}
 }
