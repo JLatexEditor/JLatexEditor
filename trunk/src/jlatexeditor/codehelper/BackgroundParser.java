@@ -44,6 +44,9 @@ public class BackgroundParser extends Thread {
 
   private ArrayList<TODO> todos = new ArrayList<TODO>();
 
+	private boolean parsing = false;
+	private final Object syncObject = new Object();
+
 	public BackgroundParser(JLatexEditorJFrame jle) {
 	  super("BackgroundParser");
     this.jle = jle;
@@ -126,17 +129,30 @@ public class BackgroundParser extends Thread {
       structure.setRoot(structureStack.get(0));
 
       try {
-        synchronized (this) {
-          wait();
+        synchronized (syncObject) {
+	        parsing = false;
+	        syncObject.notify();
+          syncObject.wait();
+	        parsing = true;
         }
       } catch (InterruptedException ignored) {
       }
     }
   }
 
-  public synchronized void parse() {
-    notify();
+  public void parse() {
+	  synchronized (syncObject) {
+		  if (parsing) return;
+		  syncObject.notify();
+	  }
   }
+
+	public void waitForParseFinished() throws InterruptedException {
+		synchronized (syncObject) {
+			if (!parsing) return;
+			syncObject.wait();
+		}
+	}
 
   private void parseTex(File directory, String fileName, HashSet<File> files, Trie words, Trie<FilePos> commandNames, Trie<Command> commands,
                         Trie<FilePos> labelDefs, Trie<FilePos> labelRefs, ArrayList<StructureEntry> structure, HashSet<String> done) {
@@ -152,7 +168,7 @@ public class BackgroundParser extends Thread {
     String tex;
     String fileCanonicalPath;
     try {
-      tex = StreamUtils.readFile(file.getAbsolutePath());
+      tex = jle.getCurrentContent(file);
       fileCanonicalPath = file.getCanonicalPath();
     } catch (IOException e) {
       return;
@@ -275,7 +291,8 @@ public class BackgroundParser extends Thread {
     }
   }
 
-  private void parseBib(File directory, String fileName) {
+	private void parseBib(File directory, String fileName) {
+		// TODO: consider jle.getCurrentContent(file) to get last version
     if (!fileName.endsWith(".bib")) fileName = fileName + ".bib";
     File bibFile = new File(directory, fileName);
     if (bibFile.lastModified() == bibModified) return;

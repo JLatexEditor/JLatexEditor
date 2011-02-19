@@ -41,8 +41,6 @@ public class PatternPair {
   }
 
   public List<WordWithPos> find(SCEPane pane, SCEPosition pos) {
-    SCECaret caret = pane.getCaret();
-
     return find(pane.getDocument().getRow(pos.getRow()), pos.getRow(), pos.getColumn());
   }
 

@@ -162,7 +162,6 @@ public class GProperties {
     properties.addEntry(new Def("shortcut.comment", SHORTCUT, "control D"));
     properties.addEntry(new Def("shortcut.uncomment", SHORTCUT, "control shift D"));
     properties.addEntry(new Def("shortcut.diff", SHORTCUT, "alt D"));
-    properties.addEntry(new Def("shortcut.forward search", SHORTCUT, "control shift F"));
     properties.addEntry(new Comment(" View"));
     properties.addEntry(new Def("shortcut.symbols", SHORTCUT, "alt Y"));
     properties.addEntry(new Def("shortcut.structure", SHORTCUT, "alt X"));
@@ -175,6 +174,7 @@ public class GProperties {
     properties.addEntry(new Def("shortcut.dvi + ps", SHORTCUT, "alt 3"));
     properties.addEntry(new Def("shortcut.dvi + ps + pdf", SHORTCUT, "alt 4"));
 	  properties.addEntry(new Comment(" LaTeX menu"));
+	  properties.addEntry(new Def("shortcut.forward search", SHORTCUT, "control shift F"));
 		for (AddOn addOn : AddOn.getAllAddOnsMap().values()) {
 			properties.addEntry(new Def("shortcut." + addOn.getKey(), SHORTCUT, addOn.getShortcut()));
 		}

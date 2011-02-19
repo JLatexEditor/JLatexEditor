@@ -8,11 +8,9 @@ package jlatexeditor;
 import de.endrullis.utils.ProgramUpdater;
 import de.endrullis.utils.StringUtils;
 import jlatexeditor.addon.AddOn;
-import jlatexeditor.addon.EnvironmentUtils;
 import jlatexeditor.bib.BibCodeHelper;
 import jlatexeditor.bib.BibSyntaxHighlighting;
 import jlatexeditor.codehelper.*;
-import jlatexeditor.cursorelement.CursorElement;
 import jlatexeditor.errorhighlighting.LatexCompiler;
 import jlatexeditor.errorhighlighting.LatexErrorHighlighting;
 import jlatexeditor.gproperties.GProperties;
@@ -52,8 +50,6 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener, TreeSelectionListener, SearchChangeListener {
   public static final File FILE_LAST_SESSION = new File(System.getProperty("user.home") + "/.jlatexeditor/last.session");
@@ -256,8 +252,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     editMenu.add(createMenuItem("Comment", "comment", 'o'));
     editMenu.add(createMenuItem("Uncomment", "uncomment", 'u'));
     editMenu.addSeparator();
-    editMenu.add(createMenuItem("Forward Search", "forward search", null));
-    editMenu.addSeparator();
     editMenu.add(createMenuItem("Diff", "diff", 'D'));
 
     JMenu viewMenu = new JMenu("View");
@@ -280,6 +274,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     buildMenu.add(createMenuItem("dvi + ps + pdf", "dvi + ps + pdf", null));
 
     JMenu latexMenu = new JMenu("LaTeX");
+		latexMenu.add(createMenuItem("Forward Search", "forward search", null));
+		latexMenu.addSeparator();
     latexMenu.setMnemonic('l');
     menuBar.add(latexMenu);
 
@@ -344,7 +340,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // tabs for the files
     tabbedPane = new JTabbedPane();
     try {
-      addTab(new Doc.UntitledDoc());
+      addTab(new Doc.UntitledDoc(), true);
     } catch (IOException ignored) {
     }
 
@@ -657,12 +653,52 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     return backgroundParser;
   }
 
+	/**
+	 * Returns the current content of the file.
+	 * If the file is managed in the editor the editor content is returned.
+	 *
+	 * @param file file
+	 * @return file content or editor content
+	 * @throws IOException if an I/O error occurs
+	 */
+	public String getCurrentContent(File file) throws IOException {
+		// check if file is opened
+		SourceCodeEditor editor = getEditor(new Doc.FileDoc(file));
+		if (editor != null) {
+			// it is opened -> return editor content
+			return editor.getText();
+		} else {
+			// it is not opened -> return file content
+			return StreamUtils.readFile(file.getAbsolutePath());
+		}
+	}
+
   public int getTab(Doc doc) {
     for (int tab = 0; tab < tabbedPane.getTabCount(); tab++) {
       if (doc.equals(getEditor(tab).getResource())) return tab;
     }
     return -1;
   }
+
+	/**
+	 * Returns the editor for the document or null if the document is not open
+	 *
+	 * @param doc document
+	 * @return editor or null if not open
+	 */
+	public SourceCodeEditor<Doc> getEditor(Doc doc) {
+		if (docMap.containsKey(doc.getUri())) {
+			doc = docMap.get(doc.getUri());
+
+			// is open?
+			int tab = getTab(doc);
+			if (tab != -1) {
+				return getEditor(tab);
+			}
+		}
+
+		return null;
+	}
 
   public SourceCodeEditor<Doc> getEditor(int tab) {
     return (SourceCodeEditor<Doc>) tabbedPane.getComponentAt(tab);
@@ -676,7 +712,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     return mainEditor != null ? mainEditor : getActiveEditor();
   }
 
-  private SourceCodeEditor<Doc> addTab(Doc doc) throws IOException {
+  private SourceCodeEditor<Doc> addTab(Doc doc, boolean selectTab) throws IOException {
     SourceCodeEditor<Doc> editor;
 	  editor = assignDocProperties(doc);
 	  editor.setResource(doc);
@@ -685,7 +721,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     tabbedPane.addTab(doc.getName(), editor);
     tabbedPane.addChangeListener(this);
     tabbedPane.setTabComponentAt(tabbedPane.getTabCount() - 1, new TabLabel(doc, editor));
-    tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
+	  if (selectTab) {
+      tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
+	  }
     editor.open(doc);
 
     return editor;
@@ -727,6 +765,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	}
 
 	public SourceCodeEditor<Doc> open(Doc doc) {
+		return open(doc, true);
+	}
+
+	public SourceCodeEditor<Doc> open(Doc doc, boolean selectTab) {
     try {
       // is existing object if it already exists, otherwise add it to docMap
       if (docMap.containsKey(doc.getUri())) {
@@ -738,7 +780,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       // already open?
       int tab = getTab(doc);
       if (tab != -1) {
-        tabbedPane.setSelectedIndex(tab);
+	      if (selectTab) {
+          tabbedPane.setSelectedIndex(tab);
+	      }
         return getEditor(tab);
       }
 
@@ -751,7 +795,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         }
       }
 
-      SourceCodeEditor<Doc> editor = addTab(doc);
+      SourceCodeEditor<Doc> editor = addTab(doc, selectTab);
       if (closeFirstTab) closeTab(0);
 
       if (doc instanceof Doc.FileDoc) {
@@ -979,7 +1023,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       tabbedPane.removeTabAt(tab);
     } else {
       try {
-        addTab(new Doc.UntitledDoc());
+        addTab(new Doc.UntitledDoc(), true);
       } catch (IOException ignored) {
       }
       tabbedPane.removeTabAt(tab);
@@ -1024,7 +1068,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     // new file
     if (action.equals("new")) {
       try {
-        addTab(new Doc.UntitledDoc());
+        addTab(new Doc.UntitledDoc(), true);
       } catch (IOException ignored) {
       }
     } else

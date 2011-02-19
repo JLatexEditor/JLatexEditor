@@ -23,10 +23,6 @@ import java.util.List;
 public class JumpTo implements KeyListener, MouseListener {
   private static List<String> defaultExtensions = Arrays.asList("", ".tex", ".bib");
 
-  private PatternPair parameterPattern = new PatternPair("\\{([^\\{]*)", "([^\\}]*)\\}");
-	private PatternPair commandParamPattern = new PatternPair("\\\\(\\w+)\\{[^\\{]*");
-	private PatternPair commandPattern = new PatternPair("\\\\(\\w*)", "(\\w+)");
-
   private SourceCodeEditor editor;
   private JLatexEditorJFrame jLatexEditorJFrame;
 
@@ -54,7 +50,7 @@ public class JumpTo implements KeyListener, MouseListener {
     SCEPane pane = editor.getTextPane();
 
 	  // cursor under command?
-	  List<WordWithPos> words = commandPattern.find(pane, pos);
+	  List<WordWithPos> words = CodePattern.commandPattern.find(pane, pos);
 	  if (words != null) {
 		  // extract command name
 	    WordWithPos word = words.get(0);
@@ -68,13 +64,13 @@ public class JumpTo implements KeyListener, MouseListener {
 	  }
 
 	  // cursor placed under command parameter?
-	  words = parameterPattern.find(pane, pos);
+	  words = CodePattern.parameterPattern.find(pane, pos);
     if (words != null) {
 	    // extract the parameter
       WordWithPos word = words.get(0);
 
 	    // get command name
-	    List<WordWithPos> commandList = commandParamPattern.find(pane, pos);
+	    List<WordWithPos> commandList = CodePattern.commandParamPattern.find(pane, pos);
 	    if (commandList != null) {
 		    String command = commandList.get(0).word;
 
@@ -113,8 +109,6 @@ public class JumpTo implements KeyListener, MouseListener {
           }
         }
       }
-
-	    return;
     }
   }
 

@@ -17,6 +17,7 @@ public abstract class AddOn {
 
 	static {
 		AddOn[] addOns = {
+			new RenameElement(),
 			new CloseEnvironment(),
 			new ColumnRealigner()
 		};

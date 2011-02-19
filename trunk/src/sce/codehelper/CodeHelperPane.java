@@ -654,7 +654,14 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     }
   }
 
-  public static class SCEListCellRenderer extends DefaultListCellRenderer {
+	public void editAsTemplate(ArrayList<CHCommandArgument> arguments, SCEDocumentPosition caretEndPosition) {
+		template = "";
+		templateArguments = arguments;
+		templateCaretPosition = caretEndPosition;
+		editTemplate(0);
+	}
+
+	public static class SCEListCellRenderer extends DefaultListCellRenderer {
     public static final Color BACKGROUND = new Color(219, 224, 253);
 
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
