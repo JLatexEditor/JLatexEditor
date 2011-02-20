@@ -58,7 +58,7 @@ public class StaticCommandsCodeHelper extends PatternHelper {
     return getMaxCommonPrefix(command.word);
   }
 
-  public Iterable<CHCommand> getCompletions(String prefix) {
+  public Iterable<? extends CHCommand> getCompletions(String prefix) {
 	  List<CHCommand> objects = commands.getObjects(prefix, 1000);
 	  if (objects != null) {
 	    return objects;

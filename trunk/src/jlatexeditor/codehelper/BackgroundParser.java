@@ -31,8 +31,8 @@ public class BackgroundParser extends Thread {
   private ArrayList<FilePos<BibEntry>> bibEntries = new ArrayList<FilePos<BibEntry>>();
 
 	private HashSet<File> files = new HashSet<File>();
-  private Trie<? extends Object> words = new Trie<Object>();
-  private Trie<String> commandNames = new Trie<String>();
+  private Trie words = new Trie();
+  private Trie commandNames = new Trie();
   private TrieSet<String> commandsAndFiles = new TrieSet<String>();
   private Trie<Command> commands = new Trie<Command>();
   private Trie<FilePos> labelDefs = new Trie<FilePos>();
@@ -57,11 +57,11 @@ public class BackgroundParser extends Thread {
     return bibEntries;
   }
 
-	public Trie<? extends Object> getWords() {
+	public Trie getWords() {
     return words;
   }
 
-  public Trie<String> getCommandNames() {
+  public Trie getCommandNames() {
     return commandNames;
   }
 
@@ -114,7 +114,7 @@ public class BackgroundParser extends Thread {
 
 	    HashSet<File> files = new HashSet<File>();
 	    Trie words = new Trie();
-      Trie<String> commandNames = new Trie<String>();
+      Trie commandNames = new Trie();
       TrieSet<String> commandsAndFiles = new TrieSet<String>();
       Trie<FilePos> labelDefs = new Trie<FilePos>();
       Trie<FilePos> labelRefs = new Trie<FilePos>();
@@ -160,7 +160,7 @@ public class BackgroundParser extends Thread {
 		}
 	}
 
-  private void parseTex(File directory, String fileName, HashSet<File> files, Trie words, Trie<String> commandNames,
+  private void parseTex(File directory, String fileName, HashSet<File> files, Trie words, Trie commandNames,
                         TrieSet<String> commandsAndFiles, Trie<Command> commands,
                         Trie<FilePos> labelDefs, Trie<FilePos> labelRefs, ArrayList<StructureEntry> structure, HashSet<String> done) {
     if (done.contains(fileName)) return;
@@ -223,7 +223,7 @@ public class BackgroundParser extends Thread {
 
       // the command
       String command = tex.substring(begin, index);
-      commandNames.add(command, null);
+      commandNames.add(command);
 	    commandsAndFiles.add(command, file.getAbsolutePath());
 
       // newcommand

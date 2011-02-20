@@ -1,5 +1,8 @@
 package util;
 
+import de.endrullis.utils.ExtIterable;
+import de.endrullis.utils.ExtIterator;
+
 import java.util.*;
 
 /**
@@ -73,18 +76,23 @@ public class Trie<T> {
   }
 
   public T get(String s) {
-    return get(truncate(s).toCharArray(), 0);
+    return get(truncate(s).toCharArray());
   }
 
   private T get(char[] chars) {
-    return get(chars, 0);
+	  Trie<T> node = getNode(chars, 0);
+	  return node != null ? node.object : null;
   }
 
-  private T get(char[] chars, int i) {
-    if (i == chars.length) return object;
+  private Trie<T> getNode(String prefix) {
+	  return getNode(prefix.toCharArray(), 0);
+  }
+
+  private Trie<T> getNode(char[] chars, int i) {
+    if (i == chars.length) return this;
 
     Trie<T> next = map.get(chars[i]);
-    return next != null ? next.get(chars, i + 1) : null;
+    return next != null ? next.getNode(chars, i + 1) : null;
   }
 
   public String getMaxCommonPrefix(String prefix) {
@@ -144,7 +152,80 @@ public class Trie<T> {
     return list;
   }
 
-  private int addStrings(List<String> list, String prefix, int remaining) {
+	public TrieObjectsIterable<T> getObjectsIterable(String prefix) {
+		return new TrieObjectsIterable<T>(getNode(prefix));
+	}
+
+	public class TrieObjectsIterable<T> extends ExtIterable<T> {
+		private Trie<T> trie;
+
+		public TrieObjectsIterable(Trie<T> trie) {
+			this.trie = trie;
+		}
+
+		@Override
+		public ExtIterator<T> iterator() {
+			return new TrieObjectsIterator<T>(trie);
+		}
+	}
+
+	public class TrieObjectsIterator<T> extends ExtIterator<T> {
+		private LinkedList<Iterator<Trie<T>>> nodeStack = new LinkedList<Iterator<Trie<T>>>();
+		private Trie<T> trie;
+
+		public TrieObjectsIterator(Trie<T> initialNode) {
+			trie = initialNode;
+			if (!trie.map.isEmpty()) {
+				nodeStack.push(trie.map.values().iterator());
+			}
+		}
+
+		@Override
+		public boolean hasNext() {
+			if (trie != null && trie.hasObject()) return true;
+
+			while (!nodeStack.isEmpty()) {
+				Iterator<Trie<T>> peek = nodeStack.peek();
+				if (peek.hasNext()) {
+					trie = peek.next();
+					if (!trie.map.isEmpty()) {
+						nodeStack.push(trie.map.values().iterator());
+					}
+					if (trie.hasObject()) return true;
+				} else {
+					nodeStack.pop();
+				}
+			}
+
+			trie = null;
+			return false;
+		}
+
+		@Override
+		public T next() {
+			if (hasNext()) {
+				return returnObj();
+			}
+			return null;
+		}
+
+		private T returnObj() {
+			T obj = trie.object;
+			trie = null;
+			return obj;
+		}
+
+		@Override
+		public void remove() {
+			//To change body of implemented methods use File | Settings | File Templates.
+		}
+	}
+
+	private boolean hasObject() {
+		return count > 0;
+	}
+
+	private int addStrings(List<String> list, String prefix, int remaining) {
     if (count > 0) {
       list.add(prefix);
       remaining--;
