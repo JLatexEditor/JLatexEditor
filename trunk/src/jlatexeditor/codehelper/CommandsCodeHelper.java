@@ -7,6 +7,7 @@ import sce.codehelper.CHCommand;
 import sce.codehelper.PatternPair;
 import sce.codehelper.StaticCommandsCodeHelper;
 import sce.codehelper.WordWithPos;
+import util.Trie;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,9 +32,15 @@ public class CommandsCodeHelper extends StaticCommandsCodeHelper {
 		BackgroundParser backgroundParser = jle.getBackgroundParser();
 		if (backgroundParser != null) {
 			List<String> commandNames = backgroundParser.getCommandNames().getStrings(prefix.substring(1), 10);
+			Trie<Command> userCommands = backgroundParser.getCommands();
 			if (commandNames != null) {
-				for (Object commandName : commandNames) {
-					dynamicCommands.add(new CHCommand("\\" + commandName));
+				for (String commandName : commandNames) {
+					Command userCommand = userCommands.get(commandName);
+					if (userCommand != null) {
+						dynamicCommands.add(userCommand.toCHCommand());
+					} else {
+						dynamicCommands.add(new CHCommand("\\" + commandName));
+					}
 				}
 			}
 		}

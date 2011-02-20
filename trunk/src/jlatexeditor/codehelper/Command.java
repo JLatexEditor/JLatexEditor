@@ -1,5 +1,7 @@
 package jlatexeditor.codehelper;
 
+import sce.codehelper.CHCommand;
+import sce.codehelper.CHCommandArgument;
 import util.ParseUtil;
 import util.Trie;
 
@@ -44,6 +46,21 @@ public class Command extends BackgroundParser.FilePos {
             (optional != null ? "[" + optional + "]" : "") +
             "{" + body + "}";
   }
+
+	public CHCommand toCHCommand() {
+		CHCommand chCommand = new CHCommand("\\" + name);
+		String template = "\\" + name;
+		if (optional != null) {
+			template += "[@opt@]";
+			chCommand.addArgument(new CHCommandArgument("opt", optional, true));
+		}
+		for (int i=1; i<=numberOfArgs; i++) {
+			template += "{@arg" + i + "@}";
+			chCommand.addArgument(new CHCommandArgument("arg" + i, "", false));
+		}
+		chCommand.setUsage(template);
+		return chCommand;
+	}
 
   /**
    * Unfolding macros once.

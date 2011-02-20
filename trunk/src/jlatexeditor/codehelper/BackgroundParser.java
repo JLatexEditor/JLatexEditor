@@ -57,11 +57,11 @@ public class BackgroundParser extends Thread {
     return bibEntries;
   }
 
-	public Trie getWords() {
+	public Trie<?> getWords() {
     return words;
   }
 
-  public Trie getCommandNames() {
+  public Trie<?> getCommandNames() {
     return commandNames;
   }
 
