@@ -172,7 +172,7 @@ public class Trie<T> {
 
 		public TrieIterator(Trie<T> initialNode) {
 			trie = initialNode;
-			if (!trie.map.isEmpty()) {
+			if (trie != null && !trie.map.isEmpty()) {
 				nodeStack.push(trie.map.values().iterator());
 			}
 		}
