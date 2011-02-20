@@ -597,7 +597,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 			codeHelper.addPatternHelper(new BibCodeHelper());
 		}
 		codeHelper.addPatternHelper(new IncludeCodeHelper());
-		codeHelper.addPatternHelper(new StaticCommandsCodeHelper("(\\\\[a-zA-Z]*)", latexCommands));
+		codeHelper.addPatternHelper(new CommandsCodeHelper(this));
 		if (backgroundParser != null) {
 			codeHelper.addPatternHelper(new WordCompletion(backgroundParser));
 		}
@@ -605,7 +605,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		codeHelper.setAutoCompletionMinLetters(GProperties.getInt("editor.auto_completion.min_number_of_letters"));
 		codeHelper.setAutoCompletionDelay(GProperties.getInt("editor.auto_completion.delay"));
 		scePane.setCodeHelper(codeHelper);
-		scePane.setTabCompletion(new StaticCommandsCodeHelper("([a-zA-Z]*)", tabCompletions));
+		scePane.setTabCompletion(new StaticCommandsCodeHelper("(\\p{L}*)", tabCompletions));
 		scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
 
 		CombinedCodeAssistant codeAssistant = new CombinedCodeAssistant();
@@ -652,6 +652,14 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   public BackgroundParser getBackgroundParser() {
     return backgroundParser;
   }
+
+	public StaticCommandsReader getLatexCommands() {
+		return latexCommands;
+	}
+
+	public StaticCommandsReader getTabCompletions() {
+		return tabCompletions;
+	}
 
 	/**
 	 * Returns the current content of the file.

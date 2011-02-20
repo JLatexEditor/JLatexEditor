@@ -1,8 +1,10 @@
 package util;
 
+import de.endrullis.utils.CollectionUtils;
 import junit.framework.TestCase;
-import util.Trie;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -79,4 +81,34 @@ public class TrieTest extends TestCase {
 						"ccc1\n" +
 						"ccc2\n", s);
   }
+
+	public void testObjectIterator() {
+		String[] strings = {
+			"aba",
+			"abadaba",
+			"abba",
+			"abbadabba",
+			"abbanichdoch",
+			"abbgemalt",
+			"abbgemalter",
+			"abbladab",
+			"badabu",
+			"dabadu",
+			"dabaladab",
+		};
+
+		Trie<String> trie = new Trie<String>();
+		for (String string : strings) {
+			trie.add(string, string);
+		}
+
+		ArrayList<String> expectedList = new ArrayList<String>();
+		for (String string : strings) {
+			if (string.startsWith("abb")) expectedList.add(string);
+		}
+
+		String expected = CollectionUtils.join(expectedList, "\n");
+		String actual = CollectionUtils.join(trie.getObjectsIterable("abb"), "\n");
+		assertEquals(expected, actual);
+	}
 }
