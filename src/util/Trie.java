@@ -214,11 +214,6 @@ public class Trie<T> {
 			trie = null;
 			return obj;
 		}
-
-		@Override
-		public void remove() {
-			//To change body of implemented methods use File | Settings | File Templates.
-		}
 	}
 
 	private boolean hasObject() {
