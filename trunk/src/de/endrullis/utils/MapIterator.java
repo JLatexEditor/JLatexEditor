@@ -25,7 +25,9 @@ public class MapIterator<T1, T2> extends ExtIterator<T2> {
 
 	@Override
 	public T2 next() {
-		return mapFunc.apply(prevIterator.next());
+		T1 next = prevIterator.next();
+		if (next == null) return null;
+		return mapFunc.apply(next);
 	}
 
 	@Override
