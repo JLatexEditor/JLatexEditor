@@ -102,13 +102,16 @@ public class TrieTest extends TestCase {
 			trie.add(string, string);
 		}
 
+		String expected = CollectionUtils.join(Arrays.asList(strings), "\n");
+		String actual = CollectionUtils.join(trie.getObjectsIterable(""), "\n");
+		assertEquals(expected, actual);
+
 		ArrayList<String> expectedList = new ArrayList<String>();
 		for (String string : strings) {
 			if (string.startsWith("abb")) expectedList.add(string);
 		}
-
-		String expected = CollectionUtils.join(expectedList, "\n");
-		String actual = CollectionUtils.join(trie.getObjectsIterable("abb"), "\n");
+		expected = CollectionUtils.join(expectedList, "\n");
+		actual = CollectionUtils.join(trie.getObjectsIterable("abb"), "\n");
 		assertEquals(expected, actual);
 	}
 }
