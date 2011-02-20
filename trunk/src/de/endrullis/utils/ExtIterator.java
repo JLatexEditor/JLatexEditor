@@ -21,6 +21,10 @@ public abstract class ExtIterator<T> implements Iterator<T> {
 		return list;
 	}
 
+	@Override
+	public void remove() {
+	}
+
 	public ArrayList<T> toList(int maxElements) {
 		ArrayList<T> list = new ArrayList<T>();
 		for (int i=0; i<maxElements && hasNext(); i++) {
