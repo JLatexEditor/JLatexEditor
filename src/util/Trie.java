@@ -152,28 +152,25 @@ public class Trie<T> {
     return list;
   }
 
-	public TrieObjectsIterable<T> getObjectsIterable(String prefix) {
-		return new TrieObjectsIterable<T>(getNode(prefix));
+	public ExtIterable<T> getObjectsIterable(final String prefix) {
+		return new ExtIterable<T>() {
+			@Override
+			public ExtIterator<T> iterator() {
+				return new TrieIterator<T>(getNode(prefix)).map(new Function1<Trie<T>, T>() {
+					@Override
+					public T apply(Trie<T> a1) {
+						return a1.object;
+					}
+				});
+			}
+		};
 	}
 
-	public class TrieObjectsIterable<T> extends ExtIterable<T> {
-		private Trie<T> trie;
-
-		public TrieObjectsIterable(Trie<T> trie) {
-			this.trie = trie;
-		}
-
-		@Override
-		public ExtIterator<T> iterator() {
-			return new TrieObjectsIterator<T>(trie);
-		}
-	}
-
-	public class TrieObjectsIterator<T> extends ExtIterator<T> {
+	public class TrieIterator<T> extends ExtIterator<Trie<T>> {
 		private LinkedList<Iterator<Trie<T>>> nodeStack = new LinkedList<Iterator<Trie<T>>>();
 		private Trie<T> trie;
 
-		public TrieObjectsIterator(Trie<T> initialNode) {
+		public TrieIterator(Trie<T> initialNode) {
 			trie = initialNode;
 			if (!trie.map.isEmpty()) {
 				nodeStack.push(trie.map.values().iterator());
@@ -202,17 +199,13 @@ public class Trie<T> {
 		}
 
 		@Override
-		public T next() {
+		public Trie<T> next() {
 			if (hasNext()) {
-				return returnObj();
+				Trie<T> ret = trie;
+				trie = null;
+				return ret;
 			}
 			return null;
-		}
-
-		private T returnObj() {
-			T obj = trie.object;
-			trie = null;
-			return obj;
 		}
 	}
 
