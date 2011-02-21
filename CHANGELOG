@@ -1,0 +1,6 @@
+== 0.1.54 ==
+* moved "Forward Search" to "LaTeX" menu
+* new refactoring features:
+  - rename commands, labels, environments ("LaTeX"->"Rename Element")
+  - close current environment ("LaTeX"->"Close Environment")
+  - realign table columns ("LaTeX"->"Realign Table Columns")
