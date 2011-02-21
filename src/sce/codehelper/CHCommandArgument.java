@@ -23,6 +23,7 @@ public class CHCommandArgument {
 
   // while editing (for templates)
   private String value = null;
+  private String initialValue = null;
   private ArrayList<SCEDocumentRange> occurrences = null;
 
 	/**
@@ -34,6 +35,7 @@ public class CHCommandArgument {
   public CHCommandArgument(String name, String value, boolean optional) {
     this.name = name;
 	  this.value = value;
+	  this.initialValue = value;
     this.optional = optional;
   }
 
@@ -47,6 +49,7 @@ public class CHCommandArgument {
 	public CHCommandArgument(String name, String value, boolean optional, boolean secondOptional, boolean completion) {
 		this.name = name;
 		this.value = value;
+		this.initialValue = value;
 		this.optional = optional;
 		this.secondOptional = secondOptional;
 		this.completion = completion;
@@ -161,7 +164,16 @@ public class CHCommandArgument {
     return value;
   }
 
-  /**
+	/**
+	 * Returns the initial value (used as default value for optional parameters).
+	 *
+	 * @return initial value
+	 */
+	public String getInitialValue() {
+		return initialValue;
+	}
+
+	/**
    * Sets the value of the argument.
    *
    * @param value the value

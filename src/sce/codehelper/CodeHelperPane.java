@@ -344,7 +344,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 			  SCEDocumentPosition end = range.getEndPosition();
 			  String value = document.getText(start, end);
 
-			  if (value.equals("") || value.equals(oldArgument.getName())) {
+			  if (value.equals("") || value.equals(oldArgument.getInitialValue())) {
 				  for (SCEDocumentRange argumentRange : oldArgument.getOccurrences()) {
 					  // check if char before range and after range is [ or ], respectively
 					  int colBefore = argumentRange.getStartPosition().getColumn();
