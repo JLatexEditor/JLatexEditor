@@ -104,6 +104,7 @@
     </jar>
 
     <!-- Copy start scripts. -->
+    <copy todir="${uploadPrepare}" file="CHANGELOG"/>
     <copy todir="${uploadPrepare}" file="scripts/jlatexeditor"/>
     <copy todir="${uploadPrepare}" file="scripts/jlatexeditor.bat"/>
     <copy todir="${uploadPrepare}">
