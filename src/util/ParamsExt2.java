@@ -139,6 +139,14 @@ public abstract class ParamsExt2 {
 		return option;
 	}
 
+	public Map<String, Option> getOptionByName() {
+		return optionByName;
+	}
+
+	public ArrayList<String> getUnboundArguments() {
+		return unboundArguments;
+	}
+
 	/**
 	 * This is the option structure without logic.
 	 */
