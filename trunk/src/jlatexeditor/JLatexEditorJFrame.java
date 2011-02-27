@@ -87,7 +87,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private StatusBar statusBar = null;
 
   // command line arguments
-  private String args[];
+  private JLatexEditorParams args;
 
   // last directory of the opening dialog
   private JFileChooser openDialog = new SCEFileChooser();
@@ -167,7 +167,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
     new AboutDialog(null).showAndAutoHideAfter(5000);
 
-    JLatexEditorJFrame latexEditor = new JLatexEditorJFrame(args);
+    JLatexEditorJFrame latexEditor = new JLatexEditorJFrame(params);
     latexEditor.setBounds(GProperties.getMainWindowBounds());
     latexEditor.setVisible(true);
   }
@@ -188,7 +188,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		}
 	}
 
-	public JLatexEditorJFrame(String args[]) {
+	public JLatexEditorJFrame(JLatexEditorParams args) {
     super(windowTitleSuffix);
     this.args = args;
     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -1533,17 +1533,30 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         // reopen last files
         reopenLast();
 
+	      String workingDir = System.getProperty("jlatexeditor.working_dir");
+
+	      openDialog.setDialogTitle("Open");
+	      if (workingDir != null) {
+		      openDialog.setCurrentDirectory(new File(workingDir));
+	      }
+
         // open files given in command line
-        for (String arg : args) {
-	        FileLineNr fileLineNr = new FileLineNr(arg);
-	        open(new Doc.FileDoc(fileLineNr.file), fileLineNr.lineNr-1);
+	      ArrayList<String> fileNames = args.getUnboundArguments();
+        for (String fileName : fileNames) {
+	        // make path absolute if working dir is given
+	        if (workingDir != null && !(new File(fileName)).isAbsolute()) {
+		        fileName = workingDir + "/" + fileName;
+	        }
+	        // update directory of open dialog
+	        File file = new File(fileName);
+	        if (file.isAbsolute()) {
+		        openDialog.setCurrentDirectory(file.getParentFile());
+	        }
+	        // open file
+	        FileLineNr fileLineNr = new FileLineNr(fileName);
+	        open(new Doc.FileDoc(fileLineNr.file), fileLineNr.lineNr - 1);
         }
 	      getActiveEditor().getFocusedPane().requestFocus();
-
-        openDialog.setDialogTitle("Open");
-        if (args.length > 0) {
-          openDialog.setCurrentDirectory(new File(new File(args[0]).getParent()));
-        }
 
         setExtendedState(getExtendedState() | GProperties.getInt("main_window.maximized_state"));
       }
