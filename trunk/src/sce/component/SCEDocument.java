@@ -5,7 +5,6 @@
 package sce.component;
 
 import jlatexeditor.gproperties.GProperties;
-import sun.misc.Regexp;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;

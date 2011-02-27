@@ -1,6 +1,16 @@
-== 0.1.54 ==
-* moved "Forward Search" to "LaTeX" menu
+
+New Features and other Changes in JLatexEditor
+""""""""""""""""""""""""""""""""""""""""""""""
+
+# If you do not want to get notified about new features
+# set "show_new_features" in global properties to "false".
+
+
+== Version 0.1.54 ==
+
 * new refactoring features:
-  - rename commands, labels, environments ("LaTeX"->"Rename Element")
-  - close current environment ("LaTeX"->"Close Environment")
-  - realign table columns ("LaTeX"->"Realign Table Columns")
+  - rename commands, labels, environments via F2 or "LaTeX"->"Rename Element"
+  - close current environment via control+alt+E or "LaTeX"->"Close Environment"
+  - realign table columns via control+alt+r or "LaTeX"->"Realign Table Columns"
+* minor changes:
+ - "Forward Search" located in "LaTeX" menu
