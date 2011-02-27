@@ -10,6 +10,8 @@ import de.endrullis.utils.StringUtils;
 import jlatexeditor.addon.AddOn;
 import jlatexeditor.bib.BibCodeHelper;
 import jlatexeditor.bib.BibSyntaxHighlighting;
+import jlatexeditor.changelog.ChangeLogStyles;
+import jlatexeditor.changelog.ChangeLogSyntaxHighlighting;
 import jlatexeditor.codehelper.*;
 import jlatexeditor.errorhighlighting.LatexCompiler;
 import jlatexeditor.errorhighlighting.LatexErrorHighlighting;
@@ -47,6 +49,7 @@ import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.net.URI;
 import java.util.*;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -54,16 +57,19 @@ import java.util.logging.Logger;
 public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener, TreeSelectionListener, SearchChangeListener {
   public static final File FILE_LAST_SESSION = new File(System.getProperty("user.home") + "/.jlatexeditor/last.session");
   public static final File FILE_RECENT = new File(System.getProperty("user.home") + "/.jlatexeditor/recent");
+  public static final File CHANGELOG = new File("CHANGELOG");
 
 	/** Logger. */
 	private static Logger logger = Logger.getLogger(JLatexEditorJFrame.class.getName());
   private static String version = "*Bleeding Edge*";
+	private static boolean bleedingEdge = true;
   private static boolean updateDisabled = true;
   private static String windowTitleSuffix;
 
   static {
     try {
       version = StreamUtils.readFile("version.txt");
+	    bleedingEdge = false;
 	    updateDisabled = false;
 
 	    StreamUtils.readFile("updateDisabled.txt");
@@ -87,7 +93,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private StatusBar statusBar = null;
 
   // command line arguments
-  private JLatexEditorParams args;
+  private List<String> filesToOpen;
 
   // last directory of the opening dialog
   private JFileChooser openDialog = new SCEFileChooser();
@@ -188,9 +194,16 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		}
 	}
 
-	public JLatexEditorJFrame(JLatexEditorParams args) {
+	public JLatexEditorJFrame(JLatexEditorParams params) {
     super(windowTitleSuffix);
-    this.args = args;
+
+		// set files to open
+    filesToOpen = (List<String>) params.getUnboundArguments().clone();
+		// open change log if programs has been updated
+		if (!bleedingEdge && !version.equals(GProperties.getString("last_program_version"))) {
+			filesToOpen.add(CHANGELOG.getAbsolutePath());
+		}
+
     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     addWindowListener(this);
     Runtime.getRuntime().addShutdownHook(new ShutdownHook(this));
@@ -320,9 +333,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     helpMenu.setMnemonic('H');
     menuBar.add(helpMenu);
     helpMenu.add(createMenuItem("Debug", "stack trace", 'D'));
+		helpMenu.add(createMenuItem("Show Change Log", "show change log", 'C'));
     helpMenu.addSeparator();
 
-    JMenuItem updateMenuItem = createMenuItem("Check for update", "update", 'u');
+    JMenuItem updateMenuItem = createMenuItem("Check for Update", "update", 'U');
     if (updateDisabled) updateMenuItem.setVisible(false);
     helpMenu.add(updateMenuItem);
     helpMenu.add(createMenuItem("About", "about", 'A'));
@@ -640,6 +654,23 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     return editor;
   }
 
+  private SourceCodeEditor<Doc> createChangeLogSourceCodeEditor() {
+    SourceCodeEditor<Doc> editor = new SourceCodeEditor<Doc>(null);
+
+    SCEPane scePane = editor.getTextPane();
+    setPaneProperties(scePane);
+    SCEDocument document = scePane.getDocument();
+
+    // add some styles to the document
+    ChangeLogStyles.addStyles(document);
+
+    // syntax highlighting
+    ChangeLogSyntaxHighlighting syntaxHighlighting = new ChangeLogSyntaxHighlighting(scePane);
+    syntaxHighlighting.start();
+
+    return editor;
+  }
+
   private void setPaneProperties(final SCEPane pane) {
     pane.setColumnsPerRow(GProperties.getInt("editor.columns_per_row"));
     GProperties.addPropertyChangeListener("editor.columns_per_row", new PropertyChangeListener() {
@@ -742,6 +773,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 		if (doc.getName().endsWith("global.properties")) {
 		  editor = createGPropertiesSourceCodeEditor();
+		} else
+		if (doc.getName().endsWith("CHANGELOG")) {
+		  editor = createChangeLogSourceCodeEditor();
 		} else
 		if (doc.getName().endsWith(".bib")) {
 		  editor = createBibSourceCodeEditor();
@@ -1328,6 +1362,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 			open(new Doc.FileDoc(GProperties.CONFIG_FILE));
 		} else if (action.equals("update")) {
 			checkForUpdates(false);
+		} else if (action.equals("show change log")) {
+			open(new Doc.FileDoc(CHANGELOG));
 		} else if (action.equals("about")) {
 			AboutDialog aboutDialog = new AboutDialog(version);
 			aboutDialog.showIt();
@@ -1541,8 +1577,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	      }
 
         // open files given in command line
-	      ArrayList<String> fileNames = args.getUnboundArguments();
-        for (String fileName : fileNames) {
+        for (String fileName : filesToOpen) {
 	        // make path absolute if working dir is given
 	        if (workingDir != null && !(new File(fileName)).isAbsolute()) {
 		        fileName = workingDir + "/" + fileName;

@@ -5,6 +5,7 @@ import de.endrullis.utils.BetterProperties2.Comment;
 import de.endrullis.utils.BetterProperties2.Def;
 import de.endrullis.utils.BetterProperties2.Range;
 import de.endrullis.utils.BetterProperties2.PSet;
+import jlatexeditor.JLatexEditorJFrame;
 import jlatexeditor.addon.AddOn;
 import util.Aspell;
 import util.Hunspell;
@@ -108,6 +109,9 @@ public class GProperties {
     properties.addEntry(new Def("ask_for_saving_files_before_closing", BOOLEAN, "true"));
 	  properties.addEntry(new Comment(" Check for svn updates in the background"));
 	  properties.addEntry(new Def("check_for_svn_updates", BOOLEAN, "true"));
+	  properties.addEntry(new Comment(" Show new features after upgrade"));
+	  properties.addEntry(new Def("show_new_features", BOOLEAN, "true"));
+	  properties.addEntry(new Def("last_program_version", STRING, ""));
 
 	  properties.addEntry(new Comment("\n## Window properties"));
 	  properties.addEntry(new Comment(" Position, width, and height of the main window"));
@@ -191,6 +195,8 @@ public class GProperties {
 	  properties.addEntry(new Def("shortcut.move tab right", SHORTCUT, "control alt RIGHT"));
     properties.addEntry(new Comment(" Initiate update"));
     properties.addEntry(new Def("shortcut.update", SHORTCUT, ""));
+    properties.addEntry(new Comment(" Show change log"));
+    properties.addEntry(new Def("shortcut.show change log", SHORTCUT, ""));
     properties.addEntry(new Comment(" About screen"));
     properties.addEntry(new Def("shortcut.about", SHORTCUT, ""));
 
