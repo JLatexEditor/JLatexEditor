@@ -1,20 +1,13 @@
 package jlatexeditor.changelog;
 
-import de.endrullis.utils.BetterProperties2.Def;
-import jlatexeditor.gproperties.GProperties;
-import jlatexeditor.gproperties.GPropertiesStyles;
 import jlatexeditor.syntaxhighlighting.states.RootState;
-import sce.codehelper.PatternPair;
 import sce.codehelper.StandalonePattern;
 import sce.codehelper.WordWithPos;
 import sce.component.*;
-import sce.syntaxhighlighting.ParserState;
 import sce.syntaxhighlighting.ParserStateStack;
 import sce.syntaxhighlighting.SyntaxHighlighting;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Syntax highlighting for CHANGELOG.
@@ -29,7 +22,6 @@ public class ChangeLogSyntaxHighlighting extends SyntaxHighlighting implements S
 	private static final StandalonePattern viaPattern = new StandalonePattern("via ([^ ]+)");
 	private static final StandalonePattern stringPattern = new StandalonePattern("[^\\w]\"([^\"]+)\"");
 	private static final StandalonePattern commentPattern = new StandalonePattern("^(#.*)");
-  private static final Pattern PATTERN = Pattern.compile("^([^#=]+)=([^#]*)");
 
   // text pane and document
   private SCEPane pane = null;

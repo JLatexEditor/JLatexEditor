@@ -2,9 +2,7 @@ package jlatexeditor.addon;
 
 import jlatexeditor.JLatexEditorJFrame;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 /**
  * Add On.

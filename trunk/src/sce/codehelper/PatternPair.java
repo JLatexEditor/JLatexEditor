@@ -1,6 +1,5 @@
 package sce.codehelper;
 
-import com.sun.org.apache.bcel.internal.generic.IfInstruction;
 import sce.component.SCECaret;
 import sce.component.SCEPane;
 import sce.component.SCEPosition;

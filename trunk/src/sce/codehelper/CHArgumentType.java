@@ -1,7 +1,6 @@
 package sce.codehelper;
 
 import java.util.HashMap;
-import java.util.Properties;
 
 /**
  * Argument type of a CHCommandArgument.

@@ -1,6 +1,6 @@
 package jlatexeditor.gproperties;
 
-import de.endrullis.utils.BetterProperties2.*;
+import de.endrullis.utils.BetterProperties2.Def;
 import jlatexeditor.syntaxhighlighting.states.RootState;
 import sce.component.*;
 import sce.syntaxhighlighting.ParserState;

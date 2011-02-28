@@ -4,14 +4,8 @@
 
 package jlatexeditor.gproperties;
 
-import jlatexeditor.gproperties.GProperties;
-import my.XML.XMLDocument;
-import my.XML.XMLElement;
-import my.XML.XMLParser;
 import sce.component.SCEDocument;
-import util.StreamUtils;
 
-import java.awt.*;
 import java.awt.font.TextAttribute;
 import java.util.HashMap;
 import java.util.Map;

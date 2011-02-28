@@ -1,7 +1,6 @@
 package jlatexeditor.remote;
 
-import java.io.*;
-import java.net.Socket;
+import java.io.IOException;
 
 /**
  * Remove slave node.

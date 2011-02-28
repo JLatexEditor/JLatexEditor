@@ -3,7 +3,6 @@ package sce.component;
 import util.diff.Diff;
 import util.diff.levenstein.Modification;
 import util.diff.levenstein.TokenList;
-import util.diff.system.SystemDiff;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;

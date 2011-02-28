@@ -5,7 +5,6 @@ import sce.codehelper.*;
 import sce.quickhelp.QuickHelp;
 
 import javax.swing.*;
-import java.util.List;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
@@ -14,6 +13,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.text.AttributedString;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * SourceCodeEditor pane.
