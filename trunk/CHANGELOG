@@ -13,4 +13,4 @@ New Features and other Changes in JLatexEditor
   - close current environment via control+alt+E or "LaTeX"->"Close Environment"
   - realign table columns via control+alt+r or "LaTeX"->"Realign Table Columns"
 * minor changes:
- - "Forward Search" located in "LaTeX" menu
+  - "Forward Search" located in "LaTeX" menu

@@ -1,5 +1,6 @@
 package sce.codehelper;
 
+import com.sun.org.apache.bcel.internal.generic.IfInstruction;
 import sce.component.SCECaret;
 import sce.component.SCEPane;
 import sce.component.SCEPosition;
@@ -10,8 +11,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Pair of two regular expressions. First one for the string left from the cursor.
- * Second one for the string right from the cursor.
+ * Pair of two regular expressions.  First one matches the string left to the cursor,
+ * second one the string right to the cursor.
  *
  * @author Stefan Endrullis
  */
@@ -44,15 +45,25 @@ public class PatternPair {
     return find(pane.getDocument().getRow(pos.getRow()), pos.getRow(), pos.getColumn());
   }
 
+	/**
+	 * Applies the pattern pair to the given position in the given row and
+	 * returns the list of groups as WordWithPos if the pattern could be applied or null if it could not match.
+	 *
+	 * @param rowString row string
+	 * @param row row number
+	 * @param column column number of the cursor position
+	 * @return list of groups as WordWithPos if the pattern could be applied or null if it could not match
+	 */
   public List<WordWithPos> find(String rowString, int row, int column) {
     Matcher leftMatcher = leftPattern.matcher(rowString.substring(0, column));
     Matcher rightMatcher = rightPattern.matcher(rowString.substring(column, rowString.length()));
 
     if (leftMatcher.find() && rightMatcher.find()) {
-      ArrayList<WordWithPos> groups = new ArrayList<WordWithPos>();
-      int leftGroupCount = leftMatcher.groupCount();
-      int rightGroupCount = rightMatcher.groupCount();
-      int leftGroupMax = combine ? leftGroupCount - 1 : leftGroupCount;
+	    int leftGroupCount = leftMatcher.groupCount();
+	    int rightGroupCount = rightMatcher.groupCount();
+      ArrayList<WordWithPos> groups = new ArrayList<WordWithPos>(leftGroupCount + rightGroupCount);
+
+	    int leftGroupMax = combine ? leftGroupCount - 1 : leftGroupCount;
       int rightGroupMin = combine ? 2 : 1;
       for (int i = 1; i <= leftGroupMax; i++) {
         groups.add(new WordWithPos(leftMatcher.group(i), row, leftMatcher.start(i)));
