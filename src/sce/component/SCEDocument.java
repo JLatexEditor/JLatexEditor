@@ -5,6 +5,7 @@
 package sce.component;
 
 import jlatexeditor.gproperties.GProperties;
+import sce.codehelper.WordWithPos;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -758,6 +759,16 @@ public class SCEDocument {
       rows[row].chars[column_nr].style = style;
     }
   }
+
+	/**
+	 * Sets the style for a certain word.
+	 *
+	 * @param style style
+	 * @param wordWithPos word with position information
+	 */
+	public void setStyle(byte style, WordWithPos wordWithPos) {
+		setStyle(style, wordWithPos.getStartPos(), wordWithPos.getEndPos());
+	}
 
   /**
    * Sets the style of the text.

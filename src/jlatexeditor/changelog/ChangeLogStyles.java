@@ -13,14 +13,16 @@ import java.util.Map;
 
 public class ChangeLogStyles {
   public static final byte TEXT = 0;
-  public static final byte KEY = 1;
-  public static final byte COMMENT = 2;
-
-  public static final byte BRACKET = 3;
-
-  public static final byte NUMBER = 4;
-
-  public static final byte ERROR = 5;
+  public static final byte ITEM1 = 1;
+  public static final byte ITEM2 = 2;
+  public static final byte ITEM3 = 3;
+	public static final byte HEADLINE1 = 4;
+	public static final byte HEADLINE2 = 5;
+  public static final byte UNIMPORTANT = 6;
+  public static final byte COMMENT = 7;
+  public static final byte SHORTCUT = 8;
+  public static final byte MENU = 9;
+  public static final byte STRING = 10;
 
   public static final byte USER = 50;
 
@@ -31,7 +33,7 @@ public class ChangeLogStyles {
 
   private static Map<String, Byte> name2Id = new HashMap<String, Byte>();
 
-  private static String styleFile = "data/gproperties/styles/user.xml";
+  private static String styleFile = "data/changelog/styles/user.xml";
 
   static {
 	  init();
@@ -40,11 +42,16 @@ public class ChangeLogStyles {
 
   public static void init() {
     name2Id.put("text", TEXT);
-    name2Id.put("key", KEY);
+    name2Id.put("item1", ITEM1);
+    name2Id.put("item2", ITEM2);
+    name2Id.put("item3", ITEM3);
+    name2Id.put("headline1", HEADLINE1);
+    name2Id.put("headline2", HEADLINE2);
+    name2Id.put("unimportant", UNIMPORTANT);
     name2Id.put("comment", COMMENT);
-    name2Id.put("bracket", BRACKET);
-    name2Id.put("number", NUMBER);
-    name2Id.put("error", ERROR);
+	  name2Id.put("shortcut", SHORTCUT);
+	  name2Id.put("menu", MENU);
+	  name2Id.put("string", STRING);
     name2Id.put("user", USER);
   }
 
