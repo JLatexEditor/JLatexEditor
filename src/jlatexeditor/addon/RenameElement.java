@@ -132,7 +132,7 @@ public class RenameElement extends AddOn {
 	    if (1==1) return;
 
 	    // try to jump to file un
-      if (editor.getResource() instanceof Doc.FileDoc) {
+      if (jle.getMainEditor().getResource() instanceof Doc.FileDoc) {
         Doc.FileDoc fileDoc = (Doc.FileDoc) editor.getResource();
         String thisFileName = fileDoc.getFile().getName();
         File dir = fileDoc.getFile().getParentFile();

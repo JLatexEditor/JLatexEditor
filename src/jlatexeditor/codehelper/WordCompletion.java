@@ -1,9 +1,7 @@
 package jlatexeditor.codehelper;
 
 import sce.codehelper.CHCommand;
-import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
-import util.Trie;
 
 import java.util.ArrayList;
 import java.util.List;

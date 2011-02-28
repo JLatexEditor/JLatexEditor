@@ -2,14 +2,9 @@ package jlatexeditor.tools;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.util.Arrays;
 
 public class ThreadInfoWindow extends JFrame implements Runnable {

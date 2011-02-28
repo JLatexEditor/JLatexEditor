@@ -1,6 +1,5 @@
 package jlatexeditor.codehelper;
 
-import jlatexeditor.gproperties.GProperties;
 import sce.codehelper.CodeAssistant;
 import sce.codehelper.PatternPair;
 import sce.codehelper.SCEPopup;

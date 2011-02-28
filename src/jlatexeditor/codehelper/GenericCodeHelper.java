@@ -5,7 +5,6 @@ import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
 import util.Function0;
 import util.Trie;
-import jlatexeditor.codehelper.BackgroundParser.FilePos;
 
 import java.util.ArrayList;
 import java.util.List;

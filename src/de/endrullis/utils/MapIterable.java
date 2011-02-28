@@ -2,8 +2,6 @@ package de.endrullis.utils;
 
 import util.Function1;
 
-import java.util.Iterator;
-
 /**
  * Iterable that iterators over a another iterator and applies a function to all its elements.
  *

@@ -4,7 +4,6 @@ import jlatexeditor.JLatexEditorJFrame;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 import sce.component.ImageButton;
 import sce.component.SCECaret;
 import sce.component.SCEDocument;
@@ -18,7 +17,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 public class SymbolsPanel extends JScrollPane {
   private JLatexEditorJFrame jLatexEditor;

@@ -2,9 +2,6 @@ package jlatexeditor.codehelper;
 
 import sce.codehelper.PatternPair;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */

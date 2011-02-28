@@ -1,6 +1,5 @@
 package sce.codehelper;
 
-import jlatexeditor.codehelper.PatternHelper;
 import sce.component.SCEPane;
 
 import java.util.ArrayList;

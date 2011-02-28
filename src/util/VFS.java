@@ -1,12 +1,11 @@
 package util;
 
-import java.io.*;
-import java.lang.reflect.Array;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
-import java.net.URLEncoder;
 import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 /**
  * Virtual file.  This can be a real file (VFS.File) or a file in a zip file (VFS.

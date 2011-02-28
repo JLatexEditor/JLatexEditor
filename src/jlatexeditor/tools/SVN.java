@@ -1,8 +1,8 @@
 package jlatexeditor.tools;
 
-import util.Tuple;
 import util.ProcessUtil;
 import util.StreamUtils;
+import util.Tuple;
 
 import java.io.BufferedReader;
 import java.io.File;

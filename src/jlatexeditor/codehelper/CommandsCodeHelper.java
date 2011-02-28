@@ -1,12 +1,9 @@
 package jlatexeditor.codehelper;
 
-import de.endrullis.utils.ExtIterable;
 import de.endrullis.utils.ExtIterator;
 import jlatexeditor.JLatexEditorJFrame;
 import sce.codehelper.CHCommand;
-import sce.codehelper.PatternPair;
 import sce.codehelper.StaticCommandsCodeHelper;
-import sce.codehelper.WordWithPos;
 import util.Trie;
 
 import java.util.ArrayList;

@@ -2,8 +2,6 @@ package jlatexeditor.gproperties;
 
 import de.endrullis.utils.ConfigProperties;
 
-import javax.swing.*;
-
 /**
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */

@@ -1,7 +1,7 @@
 package jlatexeditor.gproperties;
 
-import de.endrullis.utils.BetterProperties2.*;
-import jlatexeditor.gproperties.GProperties;
+import de.endrullis.utils.BetterProperties2.PSet;
+import de.endrullis.utils.BetterProperties2.Range;
 import jlatexeditor.codehelper.PatternHelper;
 import sce.codehelper.CHCommand;
 import sce.codehelper.PatternPair;

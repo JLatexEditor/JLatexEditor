@@ -1,14 +1,9 @@
 package sce.codehelper;
 
 import jlatexeditor.codehelper.PatternHelper;
-import my.XML.XMLDocument;
-import my.XML.XMLElement;
-import my.XML.XMLParser;
-import util.StreamUtils;
 import util.Trie;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 

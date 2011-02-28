@@ -6,7 +6,6 @@ import sce.component.SCEDocumentPosition;
 import sce.component.SCEPane;
 import sce.component.SCERange;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

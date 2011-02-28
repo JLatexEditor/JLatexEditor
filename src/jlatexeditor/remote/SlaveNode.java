@@ -4,7 +4,8 @@ import jlatexeditor.Doc;
 import jlatexeditor.JLatexEditorJFrame;
 
 import javax.swing.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.logging.Logger;

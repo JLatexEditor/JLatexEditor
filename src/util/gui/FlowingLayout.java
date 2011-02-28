@@ -1,8 +1,6 @@
 package util.gui;
 
-import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 /**
  * FlowLayout is simply shit, it ignores the maximum size.

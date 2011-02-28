@@ -1,7 +1,6 @@
 package jlatexeditor.bib;
 
 import sce.codehelper.CHCommand;
-import sce.codehelper.CHCommandArgument;
 
 public class BibEntry extends CHCommand {
   private String[] required;

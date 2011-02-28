@@ -1,9 +1,8 @@
 package jlatexeditor.codehelper;
 
 import jlatexeditor.Doc;
-import jlatexeditor.JLatexEditorJFrame;
 import jlatexeditor.Doc.FileDoc;
-import sce.codehelper.PatternPair;
+import jlatexeditor.JLatexEditorJFrame;
 import sce.codehelper.WordWithPos;
 import sce.component.SCEDocumentPosition;
 import sce.component.SCEPane;
