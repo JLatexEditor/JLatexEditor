@@ -1,0 +1,23 @@
+
+New Features and other Changes in JLatexEditor
+""""""""""""""""""""""""""""""""""""""""""""""
+
+# If you do not want to get notified about new features
+# set "show_new_features" in global properties to "false".
+
+
+== Version 0.1.55 ==
+
+* minor bug fixes:
+  - CHANGELOG opens after every start
+  - CHANGELOG not included in .deb package
+
+
+== Version 0.1.54 ==
+
+* new refactoring features:
+  - rename commands, labels, environments via F2 or "LaTeX"->"Rename Element"
+  - close current environment via control+alt+E or "LaTeX"->"Close Environment"
+  - realign table columns via control+alt+r or "LaTeX"->"Realign Table Columns"
+* minor changes:
+  - "Forward Search" located in "LaTeX" menu
