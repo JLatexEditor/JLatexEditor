@@ -205,6 +205,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		// open change log if programs has been updated
 		if (!bleedingEdge && !version.equals(GProperties.getString("last_program_version"))) {
 			filesToOpen.add(CHANGELOG.getAbsolutePath());
+			GProperties.set("last_program_version", version);
 		}
 
     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

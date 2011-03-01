@@ -225,6 +225,7 @@
 		<copy todir="${linux.runtime.dir}">
 			<fileset dir="dist-resources/linux/deb"/>
 			<fileset file="dist/JLatexEditor_prepare/JLatexEditor.jar"/>
+			<fileset file="dist/JLatexEditor_prepare/CHANGELOG"/>
 		</copy>
 		<copy file="images/icon/5_object_128.png" tofile="${linux.runtime.dir}/images/icon_128.png"/>
 		<echo file="${linux.runtime.dir}/updateDisabled.txt"/>
