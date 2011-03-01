@@ -6,6 +6,13 @@ New Features and other Changes in JLatexEditor
 # set "show_new_features" in global properties to "false".
 
 
+== Version 0.1.55 ==
+
+* minor bug fixes:
+  - CHANGELOG opens after every start
+  - CHANGELOG not included in .deb package
+
+
 == Version 0.1.54 ==
 
 * new refactoring features:
