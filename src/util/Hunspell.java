@@ -25,6 +25,7 @@ public final class Hunspell implements SpellChecker {
   private BufferedReader hunspellErr;
   private InputStream out;
 	private String lang;
+	private HashMap<String,Result> cache = new HashMap<String,Result>();
 
   /** Words in the personal dictionary. */
   private HashSet<String> personalWords = new HashSet<String>();
@@ -116,7 +117,13 @@ public final class Hunspell implements SpellChecker {
    */
   public synchronized Result check(String word) throws IOException {
 	  word = StringUtils.truncate(word);
-    flushOut();
+
+	  Result cachedResult = cache.get(word);
+	  if (cachedResult != null) {
+		  return cachedResult;
+	  }
+
+	  flushOut();
     hunspellIn.println(word);
     hunspellIn.flush();
 
@@ -124,17 +131,22 @@ public final class Hunspell implements SpellChecker {
 
     if (line.equals("*") || line.startsWith("+") || line.startsWith("-")) {
       hunspellOut.readLine();
-      return new Result();
+      return newResult(word, new Result());
     } else if (line.startsWith("#")) {
       hunspellOut.readLine();
-      return new Result(new ArrayList<String>(0));
+      return newResult(word, new Result(new ArrayList<String>(0)));
     } else if (line.startsWith("&")) {
       hunspellOut.readLine();
-      return new Result(Arrays.asList(line.split(": ")[1].split(", ")));
+      return newResult(word, new Result(Arrays.asList(line.split(": ")[1].split(", "))));
     } else {
       throw new RuntimeException("unknown hunspell answer: " + line);
     }
   }
+
+	private Result newResult(String word, Result result) {
+		cache.put(word, result);
+		return result;
+	}
 
   /**
    * Adds the word to the hunspell user dictionary.
@@ -148,6 +160,8 @@ public final class Hunspell implements SpellChecker {
     hunspellIn.flush();
 
     personalWords.add(word);
+
+	  cache.remove(word);
   }
 
   public synchronized void removeFromPersonalDict(String word) throws IOException {
@@ -171,6 +185,8 @@ public final class Hunspell implements SpellChecker {
     startAspell(lang);
 
     personalWords.remove(word);
+
+	  cache.remove(word);
   }
 
   /**
