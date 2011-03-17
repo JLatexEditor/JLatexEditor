@@ -6,6 +6,12 @@ New Features and other Changes in JLatexEditor
 # set "show_new_features" in global properties to "false".
 
 
+== Unpublished Version 0.1.56 ==
+
+* minor enhancements:
+  - hunspell results are cached for better performance
+
+
 == Version 0.1.55 ==
 
 * minor bug fixes:
