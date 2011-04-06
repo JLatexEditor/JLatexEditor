@@ -13,8 +13,11 @@ public class ProcessUtil {
 
     ArrayList<String> env = new ArrayList<String>();
     for (Map.Entry<String, String> entry : System.getenv().entrySet()) {
-      if (entry.getKey().equalsIgnoreCase("PWD")) continue;
-      env.add(entry.getKey() + "=" + entry.getValue());
+	    if (entry.getKey().equalsIgnoreCase("PWD")) {
+		    env.add(entry.getKey() + "=" + dir.getAbsolutePath());
+	    } else {
+		    env.add(entry.getKey() + "=" + entry.getValue());
+	    }
     }
     String[] envArray = new String[env.size()];
     env.toArray(envArray);
