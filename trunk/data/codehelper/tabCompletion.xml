@@ -8,7 +8,10 @@
 
 		<!ELEMENT argument EMPTY>
 		<!ATTLIST argument name CDATA #REQUIRED
-		                   hint CDATA #IMPLIED>
+		                   hint CDATA #IMPLIED
+		                   value CDATA #IMPLIED
+		                   values CDATA #IMPLIED
+		                   completion CDATA #IMPLIED>
 
 		<!ENTITY nl "@newline@">
 ]>
@@ -76,6 +79,6 @@
 	</command>
 	<command name="env" usage="\begin{@env@}@opt@&nl;  @|@&nl;\end{@env@}" hint="tabular environment">
 		<argument name="env"/>
-		<argument name="opt"/>
+		<argument name="opt" value=""/>
 	</command>
 </commandList>
