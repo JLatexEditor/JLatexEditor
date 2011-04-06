@@ -8,8 +8,8 @@ if [ $# == 1 ]; then
 		file="$1"
 
 		# local path? => make absolute
-    if echo "main.tex" | grep -q "^[^\/]"; then
-      file="$USER_PWD/$file"
+		if echo $file | grep -q "^[^\/]"; then
+			file="$USER_PWD/$file"
 		fi
 
 		echo "open: $file" | nc -w 1 localhost 13231 2>/dev/null && exit 0
