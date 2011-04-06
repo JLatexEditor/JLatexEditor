@@ -39,6 +39,7 @@ public class BackgroundParser extends Thread {
 	private Trie<FilePos> labelRefs = new Trie<FilePos>();
 	private Trie<FilePos<BibEntry>> bibKeys2bibEntries = new Trie<FilePos<BibEntry>>();
 	private TrieSet<BibEntry> bibWords2bibEntries = new TrieSet<BibEntry>();
+  private Trie<FilePos> bibRefs = new Trie<FilePos>();
 
   private DefaultTreeModel structure = new DefaultTreeModel(new DefaultMutableTreeNode());
 
@@ -81,6 +82,10 @@ public class BackgroundParser extends Thread {
 		return labelRefs;
 	}
 
+  public Trie<FilePos> getBibRefs() {
+    return bibRefs;
+  }
+
 	public Trie<FilePos<BibEntry>> getBibKeys2bibEntries() {
 		return bibKeys2bibEntries;
 	}
@@ -118,12 +123,13 @@ public class BackgroundParser extends Thread {
       TrieSet<String> commandsAndFiles = new TrieSet<String>();
       Trie<FilePos> labelDefs = new Trie<FilePos>();
       Trie<FilePos> labelRefs = new Trie<FilePos>();
+      Trie<FilePos> bibRefs = new Trie<FilePos>();
       Trie<Command> commands = new Trie<Command>();
 
       ArrayList<StructureEntry> structureStack = new ArrayList<StructureEntry>();
       structureStack.add(new StructureEntry("Project", 0, resource.getName(), 0));
 
-      parseTex(directory, file.getName(), files, words, commandNames, commandsAndFiles, commands, labelDefs, labelRefs, structureStack, new HashSet<String>());
+      parseTex(directory, file.getName(), files, words, commandNames, commandsAndFiles, commands, labelDefs, labelRefs, bibRefs, structureStack, new HashSet<String>());
 
 	    this.files = files;
 	    this.words = words;
@@ -132,6 +138,7 @@ public class BackgroundParser extends Thread {
       this.commands = commands;
       this.labelDefs = labelDefs;
       this.labelRefs = labelRefs;
+      this.bibRefs = bibRefs;
       structure.setRoot(structureStack.get(0));
 
       try {
@@ -162,7 +169,7 @@ public class BackgroundParser extends Thread {
 
   private void parseTex(File directory, String fileName, HashSet<File> files, Trie words, Trie commandNames,
                         TrieSet<String> commandsAndFiles, Trie<Command> commands,
-                        Trie<FilePos> labelDefs, Trie<FilePos> labelRefs, ArrayList<StructureEntry> structure, HashSet<String> done) {
+                        Trie<FilePos> labelDefs, Trie<FilePos> labelRefs, Trie<FilePos> bibRefs, ArrayList<StructureEntry> structure, HashSet<String> done) {
     if (done.contains(fileName)) return;
     else done.add(fileName);
 
@@ -257,17 +264,22 @@ public class BackgroundParser extends Thread {
 	      // commandNames.add(name);
       // label, input, include
       } else if (command.equals("label") || command.equals("bibliography") || command.equals("input") || command.equals("include") ||
-	               command.equals("ref")) {
+	               command.equals("ref") || command.equals("cite")) {
         String argument = ParseUtil.parseBalanced(tex, index+1, '}');
 
         if (command.equals("label")) {
           labelDefs.add(argument, new FilePos(argument, fileCanonicalPath, line));
         } else if (command.equals("ref")) {
           labelRefs.add(argument, new FilePos(argument, fileCanonicalPath, line));
+        } else if (command.equals("cite")) {
+          argument = argument.replaceAll("(?:\\{|\\})", "");
+          for(String ref : argument.split(",")) {
+            bibRefs.add(ref.trim(), new FilePos(ref.trim(), fileCanonicalPath, line));
+          }
         } else if (command.equals("bibliography")) {
           parseBib(directory, Command.unfoldRecursive(argument, commands, 10));
         } else {
-          parseTex(directory, Command.unfoldRecursive(argument, commands, 10), files, words, commandNames, commandsAndFiles, commands, labelDefs, labelRefs, structure, done);
+          parseTex(directory, Command.unfoldRecursive(argument, commands, 10), files, words, commandNames, commandsAndFiles, commands, labelDefs, labelRefs, bibRefs, structure, done);
         }
       // sections
       } else if (command.equals("chapter") || command.equals("section") || command.equals("subsection") || command.equals("subsubsection")) {

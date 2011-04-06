@@ -929,4 +929,8 @@ public class SCEDocument {
 			}
 		}
 	}
+
+  public synchronized void replaceAll(String fromRegex, String toRegex) {
+    setText(getText().replaceAll(fromRegex, toRegex));
+  }
 }

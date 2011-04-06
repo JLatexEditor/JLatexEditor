@@ -55,7 +55,7 @@ public class RenameElement extends AddOn {
 			  }
 		  }
 
-		  replaceInAllFiles(jle, files, "\\\\" + oldCommandName + "([^\\p{L}]|$)", "\\\\" + newCommandName + "$1");
+		  replaceInAllFiles(jle, files, "\\\\" + oldCommandName + "([^\\p{L}]|$)", "\\\\" + newCommandName + "$1", false);
 
 		  // start background parser to update document states
 			jle.getBackgroundParser().parse();
@@ -87,39 +87,41 @@ public class RenameElement extends AddOn {
           if(!backgroundParserWaitFor(jle)) return;
 
 			    // determine all files/editors that contain this label
-			    List<BackgroundParser.FilePos> filePoses = jle.getBackgroundParser().getLabelRefs().getObjects(parameter.word, 1000);
+			    List<BackgroundParser.FilePos> filePoses = jle.getBackgroundParser().getLabelRefs().getObjects(oldLabel, 1000);
 			    if (filePoses == null) {
 				    filePoses = new ArrayList<BackgroundParser.FilePos>();
 			    }
 			    filePoses.add(jle.getBackgroundParser().getLabelDefs().get(oldLabel));
 
-			    replaceInAllFiles(jle, filePoses, "\\\\(label|ref|eqref)\\{" + oldLabel + "\\}", "\\\\$1{" + newLabel + "}");
+			    replaceInAllFiles(jle, filePoses, "\\\\(label|ref|eqref)\\{" + oldLabel + "\\}", "\\\\$1{" + newLabel + "}", false);
 
 					return;
 		    } else
 		    if (command.equals("cite")) {
           words = CodePattern.citeParameterPattern.find(pane);
+          parameter = words.get(0);
 
           // start background parser to update document states
           backgroundParserUpdate(jle);
 
 			    // ask user for new label
-			    String oldLabel = parameter.word;
-			    String newLabel = JOptionPane.showInputDialog(jle, "Rename bibtex entry: ", oldLabel);
-			    if (newLabel == null || newLabel.equals(oldLabel)) return;
+			    String oldRef = parameter.word;
+			    String newRef = JOptionPane.showInputDialog(jle, "Rename bibtex entry: ", oldRef);
+			    if (newRef == null || newRef.equals(oldRef)) return;
 
 			    // wait for background parser to finish
           if(!backgroundParserWaitFor(jle)) return;
 
-          if(true) return;
-
-			    // todo
-			    BackgroundParser.FilePos filePos = jle.getBackgroundParser().getBibKeys2bibEntries().get(parameter.word);
-			    if (filePos != null) {
-				    // todo
-						jle.open(new Doc.FileDoc(new File(filePos.getFile())), filePos.getLineNr());
-						return;
+			    // determine all files/editors that contain this citation
+			    List<BackgroundParser.FilePos> filePoses = jle.getBackgroundParser().getBibRefs().getObjects(oldRef, 1000);
+			    if (filePoses == null) {
+				    filePoses = new ArrayList<BackgroundParser.FilePos>();
 			    }
+			    filePoses.add(jle.getBackgroundParser().getBibKeys2bibEntries().get(oldRef));
+
+          String balanced = "[^\\{\\}]*(?:\\{[^\\{\\}]*\\}[^\\{\\}]*)*";
+          replaceInAllFiles(jle, filePoses, "(\\\\cite\\{(?:" + balanced + ",)?\\{? *)" + oldRef + "( *\\}?(?:," + balanced + ")?\\})", "$1" + newRef + "$2", false);
+          replaceInAllFiles(jle, filePoses, "(@[\\w\\W]+ *\\{ *)" + oldRef + "([ ,\\}])", "$1" + newRef + "$2", false);
 
 			    return;
 		    } else
@@ -178,7 +180,7 @@ public class RenameElement extends AddOn {
     return true;
   }
 
-	private void replaceInAllFiles(JLatexEditorJFrame jle, List<BackgroundParser.FilePos> filePoses, String from, String to) {
+	private void replaceInAllFiles(JLatexEditorJFrame jle, List<BackgroundParser.FilePos> filePoses, String from, String to, boolean everywhere) {
 		HashSet<File> files = new HashSet<File>();
 
 		if (filePoses != null) {
@@ -190,10 +192,10 @@ public class RenameElement extends AddOn {
 			}
 		}
 
-		replaceInAllFiles(jle, files, from, to);
+		replaceInAllFiles(jle, files, from, to, everywhere);
 	}
 
-	private void replaceInAllFiles(JLatexEditorJFrame jle, HashSet<File> files, String from, String to) {
+	private void replaceInAllFiles(JLatexEditorJFrame jle, HashSet<File> files, String from, String to, boolean everywhere) {
 		// put them into a set
 		HashSet<SourceCodeEditor<Doc>> editors = new HashSet<SourceCodeEditor<Doc>>();
 		if (files != null) {
@@ -208,8 +210,11 @@ public class RenameElement extends AddOn {
 
 		// replace in all files/editors
 		for (SourceCodeEditor<Doc> ed : editors) {
-			// open these files
-			ed.getTextPane().getDocument().replaceInAllRows(from, to);
+			if(!everywhere) {
+        ed.getTextPane().getDocument().replaceInAllRows(from, to);
+      } else {
+        ed.getTextPane().getDocument().replaceAll(from, to);
+      }
 		}
 
 		// start background parser to update document states
