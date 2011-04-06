@@ -38,18 +38,14 @@ public class RenameElement extends AddOn {
 		  String oldCommandName = words.get(0).word;
 
 			// start background parser to update document states
-			jle.getBackgroundParser().parse();
+			backgroundParserUpdate(jle);
 
 			// ask user for new command name
 			String newCommandName = JOptionPane.showInputDialog(jle, "Command name: ", oldCommandName);
 			if (newCommandName == null || newCommandName.equals(oldCommandName)) return;
 
 			// wait for background parser to finish
-			try {
-				jle.getBackgroundParser().waitForParseFinished();
-			} catch (InterruptedException e) {
-				return;
-			}
+      backgroundParserWaitFor(jle);
 
 		  List<String> fileNames = jle.getBackgroundParser().getCommandsAndFiles().getObjects(oldCommandName, 1000);
 		  HashSet<File> files = new HashSet<File>();
@@ -77,9 +73,10 @@ public class RenameElement extends AddOn {
 	    if (commandList != null) {
 		    String command = commandList.get(0).word;
 
+        // update background parser
 		    if (command.equals("label") || command.equals("ref") || command.equals("eqref")) {
-			    // start background parser to update document states
-			    jle.getBackgroundParser().parse();
+          // start background parser to update document states
+          backgroundParserUpdate(jle);
 
 			    // ask user for new label
 			    String oldLabel = parameter.word;
@@ -87,11 +84,7 @@ public class RenameElement extends AddOn {
 			    if (newLabel == null || newLabel.equals(oldLabel)) return;
 
 			    // wait for background parser to finish
-			    try {
-				    jle.getBackgroundParser().waitForParseFinished();
-			    } catch (InterruptedException e) {
-				    return;
-			    }
+          if(!backgroundParserWaitFor(jle)) return;
 
 			    // determine all files/editors that contain this label
 			    List<BackgroundParser.FilePos> filePoses = jle.getBackgroundParser().getLabelRefs().getObjects(parameter.word, 1000);
@@ -105,15 +98,29 @@ public class RenameElement extends AddOn {
 					return;
 		    } else
 		    if (command.equals("cite")) {
+          words = CodePattern.citeParameterPattern.find(pane);
+
+          // start background parser to update document states
+          backgroundParserUpdate(jle);
+
+			    // ask user for new label
+			    String oldLabel = parameter.word;
+			    String newLabel = JOptionPane.showInputDialog(jle, "Rename bibtex entry: ", oldLabel);
+			    if (newLabel == null || newLabel.equals(oldLabel)) return;
+
+			    // wait for background parser to finish
+          if(!backgroundParserWaitFor(jle)) return;
+
+          if(true) return;
+
 			    // todo
-			    /*
 			    BackgroundParser.FilePos filePos = jle.getBackgroundParser().getBibKeys2bibEntries().get(parameter.word);
 			    if (filePos != null) {
 				    // todo
 						jle.open(new Doc.FileDoc(new File(filePos.getFile())), filePos.getLineNr());
 						return;
 			    }
-			    */
+
 			    return;
 		    } else
 		    if (command.equals("begin")) {
@@ -151,6 +158,25 @@ public class RenameElement extends AddOn {
       }
     }
 	}
+
+  private void backgroundParserUpdate(JLatexEditorJFrame jle) {
+    // let parser finish current run (user might have changes)
+    backgroundParserWaitFor(jle);
+
+    // start background parser to update document states
+    jle.getBackgroundParser().parse();
+  }
+
+  private boolean backgroundParserWaitFor(JLatexEditorJFrame jle) {
+    // wait for background parser to finish
+    try {
+      jle.getBackgroundParser().waitForParseFinished();
+    } catch (InterruptedException e) {
+      return false;
+    }
+
+    return true;
+  }
 
 	private void replaceInAllFiles(JLatexEditorJFrame jle, List<BackgroundParser.FilePos> filePoses, String from, String to) {
 		HashSet<File> files = new HashSet<File>();
