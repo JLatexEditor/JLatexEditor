@@ -8,7 +8,7 @@ if [ $# == 1 ]; then
 		file="$1"
 
 		# local path? => make absolute
-		if echo $file | grep -q "^[^\/]"; then
+		if echo "$file" | grep -q "^[^\/]"; then
 			file="$USER_PWD/$file"
 		fi
 
