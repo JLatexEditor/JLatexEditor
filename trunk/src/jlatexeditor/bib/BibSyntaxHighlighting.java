@@ -252,7 +252,7 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
         for (int i = 0; i <= key.length(); i++) {
           chars[char_nr + i].style = entryStyle;
         }
-        char_nr += key.length();
+        char_nr += key.length()-1;
 
         state.getKeys().add(key);
         state.setState(BibParserState.STATE_EXPECT_EQ);
