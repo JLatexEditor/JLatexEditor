@@ -35,7 +35,7 @@ public class BibParser {
       String block = ParseUtil.parseBalanced(bib, openBracket + 1, '}');
 
       int comma = block.indexOf(',');
-      if (comma == -1) break;
+      if (comma == -1) continue;
       String name = block.substring(0, comma).trim();
 
       BibEntry entry = new BibEntry();
