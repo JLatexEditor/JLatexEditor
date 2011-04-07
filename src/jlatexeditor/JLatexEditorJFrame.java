@@ -541,7 +541,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 			}));
 		  // add completion for \label
 			codeHelper.addPatternHelper(new GenericCodeHelper("\\\\label\\{([^{}]*)", new Function0<AbstractTrie<?>>() {
-				public Trie<?> apply() {
+				public AbstractTrie<?> apply() {
 					return backgroundParser.getLabelRefs();
 				}
 			}));

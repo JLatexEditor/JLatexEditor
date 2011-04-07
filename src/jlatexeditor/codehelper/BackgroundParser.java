@@ -36,10 +36,10 @@ public class BackgroundParser extends Thread {
   private TrieSet<String> commandsAndFiles = new TrieSet<String>();
   private Trie<Command> commands = new Trie<Command>();
   private Trie<FilePos> labelDefs = new Trie<FilePos>();
-	private Trie<FilePos> labelRefs = new Trie<FilePos>();
+	private TrieSet<FilePos> labelRefs = new TrieSet<FilePos>();
 	private Trie<FilePos<BibEntry>> bibKeys2bibEntries = new Trie<FilePos<BibEntry>>();
 	private TrieSet<BibEntry> bibWords2bibEntries = new TrieSet<BibEntry>();
-  private Trie<FilePos> bibRefs = new Trie<FilePos>();
+  private TrieSet<FilePos> bibRefs = new TrieSet<FilePos>();
 
   private DefaultTreeModel structure = new DefaultTreeModel(new DefaultMutableTreeNode());
 
@@ -78,11 +78,11 @@ public class BackgroundParser extends Thread {
     return labelDefs;
   }
 
-	public Trie<FilePos> getLabelRefs() {
+	public TrieSet<FilePos> getLabelRefs() {
 		return labelRefs;
 	}
 
-  public Trie<FilePos> getBibRefs() {
+  public TrieSet<FilePos> getBibRefs() {
     return bibRefs;
   }
 
@@ -122,8 +122,8 @@ public class BackgroundParser extends Thread {
       Trie commandNames = new Trie();
       TrieSet<String> commandsAndFiles = new TrieSet<String>();
       Trie<FilePos> labelDefs = new Trie<FilePos>();
-      Trie<FilePos> labelRefs = new Trie<FilePos>();
-      Trie<FilePos> bibRefs = new Trie<FilePos>();
+      TrieSet<FilePos> labelRefs = new TrieSet<FilePos>();
+      TrieSet<FilePos> bibRefs = new TrieSet<FilePos>();
       Trie<Command> commands = new Trie<Command>();
 
       ArrayList<StructureEntry> structureStack = new ArrayList<StructureEntry>();
@@ -169,7 +169,7 @@ public class BackgroundParser extends Thread {
 
   private void parseTex(File directory, String fileName, HashSet<File> files, Trie words, Trie commandNames,
                         TrieSet<String> commandsAndFiles, Trie<Command> commands,
-                        Trie<FilePos> labelDefs, Trie<FilePos> labelRefs, Trie<FilePos> bibRefs, ArrayList<StructureEntry> structure, HashSet<String> done) {
+                        Trie<FilePos> labelDefs, TrieSet<FilePos> labelRefs, TrieSet<FilePos> bibRefs, ArrayList<StructureEntry> structure, HashSet<String> done) {
     if (done.contains(fileName)) return;
     else done.add(fileName);
 
@@ -265,6 +265,11 @@ public class BackgroundParser extends Thread {
       // label, input, include
       } else if (command.equals("label") || command.equals("bibliography") || command.equals("input") || command.equals("include") ||
 	               command.equals("ref") || command.equals("cite")) {
+        String optionalArgument = null;
+        if(tex.charAt(index) == '[') {
+          optionalArgument = ParseUtil.parseBalanced(tex, index+1, ']');
+          index += optionalArgument.length() + 2;
+        }
         String argument = ParseUtil.parseBalanced(tex, index+1, '}');
 
         if (command.equals("label")) {

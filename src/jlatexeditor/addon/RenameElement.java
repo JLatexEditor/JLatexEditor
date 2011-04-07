@@ -186,7 +186,7 @@ public class RenameElement extends AddOn {
       filePoses.add(jle.getBackgroundParser().getBibKeys2bibEntries().get(oldRef));
 
       String balanced = "[^\\{\\}]*(?:\\{[^\\{\\}]*\\}[^\\{\\}]*)*";
-      replaceInAllFiles(jle, filePoses, "(\\\\cite\\{(?:" + balanced + ",)?\\{? *)" + oldRef + "( *\\}?(?:," + balanced + ")?\\})", "$1" + newRef + "$2", false);
+      replaceInAllFiles(jle, filePoses, "(\\\\cite(?:\\[[^\\{\\}\\[\\]]*\\])?\\{(?:" + balanced + ",)?\\{? *)" + oldRef + "( *\\}?(?:," + balanced + ")?\\})", "$1" + newRef + "$2", false);
       replaceInAllFiles(jle, filePoses, "(@[\\w\\W]+ *\\{ *)" + oldRef + "([ ,\\}])", "$1" + newRef + "$2", false);
   }
 
