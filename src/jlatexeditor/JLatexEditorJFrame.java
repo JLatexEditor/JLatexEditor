@@ -534,13 +534,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	  if (backgroundParser != null) {
 			codeHelper.addPatternHelper(new CiteHelper(backgroundParser));
 		  // add completion for \ref and \eqref
-			codeHelper.addPatternHelper(new GenericCodeHelper("\\\\(?:ref|eqref)\\{([^{}]*)", new Function0<Trie<?>>() {
+			codeHelper.addPatternHelper(new GenericCodeHelper("\\\\(?:ref|eqref)\\{([^{}]*)", new Function0<AbstractTrie<?>>() {
 				public Trie<?> apply() {
 					return backgroundParser.getLabelDefs();
 				}
 			}));
 		  // add completion for \label
-			codeHelper.addPatternHelper(new GenericCodeHelper("\\\\label\\{([^{}]*)", new Function0<Trie<?>>() {
+			codeHelper.addPatternHelper(new GenericCodeHelper("\\\\label\\{([^{}]*)", new Function0<AbstractTrie<?>>() {
 				public Trie<?> apply() {
 					return backgroundParser.getLabelRefs();
 				}
