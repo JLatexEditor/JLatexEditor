@@ -101,27 +101,7 @@ public class RenameElement extends AddOn {
           words = CodePattern.citeParameterPattern.find(pane);
           parameter = words.get(0);
 
-          // start background parser to update document states
-          backgroundParserUpdate(jle);
-
-			    // ask user for new label
-			    String oldRef = parameter.word;
-			    String newRef = JOptionPane.showInputDialog(jle, "Rename bibtex entry: ", oldRef);
-			    if (newRef == null || newRef.equals(oldRef)) return;
-
-			    // wait for background parser to finish
-          if(!backgroundParserWaitFor(jle)) return;
-
-			    // determine all files/editors that contain this citation
-			    List<BackgroundParser.FilePos> filePoses = jle.getBackgroundParser().getBibRefs().getObjects(oldRef, 1000);
-			    if (filePoses == null) {
-				    filePoses = new ArrayList<BackgroundParser.FilePos>();
-			    }
-			    filePoses.add(jle.getBackgroundParser().getBibKeys2bibEntries().get(oldRef));
-
-          String balanced = "[^\\{\\}]*(?:\\{[^\\{\\}]*\\}[^\\{\\}]*)*";
-          replaceInAllFiles(jle, filePoses, "(\\\\cite\\{(?:" + balanced + ",)?\\{? *)" + oldRef + "( *\\}?(?:," + balanced + ")?\\})", "$1" + newRef + "$2", false);
-          replaceInAllFiles(jle, filePoses, "(@[\\w\\W]+ *\\{ *)" + oldRef + "([ ,\\}])", "$1" + newRef + "$2", false);
+          renameBibRef(jle, parameter.word);
 
 			    return;
 		    } else
@@ -159,7 +139,14 @@ public class RenameElement extends AddOn {
         }
       }
     }
-	}
+
+    // cursor placed on a name of a bibtex item?
+    words = CodePattern.bibItemPattern.find(pane);
+    if (words != null) {
+      WordWithPos parameter = words.get(0);
+      renameBibRef(jle, parameter.word);
+    }
+  }
 
   private void backgroundParserUpdate(JLatexEditorJFrame jle) {
     // let parser finish current run (user might have changes)
@@ -178,6 +165,29 @@ public class RenameElement extends AddOn {
     }
 
     return true;
+  }
+
+  private void renameBibRef(JLatexEditorJFrame jle, String oldRef) {
+      // start background parser to update document states
+      backgroundParserUpdate(jle);
+
+      // ask user for new label
+      String newRef = JOptionPane.showInputDialog(jle, "Rename bibtex entry: ", oldRef);
+      if (newRef == null || newRef.equals(oldRef)) return;
+
+      // wait for background parser to finish
+      if(!backgroundParserWaitFor(jle)) return;
+
+      // determine all files/editors that contain this citation
+      List<BackgroundParser.FilePos> filePoses = jle.getBackgroundParser().getBibRefs().getObjects(oldRef, 1000);
+      if (filePoses == null) {
+        filePoses = new ArrayList<BackgroundParser.FilePos>();
+      }
+      filePoses.add(jle.getBackgroundParser().getBibKeys2bibEntries().get(oldRef));
+
+      String balanced = "[^\\{\\}]*(?:\\{[^\\{\\}]*\\}[^\\{\\}]*)*";
+      replaceInAllFiles(jle, filePoses, "(\\\\cite\\{(?:" + balanced + ",)?\\{? *)" + oldRef + "( *\\}?(?:," + balanced + ")?\\})", "$1" + newRef + "$2", false);
+      replaceInAllFiles(jle, filePoses, "(@[\\w\\W]+ *\\{ *)" + oldRef + "([ ,\\}])", "$1" + newRef + "$2", false);
   }
 
 	private void replaceInAllFiles(JLatexEditorJFrame jle, List<BackgroundParser.FilePos> filePoses, String from, String to, boolean everywhere) {
