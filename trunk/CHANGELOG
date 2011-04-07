@@ -8,7 +8,7 @@ New Features and other Changes in JLatexEditor
 
 == Unpublished Version 0.1.56 ==
 
-* minor bug fixes:
+* bug fixes:
   - inverse search does not work with absolute paths
   - some bug fixes in BibTex parser
 * minor enhancements:
