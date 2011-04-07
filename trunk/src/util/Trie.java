@@ -10,7 +10,7 @@ import java.util.*;
  *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
-public class Trie<T> {
+public class Trie<T> implements AbstractTrie<T> {
   private int count = 0;
   private TreeMap<Character, Trie<T>> map = new TreeMap<Character, Trie<T>>();
 

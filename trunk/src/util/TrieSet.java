@@ -5,7 +5,7 @@ import java.util.*;
 /**
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
-public class TrieSet<T> {
+public class TrieSet<T> implements AbstractTrie<T> {
 	private TreeMap<Character, TrieSet<T>> map = new TreeMap<Character, TrieSet<T>>();
 
 	private HashSet<T> objects = new HashSet<T>();
