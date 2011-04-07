@@ -11,6 +11,7 @@ New Features and other Changes in JLatexEditor
 * bug fixes:
   - inverse search does not work with absolute paths
   - some bug fixes in BibTex parser
+  - renaming of BitTex items and \cite{...} via F2 or "LaTeX"->"Rename Element"
 * minor enhancements:
   - hunspell results are cached for better performance
 
