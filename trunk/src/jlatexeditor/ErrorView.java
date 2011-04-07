@@ -36,16 +36,22 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
   private JScrollPane scrollOutput = new JScrollPane(latexOutput);
 
   private JTree tree;
-  private DefaultMutableTreeNode nodeRoot, nodeError, nodeHbox, nodeWarning, nodeOutput;
+  private DefaultMutableTreeNode nodeRoot, nodeError, nodeHbox, nodeWarning, nodeWarningCitation, nodeWarningReference, nodeOutput;
   private DefaultListModel lmError = new DefaultListModel();
   private DefaultListModel lmHbox = new DefaultListModel();
   private DefaultListModel lmWarning = new DefaultListModel();
+  private DefaultListModel lmWarningCitation = new DefaultListModel();
+  private DefaultListModel lmWarningReference = new DefaultListModel();
   private JList listError = new JList(lmError);
   private JList listHbox = new JList(lmHbox);
   private JList listWarning = new JList(lmWarning);
+  private JList listWarningCitation = new JList(lmWarningCitation);
+  private JList listWarningReference = new JList(lmWarningReference);
   private JScrollPane scrollError = new JScrollPane(listError);
   private JScrollPane scrollHbox = new JScrollPane(listHbox);
   private JScrollPane scrollWarning = new JScrollPane(listWarning);
+  private JScrollPane scrollWarningCitation = new JScrollPane(listWarningCitation);
+  private JScrollPane scrollWarningReference = new JScrollPane(listWarningReference);
 
   private JLabel working;
 
@@ -60,7 +66,11 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     nodeHbox = new DefaultMutableTreeNode();
     nodeRoot.add(nodeHbox);
     nodeWarning = new DefaultMutableTreeNode();
+    nodeWarningCitation = new DefaultMutableTreeNode();
+    nodeWarningReference = new DefaultMutableTreeNode();
     nodeRoot.add(nodeWarning);
+    nodeRoot.add(nodeWarningCitation);
+    nodeRoot.add(nodeWarningReference);
     nodeOutput = new DefaultMutableTreeNode("output");
     nodeRoot.add(nodeOutput);
     update();
@@ -69,7 +79,7 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     tree.getSelectionModel().addTreeSelectionListener(this);
     tree.setCellRenderer(new ErrorTreeCellRenderer());
 
-    for (JList list : new JList[]{listError, listHbox, listWarning}) {
+    for (JList list : new JList[]{listError, listHbox, listWarning, listWarningCitation, listWarningReference}) {
       list.setCellRenderer(new ErrorListCellRenderer());
       DefaultListSelectionModel selectionModel = new DefaultListSelectionModel();
       selectionModel.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
@@ -100,6 +110,8 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     lmError.clear();
     lmHbox.clear();
     lmWarning.clear();
+    lmWarningCitation.clear();
+    lmWarningReference.clear();
     errors.clear();
     update();
     repaint();
@@ -118,6 +130,8 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     nodeError.setUserObject("<html><font color=\"" + (lmError.getSize() > 0 ? "red" : "gray") + "\">errors (" + lmError.getSize() + ")</font></html>");
     nodeHbox.setUserObject("<html><font color=\"" + (lmHbox.getSize() > 0 ? "black" : "gray") + "\">overfull hboxes (" + lmHbox.getSize() + ")</font></html>");
     nodeWarning.setUserObject("<html><font color=\"" + (lmWarning.getSize() > 0 ? "black" : "gray") + "\">warnings (" + lmWarning.getSize() + ")</font></html>");
+    nodeWarningCitation.setUserObject("<html><font color=\"" + (lmWarningCitation.getSize() > 0 ? "black" : "gray") + "\">citations (" + lmWarningCitation.getSize() + ")</font></html>");
+    nodeWarningReference.setUserObject("<html><font color=\"" + (lmWarningReference.getSize() > 0 ? "black" : "gray") + "\">references (" + lmWarningReference.getSize() + ")</font></html>");
   }
 
   public void appendLine(String line) {
@@ -129,7 +143,17 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     errors.add(error);
     if (error.getType() == LatexCompileError.TYPE_ERROR) lmError.addElement(new ErrorComponent(error));
     if (error.getType() == LatexCompileError.TYPE_OVERFULL_HBOX) lmHbox.addElement(new ErrorComponent(error));
-    if (error.getType() == LatexCompileError.TYPE_WARNING) lmWarning.addElement(new ErrorComponent(error));
+    if (error.getType() == LatexCompileError.TYPE_WARNING) {
+      String message = error.getMessage().toLowerCase();
+      if(message.contains("citation")) {
+        lmWarningCitation.addElement(new ErrorComponent(error));
+      } else
+      if(message.contains("reference")) {
+        lmWarningReference.addElement(new ErrorComponent(error));
+      } else {
+        lmWarning.addElement(new ErrorComponent(error));
+      }
+    }
     update();
     repaint();
   }
@@ -151,6 +175,8 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     listError.clearSelection();
     listHbox.clearSelection();
     listWarning.clearSelection();
+    listWarningCitation.clearSelection();
+    listWarningReference.clearSelection();
     if (node == nodeError) {
       setRightComponent(scrollError);
     }
@@ -159,6 +185,12 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     }
     if (node == nodeWarning) {
       setRightComponent(scrollWarning);
+    }
+    if (node == nodeWarningCitation) {
+      setRightComponent(scrollWarningCitation);
+    }
+    if (node == nodeWarningReference) {
+      setRightComponent(scrollWarningReference);
     }
     if (node == nodeOutput) {
       setRightComponent(scrollOutput);
