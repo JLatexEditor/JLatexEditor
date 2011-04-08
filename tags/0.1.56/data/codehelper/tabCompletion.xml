@@ -1,0 +1,84 @@
+<!DOCTYPE commandList [
+		<!ELEMENT commandList (command+)>
+
+		<!ELEMENT command (argument*)>
+		<!ATTLIST command name CDATA #REQUIRED
+				              usage CDATA #REQUIRED
+				              hint CDATA #IMPLIED>
+
+		<!ELEMENT argument EMPTY>
+		<!ATTLIST argument name CDATA #REQUIRED
+		                   hint CDATA #IMPLIED
+		                   value CDATA #IMPLIED
+		                   values CDATA #IMPLIED
+		                   completion CDATA #IMPLIED>
+
+		<!ENTITY nl "@newline@">
+]>
+<commandList>
+  <command name="item" usage="\begin{itemize}&nl;  \item @|@&nl;\end{itemize}" hint="itemize environment">
+  </command>
+  <command name="enum" usage="\begin{enumerate}&nl;  \item @|@&nl;\end{enumerate}" hint="enumerate environment">
+  </command>
+	<command name="i" usage="\item " hint="item in itemization or enumeration">
+	</command>
+  <command name="tikz" usage="\begin{tikzpicture}&nl;  @|@&nl;\end{tikzpicture}" hint="tikz picture environment">
+  </command>
+  <command name="fig" usage="\begin{figure}&nl;  @|@&nl;  \caption{@caption@}&nl;  \label{fig:@label@}&nl;\end{figure}" hint="figure environment">
+	  <argument name="caption"/>
+	  <argument name="label"/>
+  </command>
+  <command name="center" usage="\begin{center}&nl;  @|@&nl;\end{center}" hint="center environment">
+  </command>
+	<command name="align" usage="\begin{align@*@}&nl;  @|@&nl;\end{align@*@}" hint="align environment">
+		<argument name="*"/>
+	</command>
+  <command name="eq" usage="\begin{equation@*@}&nl;  @|@&nl;\end{equation@*@}" hint="equation environment">
+	  <argument name="*"/>
+  </command>
+  <command name="eqn" usage="\begin{eqnarray@*@}&nl;  @|@&nl;\end{eqnarray@*@}" hint="eqnarray environment">
+	  <argument name="*"/>
+  </command>
+  <command name="verb" usage="\begin{verbatim}&nl;  @|@&nl;\end{verbatim}" hint="verbatim environment">
+  </command>
+  <command name="sec" usage="\section{@name@}\label{sec:@label@}&nl;@|@" hint="section">
+    <argument name="name"/>
+    <argument name="label"/>
+  </command>
+  <command name="ssec" usage="\subsection{@name@}\label{sec:@label@}&nl;@|@" hint="subsection">
+    <argument name="name"/>
+    <argument name="label"/>
+  </command>
+  <command name="sssec" usage="\subsubsection{@name@}\label{sec:@label@}&nl;@|@" hint="subsubsection">
+    <argument name="name"/>
+    <argument name="label"/>
+  </command>
+  <command name="frame" usage="\begin{frame}&nl;  \frametitle{@title@}&nl;  @|@&nl;\end{frame}"
+           hint="latex beamer frame">
+    <argument name="title"/>
+  </command>
+	<command name="it" usage="\textit{@text@}@|@" hint="italic">
+		<argument name="text"/>
+	</command>
+	<command name="bf" usage="\textbf{@text@}@|@" hint="bold">
+		<argument name="text"/>
+	</command>
+	<command name="tt" usage="\texttt{@text@}@|@" hint="type writer">
+		<argument name="text"/>
+	</command>
+	<command name="emph" usage="\emph{@text@}@|@" hint="emphasising">
+		<argument name="text"/>
+	</command>
+	<command name="tab" usage="\begin{tabular}{|@c@|}&nl;  @|@&nl;\end{tabular}" hint="tabular environment">
+		<argument name="c"/>
+	</command>
+	<command name="drc" usage="\DeclareRobustCommand{@cmd@}[@args@]{@def@}@|@" hint="used to define a robust command">
+		<argument name="cmd" hint="the name of the new command"/>
+		<argument name="args" hint="1 to 9 denoting the number of arguments"/>
+		<argument name="def" hint="the text to be substituted for every occurrence of cmd"/>
+	</command>
+	<command name="env" usage="\begin{@env@}@opt@&nl;  @|@&nl;\end{@env@}" hint="tabular environment">
+		<argument name="env"/>
+		<argument name="opt" value=""/>
+	</command>
+</commandList>
