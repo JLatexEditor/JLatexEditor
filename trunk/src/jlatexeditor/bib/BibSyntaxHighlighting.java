@@ -243,6 +243,7 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
       // key
       if(state.getState() == BibParserState.STATE_EXPECT_KEY && !Character.isWhitespace(c)) {
         String key = LatexSyntaxHighlighting.getUntil(row, char_nr, EQ_COMMA_OR_BRACKET);
+        String keyLower = key.toLowerCase();
         if(key == null) {
           sce_char.style = stateStyles[LatexStyles.ERROR];
           continue;
@@ -253,7 +254,7 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
         BibEntry entry = BibEntry.getEntry("@" + state.getEntryType());
         if(entry != null) {
           // non-existing key
-          if(!entry.getAll().contains(key)) {
+          if(!entry.getAll().contains(keyLower)) {
             entryStyle = stateStyles[LatexStyles.ERROR];
           }
         }
