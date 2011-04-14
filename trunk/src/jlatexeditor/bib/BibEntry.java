@@ -2,9 +2,15 @@ package jlatexeditor.bib;
 
 import sce.codehelper.CHCommand;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+
 public class BibEntry extends CHCommand {
   private String[] required;
   private String[] optional;
+  private HashSet<String> all;
 
   public BibEntry(String name, String description, String[] required, String[] optional) {
     super("@" + name);
@@ -12,6 +18,15 @@ public class BibEntry extends CHCommand {
     setHint(description);
     this.required = required;
     this.optional = optional;
+
+    all = new HashSet<String>();
+    List<String> keys = new ArrayList<String>();
+    keys.addAll(Arrays.asList(required));
+    keys.addAll(Arrays.asList(optional));
+    for(String key : keys) {
+      String splits[] = key.split("/");
+      all.addAll(Arrays.asList(splits));
+    }
 
     String usage = "&at;" + name + "{@|@,\n";
     for(String key : getRequired()) usage += "  " + key + " = {},\n";
@@ -25,6 +40,10 @@ public class BibEntry extends CHCommand {
 
   public String[] getOptional() {
     return optional;
+  }
+
+  public HashSet getAll() {
+    return all;
   }
 
   public static BibEntry getEntry(String type) {

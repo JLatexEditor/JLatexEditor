@@ -14,6 +14,7 @@ public class BibCodeHelper extends PatternHelper {
   protected WordWithPos name;
   protected ArrayList<CHCommand> missingParams = null;
 
+  protected PatternPair keyPattern = new PatternPair("(\\w*)");
   public BibCodeHelper() {
     pattern = new PatternPair("^(@\\w*)");
   }
@@ -41,22 +42,28 @@ public class BibCodeHelper extends PatternHelper {
     if(state.getState() == BibParserState.STATE_EXPECT_KEY || state.getState() == BibParserState.STATE_EXPECT_EQ) {
       missingParams = new ArrayList<CHCommand>();
 
+      params = keyPattern.find(pane);
+      if(params != null) {
+        name = params.get(0);
+      } else {
+        name = new WordWithPos("", row, column);
+      }
+
       ArrayList<String> keys = state.getAllKeys();
       BibEntry entry = BibEntry.getEntry("@" + state.getEntryType());
       if(entry == null) return false;
 
-      ArrayList<String> params = new ArrayList<String>();
-      params.addAll(Arrays.asList(entry.getRequired()));
-      params.addAll(Arrays.asList(entry.getOptional()));
-      for(String param : params) {
-        if(!keys.contains(param)) {
-          CHCommand command = new CHCommand(param);
-          command.setUsage(param + " = {@|@},");
+      ArrayList<String> bibKeys = new ArrayList<String>();
+      bibKeys.addAll(Arrays.asList(entry.getRequired()));
+      bibKeys.addAll(Arrays.asList(entry.getOptional()));
+      for(String bibKey : bibKeys) {
+        if(!keys.contains(bibKey)) {
+          CHCommand command = new CHCommand(bibKey);
+          command.setUsage(bibKey + " = {@|@},");
           missingParams.add(command);
         }
       }
 
-      name = new WordWithPos("", row, column);
       return true;
     }
 

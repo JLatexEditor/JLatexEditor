@@ -249,6 +249,15 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
         }
 
         byte entryStyle = stateStyles[LatexStyles.MATH_COMMAND];
+
+        BibEntry entry = BibEntry.getEntry("@" + state.getEntryType());
+        if(entry != null) {
+          // non-existing key
+          if(!entry.getAll().contains(key)) {
+            entryStyle = stateStyles[LatexStyles.ERROR];
+          }
+        }
+
         for (int i = 0; i <= key.length(); i++) {
           chars[char_nr + i].style = entryStyle;
         }
