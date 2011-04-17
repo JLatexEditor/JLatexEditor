@@ -1766,13 +1766,19 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     private Doc doc;
     private JLabel label;
     private JLabel closeIcon;
+    private ImageIcon closeIconActive;
+    private ImageIcon closeIconInactive;
 
     private TabLabel(Doc doc, SourceCodeEditor<Doc> editor) {
       this.doc = doc;
       setOpaque(false);
 
       label = new JLabel(doc.getName());
-	    closeIcon = new JLabel(new ImageIcon(getClass().getResource("/images/tabbedPane/tab_close_over.png")));
+
+      closeIconActive = new ImageIcon(getClass().getResource("/images/tabbedPane/tab_close_active.png"));
+      closeIconInactive = new ImageIcon(getClass().getResource("/images/tabbedPane/tab_close_inactive.png"));
+
+      closeIcon = new JLabel(closeIconInactive);
       closeIcon.setVerticalAlignment(SwingConstants.CENTER);
 
       BorderLayout layout = new BorderLayout(4, 1);
@@ -1796,6 +1802,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
     public boolean contains(int x, int y) {
       return x >= -4 && x <= getWidth() + 4 && y >= -2 && y <= getHeight() + 2;
+    }
+
+    public void setBackground(Color color) {
+      if(closeIcon == null) return;
+
+      System.out.println(color);
+      closeIcon.setIcon(color.getBlue() < 128 ? closeIconActive : closeIconInactive);
     }
 
     public void mouseClicked(MouseEvent e) {
