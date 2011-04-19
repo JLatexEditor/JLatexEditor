@@ -6,7 +6,7 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
 
 public class SCETabbedPaneUI extends BasicTabbedPaneUI {
-  public static Color BLUE = new Color(144,170,212); // new Color(163, 201, 247);
+  public static Color BLUE = new Color(173,206,249); // new Color(163, 201, 247);
   public static Color BORDER = new Color(90, 110, 133);
 
   private int BORDER_HEIGHT = 4;
