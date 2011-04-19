@@ -32,7 +32,7 @@ public class SlaveNode {
 	}
 
 	public void run() throws IOException {
-		while (true) {
+		while (!Thread.interrupted()) {
 			String line = conn.receive();
 			logger.fine("reading: " + line);
 			if (line == null) throw new IOException("InputStream closed");

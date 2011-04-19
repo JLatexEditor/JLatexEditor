@@ -31,7 +31,7 @@ public class MasterNode {
 	}
 
 	public void run() throws IOException {
-		while (true) {
+		while (!Thread.interrupted()) {
 			//serverSocket.bind(InetAddress.getLocalHost());
 			Socket socket = serverSocket.accept();
 
@@ -45,7 +45,7 @@ public class MasterNode {
 			}
 
 			if (line.equals("register")) {
-				// client as slave node
+				// register client as slave node
 				slaves.add(new RemoteSlave(conn));
 			} else {
 				if (line.startsWith("open: ")) {

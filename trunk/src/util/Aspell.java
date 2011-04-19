@@ -116,7 +116,7 @@ public final class Aspell implements SpellChecker {
     String version = aspellOut.readLine();
     if (version == null) throw new IOException("Aspell failed to start: " + aspellErr.readLine());
 
-    if (version.indexOf("Aspell 0.5") != -1) fuckWindows = true;
+    if (version.contains("Aspell 0.5")) fuckWindows = true;
 
     personalWords.clear();
     personalWords.addAll(Arrays.asList(getPersonalWordList()));
@@ -311,6 +311,7 @@ public final class Aspell implements SpellChecker {
    * @throws IOException thrown if execution of aspell failed
    */
   public static List<String> availableDicts() throws IOException {
+	  // TODO: use SystemUtils.startProcess instead
     Process process = Runtime.getRuntime().exec(new String[]{
             ASPELL_EXECUTABLE,
             "dump",
