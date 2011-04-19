@@ -84,7 +84,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
   private JMenuBar menuBar = null;
 	private JMenu recentFilesMenu;
-	private ArrayList<String> recentFiles = new ArrayList<String>();
+	private SizeLimitedStack<String> recentFiles = new SizeLimitedStack<String>(20);
   private JTabbedPane tabbedPane = null;
   private JSplitPane textToolsSplit = null;
   private JTabbedPane toolsTab = null;
@@ -245,6 +245,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     recentFilesMenu = new JMenu("Open Recent");
     recentFilesMenu.setMnemonic('R');
     fileMenu.add(recentFilesMenu);
+    fileMenu.add(createMenuItem("Reopen Closed", "reopen last", 'S'));
     fileMenu.add(createMenuItem("Save", "save", 'S'));
     fileMenu.add(createMenuItem("Save As...", "save as", 'A'));
     fileMenu.add(createMenuItem("Close", "close", 'C'));
@@ -458,7 +459,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     try {
       BufferedReader reader = new BufferedReader(new FileReader(FILE_RECENT));
       String line;
-      while ((line = reader.readLine()) != null) recentFiles.add(line);
+      while ((line = reader.readLine()) != null) recentFiles.push(line);
       reader.close();
     } catch (IOException ignored) {
     }
@@ -467,12 +468,17 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private void addRecent(File file) {
     try {
       String fileName = file.getCanonicalPath();
+      recentFiles.push(fileName);
+	    updateRecentMenu();
+    } catch (IOException ignored) {}
+  }
+
+  private void removeRecent(File file) {
+    try {
+      String fileName = file.getCanonicalPath();
       recentFiles.remove(fileName);
-      recentFiles.add(0, fileName);
-      if (recentFiles.size() > 20) recentFiles.remove(20);
-    } catch (IOException ignored) {
-    }
-    updateRecentMenu();
+	    updateRecentMenu();
+    } catch (IOException ignored) {}
   }
 
   private void updateRecentMenu() {
@@ -484,6 +490,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       recentFilesMenu.add(item);
     }
     recentFilesMenu.addSeparator();
+    recentFilesMenu.add(createMenuItem("Open Last Closed", "open last closed", 'L'));
     recentFilesMenu.add(createMenuItem("Clear List", "clear recent", 'C'));
   }
 
@@ -849,7 +856,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
         File file = fileDoc.getFile();
         lastModified.put(file, file.lastModified());
 
-        addRecent(file);
+	      removeRecent(file);
       }
 
       editorChanged();
@@ -1064,7 +1071,11 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
   private void closeTab(int tab) {
     SourceCodeEditor<Doc> editor = getEditor(tab);
-	  docMap.remove(editor.getResource().getUri());
+	  Doc doc = editor.getResource();
+	  if (doc instanceof Doc.FileDoc) {
+		  addRecent(((Doc.FileDoc) doc).getFile());
+	  }
+	  docMap.remove(doc.getUri());
 	  if (tabbedPane.getTabCount() > 1) {
       tabbedPane.removeTabAt(tab);
     } else {
@@ -1132,7 +1143,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		// recent files list
 		if (action.startsWith("open recent:")) {
 			open(new Doc.FileDoc(new File(action.substring("open recent:".length()))));
-		} else if (action.equals("clear recent")) {
+		} else
+		if (action.startsWith("open last closed")) {
+			try {
+				open(new Doc.FileDoc(new File(recentFiles.pop())));
+			} catch (NoSuchElementException ignored) {}
+		} else
+		if (action.equals("clear recent")) {
 			recentFiles.clear();
 			updateRecentMenu();
 		} else
@@ -1807,7 +1824,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     public void setBackground(Color color) {
       if(closeIcon == null) return;
 
-      System.out.println(color);
       closeIcon.setIcon(color.getBlue() < 128 ? closeIconActive : closeIconInactive);
     }
 
