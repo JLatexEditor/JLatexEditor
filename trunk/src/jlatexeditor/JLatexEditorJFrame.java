@@ -99,7 +99,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private List<String> filesToOpen;
 
   // last directory of the opening dialog
-  private JFileChooser openDialog = new SCEFileChooser();
+  private SCEFileChooser openDialog = new SCEFileChooser(this);
 
   // compile thread
   private LatexCompiler latexCompiler = null;
@@ -513,8 +513,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   }
 
   private void initFileChooser() {
-    openDialog.addChoosableFileFilter(new FileNameExtensionFilter(
-            "LaTeX files (*.tex, *.def, *.bib)", "tex", "def", "bib"));
+    openDialog.addChoosableFileFilter(SCEFileChooser.FILTER_TEX);
   }
 
   private SourceCodeEditor<Doc> createLatexSourceCodeEditor() {
@@ -995,9 +994,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		Doc doc = editor.getResource();
 
 		openDialog.setDialogTitle("Save " + doc.getName());
-		openDialog.setDialogType(JFileChooser.SAVE_DIALOG);
+		openDialog.setDialogType(SCEFileChooser.TYPE_SAVE_DIALOG);
 		openDialog.setCurrentDirectory(lastDocDir);
-		if (openDialog.showDialog(this, "Save") != JFileChooser.APPROVE_OPTION) return false;
+		if (openDialog.showDialog() != SCEFileChooser.RESULT_OK) return false;
 		File file = openDialog.getSelectedFile();
 		if (file == null) return false;
 
@@ -1133,9 +1132,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		// open a file
 		if (action.equals("open")) {
 			openDialog.setDialogTitle("Open");
-			openDialog.setDialogType(JFileChooser.OPEN_DIALOG);
+			openDialog.setDialogType(SCEFileChooser.TYPE_OPEN_DIALOG);
 			openDialog.setCurrentDirectory(lastDocDir);
-			if (openDialog.showDialog(this, "Open") != JFileChooser.APPROVE_OPTION) return;
+			if (openDialog.showDialog() != SCEFileChooser.RESULT_OK) return;
 			if (openDialog.getSelectedFile() == null) return;
 
 			open(new Doc.FileDoc(openDialog.getSelectedFile()));
@@ -1284,7 +1283,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 			openDialog.setDialogTitle("Diff View");
 			openDialog.setDialogType(JFileChooser.OPEN_DIALOG);
 			openDialog.setCurrentDirectory(lastDocDir);
-			if (openDialog.showDialog(this, "Diff View") != JFileChooser.APPROVE_OPTION) return;
+			if (openDialog.showDialog() != SCEFileChooser.RESULT_OK) return;
 			if (openDialog.getSelectedFile() == null) return;
 
 			try {
