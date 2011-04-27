@@ -10,6 +10,8 @@ New Features and other Changes in JLatexEditor
 
 * new features:
   - reopen last closed document via control+shift+W or "File"->"Open Recent"->"Open Last Closed"
+* major improvements:
+  - replaced buggy Java open dialog with a completely new one - better looking and better usability
 * minor enhancements:
   - prettied up tabs
   - added icons to menu (thanks to Tango Desktop Project for the icons)
