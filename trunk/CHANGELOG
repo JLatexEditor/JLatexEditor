@@ -6,6 +6,15 @@ New Features and other Changes in JLatexEditor
 # set "show_new_features" in global properties to "false".
 
 
+== Coming Version 0.1.57 ==
+
+* new features:
+  - reopen last closed document via control+shift+W or "File"->"Open Recent"->"Open Last Closed"
+* minor enhancements:
+  - prettied up tabs
+  - added icons to menu (thanks to Tango Desktop Project for the icons)
+
+
 == Version 0.1.56 ==
 
 * new refactoring features:

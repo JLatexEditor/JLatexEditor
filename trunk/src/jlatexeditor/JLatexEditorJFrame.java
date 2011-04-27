@@ -82,6 +82,11 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     windowTitleSuffix = "JLatexEditor " + version;
   }
 
+	private Properties iconMap = new Properties() {{
+		try {
+			load(StreamUtils.getInputStream("data/icons/icon_map.properties"));
+		} catch (IOException ignored) {}
+	}};
   private JMenuBar menuBar = null;
 	private JMenu recentFilesMenu;
 	private SizeLimitedStack<String> recentFiles = new SizeLimitedStack<String>(20);
@@ -245,7 +250,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     recentFilesMenu = new JMenu("Open Recent");
     recentFilesMenu.setMnemonic('R');
     fileMenu.add(recentFilesMenu);
-    fileMenu.add(createMenuItem("Reopen Closed", "reopen last", 'S'));
     fileMenu.add(createMenuItem("Save", "save", 'S'));
     fileMenu.add(createMenuItem("Save As...", "save as", 'A'));
     fileMenu.add(createMenuItem("Close", "close", 'C'));
@@ -325,12 +329,12 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     menuBar.add(settingsMenu);
 
     settingsMenu.add(createMenuItem("Font", "font", 'F'));
-    JMenu forwardSearch = new JMenu("Forward Search"); {
-      forwardSearch.add(createMenuItem("Skim", "forward search: /Applications/Skim.app/Contents/SharedSupport/displayline %line \"%file.pdf\" \"%texfile\"", null));
-      forwardSearch.add(createMenuItem("xdvi", "forward search: xdvi -sourceposition \"%line&nbsp;%file.dvi\" -nofork", null));
-      forwardSearch.add(createMenuItem("kdvi", "forward search: kdvi --unique \"file:%file.dvi#src:%line&nbsp;%texfile\"", null));
-      forwardSearch.add(createMenuItem("okular", "forward search: okular --unique \"file:%file.pdf#src:%line&nbsp;%texfile\"", null));
-    }
+    JMenu forwardSearch = new JMenu("Forward Search") {{
+      add(createMenuItem("Skim", "forward search: /Applications/Skim.app/Contents/SharedSupport/displayline %line \"%file.pdf\" \"%texfile\"", null));
+      add(createMenuItem("xdvi", "forward search: xdvi -sourceposition \"%line&nbsp;%file.dvi\" -nofork", null));
+      add(createMenuItem("kdvi", "forward search: kdvi --unique \"file:%file.dvi#src:%line&nbsp;%texfile\"", null));
+      add(createMenuItem("okular", "forward search: okular --unique \"file:%file.pdf#src:%line&nbsp;%texfile\"", null));
+    }};
     settingsMenu.add(forwardSearch);
     settingsMenu.add(createMenuItem("Global Settings", "global settings", 'G'));
 
@@ -497,13 +501,21 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private JMenuItem createMenuItem(String label, String command, Character mnemonic) {
     JMenuItem menuItem = new JMenuItem(label);
     menuItem.setActionCommand(command);
+	  // set mnemonic
     if (mnemonic != null) {
       menuItem.setMnemonic(mnemonic);
     }
+	  // set shortcut
     String shorcutString = GProperties.getString("shortcut." + command);
     if (shorcutString != null && !shorcutString.equals("")) {
       menuItem.setAccelerator(KeyStroke.getKeyStroke(shorcutString));
     }
+		// set icon
+		try {
+			String filename = iconMap.getProperty(command);
+			menuItem.setIcon(new ImageIcon(StreamUtils.readBytesFromInputStream(StreamUtils.getInputStream(filename))));
+		} catch (Exception ignored) {
+		}
     menuItem.addActionListener(this);
 
     // add shortcut change listener
