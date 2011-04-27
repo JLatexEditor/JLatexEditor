@@ -114,8 +114,9 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
    * Quick search.
    */
   private String filePrefix = "";
-  private long keyTimestamp = 0;
-  private long filePrefixReset = 5000;
+  private long filePrefixTimestamp = 0;
+  private long filePrefixTimeUntilReset = 5000;
+  private long filePrefixReset = 0;
 
   /**
    * Last selected file.
@@ -332,6 +333,7 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
     dialog.getContentPane().add(this);
     dialog.setModal(true);
     dialog.pack();
+    dialog.setLocationByPlatform(true);
 
     Timer timer = new Timer();
     timer.scheduleAtFixedRate(new PrefixTimer(), 500, 500);
@@ -442,6 +444,11 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
     boolean stop =
             keyEvent.getKeyChar() == KeyEvent.VK_ESCAPE;
 
+    if(stop && filePrefix.length() == 0 && (time - filePrefixReset) > 1000) {
+      dialog.hide();
+    }
+    if(stop) filePrefixReset = 0;
+
     if(Character.isLetterOrDigit(c) || c == '.' || c == '_' || c == '-'
             || backspace || stop) {
       if(!backspace && !stop) {
@@ -482,7 +489,7 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
       fileList.repaint();
     }
 
-    keyTimestamp = time;
+    filePrefixTimestamp = time;
 
     fileList.scrollRectToVisible(fileList.getCellRect(fileList.getSelectedRow(), 0, true));
   }
@@ -610,8 +617,9 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
   private class PrefixTimer extends TimerTask {
     public void run() {
       long time = System.currentTimeMillis();
-      if(time - keyTimestamp > filePrefixReset) {
+      if(time - filePrefixTimestamp > filePrefixTimeUntilReset && filePrefix.length() > 0) {
         filePrefix = "";
+        filePrefixReset = time;
 
         highlighter.removeAllHighlights();
         fileName.setBackground(Color.WHITE);
