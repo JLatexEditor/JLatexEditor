@@ -229,8 +229,14 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 			        char_nr = setStyle(param, style, chars, char_nr + 1);
 		        } else
 		        if (argumentTypeName.equals("label_def")) {
+			        boolean definedOnce = backgroundParser.getLabelDefs().count(param) == 1;
 			        boolean labelReferenced = backgroundParser.getLabelRefs().contains(param);
-			        byte style = stateStyles[getStyle(labelReferenced ? "label_exists" : "label_not_referenced", LatexStyles.TEXT)];
+			        byte style;
+			        if (definedOnce) {
+			          style = stateStyles[getStyle(labelReferenced ? "label_exists" : "label_not_referenced", LatexStyles.TEXT)];
+			        } else {
+				        style = stateStyles[getStyle("label_duplicate", LatexStyles.TEXT)];
+			        }
 			        char_nr = setStyle(param, style, chars, char_nr + 1);
 		        } else
 		        if (argumentTypeName.equals("label_ref")) {
