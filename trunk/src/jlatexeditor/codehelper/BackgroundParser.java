@@ -58,6 +58,10 @@ public class BackgroundParser extends Thread {
     return bibEntries;
   }
 
+	public HashSet<File> getFiles() {
+		return files;
+	}
+
 	public Trie<?> getWords() {
     return words;
   }
