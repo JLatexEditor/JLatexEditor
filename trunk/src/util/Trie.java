@@ -254,4 +254,9 @@ public class Trie<T> implements AbstractTrie<T> {
 	public boolean contains(String key) {
 		return get(key) != null;
 	}
+
+	public int count(String key) {
+		Trie<T> node = getNode(key);
+		return node == null ? 0 : node.count;
+	}
 }
