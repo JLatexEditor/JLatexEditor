@@ -56,7 +56,7 @@ public class FileSearch extends AddOn implements SCEPopup.ItemHandler {
 
 		@Override
 		public String toString() {
-			return file.getName() + " in (" + file.getParent() + ")";
+			return "<html>" + file.getName() + " <span style='color: #808080;'>(" + file.getParent() + ")</span></html>";
 		}
 	}
 }
