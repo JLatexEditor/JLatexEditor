@@ -17,7 +17,8 @@ public abstract class AddOn {
 		AddOn[] addOns = {
 			new RenameElement(),
 			new CloseEnvironment(),
-			new ColumnRealigner()
+			new ColumnRealigner(),
+			new FileSearch()
 		};
 
 		for (AddOn addOn : addOns) {
