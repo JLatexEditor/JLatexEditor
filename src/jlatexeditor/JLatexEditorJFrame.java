@@ -36,6 +36,7 @@ import sce.syntaxhighlighting.SyntaxHighlighting;
 import util.*;
 import util.diff.Diff;
 import util.filechooser.SCEFileChooser;
+import util.gui.SCETabbedPane;
 
 import javax.swing.*;
 import javax.swing.Timer;
@@ -57,7 +58,7 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener, TreeSelectionListener, SearchChangeListener {
+public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener, TreeSelectionListener, SearchChangeListener, SCETabbedPane.CloseListener {
   public static final File FILE_LAST_SESSION = new File(System.getProperty("user.home") + "/.jlatexeditor/last.session");
   public static final File FILE_RECENT = new File(System.getProperty("user.home") + "/.jlatexeditor/recent");
   public static final File CHANGELOG = new File("CHANGELOG");
@@ -90,7 +91,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private JMenuBar menuBar = null;
 	private JMenu recentFilesMenu;
 	private SizeLimitedStack<String> recentFiles = new SizeLimitedStack<String>(20);
-  private JTabbedPane tabbedPane = null;
+  private SCETabbedPane tabbedPane = null;
   private JSplitPane textToolsSplit = null;
   private JTabbedPane toolsTab = null;
   private ErrorView errorView = null;
@@ -361,7 +362,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		backgroundParser.start();
 		
     // tabs for the files
-    tabbedPane = new JTabbedPane();
+    tabbedPane = new SCETabbedPane();
+    tabbedPane.setCloseListener(this);
     try {
       addTab(new Doc.UntitledDoc(), true);
     } catch (IOException ignored) {
@@ -1641,7 +1643,11 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     }
   }
 
-	private class ShutdownHook extends Thread {
+  public void close(int tabIndex) {
+    closeTab(tabIndex);
+  }
+
+  private class ShutdownHook extends Thread {
 	  private JLatexEditorJFrame mainWindow;
 
 	  private ShutdownHook(JLatexEditorJFrame mainWindow) {
@@ -1793,9 +1799,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private class TabLabel extends JPanel implements MouseListener, SCEModificationStateListener {
     private Doc doc;
     private JLabel label;
-    private JLabel closeIcon;
-    private ImageIcon closeIconActive;
-    private ImageIcon closeIconInactive;
 
     private TabLabel(Doc doc, SourceCodeEditor<Doc> editor) {
       this.doc = doc;
@@ -1803,17 +1806,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
       label = new JLabel(doc.getName());
 
-      closeIconActive = new ImageIcon(getClass().getResource("/images/tabbedPane/tab_close_active.png"));
-      closeIconInactive = new ImageIcon(getClass().getResource("/images/tabbedPane/tab_close_inactive.png"));
-
-      closeIcon = new JLabel(closeIconInactive);
-      closeIcon.setVerticalAlignment(SwingConstants.CENTER);
-
       BorderLayout layout = new BorderLayout(4, 1);
       setLayout(layout);
       setBackground(new Color(255, 255, 255, 255));
       add(label, BorderLayout.CENTER);
-      add(closeIcon, BorderLayout.EAST);
 
       addMouseListener(this);
       editor.getTextPane().getDocument().addSCEModificationStateListener(this);
@@ -1832,19 +1828,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       return x >= -4 && x <= getWidth() + 4 && y >= -2 && y <= getHeight() + 2;
     }
 
-    public void setBackground(Color color) {
-      if(closeIcon == null) return;
-
-      closeIcon.setIcon(color.getBlue() < 128 ? closeIconActive : closeIconInactive);
-    }
-
     public void mouseClicked(MouseEvent e) {
       tabbedPane.setSelectedIndex(getTab(doc));
       if (e.getClickCount() >= 2) {
 	      setMasterDocument(doc);
-      }
-      if (closeIcon.contains(e.getX() - closeIcon.getX(), e.getY() - closeIcon.getY())) {
-        closeTab(getTab(doc));
       }
     }
 
