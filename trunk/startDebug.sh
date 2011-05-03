@@ -28,4 +28,4 @@ for f in debug error; do
 	fi
 done
 
-java -Xmx200M "-Djlatexeditor.working_dir=$USER_PWD" -cp build/classes/ jlatexeditor.JLatexEditorJFrame "$@" > debug.log 2> error.log &
+java -Xmx200M "-Djlatexeditor.working_dir=$USER_PWD" -cp build/classes/:lib/*.jar jlatexeditor.JLatexEditorJFrame "$@" > debug.log 2> error.log &
