@@ -1,0 +1,1 @@
+convert [from] -brightness-contrast 10x10 [to]
