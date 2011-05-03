@@ -151,169 +151,201 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
       // reset the modified value of the row
       row.modified = false;
 
-      // parse the row
       final SCEDocumentChar chars[] = row.chars;
-      for (int char_nr = 0; char_nr < row.length; char_nr++) {
-        SCEDocumentChar sce_char = chars[char_nr];
-        char c = sce_char.character;
 
-        final byte[] stateStyles = state.getStyles();
+	    // check if row has been added during an svn merge
+	    boolean svnRow = false;
+	    if (row.length >= 7) {
+		    char c = chars[0].character;
+		    switch (c) {
+			    case '<':
+				  case '>':
+					case '=':
+				    svnRow = true;
+				    for (int i = 1; i < 7; i++) {
+					    if (chars[i].character != c) svnRow = false;
+				    }
+				    if (svnRow) {
+					    if (c == '=') {
+						    svnRow = row.length == 7;
+					    }
+					    else
+						    svnRow = row.length >= 8 && chars[7].character == ' ';
+				    }
+				    if (svnRow) {
+					    for (int i = 0; i < chars.length; i++) {
+						    SCEDocumentChar aChar = chars[i];
+						    aChar.style = state.getStyles()[LatexStyles.ERROR];
+						    //aChar.overlayStyle = 0;
+					    }
+				    }
+		    }
+	    }
 
-        // search for a backslash '\'
-        if (c == '\\') {
-          String command = getWord(row, char_nr + 1, true);
+	    if (!svnRow) {
+				// parse the latex row
+				for (int char_nr = 0; char_nr < row.length; char_nr++) {
+					SCEDocumentChar sce_char = chars[char_nr];
+					char c = sce_char.character;
 
-	        CHCommand chCommand = commands.get("\\" + command);
-	        if (chCommand != null) {
-		        argumentsIterator = chCommand.getArguments().iterator();
-	        }
+					final byte[] stateStyles = state.getStyles();
 
-	        // highlight the command
-          byte commandStyle = stateStyles[getStyle(chCommand == null ? null : chCommand.getStyle(), LatexStyles.COMMAND)];
-	        char_nr = setStyle(command.length() + 1, commandStyle, chars, char_nr);
+					// search for a backslash '\'
+					if (c == '\\') {
+						String command = getWord(row, char_nr + 1, true);
 
-          continue;
-        }
+						CHCommand chCommand = commands.get("\\" + command);
+						if (chCommand != null) {
+							argumentsIterator = chCommand.getArguments().iterator();
+						}
 
-        // search for '$' and "$$"
-        if (c == '$') {
-          sce_char.style = stateStyles[LatexStyles.MATH];
+						// highlight the command
+						byte commandStyle = stateStyles[getStyle(chCommand == null ? null : chCommand.getStyle(), LatexStyles.COMMAND)];
+						char_nr = setStyle(command.length() + 1, commandStyle, chars, char_nr);
 
-          boolean doubleMath = chars[char_nr + 1].character == '$';
-          if (doubleMath) {
-            char_nr++;
-            chars[char_nr].style = stateStyles[LatexStyles.MATH];
-          }
+						continue;
+					}
 
-          // if active math mode -> close; otherwise open
-          if (state instanceof MathMode) {
-            stateStack.pop();
-            state = stateStack.peek();
-          } else {
-            stateStack.push(state = new MathMode(doubleMath));
-          }
+					// search for '$' and "$$"
+					if (c == '$') {
+						sce_char.style = stateStyles[LatexStyles.MATH];
 
-	        argumentsIterator = null;
-          continue;
-        }
+						boolean doubleMath = chars[char_nr + 1].character == '$';
+						if (doubleMath) {
+							char_nr++;
+							chars[char_nr].style = stateStyles[LatexStyles.MATH];
+						}
 
-        // search for '{' and '}'
-        if (c == '{') {
-	        CHArgumentType argumentType = getArgumentType(argumentsIterator);
+						// if active math mode -> close; otherwise open
+						if (state instanceof MathMode) {
+							stateStack.pop();
+							state = stateStack.peek();
+						} else {
+							stateStack.push(state = new MathMode(doubleMath));
+						}
 
-	        if (argumentType != null) {
-		        String argumentTypeName = argumentType.getName();
-		        final String param = getStringUpToClosingBracket(row, char_nr + 1);
+						argumentsIterator = null;
+						continue;
+					}
 
-		        if (argumentTypeName.equals("title") || argumentTypeName.equals("italic") || argumentTypeName.equals("bold")) {
-							// highlight the command
-							byte style = stateStyles[getStyle(argumentTypeName, LatexStyles.TEXT)];
-			        char_nr = setStyle(param, style, chars, char_nr + 1);
-		        } else
-		        if (argumentTypeName.equals("file")) {
-			        String defaultExtension = argumentType.getProperty("defaultExtension");
-			        boolean fileExists = false;
-			        if (param.startsWith("/")) {
-				        fileExists = new File(param).exists() || new File(param + "." + defaultExtension).exists();
-			        } else {
-				        File docFile = pane.getSourceCodeEditor().getFile();
-				        if (docFile.exists()) {
-					        String pathname = docFile.getParentFile().getAbsolutePath() + "/" + param;
-					        String extPathname = pathname + "." +  defaultExtension;
-					        fileExists = new File(pathname).exists() || new File(extPathname).exists();
-				        }
-			        }
+					// search for '{' and '}'
+					if (c == '{') {
+						CHArgumentType argumentType = getArgumentType(argumentsIterator);
 
-			        // highlight the command
-							byte style = stateStyles[getStyle(fileExists ? "file_exists" : "file_not_found", LatexStyles.TEXT)];
-			        char_nr = setStyle(param, style, chars, char_nr + 1);
-		        } else
-		        if (argumentTypeName.equals("label_def")) {
-			        boolean definedOnce = backgroundParser.getLabelDefs().count(param) == 1;
-			        boolean labelReferenced = backgroundParser.getLabelRefs().contains(param);
-			        byte style;
-			        if (definedOnce) {
-			          style = stateStyles[getStyle(labelReferenced ? "label_exists" : "label_not_referenced", LatexStyles.TEXT)];
-			        } else {
-				        style = stateStyles[getStyle("label_duplicate", LatexStyles.TEXT)];
-			        }
-			        char_nr = setStyle(param, style, chars, char_nr + 1);
-		        } else
-		        if (argumentTypeName.equals("label_ref")) {
-			        boolean labelExists = backgroundParser.getLabelDefs().contains(param);
-			        byte style = stateStyles[getStyle(labelExists ? "label_exists" : "label_not_found", LatexStyles.TEXT)];
-			        char_nr = setStyle(param, style, chars, char_nr + 1);
-		        } else
-		        if (argumentTypeName.equals("cite_key_list")) {
-			        matchAndStyle(char_nr + 1, chars, param, LIST_PATTERN, new Function1<String, Byte>(){
-				        @Override
-				        public Byte apply(String a1) {
-					        boolean citeExists = backgroundParser.getBibKeys2bibEntries().contains(a1);
-					        return stateStyles[getStyle(citeExists ? "cite_exists" : "cite_not_found", LatexStyles.TEXT)];
-				        }
-			        });
-							char_nr += param.length();
-		        }
-	        }
+						if (argumentType != null) {
+							String argumentTypeName = argumentType.getName();
+							final String param = getStringUpToClosingBracket(row, char_nr + 1);
 
-          sce_char.style = stateStyles[LatexStyles.BRACKET];
-          continue;
-        }
-        if (c == '}') {
-          sce_char.style = stateStyles[LatexStyles.BRACKET];
-          continue;
-        }
+							if (argumentTypeName.equals("title") || argumentTypeName.equals("italic") || argumentTypeName.equals("bold")) {
+								// highlight the command
+								byte style = stateStyles[getStyle(argumentTypeName, LatexStyles.TEXT)];
+								char_nr = setStyle(param, style, chars, char_nr + 1);
+							} else
+							if (argumentTypeName.equals("file")) {
+								String defaultExtension = argumentType.getProperty("defaultExtension");
+								boolean fileExists = false;
+								if (param.startsWith("/")) {
+									fileExists = new File(param).exists() || new File(param + "." + defaultExtension).exists();
+								} else {
+									File docFile = pane.getSourceCodeEditor().getFile();
+									if (docFile.exists()) {
+										String pathname = docFile.getParentFile().getAbsolutePath() + "/" + param;
+										String extPathname = pathname + "." +  defaultExtension;
+										fileExists = new File(pathname).exists() || new File(extPathname).exists();
+									}
+								}
 
-        // search for '%' (comment)
-        if (c == '%') {
-          byte commentStyle = stateStyles[LatexStyles.COMMENT];
-          Matcher matcher = TODO_PATTERN.matcher(row.toString().substring(char_nr).toLowerCase());
-          if (matcher.find()) {
-            int todoIndex = char_nr + matcher.start();
-            while (char_nr < todoIndex) chars[char_nr++].style = commentStyle;
-            byte todoStyle = stateStyles[LatexStyles.TODO];
-            while (char_nr < row.length) chars[char_nr++].style = todoStyle;
-          } else {
-            while (char_nr < row.length) chars[char_nr++].style = commentStyle;
-          }
-          continue;
-        }
+								// highlight the command
+								byte style = stateStyles[getStyle(fileExists ? "file_exists" : "file_not_found", LatexStyles.TEXT)];
+								char_nr = setStyle(param, style, chars, char_nr + 1);
+							} else
+							if (argumentTypeName.equals("label_def")) {
+								boolean definedOnce = backgroundParser.getLabelDefs().count(param) == 1;
+								boolean labelReferenced = backgroundParser.getLabelRefs().contains(param);
+								byte style;
+								if (definedOnce) {
+									style = stateStyles[getStyle(labelReferenced ? "label_exists" : "label_not_referenced", LatexStyles.TEXT)];
+								} else {
+									style = stateStyles[getStyle("label_duplicate", LatexStyles.TEXT)];
+								}
+								char_nr = setStyle(param, style, chars, char_nr + 1);
+							} else
+							if (argumentTypeName.equals("label_ref")) {
+								boolean labelExists = backgroundParser.getLabelDefs().contains(param);
+								byte style = stateStyles[getStyle(labelExists ? "label_exists" : "label_not_found", LatexStyles.TEXT)];
+								char_nr = setStyle(param, style, chars, char_nr + 1);
+							} else
+							if (argumentTypeName.equals("cite_key_list")) {
+								matchAndStyle(char_nr + 1, chars, param, LIST_PATTERN, new Function1<String, Byte>(){
+									@Override
+									public Byte apply(String a1) {
+										boolean citeExists = backgroundParser.getBibKeys2bibEntries().contains(a1);
+										return stateStyles[getStyle(citeExists ? "cite_exists" : "cite_not_found", LatexStyles.TEXT)];
+									}
+								});
+								char_nr += param.length();
+							}
+						}
 
-        // default style is text or number
-        if (c >= '0' && c <= '9') {
-          sce_char.style = stateStyles[LatexStyles.NUMBER];
-        } else {
-          sce_char.style = stateStyles[LatexStyles.TEXT];
-        }
-      }
+						sce_char.style = stateStyles[LatexStyles.BRACKET];
+						continue;
+					}
+					if (c == '}') {
+						sce_char.style = stateStyles[LatexStyles.BRACKET];
+						continue;
+					}
 
-      // extract word from row that shell be checked for misspellings
-      String rowString = document.getRow(row_nr);
+					// search for '%' (comment)
+					if (c == '%') {
+						byte commentStyle = stateStyles[LatexStyles.COMMENT];
+						Matcher matcher = TODO_PATTERN.matcher(row.toString().substring(char_nr).toLowerCase());
+						if (matcher.find()) {
+							int todoIndex = char_nr + matcher.start();
+							while (char_nr < todoIndex) chars[char_nr++].style = commentStyle;
+							byte todoStyle = stateStyles[LatexStyles.TODO];
+							while (char_nr < row.length) chars[char_nr++].style = todoStyle;
+						} else {
+							while (char_nr < row.length) chars[char_nr++].style = commentStyle;
+						}
+						continue;
+					}
 
-      // for each term in this row
-      Matcher matcher = TERM_PATTERN.matcher(rowString);
-      while (matcher.find()) {
-        // check if it's not a tex command and does not contain formula specific characters ("_" and numbers)
-        String termString = matcher.group(1);
-        StyleableTerm term = null;
-        if (BAD_TERM_CHARS.matcher(termString).find()) {
-          term = new StyleableTerm(termString, chars, matcher.start(1), LatexStyles.U_NORMAL);
-        } else {
-          // spell check
-          try {
-            if (spellChecker != null) {
-              SpellChecker.Result spellCheckResult = spellChecker.check(termString);
-              term = new StyleableTerm(termString, chars, matcher.start(1), spellCheckResult.isCorrect() ? LatexStyles.U_NORMAL : LatexStyles.U_MISSPELLED);
-            }
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
+					// default style is text or number
+					if (c >= '0' && c <= '9') {
+						sce_char.style = stateStyles[LatexStyles.NUMBER];
+					} else {
+						sce_char.style = stateStyles[LatexStyles.TEXT];
+					}
+				}
 
-          if (term == null) term = new StyleableTerm(termString, chars, matcher.start(1), LatexStyles.U_NORMAL);
-        }
+				// extract word from row that shell be checked for misspellings
+				String rowString = document.getRow(row_nr);
 
-        term.applyStyleToDoc();
-      }
+				// for each term in this row
+				Matcher matcher = TERM_PATTERN.matcher(rowString);
+				while (matcher.find()) {
+					// check if it's not a tex command and does not contain formula specific characters ("_" and numbers)
+					String termString = matcher.group(1);
+					StyleableTerm term = null;
+					if (BAD_TERM_CHARS.matcher(termString).find()) {
+						term = new StyleableTerm(termString, chars, matcher.start(1), LatexStyles.U_NORMAL);
+					} else {
+						// spell check
+						try {
+							if (spellChecker != null) {
+								SpellChecker.Result spellCheckResult = spellChecker.check(termString);
+								term = new StyleableTerm(termString, chars, matcher.start(1), spellCheckResult.isCorrect() ? LatexStyles.U_NORMAL : LatexStyles.U_MISSPELLED);
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+
+						if (term == null) term = new StyleableTerm(termString, chars, matcher.start(1), LatexStyles.U_NORMAL);
+					}
+
+					term.applyStyleToDoc();
+				}
+	    }
 
       // go to the next row
       row_nr++;
