@@ -1,5 +1,7 @@
 package util.filechooser;
 
+import util.GraphicsUtil;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -11,6 +13,7 @@ import javax.swing.text.DefaultHighlighter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Timer;
@@ -24,8 +27,6 @@ import java.util.Timer;
  */
 public class SCEFileChooser extends JPanel implements ListSelectionListener, MouseListener, ActionListener, KeyListener {
   public static Color COLOR_EVEN = new Color(233,246,255);
-  public static Color COLOR_SELECTION_TOP = new Color(99, 136, 248);
-  public static Color COLOR_SELECTION_BOTTOM = new Color(13, 83, 236);
 
   public static Color HIGHLIGHT_OK = new Color(133,239,176);
   public static Color HIGHLIGHT_BAD = new Color(239,163,163);
@@ -95,6 +96,12 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
   private JComboBox fileFilter = new JComboBox(fileFilterModel);
 
   /**
+   * Charset list.
+   */
+  private CharsetComboBox charsetEncodings = new CharsetComboBox();
+  private JCheckBox charsetDetection = new JCheckBox("auto detect", true);
+
+  /**
    * Buttons.
    */
   private JButton buttonOK = new JButton("OK");
@@ -138,7 +145,6 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
     fileList.setDefaultEditor(Object.class, null);
     fileList.setSelectionModel(fileListSelectionModel);
     fileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    fileList.setSelectionBackground(COLOR_SELECTION_TOP);
     fileList.setSelectionForeground(Color.WHITE);
     sorter = new TableRowSorter<TableModel>();
     fileList.setRowSorter(sorter);
@@ -192,6 +198,16 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
     gbc.gridx++;
     add(fileFilter, gbc);
 
+    gbc.gridx = 0; gbc.gridy++;
+    gbc.weightx = 0;
+    add(new JLabel("File Encoding:"), gbc);
+    gbc.weightx = 1;
+    gbc.gridx++;
+    JPanel encodingPanel = new JPanel(new BorderLayout());
+    encodingPanel.add(charsetEncodings, BorderLayout.CENTER);
+    encodingPanel.add(charsetDetection, BorderLayout.EAST);
+    add(encodingPanel, gbc);
+
     JPanel southPanel = new JPanel();
     southPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
     southPanel.add(buttonOK);
@@ -219,6 +235,8 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
 
     buttonOK.addActionListener(this);
     buttonCancel.addActionListener(this);
+
+    charsetDetection.addActionListener(this);
   }
 
   public void setDialogTitle(String title) {
@@ -358,6 +376,8 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
     String name = fileListModel.getValueAt(indexModel,0).toString();
     fileName.setText(name);
 
+    charsetEncodings.detect(getSelectedFile());
+
     if(filePrefix.length() > 0 && name.toLowerCase().startsWith(filePrefix.toLowerCase())) {
       try {
         highlighter.removeAllHighlights();
@@ -398,6 +418,9 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
     }
     if(actionEvent.getSource() == fileFilter) {
       setCurrentDirectory(directory);
+    }
+    if(actionEvent.getSource() == charsetDetection) {
+      charsetEncodings.setNoDetection(!charsetDetection.isSelected());
     }
   }
 
@@ -473,8 +496,8 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
         FileEntry entry = (FileEntry) fileListModel.getValueAt(indexModel,0);
         fileListSelectionModel.setSelectionInterval(indexView, indexView);
 
-        fileName.setText(entry.getName());
-        fileName.setBackground(Color.WHITE);
+        // fileName.setText(entry.getName());
+        // fileName.setBackground(Color.WHITE);
       } else {
         fileName.setText(filePrefix);
         fileName.setBackground(HIGHLIGHT_BAD);
@@ -598,12 +621,7 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
 
     public void paintComponent(Graphics graphics) {
       if(selected) {
-        Graphics2D g = (Graphics2D) graphics;
-
-        GradientPaint gp = new GradientPaint(0, 0, COLOR_SELECTION_TOP, 0, getHeight()-1, COLOR_SELECTION_BOTTOM);
-        g.setPaint(gp);
-        g.fillRect(0, 0, getWidth(), getHeight());
-        g.setPaint(Color.BLACK);
+        GraphicsUtil.paintSelectionBackground(this, (Graphics2D) graphics);
 
         setOpaque(false);
         super.paintComponent(graphics);
