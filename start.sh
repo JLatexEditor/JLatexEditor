@@ -20,4 +20,4 @@ cd `dirname $0`
 
 svn up
 ant compile
-java -Xmx200M "-Djlatexeditor.working_dir=$USER_PWD" -cp build/classes/ jlatexeditor.JLatexEditorJFrame "$@"
+java -Xmx200M "-Djlatexeditor.working_dir=$USER_PWD" -cp build/classes/:lib/*.jar jlatexeditor.JLatexEditorJFrame "$@"
