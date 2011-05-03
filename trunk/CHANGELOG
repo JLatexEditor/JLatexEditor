@@ -15,6 +15,7 @@ New Features and other Changes in JLatexEditor
 * minor enhancements:
   - prettied up tabs
   - added icons to menu (thanks to Tango Desktop Project for the icons)
+  - svn merge conflicts are highlighted red
 
 
 == Version 0.1.56 ==
