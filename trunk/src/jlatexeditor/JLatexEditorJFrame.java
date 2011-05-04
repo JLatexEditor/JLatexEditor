@@ -350,6 +350,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     if (updateDisabled) updateMenuItem.setVisible(false);
     helpMenu.add(updateMenuItem);
     helpMenu.add(createMenuItem("About", "about", 'A'));
+    helpMenu.add(createMenuItem("Acknowledgements", "acknowledgements", 'K'));
 
     // error messages
     toolsTab = new JTabbedPane();
@@ -1401,6 +1402,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		} else if (action.equals("about")) {
 			AboutDialog aboutDialog = new AboutDialog(version);
 			aboutDialog.showIt();
+    } else if (action.equals("acknowledgements")) {
+      AcknowledgementsDialog acknowledgementsDialog = new AcknowledgementsDialog(version);
+      acknowledgementsDialog.setVisible(true);
 		} else if (action.equals("stack trace")) {
 			new ThreadInfoWindow();
 		}
