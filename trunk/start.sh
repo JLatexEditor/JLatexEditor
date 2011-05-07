@@ -25,5 +25,6 @@ do
 done
 
 svn up
+ant clearDependentClasses
 ant compile
 java -Xmx200M "-Djlatexeditor.working_dir=$USER_PWD" -cp build/classes/$LIB jlatexeditor.JLatexEditorJFrame "$@"
