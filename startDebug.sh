@@ -28,4 +28,10 @@ for f in debug error; do
 	fi
 done
 
-java -Xmx200M "-Djlatexeditor.working_dir=$USER_PWD" -cp build/classes/:lib/*.jar jlatexeditor.JLatexEditorJFrame "$@" > debug.log 2> error.log &
+LIB=""
+for file in `ls lib/`
+do
+   LIB="$LIB:lib/$file"
+done
+
+java -Xmx200M "-Djlatexeditor.working_dir=$USER_PWD" -cp build/classes/$LIB jlatexeditor.JLatexEditorJFrame "$@" > debug.log 2> error.log &

@@ -18,6 +18,12 @@ fi
 
 cd `dirname $0`
 
+LIB=""
+for file in `ls lib/`
+do
+   LIB="$LIB:lib/$file"
+done
+
 svn up
 ant compile
-java -Xmx200M "-Djlatexeditor.working_dir=$USER_PWD" -cp build/classes/:lib/*.jar jlatexeditor.JLatexEditorJFrame "$@"
+java -Xmx200M "-Djlatexeditor.working_dir=$USER_PWD" -cp build/classes/$LIB jlatexeditor.JLatexEditorJFrame "$@"
