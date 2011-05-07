@@ -19,6 +19,7 @@ fi
 cd `dirname $0`
 
 svn up
+ant clearDependentClasses
 ant compile
 
 # rename debug.log / error.log to last_debug.log / last_error.log
