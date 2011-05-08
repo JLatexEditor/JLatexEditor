@@ -1274,7 +1274,13 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	      if (extensionIndex == -1) return; // no tex file
 				String file = mainFile.substring(0, extensionIndex);
 
-        ArrayList<String> list = StringUtils.tokenize(GProperties.getString("forward search.viewer"));
+	      String forwardSearchCommand = GProperties.getString("forward search.viewer");
+	      if (forwardSearchCommand == null || forwardSearchCommand.trim().equals("")) {
+		      JOptionPane.showMessageDialog(this, "Please go to Settings->Forward Search and select the document viewer of your choice\nor configure the command to start the viewer manually in the global settings (forward search.viewer).", "Document viewer needs to be set", JOptionPane.INFORMATION_MESSAGE);
+		      return;
+	      }
+
+	      ArrayList<String> list = StringUtils.tokenize(forwardSearchCommand);
         String[] array = new String[list.size()];
         list.toArray(array);
 
