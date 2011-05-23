@@ -384,6 +384,8 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
         highlighter.addHighlight(0, filePrefix.length(), highlightPainter);
       } catch (BadLocationException e) {
       }
+
+      fileName.setBackground(Color.WHITE);
     } else {
       if(filePrefix.length() > 0) repaint();
       filePrefix = "";
@@ -494,10 +496,10 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
 
       if(indexModel != -1) {
         FileEntry entry = (FileEntry) fileListModel.getValueAt(indexModel,0);
-        fileListSelectionModel.setSelectionInterval(indexView, indexView);
+        fileName.setText(entry.getName());
+        fileName.setBackground(Color.WHITE);
 
-        // fileName.setText(entry.getName());
-        // fileName.setBackground(Color.WHITE);
+        fileListSelectionModel.setSelectionInterval(indexView, indexView);
       } else {
         fileName.setText(filePrefix);
         fileName.setBackground(HIGHLIGHT_BAD);
