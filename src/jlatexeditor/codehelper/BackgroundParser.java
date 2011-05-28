@@ -50,6 +50,7 @@ public class BackgroundParser extends Thread {
 
 	public BackgroundParser(JLatexEditorJFrame jle) {
 	  super("BackgroundParser");
+		setDaemon(true);
     this.jle = jle;
     setPriority(Thread.MIN_PRIORITY);
   }

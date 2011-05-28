@@ -680,6 +680,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
 		public IdleThread(CodeHelper codeHelper) {
 			super("CodeHelperPane-IdleThread");
+			setDaemon(true);
 			delay = codeHelper.autoCompletionDelay;
 			minLetters = codeHelper.autoCompletionMinLetters;
 		}

@@ -32,6 +32,7 @@ public class ChangeLogSyntaxHighlighting extends SyntaxHighlighting implements S
   private boolean currentlyChanging = false;
 
   public ChangeLogSyntaxHighlighting(SCEPane pane) {
+	  super("ChangeLogSyntaxHighlighting");
     this.pane = pane;
     document = pane.getDocument();
     document.addSCEDocumentListener(this);
