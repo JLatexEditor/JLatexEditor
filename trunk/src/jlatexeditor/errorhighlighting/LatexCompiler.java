@@ -40,6 +40,8 @@ public class LatexCompiler extends Thread {
   private Process bibtex = null;
 
   private LatexCompiler(Type type, SourceCodeEditor editor, ErrorView errorView) {
+	  super("LatexCompiler");
+	  setDaemon(true);
     this.type = type;
     this.editor = editor;
     this.errorView = errorView;

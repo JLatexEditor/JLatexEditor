@@ -160,6 +160,8 @@ public class StatusBar extends JPanel implements ActionListener, MouseListener {
 
   private class CheckForUpdates extends Thread {
     private CheckForUpdates() {
+	    super("CheckForUpdates");
+	    setDaemon(true);
       setPriority(Thread.MIN_PRIORITY);
     }
 

@@ -136,6 +136,8 @@ public class CharsetComboBox extends JComboBox {
     private boolean terminated = false;
 
     private DetectorThread(File file) {
+	    super("CharsetComboBox-DetectorThread");
+	    setDaemon(true);
       this.file = file;
       setPriority(Thread.MIN_PRIORITY);
     }

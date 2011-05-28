@@ -504,6 +504,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 
     private UpdateThread() {
 	    super("SCESearch-UpdateThread");
+	    setDaemon(true);
       setPriority(Thread.NORM_PRIORITY);
     }
 

@@ -1181,8 +1181,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		} else
 		// exit
 		if (action.equals("exit")) {
-			saveAll();
-			System.exit(0);
+			quit();
 		} else
 
 		// undo
@@ -1690,20 +1689,24 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     }
   }
 
-  public void windowClosing(WindowEvent e) {
-	  if (GProperties.getBoolean("ask_for_saving_files_before_closing") && anyModifications()) {
-		  int answer = JOptionPane.showConfirmDialog(this, "Some files have been modified.  Do you want to save them?", "Save modified files?", JOptionPane.YES_NO_CANCEL_OPTION);
-		  switch (answer) {
-			  case JOptionPane.YES_OPTION:
-				  if (saveAll()) {
-				    System.exit(0);
-				  }
+	public void quit() {
+		if (GProperties.getBoolean("ask_for_saving_files_before_closing") && anyModifications()) {
+			int answer = JOptionPane.showConfirmDialog(this, "Some files have been modified.  Do you want to save them?", "Save modified files?", JOptionPane.YES_NO_CANCEL_OPTION);
+			switch (answer) {
+				case JOptionPane.YES_OPTION:
+					if (saveAll()) {
+					  System.exit(0);
+					}
 				case JOptionPane.NO_OPTION:
 					System.exit(0);
-		  }
-	  } else {
-		  System.exit(0);
-	  }
+			}
+		} else {
+			System.exit(0);
+		}
+	}
+
+  public void windowClosing(WindowEvent e) {
+	  quit();
   }
 
   public void windowClosed(WindowEvent e) {

@@ -29,6 +29,7 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
   private boolean currentlyChanging = false;
 
   public BibSyntaxHighlighting(SCEPane pane) {
+	  super("BibTexSyntaxHighlighting");
     this.pane = pane;
     document = pane.getDocument();
     document.addSCEDocumentListener(this);

@@ -25,6 +25,7 @@ public class GPropertiesSyntaxHighlighting extends SyntaxHighlighting implements
   private boolean currentlyChanging = false;
 
   public GPropertiesSyntaxHighlighting(SCEPane pane) {
+	  super("GPropertiesSyntaxHighlighting");
     this.pane = pane;
     document = pane.getDocument();
     document.addSCEDocumentListener(this);
