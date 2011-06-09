@@ -138,7 +138,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     if (e.isConsumed()) return;
 
     if (allowedChars.indexOf(e.getKeyChar()) == -1) return;
-    if (e.isControlDown() || e.isAltDown()) return;
+    if (e.isControlDown() || e.isAltDown() || e.isMetaDown()) return;
 
     if (document.hasSelection()) removeSelection();
     document.insert(e.getKeyChar() + "", caret.getRow(), caret.getColumn());
@@ -148,6 +148,9 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     if (e.isConsumed()) return;
 
 	  int keyCode = e.getKeyCode();
+
+    // ignore meta key
+    if (e.isMetaDown()) return;
 
 	  // is control down?
     if (e.isControlDown() && !e.isAltDown()) {
