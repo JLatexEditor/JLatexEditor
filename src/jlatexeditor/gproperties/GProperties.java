@@ -163,6 +163,8 @@ public class GProperties {
     properties.addEntry(new Def("shortcut.cut", SHORTCUT, "control X"));
     properties.addEntry(new Def("shortcut.copy", SHORTCUT, "control C"));
     properties.addEntry(new Def("shortcut.paste", SHORTCUT, "control V"));
+    properties.addEntry(new Def("shortcut.select all", SHORTCUT, "control A"));
+    properties.addEntry(new Def("shortcut.select none", SHORTCUT, "control shift A"));
     properties.addEntry(new Def("shortcut.comment", SHORTCUT, "control D"));
     properties.addEntry(new Def("shortcut.uncomment", SHORTCUT, "control shift D"));
     properties.addEntry(new Def("shortcut.diff", SHORTCUT, "alt D"));
@@ -199,6 +201,23 @@ public class GProperties {
     properties.addEntry(new Def("shortcut.show change log", SHORTCUT, ""));
     properties.addEntry(new Comment(" About screen"));
     properties.addEntry(new Def("shortcut.about", SHORTCUT, ""));
+
+    properties.addEntry(new Comment(" Editor"));
+    properties.addEntry(new Def("shortcut.jump left", SHORTCUT, "control LEFT"));
+    properties.addEntry(new Def("shortcut.jump right", SHORTCUT, "control RIGHT"));
+    properties.addEntry(new Def("shortcut.jump to front", SHORTCUT, "control BEGIN"));
+    properties.addEntry(new Def("shortcut.jump to end", SHORTCUT, "control END"));
+    properties.addEntry(new Def("shortcut.move view up", SHORTCUT, "alt UP"));
+    properties.addEntry(new Def("shortcut.move view down", SHORTCUT, "alt DOWN"));
+    properties.addEntry(new Def("shortcut.remove line", SHORTCUT, "control Y"));
+    properties.addEntry(new Def("shortcut.remove line before caret", SHORTCUT, "control U"));
+    properties.addEntry(new Def("shortcut.remove line behind caret", SHORTCUT, "control K"));
+    properties.addEntry(new Def("shortcut.remove word before caret", SHORTCUT, "control BACKSPACE"));
+    properties.addEntry(new Def("shortcut.remove word behind caret", SHORTCUT, "control DELETE"));
+
+    properties.addEntry(new Comment(" Focus Traversal"));
+    properties.addEntry(new Def("shortcut.focus traversal forward", SHORTCUT, "TAB"));
+    properties.addEntry(new Def("shortcut.focus traversal backward", SHORTCUT, "shift TAB"));
 
 	  properties.addEntry(new Comment("\n## Compiler settings"));
     properties.addEntry(new Comment(" pdflatex"));

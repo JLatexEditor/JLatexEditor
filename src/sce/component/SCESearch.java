@@ -1,5 +1,6 @@
 package sce.component;
 
+import de.endrullis.utils.KeyUtils;
 import jlatexeditor.gproperties.GProperties;
 
 import javax.swing.*;
@@ -383,7 +384,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 
   public void keyPressed(KeyEvent e) {
 	  if (isVisible()) {
-		  if (e.getKeyCode() == KeyEvent.VK_ESCAPE && e.getModifiers() == 0) {
+		  if (KeyUtils.isStopKey(e)) {
 			  setVisible(false);
 			  e.consume();
 		  }
