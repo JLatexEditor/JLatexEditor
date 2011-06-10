@@ -154,7 +154,6 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 
 	  // is control down?
     if (e.isControlDown() && !e.isAltDown()) {
-      keyControlDown(e);
       if (!isModifierKey(keyCode)) return;
     }
 
@@ -360,76 +359,62 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
   public void keyReleased(KeyEvent e) {
   }
 
-  private void keyControlDown(KeyEvent e) {
+  public void handleCommand(String command, boolean isShiftDown) {
     // caret movement
-    if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
-      int jump = e.getKeyCode() == KeyEvent.VK_UP ? -1 : 1;
+    boolean viewUp = command.equals("move view up");
+    boolean viewDown = command.equals("move view down");
+    if (viewUp || viewDown) {
+      int jump = viewUp ? -1 : 1;
       Rectangle visibleRect = scrollVisibleRect(jump);
 
       int minRow = visibleRect.y / pane.getLineHeight();
       int maxRow = (visibleRect.y + visibleRect.height) / pane.getLineHeight();
 
-      if (caret.getRow() < minRow + 2) caret.move(SCECaret.DIRECTION_DOWN, e.isShiftDown());
-      if (caret.getRow() > maxRow - 2) caret.move(SCECaret.DIRECTION_UP, e.isShiftDown());
-      e.consume();
+      if (caret.getRow() < minRow + 2) caret.move(SCECaret.DIRECTION_DOWN, isShiftDown);
+      if (caret.getRow() > maxRow - 2) caret.move(SCECaret.DIRECTION_UP, isShiftDown);
     }
-    if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-      caret.moveTo(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), -1), e.isShiftDown());
-      e.consume();
+
+    if (command.equals("jump left")) {
+      caret.moveTo(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), -1), isShiftDown);
     }
-    if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-      caret.moveTo(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), 1), e.isShiftDown());
-      e.consume();
+    if (command.equals("jump right")) {
+      caret.moveTo(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), 1), isShiftDown);
     }
-    if (e.getKeyCode() == KeyEvent.VK_HOME) {
-      caret.moveTo(0, 0, e.isShiftDown());
-      e.consume();
+    if (command.equals("jump to front")) {
+      caret.moveTo(0, 0, isShiftDown);
     }
-    if (e.getKeyCode() == KeyEvent.VK_END) {
+    if (command.equals("jump to end")) {
       int row = document.getRowsCount() - 1;
       int column = document.getRowLength(row);
-      caret.moveTo(row, column, e.isShiftDown());
-      e.consume();
+      caret.moveTo(row, column, isShiftDown);
     }
 
-	  if (!e.isShiftDown()) {
-			// control+Y
-			if (e.getKeyCode() == KeyEvent.VK_Y) {
-				if (caret.getRow() < document.getRowsCount() - 1) {
-					document.remove(caret.getRow(), 0, caret.getRow() + 1, 0);
-				} else if (caret.getRow() > 0) {
-					document.remove(caret.getRow() - 1, document.getRowLength(caret.getRow() - 1), caret.getRow(), document.getRowLength(caret.getRow()));
-					caret.moveTo(caret.getRow() - 1, caret.getColumn(), false);
-				} else {
-					document.remove(0, 0, 0, document.getRowLength(0));
-					caret.moveTo(0, 0, false);
-				}
-				e.consume();
-			}
+    if (command.equals("remove line")) { // control+Y
+      if (caret.getRow() < document.getRowsCount() - 1) {
+        document.remove(caret.getRow(), 0, caret.getRow() + 1, 0);
+      } else if (caret.getRow() > 0) {
+        document.remove(caret.getRow() - 1, document.getRowLength(caret.getRow() - 1), caret.getRow(), document.getRowLength(caret.getRow()));
+        caret.moveTo(caret.getRow() - 1, caret.getColumn(), false);
+      } else {
+        document.remove(0, 0, 0, document.getRowLength(0));
+        caret.moveTo(0, 0, false);
+      }
+    }
 
-			// control+U
-			if (e.getKeyCode() == KeyEvent.VK_U) {
-				document.remove(caret.getRow(), 0, caret.getRow(), caret.getColumn());
-				e.consume();
-			}
-			// control+K
-			if (e.getKeyCode() == KeyEvent.VK_K) {
-				document.remove(caret.getRow(), caret.getColumn(), caret.getRow(), document.getRowLength(caret.getRow()));
-				e.consume();
-			}
-			// control+backspace
-			if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
-				document.remove(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), -1), caret);
-				clearSelection();
-				e.consume();
-			}
-			// control+delete
-			if (e.getKeyCode() == KeyEvent.VK_DELETE) {
-				document.remove(caret, pane.findSplitterPosition(caret.getRow(), caret.getColumn(), 1));
-				clearSelection();
-				e.consume();
-			}
-	  }
+    if (command.equals("remove line before caret")) { // control+U
+      document.remove(caret.getRow(), 0, caret.getRow(), caret.getColumn());
+    }
+    if (command.equals("remove line behind caret")) { // control+K
+      document.remove(caret.getRow(), caret.getColumn(), caret.getRow(), document.getRowLength(caret.getRow()));
+    }
+    if (command.equals("remove word before caret")) { // control+backspace
+      document.remove(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), -1), caret);
+      clearSelection();
+    }
+    if (command.equals("remove word behind caret")) { // control+delete
+      document.remove(caret, pane.findSplitterPosition(caret.getRow(), caret.getColumn(), 1));
+      clearSelection();
+    }
   }
 
   // MouseListener methods

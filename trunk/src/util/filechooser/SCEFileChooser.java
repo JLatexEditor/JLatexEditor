@@ -1,5 +1,6 @@
 package util.filechooser;
 
+import de.endrullis.utils.KeyUtils;
 import util.GraphicsUtil;
 
 import javax.swing.*;
@@ -13,7 +14,6 @@ import javax.swing.text.DefaultHighlighter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Timer;
@@ -466,8 +466,7 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
             keyEvent.getKeyChar() == KeyEvent.VK_BACK_SPACE
                     || keyEvent.getKeyChar() == KeyEvent.VK_DELETE;
 
-    boolean stop =
-            keyEvent.getKeyChar() == KeyEvent.VK_ESCAPE;
+    boolean stop = KeyUtils.isStopKey(keyEvent);
 
     if(stop && filePrefix.length() == 0 && (time - filePrefixReset) > 1000) {
       dialog.hide();

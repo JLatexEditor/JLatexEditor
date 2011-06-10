@@ -1,5 +1,6 @@
 package sce.codehelper;
 
+import de.endrullis.utils.KeyUtils;
 import sce.component.*;
 import util.Tuple;
 
@@ -536,7 +537,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     }
 
     // hide code helper on escape or close template
-    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+    if (KeyUtils.isStopKey(e)) {
 	    if (isVisible()) {
 				// hide code helper
 				setVisible(false);

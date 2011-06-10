@@ -1,5 +1,6 @@
 package sce.quickhelp;
 
+import de.endrullis.utils.KeyUtils;
 import sce.component.SCECaret;
 import sce.component.SCEDocument;
 import sce.component.SCEPane;
@@ -138,7 +139,7 @@ public class QuickHelpPane extends JScrollPane implements HyperlinkListener, Key
     }
 
     // hide on escape
-    if (popup.isVisible() && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+    if (popup.isVisible() && KeyUtils.isStopKey(e)) {
       setVisible(false);
       getParent().requestFocus();
       e.consume();

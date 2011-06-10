@@ -63,6 +63,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   public static final File FILE_RECENT = new File(System.getProperty("user.home") + "/.jlatexeditor/recent");
   public static final File CHANGELOG = new File("CHANGELOG");
 
+  private static final String RECEIVER_PANE_UI = "PaneUI <= ";
+
 	/** Logger. */
 	private static Logger logger = Logger.getLogger(JLatexEditorJFrame.class.getName());
   private static String version = "*Bleeding Edge*";
@@ -272,6 +274,9 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     editMenu.add(createMenuItem("Copy", "copy", null));
     editMenu.add(createMenuItem("Paste", "paste", null));
     editMenu.addSeparator();
+    editMenu.add(createMenuItem("Select All", "select all", null));
+    editMenu.add(createMenuItem("Select None", "select none", null));
+    editMenu.addSeparator();
     editMenu.add(createMenuItem("Comment", "comment", 'o'));
     editMenu.add(createMenuItem("Uncomment", "uncomment", 'u'));
     editMenu.addSeparator();
@@ -351,6 +356,33 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     helpMenu.add(updateMenuItem);
     helpMenu.add(createMenuItem("About", "about", 'A'));
     helpMenu.add(createMenuItem("Acknowledgements", "acknowledgements", 'K'));
+
+    // misc keyboard actions
+    createShortcut(this, RECEIVER_PANE_UI, "jump left", true);
+    createShortcut(this, RECEIVER_PANE_UI, "jump right", true);
+    createShortcut(this, RECEIVER_PANE_UI, "jump to front", true);
+    createShortcut(this, RECEIVER_PANE_UI, "jump to end", true);
+    createShortcut(this, RECEIVER_PANE_UI, "move view up", true);
+    createShortcut(this, RECEIVER_PANE_UI, "move view down", true);
+    createShortcut(this, RECEIVER_PANE_UI, "remove line", false);
+    createShortcut(this, RECEIVER_PANE_UI, "remove line before caret", false);
+    createShortcut(this, RECEIVER_PANE_UI, "remove line behind caret", false);
+    createShortcut(this, RECEIVER_PANE_UI, "remove word before caret", false);
+    createShortcut(this, RECEIVER_PANE_UI, "remove word behind caret", false);
+
+    // prevent that TabbledPane consumes the "control UP"
+    Object ancestorMap = UIManager.get("TabbedPane.ancestorInputMap");
+    if(ancestorMap instanceof InputMap) {
+      InputMap map = (InputMap) ancestorMap;
+      map.remove(KeyStroke.getKeyStroke("control UP"));
+    }
+
+    // focus traversal keys
+    KeyboardFocusManager focusManager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+    focusManager.setDefaultFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,
+            new HashSet(Arrays.asList(KeyStroke.getKeyStroke(GProperties.getString("shortcut.focus traversal forward")))));
+    focusManager.setDefaultFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS,
+            new HashSet(Arrays.asList(KeyStroke.getKeyStroke(GProperties.getString("shortcut.focus traversal backward")))));
 
     // error messages
     toolsTab = new JTabbedPane();
@@ -525,6 +557,22 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     GProperties.addPropertyChangeListener("shortcut." + command, new ShortcutChangeListener(menuItem));
 
     return menuItem;
+  }
+
+  /**
+   * Creates a keyboard shortcut without a menu item.
+   */
+  private void createShortcut(ActionListener listener, String receiver, String command, boolean withAndWithoutShift) {
+    String shorcutString = GProperties.getString("shortcut." + command);
+    if (shorcutString != null && !shorcutString.equals("")) {
+      KeyStroke keyStroke = KeyStroke.getKeyStroke(shorcutString);
+      menuBar.registerKeyboardAction(listener, receiver + command, keyStroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+      if(withAndWithoutShift) {
+        keyStroke = KeyStroke.getKeyStroke("shift " + shorcutString);
+        menuBar.registerKeyboardAction(listener, receiver + command, keyStroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
+      }
+    }
   }
 
   private void initFileChooser() {
@@ -1127,6 +1175,15 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   public void actionPerformed(ActionEvent e) {
     String action = e.getActionCommand();
 
+    // forward to paneUI ?
+    if (action.startsWith(RECEIVER_PANE_UI)) {
+      SourceCodeEditor editor = getActiveEditor();
+      editor.getTextPane().getPaneUI().handleCommand(
+              action.substring(RECEIVER_PANE_UI.length()),
+              (e.getModifiers() & ActionEvent.SHIFT_MASK) != 0);
+      return;
+    }
+
 		// timer
 		if (action.equals("timer")) {
 			checkExternalModification(true);
@@ -1224,6 +1281,20 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		if (action.equals("paste")) {
 			getActiveEditor().paste();
 		} else
+		// select all
+		if (action.equals("select all")) {
+      SCEPane pane = getActiveEditor().getTextPane();
+      SCEDocument document = pane.getDocument();
+      document.setSelectionRange(document.createDocumentPosition(0,0), document.createDocumentPosition(document.getRowsCount()-1, 0));
+		  pane.repaint();
+    } else
+    if (action.equals("select none")) {
+      SCEPane pane = getActiveEditor().getTextPane();
+      SCEDocument document = pane.getDocument();
+      document.setSelectionRange(null, null);
+      pane.getCaret().setSelectionMark();
+      pane.repaint();
+    } else
 
 		// lineComment
 		if (action.equals("comment")) {

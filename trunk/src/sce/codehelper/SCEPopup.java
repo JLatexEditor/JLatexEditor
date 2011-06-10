@@ -1,5 +1,6 @@
 package sce.codehelper;
 
+import de.endrullis.utils.KeyUtils;
 import sce.component.SCEDocument;
 import sce.component.SCEPane;
 import sce.component.SCEPosition;
@@ -161,7 +162,7 @@ public class SCEPopup extends JScrollPane implements KeyListener {
     if (!isVisible()) return;
 
     // hide on escape
-    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+    if (KeyUtils.isStopKey(e)) {
       // hide popup
       setVisible(false);
     }
