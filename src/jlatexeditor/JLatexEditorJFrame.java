@@ -174,6 +174,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 			System.exit(0);
 		}
 
+    System.setProperty("apple.laf.useScreenMenuBar", "true");
 		UIManager.put("TabbedPaneUI", "util.gui.SCETabbedPaneUI");
     UIManager.put("List.timeFactor", 200L);
     /*
