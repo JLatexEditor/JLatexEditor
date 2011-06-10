@@ -16,6 +16,7 @@ public class BibParserState implements ParserState {
   public static final int STATE_EXPECT_VALUE = 6;
   public static final int STATE_VALUE_QUOTED = 7;
   public static final int STATE_VALUE_BRACED = 8;
+  public static final int STATE_EXPECT_CLOSE = 9;
 
   private int state = STATE_NOTHING;
   private int bracketLevel = 0;

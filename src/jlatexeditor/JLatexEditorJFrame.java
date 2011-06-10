@@ -44,7 +44,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.awt.event.*;
@@ -676,7 +675,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		LatexStyles.addStyles(document);
 
 	  // syntax highlighting
-	  BibSyntaxHighlighting syntaxHighlighting = new BibSyntaxHighlighting(scePane);
+	  BibSyntaxHighlighting syntaxHighlighting = new BibSyntaxHighlighting(scePane, backgroundParser);
 	  syntaxHighlighting.start();
 
 		// code completion and quick help
