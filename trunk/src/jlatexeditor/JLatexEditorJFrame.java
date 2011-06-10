@@ -922,6 +922,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       }
 
       editorChanged();
+      editor.getTextPane().requestFocus();
       return editor;
     } catch (IOException exc) {
       logger.log(Level.SEVERE, "Error opening file", exc);
