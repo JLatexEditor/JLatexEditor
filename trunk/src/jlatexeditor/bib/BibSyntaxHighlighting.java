@@ -1,10 +1,14 @@
 package jlatexeditor.bib;
 
+import jlatexeditor.JLatexEditorJFrame;
+import jlatexeditor.codehelper.BackgroundParser;
+import jlatexeditor.codehelper.BibParser;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
 import sce.component.*;
 import sce.syntaxhighlighting.ParserStateStack;
 import sce.syntaxhighlighting.SyntaxHighlighting;
+import util.TrieSet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +19,7 @@ import java.util.Arrays;
 public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocumentListener {
   private static char[] COMMA_OR_BRACKET = new char[] {'}', ',', ' '};
   private static char[] EQ_COMMA_OR_BRACKET = new char[] {'=', '}', ',', ' '};
+  private static char[] EQ = new char[] {'=', ' '};
   static {
     Arrays.sort(COMMA_OR_BRACKET);
     Arrays.sort(EQ_COMMA_OR_BRACKET);
@@ -23,16 +28,19 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
   // text pane and document
   private SCEPane pane = null;
   private SCEDocument document = null;
+  private static BackgroundParser backgroundParser = null;
 
   // do we need to parse
   private boolean parseNeeded = false;
   private boolean currentlyChanging = false;
 
-  public BibSyntaxHighlighting(SCEPane pane) {
+  public BibSyntaxHighlighting(SCEPane pane, BackgroundParser parser) {
 	  super("BibTexSyntaxHighlighting");
     this.pane = pane;
     document = pane.getDocument();
     document.addSCEDocumentListener(this);
+
+    backgroundParser = parser;
 
     // initialize
     reset();
@@ -188,6 +196,15 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
         continue;
       }
 
+      // close string entry }
+      if(state.getState() == BibParserState.STATE_EXPECT_CLOSE && !Character.isWhitespace(c)) {
+        sce_char.style = stateStyles[LatexStyles.BRACKET];
+        if(c != '}') {
+          sce_char.style = LatexStyles.ERROR;
+          continue;
+        }
+      }
+
       // closing bracket
       if(c == '}' && state.getState() != BibParserState.STATE_VALUE_QUOTED) {
         sce_char.style = stateStyles[LatexStyles.BRACKET];
@@ -214,21 +231,30 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
 
       // entry name
       if(state.getState() == BibParserState.STATE_EXPECT_NAME && !Character.isWhitespace(c)) {
-        String entryName = LatexSyntaxHighlighting.getUntil(row, char_nr + 1, COMMA_OR_BRACKET);
+        boolean isString = state.getEntryType().toLowerCase().equals("string");
+        char delimiter[] = !isString ? COMMA_OR_BRACKET: EQ;
+        String entryName = LatexSyntaxHighlighting.getUntil(row, char_nr, delimiter);
         if(c == ',' || entryName == null) {
           sce_char.style = stateStyles[LatexStyles.TEXT];
-          sce_char.style = stateStyles[LatexStyles.ERROR];
           if(c == ',') state.setState(BibParserState.STATE_EXPECT_KEY);
           continue;
         }
 
-        byte entryStyle = stateStyles[LatexStyles.ERROR];
+        byte entryStyle = stateStyles[LatexStyles.getStyle("begin")];
+        // is the bib item used?
+        if(backgroundParser != null) {
+          TrieSet<BackgroundParser.FilePos> bibRefs = backgroundParser.getBibRefs();
+          if(!bibRefs.contains(entryName)) {
+            entryStyle = stateStyles[LatexStyles.COMMENT];
+          }
+        }
+
         for (int i = 0; i <= entryName.length(); i++) {
           chars[char_nr + i].style = entryStyle;
         }
-        char_nr += entryName.length();
+        char_nr += entryName.length()-1;
 
-        state.setState(BibParserState.STATE_EXPECT_COMMA);
+        state.setState(!isString ? BibParserState.STATE_EXPECT_COMMA : BibParserState.STATE_EXPECT_EQ);
         continue;
       }
 
@@ -301,7 +327,8 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
           continue;
         } else
         if(c == '"') {
-          state.setState(BibParserState.STATE_EXPECT_COMMA);
+          boolean isString = state.getEntryType().toLowerCase().equals("string");
+          state.setState(!isString ? BibParserState.STATE_EXPECT_COMMA : BibParserState.STATE_EXPECT_CLOSE);
         }
 
         continue;
@@ -322,7 +349,8 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
           state.setBracketLevel(state.getBracketLevel()+1);
         } else
         if(state.getBracketLevel() == 0 && c == ',') {
-          state.setState(BibParserState.STATE_EXPECT_COMMA);
+          boolean isString = state.getEntryType().toLowerCase().equals("string");
+          state.setState(!isString ? BibParserState.STATE_EXPECT_COMMA : BibParserState.STATE_EXPECT_CLOSE);
           char_nr--;
         }
 

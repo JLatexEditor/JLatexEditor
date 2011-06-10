@@ -226,6 +226,8 @@ public class GProperties {
     properties.addEntry(new Comment(" latex"));
     properties.addEntry(new Def("compiler.latex.executable", STRING, "latex"));
     properties.addEntry(new Def("compiler.latex.parameters", STRING, "--src-specials"));
+    properties.addEntry(new Comment(" bibtex"));
+    properties.addEntry(new Def("compiler.bibtex.executable", STRING, "bibtex"));
     properties.addEntry(new Comment(" forward search"));
     properties.addEntry(new Def("forward search.viewer", STRING, ""));
     properties.addEntry(new Def("inverse search.port", INT_GT_0, "13231"));

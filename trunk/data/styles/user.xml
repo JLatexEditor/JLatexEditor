@@ -28,12 +28,12 @@
   <element name="label_exists" style="plain" foreground="800080"/>
   <element name="label_not_found" style="plain" foreground="ff0000"/>
   <element name="label_not_referenced" style="plain" background="fdffc5"/>
-	<element name="label_duplicate" style="plain" foreground="ff0000"/>
+  <element name="label_duplicate" style="plain" foreground="ff0000"/>
 
   <element name="file_exists" style="plain" foreground="800080"/>
   <element name="file_not_found" style="plain" foreground="ff0000"/>
 
-	<element name="cite_exists" style="plain" foreground="800080"/>
-	<element name="cite_not_found" style="plain" foreground="ff0000"/>
+  <element name="cite_exists" style="plain" foreground="800080"/>
+  <element name="cite_not_found" style="plain" foreground="ff0000"/>
 
 </styles>

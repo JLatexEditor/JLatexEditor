@@ -279,7 +279,8 @@ public class LatexCompiler extends Thread {
 
     try {
       errorView.compileStarted("bibtex");
-      bibtex = ProcessUtil.exec(new String[]{"bibtex", baseName}, file.getParentFile());
+      String exe = GProperties.getString("compiler.bibtex.executable");
+      bibtex = ProcessUtil.exec(new String[]{exe, baseName}, file.getParentFile());
       bibtex.waitFor();
 
       if (type == Type.dvi_ps || type == Type.dvi_ps_pdf) {
