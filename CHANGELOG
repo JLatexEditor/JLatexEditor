@@ -16,7 +16,10 @@ New Features and other Changes in JLatexEditor
   - prettied up tabs
   - added icons to menu (thanks to Tango Desktop Project for the icons)
   - svn merge conflicts are highlighted red
-
+  - improved bibtex highlighting (unused items are grey)
+  - improved configuration of key shortcuts
+    (now allows to configure control+left/right/up/down/y/k/u...)
+  - improvements for mac (now using Mac menubar)
 
 == Version 0.1.56 ==
 
