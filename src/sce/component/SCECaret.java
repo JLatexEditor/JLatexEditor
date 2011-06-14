@@ -75,25 +75,25 @@ public class SCECaret implements SCEPosition, Comparable, ActionListener {
    * Moves the carent in the specified direction.
    *
    * @param direction a direction constant
+   * @param keepSelection keep selection?
    */
-  public void move(int direction, boolean selection) {
-    if (direction == DIRECTION_UP) moveToVirt(getRow() - 1, virtualColumn, selection, false);
-    if (direction == DIRECTION_DOWN) moveToVirt(getRow() + 1, virtualColumn, selection, false);
+  public void move(int direction, boolean keepSelection) {
+    if (direction == DIRECTION_UP) moveToVirt(getRow() - 1, virtualColumn, keepSelection, false);
+    if (direction == DIRECTION_DOWN) moveToVirt(getRow() + 1, virtualColumn, keepSelection, false);
     if (direction == DIRECTION_LEFT) {
       if (getColumn() == 0 && getRow() > 0) {
-        moveTo(getRow() - 1, document.getRowLength(getRow() - 1), selection);
+        moveTo(getRow() - 1, document.getRowLength(getRow() - 1), keepSelection);
       } else {
-        moveTo(getRow(), getColumn() - 1, selection);
+        moveTo(getRow(), getColumn() - 1, keepSelection);
       }
     }
     if (direction == DIRECTION_RIGHT) {
       if (getColumn() == document.getRowLength(getRow()) && getRow() < document.getRowsCount() - 1) {
-        moveTo(getRow() + 1, 0, selection);
+        moveTo(getRow() + 1, 0, keepSelection);
       } else {
-        moveTo(getRow(), getColumn() + 1, selection);
+        moveTo(getRow(), getColumn() + 1, keepSelection);
       }
     }
-
   }
 
   /**
@@ -101,6 +101,7 @@ public class SCECaret implements SCEPosition, Comparable, ActionListener {
    *
    * @param row    the row
    * @param column the column
+   * @param keepSelection keep selection?
    */
   public void moveTo(int row, int column, boolean keepSelection) {
 	  moveToVirt(row, column, keepSelection, true);
@@ -110,6 +111,7 @@ public class SCECaret implements SCEPosition, Comparable, ActionListener {
    * Moves the caret to the specified position.
    *
    * @param pos position
+   * @param keepSelection keep selection
    */
   public void moveTo(SCEPosition pos, boolean keepSelection) {
     moveTo(pos.getRow(), pos.getColumn(), keepSelection);
@@ -118,8 +120,9 @@ public class SCECaret implements SCEPosition, Comparable, ActionListener {
   /**
    * Moves the caret to the specified position.
    *
-   * @param row                 the row
-   * @param column              the column
+   * @param row                 row
+   * @param column              column
+   * @param keepSelection       keep selection?
    * @param updateVirtualColumn true, if the virtual column should be updated
    */
   private void moveToVirt(int row, int column, boolean keepSelection, boolean updateVirtualColumn) {

@@ -5,6 +5,7 @@
 package sce.component;
 
 import jlatexeditor.gproperties.GProperties;
+import org.jetbrains.annotations.Nullable;
 import sce.codehelper.WordWithPos;
 
 import java.awt.*;
@@ -265,7 +266,7 @@ public class SCEDocument {
    * @param start the selection start
    * @param end   the selection end
    */
-  public void setSelectionRange(SCEDocumentPosition start, SCEDocumentPosition end) {
+  public void setSelectionRange(@Nullable SCEDocumentPosition start, @Nullable SCEDocumentPosition end) {
     if (start == null || end == null) {
       selectionStart = null;
       selectionEnd = null;
