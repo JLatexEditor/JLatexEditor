@@ -212,7 +212,7 @@ public class GProperties {
     properties.addEntry(new Def("shortcut.remove line", SHORTCUT, "control Y"));
     properties.addEntry(new Def("shortcut.remove line before caret", SHORTCUT, "control U"));
     properties.addEntry(new Def("shortcut.remove line behind caret", SHORTCUT, "control K"));
-    properties.addEntry(new Def("shortcut.remove word before caret", SHORTCUT, "control BACKSPACE"));
+    properties.addEntry(new Def("shortcut.remove word before caret", SHORTCUT, "control BACK_SPACE"));
     properties.addEntry(new Def("shortcut.remove word behind caret", SHORTCUT, "control DELETE"));
 
     properties.addEntry(new Comment(" Focus Traversal"));
