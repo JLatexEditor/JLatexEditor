@@ -52,6 +52,9 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
     add(scrollPane, BorderLayout.CENTER);
     add(markerBar, BorderLayout.EAST);
 
+	  scrollPane.setInputMap(JComponent.WHEN_FOCUSED, new InputMap());
+	  scrollPane.setInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new InputMap());
+
     new BracketHighlighting(this);
   }
 

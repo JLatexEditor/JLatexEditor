@@ -1714,6 +1714,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   }
 
   public void valueChanged(TreeSelectionEvent e) {
+	  if (!(structureTree.getLastSelectedPathComponent() instanceof BackgroundParser.StructureEntry)) return;
+
     BackgroundParser.StructureEntry structureEntry = (BackgroundParser.StructureEntry) structureTree.getLastSelectedPathComponent();
     if(structureEntry == null) return;
     

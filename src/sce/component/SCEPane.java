@@ -5,12 +5,15 @@ import sce.codehelper.*;
 import sce.quickhelp.QuickHelp;
 
 import javax.swing.*;
+import javax.swing.text.TextAction;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
+import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.beans.PropertyChangeListener;
 import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.List;
@@ -113,6 +116,51 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    */
   public SCEPane(SourceCodeEditor sourceCodeEditor) {
     this.sourceCodeEditor = sourceCodeEditor;
+
+	  // TODO
+	  /*
+	  getInputMap().put(KeyStroke.getKeyStroke("control BEGIN"), "bla");
+	  getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control BEGIN"), "bla");
+	  getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke("control BEGIN"), "bla");
+	  getActionMap().put("bla", new Action() {
+		  @Override
+		  public Object getValue(String key) {
+			  System.out.println("SCEPane.getValue");
+			  return null;
+		  }
+
+		  @Override
+		  public void putValue(String key, Object value) {
+			  System.out.println("SCEPane.putValue");
+		  }
+
+		  @Override
+		  public void setEnabled(boolean b) {
+			  System.out.println("SCEPane.setEnabled");
+		  }
+
+		  @Override
+		  public boolean isEnabled() {
+			  System.out.println("SCEPane.isEnabled");
+			  return true;
+		  }
+
+		  @Override
+		  public void addPropertyChangeListener(PropertyChangeListener listener) {
+			  System.out.println("SCEPane.addPropertyChangeListener");
+		  }
+
+		  @Override
+		  public void removePropertyChangeListener(PropertyChangeListener listener) {
+			  System.out.println("SCEPane.removePropertyChangeListener");
+		  }
+
+		  @Override
+		  public void actionPerformed(ActionEvent e) {
+			  System.out.println("SCEPane.actionPerformed");
+		  }
+	  });
+	  */
 
     setOpaque(true);
     setBackground(Color.WHITE);
