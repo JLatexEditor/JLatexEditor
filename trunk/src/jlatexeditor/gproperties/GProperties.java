@@ -205,7 +205,7 @@ public class GProperties {
     properties.addEntry(new Comment(" Editor"));
     properties.addEntry(new Def("shortcut.jump left", SHORTCUT, "control LEFT"));
     properties.addEntry(new Def("shortcut.jump right", SHORTCUT, "control RIGHT"));
-    properties.addEntry(new Def("shortcut.jump to front", SHORTCUT, "control BEGIN"));
+    properties.addEntry(new Def("shortcut.jump to front", SHORTCUT, "control HOME"));
     properties.addEntry(new Def("shortcut.jump to end", SHORTCUT, "control END"));
     properties.addEntry(new Def("shortcut.move view up", SHORTCUT, "control UP")); // alt UP
     properties.addEntry(new Def("shortcut.move view down", SHORTCUT, "control DOWN")); // alt DOWN
