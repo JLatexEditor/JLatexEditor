@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+  <videoSize width="720" height="640" />
+  <tracks>
+    <track>
+      <videoFilter type="editFilter">
+        <inputVideo dir="first_vid.in" />
+        <edits>
+          <edit type="multiply" startFrame="0" count="100" />
+          <edit type="multiply" startFrame="59" count="50" />
+          <edit type="multiply" startFrame="67" count="50" />
+          <edit type="multiply" startFrame="70" count="50" />
+          <edit type="multiply" startFrame="96" count="30" />
+          <edit type="multiply" startFrame="97" count="30" />
+          <edit type="multiply" startFrame="168" count="50" />
+          <edit type="multiply" startFrame="300" count="50" />
+          <edit type="multiply" startFrame="375" count="50" />
+          <edit type="multiply" startFrame="534" count="50" />
+          <edit type="multiply" startFrame="912" count="50" />
+          <edit type="multiply" startFrame="992" count="50" />
+          <edit type="delete" startFrame="1002" count="1" />
+          <edit type="delete" startFrame="1006" count="1" />
+          <edit type="multiply" startFrame="1090" count="50" />
+        </edits>
+      </videoFilter>
+    </track>
+    <track>
+      <videoFilter type="textBox" startFrame="131" length="50" posX="0" posY="0" marginX="15" marginY="15" rounding="30" fillAlpha="0.75" fillColorTop="A0D2FF" fillColorBottom="82B4EB" borderAlpha="0.75" borderColor="4080B4" borderWidth="4.0" shadowAlpha="0.5" shadowColor="000000" fadeLength="10">
+        <text>
+        ‹font size="+5"›Welcome to TutoMake!‹/font›</text>
+      </videoFilter>
+      <videoFilter type="textBox" startFrame="0" length="100" posX="0" posY="0" marginX="1000" marginY="15" rounding="0" fillAlpha="0.5" fillColorTop="404040" fillColorBottom="000000" borderAlpha="0.0" borderColor="000000" borderWidth="0.0" shadowAlpha="0.0" shadowColor="000000" fadeLength="10">
+        <text>
+        ‹center›
+        ‹font size="+5"›JLatexEditor‹/font›‹br›
+        ... a LaTeX editor for spoilt developers‹br›
+        ‹br›
+        code completion / navigation‹br›
+        refactoring‹br›
+        version control‹br›
+        live templates‹br›
+        spell checking‹br›
+        ...‹br›
+        and open source
+        ‹/center›</text>
+      </videoFilter>
+      <videoFilter type="textBox" startFrame="212" length="0" posX="0" posY="0" marginX="15" marginY="15" rounding="30" fillAlpha="0.75" fillColorTop="A0D2FF" fillColorBottom="82B4EB" borderAlpha="0.75" borderColor="4080B4" borderWidth="4.0" shadowAlpha="0.5" shadowColor="000000" fadeLength="10">
+        <text />
+      </videoFilter>
+      <videoFilter type="textBox" startFrame="212" length="50" posX="0" posY="0" marginX="15" marginY="15" rounding="30" fillAlpha="0.75" fillColorTop="A0D2FF" fillColorBottom="82B4EB" borderAlpha="0.75" borderColor="4080B4" borderWidth="4.0" shadowAlpha="0.5" shadowColor="000000" fadeLength="10">
+        <text>
+        test</text>
+      </videoFilter>
+    </track>
+  </tracks>
+</project>
