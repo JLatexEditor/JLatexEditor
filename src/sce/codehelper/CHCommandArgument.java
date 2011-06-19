@@ -30,6 +30,7 @@ public class CHCommandArgument {
    * Creates a command argument.
    *
    * @param name the name
+	 * @param value initial value
 	 * @param optional whether the argument is optional
    */
   public CHCommandArgument(String name, String value, boolean optional) {
@@ -43,8 +44,10 @@ public class CHCommandArgument {
    * Creates a command argument.
    *
    * @param name the name
+	 * @param value initial value
 	 * @param optional whether the argument is optional
 	 * @param secondOptional whether the argument is second optional
+	 * @param completion show completion?
    */
 	public CHCommandArgument(String name, String value, boolean optional, boolean secondOptional, boolean completion) {
 		this.name = name;
