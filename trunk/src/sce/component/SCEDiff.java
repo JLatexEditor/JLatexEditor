@@ -450,8 +450,8 @@ public class SCEDiff extends JPanel implements ComponentListener {
       int lineHeight = left.getLineHeight();
       int halfLines = visibleHeight / 2 / lineHeight;
 
-      int lineOffset = halfLines;
-      while (line2Pane[lineOffset] < halfLines && line2Diff[lineOffset] < halfLines) lineOffset++;
+      int lineOffset = Math.min(halfLines, line2Pane.length);
+      while (lineOffset < line2Pane.length && line2Pane[lineOffset] < halfLines && line2Diff[lineOffset] < halfLines) lineOffset++;
       int yCorrection = lineHeight * (int) Math.max(line2Pane[lineOffset], line2Diff[lineOffset]);
 
       y = y - lineOffset * lineHeight;
