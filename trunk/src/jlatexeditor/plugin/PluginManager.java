@@ -14,7 +14,7 @@ public class PluginManager {
 		ComponentScanner scanner = new ComponentScanner();
 		Set<Class<?>> classes = scanner.getClasses(new ComponentQuery() {
 			protected void query() {
-				select().from().returning(allExtending(AddOn.class));
+				select().from("jlatexeditor.addon", "addon").returning(allExtending(AddOn.class));
 			}
 		});
 

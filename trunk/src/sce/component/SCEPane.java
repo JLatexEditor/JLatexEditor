@@ -119,9 +119,9 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 
 	  // TODO
 	  /*
-	  getInputMap().put(KeyStroke.getKeyStroke("control BEGIN"), "bla");
-	  getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control BEGIN"), "bla");
-	  getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke("control BEGIN"), "bla");
+	  getInputMap().put(KeyStroke.getKeyStroke("control HOME"), "bla");
+	  getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control HOME"), "bla");
+	  getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke("control HOME"), "bla");
 	  getActionMap().put("bla", new Action() {
 		  @Override
 		  public Object getValue(String key) {
