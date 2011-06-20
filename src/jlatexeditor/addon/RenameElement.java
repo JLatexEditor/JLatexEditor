@@ -2,6 +2,7 @@ package jlatexeditor.addon;
 
 import jlatexeditor.Doc;
 import jlatexeditor.JLatexEditorJFrame;
+import jlatexeditor.SCEManager;
 import jlatexeditor.codehelper.BackgroundParser;
 import jlatexeditor.codehelper.CodePattern;
 import sce.codehelper.WordWithPos;
@@ -47,7 +48,7 @@ public class RenameElement extends AddOn {
 			// wait for background parser to finish
       backgroundParserWaitFor(jle);
 
-		  List<String> fileNames = jle.getBackgroundParser().getCommandsAndFiles().getObjects(oldCommandName, 1000);
+		  List<String> fileNames = SCEManager.getBackgroundParser().getCommandsAndFiles().getObjects(oldCommandName, 1000);
 		  HashSet<File> files = new HashSet<File>();
 		  if (fileNames != null) {
 			  for (String fileName : fileNames) {
@@ -58,7 +59,7 @@ public class RenameElement extends AddOn {
 		  replaceInAllFiles(jle, files, "\\\\" + oldCommandName + "([^\\p{L}]|$)", "\\\\" + newCommandName + "$1", false);
 
 		  // start background parser to update document states
-			jle.getBackgroundParser().parse();
+			SCEManager.getBackgroundParser().parse();
 
 		  return;
 	  }
@@ -87,11 +88,11 @@ public class RenameElement extends AddOn {
           if(!backgroundParserWaitFor(jle)) return;
 
 			    // determine all files/editors that contain this label
-			    List<BackgroundParser.FilePos> filePoses = jle.getBackgroundParser().getLabelRefs().getObjects(oldLabel, 1000);
+			    List<BackgroundParser.FilePos> filePoses = SCEManager.getBackgroundParser().getLabelRefs().getObjects(oldLabel, 1000);
 			    if (filePoses == null) {
 				    filePoses = new ArrayList<BackgroundParser.FilePos>();
 			    }
-			    filePoses.add(jle.getBackgroundParser().getLabelDefs().get(oldLabel));
+			    filePoses.add(SCEManager.getBackgroundParser().getLabelDefs().get(oldLabel));
 
 			    replaceInAllFiles(jle, filePoses, "\\\\(label|ref|eqref)\\{" + oldLabel + "\\}", "\\\\$1{" + newLabel + "}", false);
 
@@ -153,13 +154,13 @@ public class RenameElement extends AddOn {
     backgroundParserWaitFor(jle);
 
     // start background parser to update document states
-    jle.getBackgroundParser().parse();
+    SCEManager.getBackgroundParser().parse();
   }
 
   private boolean backgroundParserWaitFor(JLatexEditorJFrame jle) {
     // wait for background parser to finish
     try {
-      jle.getBackgroundParser().waitForParseFinished();
+      SCEManager.getBackgroundParser().waitForParseFinished();
     } catch (InterruptedException e) {
       return false;
     }
@@ -179,11 +180,11 @@ public class RenameElement extends AddOn {
       if(!backgroundParserWaitFor(jle)) return;
 
       // determine all files/editors that contain this citation
-      List<BackgroundParser.FilePos> filePoses = jle.getBackgroundParser().getBibRefs().getObjects(oldRef, 1000);
+      List<BackgroundParser.FilePos> filePoses = SCEManager.getBackgroundParser().getBibRefs().getObjects(oldRef, 1000);
       if (filePoses == null) {
         filePoses = new ArrayList<BackgroundParser.FilePos>();
       }
-      filePoses.add(jle.getBackgroundParser().getBibKeys2bibEntries().get(oldRef));
+      filePoses.add(SCEManager.getBackgroundParser().getBibKeys2bibEntries().get(oldRef));
 
       String balanced = "[^\\{\\}]*(?:\\{[^\\{\\}]*\\}[^\\{\\}]*)*";
       replaceInAllFiles(jle, filePoses, "(\\\\cite(?:\\[[^\\{\\}\\[\\]]*\\])?\\{(?:" + balanced + ",)?\\{? *)" + oldRef + "( *\\}?(?:," + balanced + ")?\\})", "$1" + newRef + "$2", false);
@@ -228,6 +229,6 @@ public class RenameElement extends AddOn {
 		}
 
 		// start background parser to update document states
-		jle.getBackgroundParser().parse();
+		SCEManager.getBackgroundParser().parse();
 	}
 }

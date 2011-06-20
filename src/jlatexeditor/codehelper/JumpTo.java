@@ -2,7 +2,7 @@ package jlatexeditor.codehelper;
 
 import jlatexeditor.Doc;
 import jlatexeditor.Doc.FileDoc;
-import jlatexeditor.JLatexEditorJFrame;
+import jlatexeditor.SCEManager;
 import sce.codehelper.WordWithPos;
 import sce.component.SCEDocumentPosition;
 import sce.component.SCEPane;
@@ -23,14 +23,9 @@ public class JumpTo implements KeyListener, MouseListener {
   private static List<String> defaultExtensions = Arrays.asList("", ".tex", ".bib");
 
   private SourceCodeEditor editor;
-  private JLatexEditorJFrame jLatexEditorJFrame;
 
-	private BackgroundParser backgroundParser;
-
-  public JumpTo(SourceCodeEditor editor, JLatexEditorJFrame jLatexEditorJFrame, BackgroundParser backgroundParser) {
+  public JumpTo(SourceCodeEditor editor) {
     this.editor = editor;
-    this.jLatexEditorJFrame = jLatexEditorJFrame;
-	  this.backgroundParser = backgroundParser;
     editor.getTextPane().addKeyListener(this);
     editor.getTextPane().addMouseListener(this);
   }
@@ -55,9 +50,9 @@ public class JumpTo implements KeyListener, MouseListener {
 	    WordWithPos word = words.get(0);
 
 		  // try to jump to command definition
-		  BackgroundParser.FilePos filePos = backgroundParser.getCommands().get(word.word);
+		  BackgroundParser.FilePos filePos = SCEManager.getBackgroundParser().getCommands().get(word.word);
 		  if (filePos != null) {
-			  jLatexEditorJFrame.open(new FileDoc(new File(filePos.getFile())), filePos.getLineNr());
+			  SCEManager.getInstance().open(new FileDoc(new File(filePos.getFile())), filePos.getLineNr());
 			  return;
 		  }
 	  }
@@ -75,16 +70,16 @@ public class JumpTo implements KeyListener, MouseListener {
 
 		    // if \ref or \eqref -> try to jump to label definition
 		    if (command.equals("ref") || command.equals("eqref")) {
-			    BackgroundParser.FilePos filePos = backgroundParser.getLabelDefs().get(word.word);
+			    BackgroundParser.FilePos filePos = SCEManager.getBackgroundParser().getLabelDefs().get(word.word);
 			    if (filePos != null) {
-						jLatexEditorJFrame.open(new FileDoc(new File(filePos.getFile())), filePos.getLineNr());
+						SCEManager.getInstance().open(new FileDoc(new File(filePos.getFile())), filePos.getLineNr());
 						return;
 			    }
 		    } else
 		    if (command.equals("cite")) {
-			    BackgroundParser.FilePos filePos = backgroundParser.getBibKeys2bibEntries().get(word.word);
+			    BackgroundParser.FilePos filePos = SCEManager.getBackgroundParser().getBibKeys2bibEntries().get(word.word);
 			    if (filePos != null) {
-						jLatexEditorJFrame.open(new FileDoc(new File(filePos.getFile())), filePos.getLineNr());
+						SCEManager.getInstance().open(new FileDoc(new File(filePos.getFile())), filePos.getLineNr());
 						return;
 			    }
 		    }
@@ -102,7 +97,7 @@ public class JumpTo implements KeyListener, MouseListener {
           File fileUnderCaret = new File(dir, thatFileName);
 
           if (fileUnderCaret.exists() && fileUnderCaret.isFile()) {
-            jLatexEditorJFrame.open(new FileDoc(fileUnderCaret));
+            SCEManager.getInstance().open(new FileDoc(fileUnderCaret));
             e.consume();
             return;
           }

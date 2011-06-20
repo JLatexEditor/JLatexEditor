@@ -19,7 +19,9 @@ public class StaticCommandsReader {
 	protected HashMap<String,ArrayList<CHCommand>> environments = new HashMap<String, ArrayList<CHCommand>>();
 
 	public StaticCommandsReader(String filename) {
-		readCommands(filename);
+    commands = new Trie<CHCommand>();
+
+		readCommands(filename, false);
 	}
 
 	/**
@@ -27,9 +29,7 @@ public class StaticCommandsReader {
 	 *
 	 * @param filename the filename
 	 */
-	public void readCommands(String filename) {
-	  commands = new Trie<CHCommand>();
-
+	public void readCommands(String filename, boolean userDefined) {
 	  XMLParser xmlParser = new XMLParser();
 	  XMLDocument commandsDocument;
 	  try {
@@ -52,6 +52,9 @@ public class StaticCommandsReader {
 		    // extract command form XML element
 		    CHCommand command = getCommand(commandXML);
 		    if (command == null) continue;
+
+        // user defined command?
+        command.setUserDefined(true);
 
 		    // add the command to the commands list
 		    commands.add(command.getName(), command);

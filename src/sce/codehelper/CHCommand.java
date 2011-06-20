@@ -18,6 +18,9 @@ public class CHCommand implements Comparable {
 	/** Arguments. */
   private ArrayList<CHCommandArgument> arguments = new ArrayList<CHCommandArgument>();
 
+  /** User defined? */
+  private boolean isUserDefined = false;
+
   /**
    * Creates a command with the given name.
    *
@@ -113,6 +116,24 @@ public class CHCommand implements Comparable {
     return arguments;
   }
 
+  /**
+   * Returns true if the command is defined or changed by the user.
+   *
+   * @return true if user defined
+   */
+  public boolean isUserDefined() {
+    return isUserDefined;
+  }
+
+  /**
+   * Set whether this command is defined or changed by the user.
+   *
+   * @param userDefined true if user defined
+   */
+  public void setUserDefined(boolean userDefined) {
+    isUserDefined = userDefined;
+  }
+
   // Comparable methods
 
   public int compareTo(Object o) {
@@ -127,5 +148,24 @@ public class CHCommand implements Comparable {
    */
   public String toString() {
     return getName();
+  }
+
+  public boolean equals(Object obj) {
+    if(!(obj instanceof CHCommand)) return false;
+    CHCommand o = (CHCommand) obj;
+
+    if(!name.equals(o.name)
+            || !usage.equals(o.usage)
+            || !style.equals(o.style)
+            || !hint.equals(o.hint)) return false;
+
+    if(arguments.size() != o.arguments.size()) return false;
+    /* TODO: comparison of arguments
+    for(int argNr = 0; argNr < arguments.size(); argNr++) {
+      if(!arguments.get(argNr).equals(o.arguments.get(argNr))) return false;
+    }
+    */
+
+    return true;
   }
 }
