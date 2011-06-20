@@ -1,14 +1,23 @@
 include config.make
 
-all: config.make first_vid.in
+videos = first_vid.in
+
+all: check_config $(videos)
+
+check_config: config.make $(TutoMakeDir)/tutomake
 
 config.make:
+	@echo "TutoMakeDir=..." >config.make
+
+$(TutoMakeDir)/tutomake:
 	@echo "#######################################"
 	@echo "# Please configure config.make first! #"
 	@echo "#######################################"
-	@echo "TutoMakeDir=..." >config.make
+	@exit 1
 
-%.in:
-	wget http://common.jle.cc/dev/videos/$*.in.diff.tar.bz2
+%.in: %.in.diff.tar.bz2
 	tar xfj $*.in.diff.tar.bz2
 	$(TutoMakeDir)/tutomake -decompress $*.in.diff.tar.bz2
+
+%.in.diff.tar.bz2:
+	wget http://common.jle.cc/dev/videos/$*.in.diff.tar.bz2
