@@ -8,31 +8,17 @@ package jlatexeditor;
 import de.endrullis.utils.ProgramUpdater;
 import de.endrullis.utils.StringUtils;
 import jlatexeditor.addon.AddOn;
-import jlatexeditor.bib.BibCodeHelper;
-import jlatexeditor.bib.BibSyntaxHighlighting;
-import jlatexeditor.changelog.ChangeLogStyles;
-import jlatexeditor.changelog.ChangeLogSyntaxHighlighting;
-import jlatexeditor.codehelper.*;
+import jlatexeditor.codehelper.BackgroundParser;
 import jlatexeditor.errorhighlighting.LatexCompiler;
 import jlatexeditor.errorhighlighting.LatexErrorHighlighting;
 import jlatexeditor.gproperties.GProperties;
-import jlatexeditor.gproperties.GPropertiesCodeHelper;
-import jlatexeditor.gproperties.GPropertiesStyles;
-import jlatexeditor.gproperties.GPropertiesSyntaxHighlighting;
 import jlatexeditor.gui.*;
-import jlatexeditor.quickhelp.LatexQuickHelp;
 import jlatexeditor.remote.FileLineNr;
 import jlatexeditor.remote.NetworkNode;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
-import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
 import jlatexeditor.tools.SVN;
 import jlatexeditor.tools.ThreadInfoWindow;
-import sce.codehelper.CombinedCodeAssistant;
-import sce.codehelper.CombinedCodeHelper;
-import sce.codehelper.StaticCommandsCodeHelper;
-import sce.codehelper.StaticCommandsReader;
 import sce.component.*;
-import sce.syntaxhighlighting.SyntaxHighlighting;
 import util.*;
 import util.diff.Diff;
 import util.filechooser.SCEFileChooser;
@@ -57,7 +43,7 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-public class JLatexEditorJFrame extends JFrame implements ActionListener, WindowListener, ChangeListener, MouseMotionListener, TreeSelectionListener, SearchChangeListener, SCETabbedPane.CloseListener {
+public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction, ActionListener, WindowListener, ChangeListener, MouseMotionListener, TreeSelectionListener, SearchChangeListener, SCETabbedPane.CloseListener {
   public static final File FILE_LAST_SESSION = new File(System.getProperty("user.home") + "/.jlatexeditor/last.session");
   public static final File FILE_RECENT = new File(System.getProperty("user.home") + "/.jlatexeditor/recent");
   public static final File CHANGELOG = new File("CHANGELOG");
@@ -122,41 +108,11 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
   private final ProgramUpdater updater = new ProgramUpdater("JLatexEditor update", "http://endrullis.de/JLatexEditor/update/");
 	private LinkedHashMap<String,AddOn> addOns = AddOn.getAllAddOnsMap();
 
-  // background parser
-  private BackgroundParser backgroundParser;
   private HashMap<URI, Doc> docMap = new HashMap<URI, Doc>();
 	private File lastDocDir;
 	private SCESearch lastSearch;
-	private StaticCommandsReader latexCommands = new StaticCommandsReader("data/codehelper/commands.xml");
-	private StaticCommandsReader tabCompletions = new StaticCommandsReader("data/codehelper/tabCompletion.xml");
 
 	public static void main(String args[]) {
-    /*
-    try {
-      //System.setProperty("swing.aatext", "true");
-      System.setProperty("Quaqua.tabLayoutPolicy","wrap");
-      System.setProperty("apple.laf.useScreenMenuBar", "true");
-      System.setProperty("com.apple.macos.useScreenMenuBar", "true");
-
-      try {
-        Methods.invokeStatic(JFrame.class, "setDefaultLookAndFeelDecorated", Boolean.TYPE, Boolean.TRUE);
-        Methods.invokeStatic(JDialog.class, "setDefaultLookAndFeelDecorated", Boolean.TYPE, Boolean.TRUE);
-      } catch (NoSuchMethodException e) { }
-
-      String lafName = QuaquaManager.getLookAndFeelClassName();
-      if(!lafName.equals("default")) {
-        if(lafName.equals("system")) {
-          lafName = UIManager.getSystemLookAndFeelClassName();
-        } else if (lafName.equals("crossplatform")) {
-          lafName = UIManager.getCrossPlatformLookAndFeelClassName();
-        }
-
-        LookAndFeel laf = (LookAndFeel) Class.forName(lafName).newInstance();
-        UIManager.setLookAndFeel(laf);
-      }
-    } catch (Exception e) { }
-    */
-
 		// init logging
 		initLogging();
 
@@ -176,11 +132,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     System.setProperty("apple.laf.useScreenMenuBar", "true");
 		UIManager.put("TabbedPaneUI", "util.gui.SCETabbedPaneUI");
     UIManager.put("List.timeFactor", 200L);
-    /*
-    UIManager.put("Menu.background", SCETabbedPaneUI.BLUE);
-    UIManager.put("Menu.selectionBackground", SCETabbedPaneUI.BLUE);
-    UIManager.put("MenuBar.gradient", Arrays.asList(1.0f, 0.0f, SCETabbedPaneUI.BLUE, SCETabbedPaneUI.BLUE.brighter(), SCETabbedPaneUI.BLUE.darker()));
-    */
 
     new AboutDialog(null).showAndAutoHideAfter(5000);
 
@@ -207,6 +158,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 
 	public JLatexEditorJFrame(JLatexEditorParams params) {
     super(windowTitleSuffix);
+    SCEManager.setInstance(this);
 
 		// set files to open
     filesToOpen = (List<String>) params.getUnboundArguments().clone();
@@ -280,7 +232,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     editMenu.add(createMenuItem("Comment", "comment", 'o'));
     editMenu.add(createMenuItem("Uncomment", "uncomment", 'u'));
     editMenu.addSeparator();
-    editMenu.add(createMenuItem("Diff", "diff", 'D'));
+    editMenu.add(createMenuItem("Compare With... (Diff)", "diff", 'D'));
 
     JMenu viewMenu = new JMenu("View");
     viewMenu.setMnemonic('V');
@@ -342,6 +294,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       add(createMenuItem("okular", "forward search: okular --unique \"file:%file.pdf#src:%line&nbsp;%texfile\"", null));
     }};
     settingsMenu.add(forwardSearch);
+    // settingsMenu.add(createMenuItem("Template Editor", "template editor", 'T'));
+    settingsMenu.add(createMenuItem("Quick Setup Wizard", "wizard", 'W'));
     settingsMenu.add(createMenuItem("Global Settings", "global settings", 'G'));
 
     JMenu helpMenu = new JMenu("Help");
@@ -391,7 +345,8 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     toolsTab.addTab("Local History", new LocalHistory(this));
 
 		// background parser
-		backgroundParser = new BackgroundParser(this);
+		BackgroundParser backgroundParser = new BackgroundParser(this);
+    SCEManager.setBackgroundParser(backgroundParser);
 		backgroundParser.start();
 		
     // tabs for the files
@@ -579,192 +534,6 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
     openDialog.addChoosableFileFilter(SCEFileChooser.FILTER_TEX);
   }
 
-  private SourceCodeEditor<Doc> createLatexSourceCodeEditor() {
-    SourceCodeEditor<Doc> editor = new SourceCodeEditor<Doc>(null);
-
-    SCEPane scePane = editor.getTextPane();
-    setPaneProperties(scePane);
-    SCEDocument document = scePane.getDocument();
-
-    // add some styles to the document
-    LatexStyles.addStyles(document);
-
-	  SpellChecker spellChecker = null;
-	  try {
-		  spellChecker = createSpellChecker();
-	  } catch (Exception ignored) {}
-
-    // syntax highlighting
-    SyntaxHighlighting syntaxHighlighting = new LatexSyntaxHighlighting(scePane, spellChecker, latexCommands.getCommands(), backgroundParser);
-    syntaxHighlighting.start();
-
-    // code completion and quick help
-    CombinedCodeHelper codeHelper = new CombinedCodeHelper();
-	  if (backgroundParser != null) {
-			codeHelper.addPatternHelper(new CiteHelper(backgroundParser));
-		  // add completion for \ref and \eqref
-			codeHelper.addPatternHelper(new GenericCodeHelper("\\\\(?:ref|eqref)\\{([^{}]*)", new Function0<AbstractTrie<?>>() {
-				public Trie<?> apply() {
-					return backgroundParser.getLabelDefs();
-				}
-			}));
-		  // add completion for \label
-			codeHelper.addPatternHelper(new GenericCodeHelper("\\\\label\\{([^{}]*)", new Function0<AbstractTrie<?>>() {
-				public AbstractTrie<?> apply() {
-					return backgroundParser.getLabelRefs();
-				}
-			}));
-	  }
-    codeHelper.addPatternHelper(new IncludeCodeHelper());
-	  codeHelper.addPatternHelper(new CommandsCodeHelper(this));
-	  if (backgroundParser != null) {
-	    codeHelper.addPatternHelper(new WordCompletion(backgroundParser));
-	  }
-	  codeHelper.setAutoCompletion(GProperties.getBoolean("editor.auto_completion.activated"));
-	  codeHelper.setAutoCompletionMinLetters(GProperties.getInt("editor.auto_completion.min_number_of_letters"));
-	  codeHelper.setAutoCompletionDelay(GProperties.getInt("editor.auto_completion.delay"));
-    scePane.setCodeHelper(codeHelper);
-    scePane.setTabCompletion(new StaticCommandsCodeHelper("(\\p{L}*)", tabCompletions));
-    scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
-
-	  CombinedCodeAssistant codeAssistant = new CombinedCodeAssistant();
-    try {
-	    codeAssistant.addAssistant(new FileCreationSuggester(this));
-      codeAssistant.addAssistant(new SpellCheckSuggester(createSpellChecker()));
-    } catch (Exception ignored) {
-    }
-	  scePane.addCodeAssistantListener(codeAssistant);
-
-    new JumpTo(editor, this, backgroundParser);
-
-    return editor;
-  }
-
-	private SpellChecker createSpellChecker() throws Exception {
-		String program = GProperties.getString("editor.spell_checker");
-
-		if (program.equals("aspell")) {
-			// set executables
-			Aspell.ASPELL_EXECUTABLE = GProperties.getString("aspell.executable");
-
-			SpellChecker spellChecker = Aspell.getInstance(GProperties.getAspellLang());
-			if (spellChecker == null) throw new Exception("Initialization of the spell checker failed!");
-			return spellChecker;
-		} else
-		if (program.equals("hunspell")) {
-			// set executables
-			Hunspell.HUNSPELL_EXECUTABLE = GProperties.getString("hunspell.executable");
-
-			SpellChecker spellChecker = Hunspell.getInstance(GProperties.getString("hunspell.lang"));
-			if (spellChecker == null) throw new Exception("Initialization of the spell checker failed!");
-			return spellChecker;
-		}
-
-		return null;
-	}
-
-	private SourceCodeEditor<Doc> createBibSourceCodeEditor() {
-	  SourceCodeEditor<Doc> editor = new SourceCodeEditor<Doc>(null);
-
-	  SCEPane scePane = editor.getTextPane();
-	  setPaneProperties(scePane);
-	  SCEDocument document = scePane.getDocument();
-
-	  // TODO: use other styles
-	  // add some styles to the document
-		LatexStyles.addStyles(document);
-
-	  // syntax highlighting
-	  BibSyntaxHighlighting syntaxHighlighting = new BibSyntaxHighlighting(scePane, backgroundParser);
-	  syntaxHighlighting.start();
-
-		// code completion and quick help
-		CombinedCodeHelper codeHelper = new CombinedCodeHelper();
-		if (backgroundParser != null) {
-			codeHelper.addPatternHelper(new BibCodeHelper());
-		}
-		codeHelper.addPatternHelper(new IncludeCodeHelper());
-		codeHelper.addPatternHelper(new CommandsCodeHelper(this));
-		if (backgroundParser != null) {
-			codeHelper.addPatternHelper(new WordCompletion(backgroundParser));
-		}
-		codeHelper.setAutoCompletion(GProperties.getBoolean("editor.auto_completion.activated"));
-		codeHelper.setAutoCompletionMinLetters(GProperties.getInt("editor.auto_completion.min_number_of_letters"));
-		codeHelper.setAutoCompletionDelay(GProperties.getInt("editor.auto_completion.delay"));
-		scePane.setCodeHelper(codeHelper);
-		scePane.setTabCompletion(new StaticCommandsCodeHelper("(\\p{L}*)", tabCompletions));
-		scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
-
-		CombinedCodeAssistant codeAssistant = new CombinedCodeAssistant();
-		try {
-		  codeAssistant.addAssistant(new SpellCheckSuggester(createSpellChecker()));
-		} catch (Exception ignored) {
-		}
-		scePane.addCodeAssistantListener(codeAssistant);
-
-	  return editor;
-	}
-
-  private SourceCodeEditor<Doc> createGPropertiesSourceCodeEditor() {
-    SourceCodeEditor<Doc> editor = new SourceCodeEditor<Doc>(null);
-
-    SCEPane scePane = editor.getTextPane();
-    setPaneProperties(scePane);
-    SCEDocument document = scePane.getDocument();
-
-    // add some styles to the document
-    GPropertiesStyles.addStyles(document);
-
-    // syntax highlighting
-    GPropertiesSyntaxHighlighting syntaxHighlighting = new GPropertiesSyntaxHighlighting(scePane);
-    syntaxHighlighting.start();
-
-    // code completion and quick help
-    CombinedCodeHelper codeHelper = new CombinedCodeHelper();
-    codeHelper.addPatternHelper(new GPropertiesCodeHelper());
-    scePane.setCodeHelper(codeHelper);
-
-    return editor;
-  }
-
-  private SourceCodeEditor<Doc> createChangeLogSourceCodeEditor() {
-    SourceCodeEditor<Doc> editor = new SourceCodeEditor<Doc>(null);
-
-    SCEPane scePane = editor.getTextPane();
-    setPaneProperties(scePane);
-    SCEDocument document = scePane.getDocument();
-
-    // add some styles to the document
-    ChangeLogStyles.addStyles(document);
-
-    // syntax highlighting
-    ChangeLogSyntaxHighlighting syntaxHighlighting = new ChangeLogSyntaxHighlighting(scePane);
-    syntaxHighlighting.start();
-
-    return editor;
-  }
-
-  private void setPaneProperties(final SCEPane pane) {
-    pane.setColumnsPerRow(GProperties.getInt("editor.columns_per_row"));
-    GProperties.addPropertyChangeListener("editor.columns_per_row", new PropertyChangeListener() {
-      public void propertyChange(PropertyChangeEvent evt) {
-        pane.setColumnsPerRow(GProperties.getInt("editor.columns_per_row"));
-      }
-    });
-  }
-
-  public BackgroundParser getBackgroundParser() {
-    return backgroundParser;
-  }
-
-	public StaticCommandsReader getLatexCommands() {
-		return latexCommands;
-	}
-
-	public StaticCommandsReader getTabCompletions() {
-		return tabCompletions;
-	}
-
 	/**
 	 * Returns the current content of the file.
 	 * If the file is managed in the editor the editor content is returned.
@@ -812,6 +581,10 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		return null;
 	}
 
+  public int getEditorCount() {
+    return tabbedPane.getTabCount();
+  }
+
   public SourceCodeEditor<Doc> getEditor(int tab) {
     return (SourceCodeEditor<Doc>) tabbedPane.getComponentAt(tab);
   }
@@ -845,15 +618,15 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		SourceCodeEditor<Doc> editor;
 
 		if (doc.getName().endsWith("global.properties")) {
-		  editor = createGPropertiesSourceCodeEditor();
+		  editor = SCEManager.createGPropertiesSourceCodeEditor();
 		} else
 		if (doc.getName().endsWith("CHANGELOG")) {
-		  editor = createChangeLogSourceCodeEditor();
+		  editor = SCEManager.createChangeLogSourceCodeEditor();
 		} else
 		if (doc.getName().endsWith(".bib")) {
-		  editor = createBibSourceCodeEditor();
+		  editor = SCEManager.createBibSourceCodeEditor();
 		} else {
-		  editor = createLatexSourceCodeEditor();
+		  editor = SCEManager.createLatexSourceCodeEditor();
 		}
 
 		// load the document properties for this file format
@@ -969,7 +742,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
       }
     }
 
-    backgroundParser.parse();
+    SCEManager.getBackgroundParser().parse();
     return all;
   }
 
@@ -1163,7 +936,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	 */
 	public boolean isResponsibleFor(File file) {
 		// did we open the file already?                  or is file referenced by the main document?
-		return isOpen(file) || backgroundParser.isResponsibleFor(file);
+		return isOpen(file) || SCEManager.getBackgroundParser().isResponsibleFor(file);
 	}
 
 	public void bringToFront() {
@@ -1467,6 +1240,12 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		} else if (action.equals("font")) {
 			SCEFontWindow fontDialog = new SCEFontWindow(GProperties.getEditorFont().getFamily(), GProperties.getEditorFont().getSize(), this);
 			fontDialog.setVisible(true);
+    } else if (action.equals("template editor")) {
+      TemplateEditor templateEditor = new TemplateEditor(this);
+      templateEditor.setVisible(true);
+    } else if (action.equals("wizard")) {
+      Wizard wizard = new Wizard(this);
+      wizard.setVisible(true);
 		} else if (action.equals("font window") || action.equals("font window cancel")) {
 			SCEFontWindow fontDialog = (SCEFontWindow) e.getSource();
 			changeFont(fontDialog.getFontName(), fontDialog.getFontSize());
@@ -1494,17 +1273,17 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 	}
 
 	private void showTool(int tab) {
-		if (toolsTab.isVisible()) {
-		  if (toolsTab.getSelectedIndex() != tab) {
-		    toolsTab.setSelectedIndex(tab);
-		  }
-		} else {
-			toolsTab.setSelectedIndex(tab);
-			toolsTab.setVisible(true);
-			textToolsSplit.setResizeWeight(1 - GProperties.getDouble("main_window.tools_panel.height"));
-			textToolsSplit.resetToPreferredSizes();
-			toolsTab.getSelectedComponent().requestFocus();
-		}
+		if (!toolsTab.isVisible()) toolsTab.setVisible(true);
+
+    if (toolsTab.getSelectedIndex() != tab) {
+      toolsTab.setSelectedIndex(tab);
+    }
+
+    if (toolsTab.getVisibleRect().getHeight() < 5) {
+      textToolsSplit.setResizeWeight(1 - GProperties.getDouble("main_window.tools_panel.height"));
+      textToolsSplit.resetToPreferredSizes();
+      toolsTab.getSelectedComponent().requestFocus();
+    }
 	}
 
   private void toggleTool(int tab) {
@@ -1637,7 +1416,7 @@ public class JLatexEditorJFrame extends JFrame implements ActionListener, Window
 		}
 		tabbedPane.getTabComponentAt(mainEditorTab).setForeground(Color.RED);
 
-		backgroundParser.parse();
+		SCEManager.getBackgroundParser().parse();
 		statusBar.checkForUpdates();
 	}
 

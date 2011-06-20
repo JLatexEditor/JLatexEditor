@@ -1,7 +1,7 @@
 package jlatexeditor.codehelper;
 
 import de.endrullis.utils.ExtIterator;
-import jlatexeditor.JLatexEditorJFrame;
+import jlatexeditor.SCEManager;
 import sce.codehelper.CHCommand;
 import sce.codehelper.StaticCommandsCodeHelper;
 import util.Trie;
@@ -16,17 +16,14 @@ import java.util.List;
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 public class CommandsCodeHelper extends StaticCommandsCodeHelper {
-	private JLatexEditorJFrame jle;
-
-	public CommandsCodeHelper(JLatexEditorJFrame jle) {
-		super("(\\\\\\p{L}*)", jle.getLatexCommands());
-		this.jle = jle;
+	public CommandsCodeHelper() {
+		super("(\\\\\\p{L}*)", SCEManager.getLatexCommands());
 	}
 
 	@Override
 	public Iterable<? extends CHCommand> getCompletions(String prefix) {
 		ArrayList<CHCommand> dynamicCommands = new ArrayList<CHCommand>();
-		BackgroundParser backgroundParser = jle.getBackgroundParser();
+		BackgroundParser backgroundParser = SCEManager.getBackgroundParser();
 		if (backgroundParser != null) {
 			List<String> commandNames = backgroundParser.getCommandNames().getStrings(prefix.substring(1), 10);
 			Trie<Command> userCommands = backgroundParser.getCommands();
@@ -90,7 +87,7 @@ public class CommandsCodeHelper extends StaticCommandsCodeHelper {
 			maxCommonPrefix = null;
 		}
 
-		BackgroundParser backgroundParser = jle.getBackgroundParser();
+		BackgroundParser backgroundParser = SCEManager.getBackgroundParser();
 		if (backgroundParser != null) {
 			String dynMaxCommonPrefix = "\\" + backgroundParser.getCommandNames().getMaxCommonPrefix(prefix.substring(1));
 			if (dynMaxCommonPrefix.length() < prefix.length()) {

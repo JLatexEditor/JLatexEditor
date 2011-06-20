@@ -277,7 +277,6 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 							} else
 							if (argumentTypeName.equals("cite_key_list")) {
 								matchAndStyle(char_nr + 1, chars, param, LIST_PATTERN, new Function1<String, Byte>(){
-									@Override
 									public Byte apply(String a1) {
 										boolean citeExists = backgroundParser.getBibKeys2bibEntries().contains(a1);
 										return stateStyles[getStyle(citeExists ? "cite_exists" : "cite_not_found", LatexStyles.TEXT)];

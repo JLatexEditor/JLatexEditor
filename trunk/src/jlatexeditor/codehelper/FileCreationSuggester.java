@@ -3,6 +3,8 @@ package jlatexeditor.codehelper;
 import de.endrullis.utils.StringUtils;
 import jlatexeditor.Doc;
 import jlatexeditor.JLatexEditorJFrame;
+import jlatexeditor.SCEManager;
+import jlatexeditor.SCEManagerInteraction;
 import sce.codehelper.CodeAssistant;
 import sce.codehelper.PatternPair;
 import sce.codehelper.SCEPopup;
@@ -22,19 +24,15 @@ import java.util.List;
 public class FileCreationSuggester implements CodeAssistant, SCEPopup.ItemHandler {
 	private PatternPair parameterPattern = new PatternPair("\\\\(input|include)\\{([^\\{]*)", "([^\\}]*)\\}");
 
-	private JLatexEditorJFrame jle;
-
-	public FileCreationSuggester(JLatexEditorJFrame jle) {
-		this.jle = jle;
+	public FileCreationSuggester() {
 	}
 
-	@Override
 	public boolean assistAt(SCEPane pane) {
 		List<WordWithPos> words = parameterPattern.find(pane);
 		if (words != null) {
 			WordWithPos word = words.get(1);
 
-			Doc resource = jle.getMainEditor().getResource();
+			Doc resource = SCEManager.getInstance().getMainEditor().getResource();
 			if (resource instanceof Doc.FileDoc) {
 				Doc.FileDoc fileDoc = (Doc.FileDoc) resource;
 				String filename = word.word;
@@ -77,7 +75,6 @@ public class FileCreationSuggester implements CodeAssistant, SCEPopup.ItemHandle
 		return false;
 	}
 
-	@Override
 	public void perform(Object item) {
 		if (item instanceof FileCreationAction) {
 			FileCreationAction action = (FileCreationAction) item;
@@ -85,7 +82,7 @@ public class FileCreationSuggester implements CodeAssistant, SCEPopup.ItemHandle
 			try {
 				File file = action.getFile();
 				if (file.createNewFile())
-					jle.open(new Doc.FileDoc(file));
+					SCEManager.getInstance().open(new Doc.FileDoc(file));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

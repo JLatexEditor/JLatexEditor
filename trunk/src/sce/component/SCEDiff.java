@@ -1,5 +1,6 @@
 package sce.component;
 
+import jlatexeditor.SCEManager;
 import util.diff.Diff;
 import util.diff.levenstein.Modification;
 import util.diff.levenstein.TokenList;
@@ -58,7 +59,8 @@ public class SCEDiff extends JPanel implements ComponentListener {
     this.leftTitle = leftTitle;
     this.left = left;
     this.rightTitle = rightTitle;
-    this.right = new SCEPane(null);
+    this.right = new SCEPane(left.getSourceCodeEditor());
+    SCEManager.setupLatexSCEPane(this.right);
     this.markerBar = markerBar;
 
     right.setText(rightText);
@@ -70,7 +72,6 @@ public class SCEDiff extends JPanel implements ComponentListener {
     splitPane = new SCEDiffSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftViewport, rightViewport);
     scrollPane = new SCEDiff.SCEDiffScrollPane(splitPane);
     add(scrollPane, BorderLayout.CENTER);
-    updateLayout();
     addComponentListener(this);
 
     header = new DiffHeader();
@@ -116,6 +117,12 @@ public class SCEDiff extends JPanel implements ComponentListener {
             e.consume();
           }
         }
+      }
+    });
+
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        updateLayout();
       }
     });
   }
@@ -164,6 +171,26 @@ public class SCEDiff extends JPanel implements ComponentListener {
     }
   }
 
+  public void updateLayout() {
+    final Rectangle visibleRect = scrollPane.getVisibleRect();
+
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        splitPane.setDividerLocation((visibleRect.width - WIDTH) / 2);
+        splitPane.setDividerSize(WIDTH);
+      }
+    });
+
+    int visibleWidthLeft = splitPane.getDividerLocation();
+    int visibleWidthRight = visibleRect.width - visibleWidthLeft - WIDTH;
+    double overLeft = Math.max(1, left.getPreferredSize().width - visibleWidthLeft) / (double) visibleWidthLeft;
+    double overRight = Math.max(1, right.getPreferredSize().width - visibleWidthRight) / (double) visibleWidthRight;
+
+    preferredWidthFactor = 1 + Math.max(0, Math.max(overLeft, overRight));
+    preferredSize.width = (int) (visibleRect.width * preferredWidthFactor);
+    preferredSize.height = preferredLines * left.getLineHeight() + 30;
+  }
+
   public void jumpToNextSourceModification() {
     SCECaret caret = right.getCaret();
     int currRow = caret.getRow();
@@ -174,21 +201,6 @@ public class SCEDiff extends JPanel implements ComponentListener {
         break;
       }
     }
-  }
-
-  public void updateLayout() {
-    splitPane.setDividerLocation((scrollPane.getVisibleRect().width - WIDTH) / 2);
-    splitPane.setDividerSize(WIDTH);
-
-    Rectangle visibleRect = scrollPane.getVisibleRect();
-    int visibleWidthLeft = splitPane.getDividerLocation();
-    int visibleWidthRight = visibleRect.width - visibleWidthLeft - WIDTH;
-    double overLeft = Math.max(1, left.getPreferredSize().width - visibleWidthLeft) / (double) visibleWidthLeft;
-    double overRight = Math.max(1, right.getPreferredSize().width - visibleWidthRight) / (double) visibleWidthRight;
-
-    preferredWidthFactor = 1 + Math.max(0, Math.max(overLeft, overRight));
-    preferredSize.width = (int) (visibleRect.width * preferredWidthFactor);
-    preferredSize.height = preferredLines * left.getLineHeight() + 30;
   }
 
   public void updateDiff() {
@@ -540,10 +552,10 @@ public class SCEDiff extends JPanel implements ComponentListener {
         int nline = line;
         if (up) {
           int distance = (int) (visible.getY() - rectangle.getY());
-          while (line >= 0 && (lineMap[line] - lineMap[nline]) * lineHeight < distance) nline--;
+          while (nline >= 0 && (lineMap[line] - lineMap[nline]) * lineHeight < distance) nline--;
         } else {
           int distance = (int) (rectangle.getY() + rectangle.getHeight() - visible.getY() - visible.getHeight());
-          while (line < lineMap.length && (lineMap[nline] - lineMap[line]) * lineHeight < distance) nline++;
+          while (nline < lineMap.length && (lineMap[nline] - lineMap[line]) * lineHeight < distance) nline++;
         }
         vbar.setValue(vbar.getValue() + (nline - line) * lineHeight);
       }

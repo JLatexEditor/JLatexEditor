@@ -2,8 +2,8 @@ package jlatexeditor.addon;
 
 import jlatexeditor.Doc;
 import jlatexeditor.JLatexEditorJFrame;
+import jlatexeditor.SCEManager;
 import sce.codehelper.SCEPopup;
-import sce.codehelper.WordWithPos;
 import sce.component.SCEPane;
 
 import java.io.File;
@@ -21,7 +21,7 @@ public class FileSearch extends AddOn implements SCEPopup.ItemHandler {
 
 	@Override
 	public void run(JLatexEditorJFrame jle) {
-		HashSet<File> files = jle.getBackgroundParser().getFiles();
+		HashSet<File> files = SCEManager.getBackgroundParser().getFiles();
 		File[] filesArray = new File[files.size()];
 		files.toArray(filesArray);
 		Arrays.sort(filesArray);
@@ -36,7 +36,6 @@ public class FileSearch extends AddOn implements SCEPopup.ItemHandler {
 		pane.getPopup().openPopup(list, this);
 	}
 
-	@Override
 	public void perform(Object item) {
 		if (item instanceof FileOpenAction) {
 		  FileOpenAction fileOpenAction = (FileOpenAction) item;

@@ -188,6 +188,7 @@ public class GProperties {
     properties.addEntry(new Def("shortcut.svn update", SHORTCUT, "alt U"));
     properties.addEntry(new Def("shortcut.svn commit", SHORTCUT, "alt C"));
     properties.addEntry(new Def("shortcut.font", SHORTCUT, ""));
+    properties.addEntry(new Def("shortcut.template editor", SHORTCUT, "control T"));
     properties.addEntry(new Def("shortcut.global settings", SHORTCUT, "control alt S"));
     properties.addEntry(new Comment(" Editors/tabs"));
 	  properties.addEntry(new Def("shortcut.set master document", SHORTCUT, ""));
