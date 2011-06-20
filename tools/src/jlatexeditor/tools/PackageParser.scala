@@ -11,9 +11,11 @@ object PackageParser {
 	val DefParam = ".*\\\\def\\\\(\\w+)#(\\d+).*".r
 	val NewCommand = ".*\\\\newcommand\\{\\\\(\\w+)\\}(?:\\[(\\d+)\\])?(?:\\[([^\\]]+)\\])?.*".r
 	val NewEnvironment = ".*\\\\newenvironment\\{(\\w+)\\}(?:\\[(\\d+)\\])?(?:\\[([^\\]]+)\\])?.*".r
+	val Input = ".*\\\\input\\{([^}]+)\\}".r
 
 	def main(args: Array[String]) {
-		parseFile(new File("/usr/share/texmf-texlive/tex/latex/algorithms/algorithmic.sty"))
+		//parseFile(new File("/usr/share/texmf-texlive/tex/latex/algorithms/algorithmic.sty"))
+		parseFile(new File("/usr/share/texmf/tex/latex/pgf/frontendlayer/tikz.sty"))
 
 		if (true) return
 
@@ -47,6 +49,8 @@ object PackageParser {
 					println(cmd + " with " + params + " arguments and " + optParam)
 				case NewEnvironment(cmd, params, optParam) =>
 					println("  environment " + cmd + " with " + params + " arguments and " + optParam)
+				case Input(fileName) =>
+					println("  input " + fileName)
 				case _ =>
 			}
 		}
