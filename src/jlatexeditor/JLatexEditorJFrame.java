@@ -516,18 +516,41 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 
   /**
    * Creates a keyboard shortcut without a menu item.
+   *
+   * @param listener action listener to be informed about keystrokes
+   * @param receiver receiver
+   * @param command action command
+   * @param withAndWithoutShift register the shortcut also in combination with shift?
    */
-  private void createShortcut(ActionListener listener, String receiver, String command, boolean withAndWithoutShift) {
-    String shorcutString = GProperties.getString("shortcut." + command);
-    if (shorcutString != null && !shorcutString.equals("")) {
-      KeyStroke keyStroke = KeyStroke.getKeyStroke(shorcutString);
-      menuBar.registerKeyboardAction(listener, receiver + command, keyStroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
+  private void createShortcut(final ActionListener listener, final String receiver, final String command, final boolean withAndWithoutShift) {
+	  // register a property change listener to update the shortcut in the menu if it has been changed in global.properties
+	  PropertyChangeListener propertyChangeListener = new PropertyChangeListener() {
+		  private ArrayList<KeyStroke> oldKeyStrokes = new ArrayList<KeyStroke>();
 
-      if(withAndWithoutShift) {
-        keyStroke = KeyStroke.getKeyStroke("shift " + shorcutString);
-        menuBar.registerKeyboardAction(listener, receiver + command, keyStroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
-      }
-    }
+		  public void propertyChange(PropertyChangeEvent evt) {
+			  // unregister old keystrokes
+			  for (KeyStroke oldKeyStroke : oldKeyStrokes) {
+				  menuBar.unregisterKeyboardAction(oldKeyStroke);
+			  }
+
+			  // register new keystroke
+			  String shortcutString = GProperties.getString("shortcut." + command);
+			  if (shortcutString != null && !shortcutString.equals("")) {
+			    KeyStroke keyStroke = KeyStroke.getKeyStroke(shortcutString);
+			    menuBar.registerKeyboardAction(listener, receiver + command, keyStroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
+				  oldKeyStrokes.add(keyStroke);
+
+			    if(withAndWithoutShift) {
+			      keyStroke = KeyStroke.getKeyStroke("shift " + shortcutString);
+			      menuBar.registerKeyboardAction(listener, receiver + command, keyStroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
+				    oldKeyStrokes.add(keyStroke);
+			    }
+			  }
+		  }
+	  };
+	  GProperties.addPropertyChangeListener("shortcut." + command, propertyChangeListener);
+	  // fire an initial change to load the shortcut
+	  propertyChangeListener.propertyChange(null);
   }
 
   private void initFileChooser() {
