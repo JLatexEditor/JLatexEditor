@@ -1,6 +1,6 @@
 include config.make
 
-videos = first_vid.in
+videos = first_vid.in first_vid_remake.in
 
 all: check_config $(videos)
 
