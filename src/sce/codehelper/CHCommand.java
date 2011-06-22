@@ -154,10 +154,10 @@ public class CHCommand implements Comparable {
     if(!(obj instanceof CHCommand)) return false;
     CHCommand o = (CHCommand) obj;
 
-    if(!name.equals(o.name)
-            || !usage.equals(o.usage)
-            || !style.equals(o.style)
-            || !hint.equals(o.hint)) return false;
+    if(!equalsNull(name, o.name)
+            || !equalsNull(usage, o.usage)
+            || !equalsNull(style, o.style)
+            || !equalsNull(hint, o.hint)) return false;
 
     if(arguments.size() != o.arguments.size()) return false;
     /* TODO: comparison of arguments
@@ -167,5 +167,10 @@ public class CHCommand implements Comparable {
     */
 
     return true;
+  }
+
+  private boolean equalsNull(Object o1, Object o2) {
+    if(o1 == null || o2 == null) return o1 != o2;
+    return o1.equals(o2);
   }
 }
