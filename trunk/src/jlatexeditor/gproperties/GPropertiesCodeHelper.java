@@ -134,6 +134,7 @@ public class GPropertiesCodeHelper extends PatternHelper {
     }
 
     public void keyTyped(KeyEvent e) {
+      e.consume();
     }
 
     public void keyPressed(KeyEvent e) {
@@ -146,9 +147,10 @@ public class GPropertiesCodeHelper extends PatternHelper {
         setVisible(false);
       } else {
         String text = KeyStroke.getKeyStroke(e.getKeyCode(), e.getModifiers()).toString();
-        text = text.replaceAll(" pressed ", " ");
+        text = text.replaceAll("pressed ", "");
         field.setText(text);
       }
+      e.consume();
     }
 
     public void keyReleased(KeyEvent e) {
