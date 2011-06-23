@@ -61,12 +61,12 @@ object PackageParser {
 			val debPackageString = pack.debPackage.map( pack => " debPackage=\"" + pack.name + "\"").getOrElse("")
 			println("  <package name=\"" + pack.name + "\"" + debPackageString + ">")
 			for (command <- pack.commands.values) {
-				val optArgString = if (command.optionalArgs.isEmpty) "" else " " + command.optionalArgs(0)
-				println("    <command name=\"" + command.name + "\" argCount=\"" + command.argCount + "\" optionalArg=\"" + optArgString + " />")
+				val optArgString = if (command.optionalArgs.isEmpty) "" else " optionalArg=\"" + command.optionalArgs(0) + "\""
+				println("    <command name=\"" + command.name + "\" argCount=\"" + command.argCount + "\"" + optArgString + " />")
 			}
 			for (env <- pack.environments.values) {
-				val optArgString = if (env.optionalArgs.isEmpty) "" else " " + env.optionalArgs(0)
-				println("    <environment name=\"" + env.name + "\" argCount=\"" + env.argCount + "\" optionalArg=\"" + optArgString + " />")
+				val optArgString = if (env.optionalArgs.isEmpty) "" else " optionalArg=\"" + env.optionalArgs(0) + "\""
+				println("    <environment name=\"" + env.name + "\" argCount=\"" + env.argCount + "\"" + optArgString + " />")
 			}
 			println("  </package>")
 		}
