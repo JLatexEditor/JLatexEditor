@@ -56,21 +56,24 @@ object PackageParser {
 	}
 
 	def writeXmlFile(packages: MutableList[Package]) {
-		println("<packages>")
+		val out = new PrintStream("packages.xml")
+		out.println("<packages>")
 		for (pack <- packages) {
 			val debPackageString = pack.debPackage.map( pack => " debPackage=\"" + pack.name + "\"").getOrElse("")
-			println("  <package name=\"" + pack.name + "\"" + debPackageString + ">")
+			out.println("  <package name=\"" + pack.name + "\"" + debPackageString + ">")
 			for (command <- pack.commands.values) {
 				val optArgString = if (command.optionalArgs.isEmpty) "" else " optionalArg=\"" + command.optionalArgs(0) + "\""
-				println("    <command name=\"" + command.name + "\" argCount=\"" + command.argCount + "\"" + optArgString + " />")
+				out.println("    <command name=\"" + command.name + "\" argCount=\"" + command.argCount + "\"" + optArgString + " />")
 			}
 			for (env <- pack.environments.values) {
 				val optArgString = if (env.optionalArgs.isEmpty) "" else " optionalArg=\"" + env.optionalArgs(0) + "\""
-				println("    <environment name=\"" + env.name + "\" argCount=\"" + env.argCount + "\"" + optArgString + " />")
+				out.println("    <environment name=\"" + env.name + "\" argCount=\"" + env.argCount + "\"" + optArgString + " />")
 			}
-			println("  </package>")
+			out.println("  </package>")
 		}
-		println("</packages>")
+		out.println("</packages>")
+		out.flush()
+		out.close()
 	}
 
 	def parse (packs: MutableList[Package], dir: File) {
