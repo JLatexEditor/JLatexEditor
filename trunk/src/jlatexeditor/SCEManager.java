@@ -126,9 +126,6 @@ public class SCEManager {
 		String program = GProperties.getString("editor.spell_checker");
 
 		if (program.equals("aspell")) {
-			// set executables
-			Aspell.ASPELL_EXECUTABLE = GProperties.getString("aspell.executable");
-
 			SpellChecker spellChecker = Aspell.getInstance(GProperties.getAspellLang());
 			if (spellChecker == null) throw new Exception("Initialization of the spell checker failed!");
 			return spellChecker;

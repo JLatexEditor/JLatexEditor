@@ -1,6 +1,7 @@
 package util;
 
 import de.endrullis.utils.StringUtils;
+import jlatexeditor.gproperties.GProperties;
 
 import java.io.*;
 import java.util.*;

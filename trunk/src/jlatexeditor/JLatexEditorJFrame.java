@@ -1374,6 +1374,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
           );
           if (choice == 0) save(editor);
           if (choice == 1) reload = true;
+          if (choice == 2) lastModified.put(file,  newModified);
         } else {
           reload = true;
         }
