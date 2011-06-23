@@ -83,6 +83,10 @@ public class GProperties {
     String[] MONOSPACE_FONTS_ARRAY = new String[monospaceFonts.size()];
     monospaceFonts.toArray(MONOSPACE_FONTS_ARRAY);
 
+  	// set executables
+    load();
+		Aspell.ASPELL_EXECUTABLE = GProperties.getString("aspell.executable");
+
     List<String> dictList;
     try {
       dictList = Aspell.availableDicts();
@@ -295,8 +299,11 @@ public class GProperties {
   }
 
   private static void extractProperties() {
-    editorFont = new Font(properties.getProperty(EDITOR_FONT_NAME), Font.PLAIN, properties.getInt(EDITOR_FONT_SIZE));
-    textAntiAliasing = TEXT_ANTIALIAS_MAP.get(properties.getProperty(EDITOR_FONT_ANTIALIASING));
+    try {
+      editorFont = new Font(properties.getProperty(EDITOR_FONT_NAME), Font.PLAIN, properties.getInt(EDITOR_FONT_SIZE));
+      textAntiAliasing = TEXT_ANTIALIAS_MAP.get(properties.getProperty(EDITOR_FONT_ANTIALIASING));
+    } catch (NumberFormatException e) {
+    }
   }
 
   public static void save() {
@@ -311,6 +318,31 @@ public class GProperties {
     }
   }
 
+  /**
+   * Checks whether there are user changes.
+   */
+  public static boolean hasChanges() {
+    for(BetterProperties2.Entry entry : properties.getEntries()) {
+      if(!(entry instanceof Def)) continue;
+
+
+      Def def = (Def) entry;
+      String key = def.getKey();
+      String currValue = properties.getProperty(key);
+      String defValue = def.getValue();
+
+      if(currValue != null && !currValue.equals(defValue)) return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Returns the underlying properties.
+   */
+  public static BetterProperties2 getProperties() {
+    return properties;
+  }
 
   public static ArrayList<String> getMonospaceFonts() {
     return monospaceFonts;
