@@ -86,6 +86,7 @@ public class GProperties {
   	// set executables
     load();
 		Aspell.ASPELL_EXECUTABLE = GProperties.getString("aspell.executable");
+    if(Aspell.ASPELL_EXECUTABLE == null) Aspell.ASPELL_EXECUTABLE = "aspell";
 
     List<String> dictList;
     try {
