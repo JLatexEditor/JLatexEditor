@@ -312,12 +312,11 @@ public final class Aspell implements SpellChecker {
    * @throws IOException thrown if execution of aspell failed
    */
   public static List<String> availableDicts() throws IOException {
-	  // TODO: use SystemUtils.startProcess instead
-    Process process = Runtime.getRuntime().exec(new String[]{
+    Process process = ProcessUtil.exec(new String[]{
             ASPELL_EXECUTABLE,
             "dump",
             "dicts"
-    });
+    }, new File(System.getProperty("user.dir")));
     BufferedReader r = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
     List<String> dicts = new ArrayList<String>();
