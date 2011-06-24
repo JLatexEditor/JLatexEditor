@@ -51,9 +51,9 @@ public class XMLParser {
 
     XMLDocument document = new XMLDocument();
     /* enthält der String eine XML-Type-Definition? */
-    Vector childs = raw_document.getChildElements();
+    Vector<XMLElement> childs = raw_document.getChildElements();
     for (int child_nr = 0; child_nr < childs.size(); child_nr++) {
-      XMLElement element = (XMLElement) childs.elementAt(child_nr);
+      XMLElement element = childs.elementAt(child_nr);
       String name = element.getName();
 
       if (name.startsWith("?")) {
@@ -85,7 +85,7 @@ public class XMLParser {
     int tag_start;
     int tag_ende = -1;
     XMLElement aParent;
-    Vector theParents = new Vector();
+    Vector<XMLElement> theParents = new Vector<XMLElement>();
 
     aParent = parent;
     theParents.addElement(aParent);
@@ -146,7 +146,7 @@ public class XMLParser {
         /* der letzte parent ist abgearbeitet, eine Ebene zurück gehen */
         if (theParents.size() > 1) {
           theParents.removeElementAt(theParents.size() - 1);
-          aParent = (XMLElement) theParents.elementAt(theParents.size() - 1);
+          aParent = theParents.elementAt(theParents.size() - 1);
         }
         continue;
 
@@ -226,7 +226,7 @@ public class XMLParser {
 
       /* das Attribut/Wert Paar dem Element hinzufügen */
       element.setAttribute(attribute_name, attribute_value);
-      if (element.getName().equals(new String("queryresults"))) {
+      if (element.getName().equals("queryresults")) {
         element.setAttributeOrdered(attribute_name);
       }
     }
