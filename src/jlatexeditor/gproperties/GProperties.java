@@ -223,6 +223,7 @@ public class GProperties {
   	// set executables
     load();
 		Aspell.ASPELL_EXECUTABLE = GProperties.getString("aspell.executable");
+		Hunspell.HUNSPELL_EXECUTABLE = GProperties.getString("hunspell.executable");
 
     List<String> dictList;
     try {
