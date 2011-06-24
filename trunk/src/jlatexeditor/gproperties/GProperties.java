@@ -83,28 +83,6 @@ public class GProperties {
     String[] MONOSPACE_FONTS_ARRAY = new String[monospaceFonts.size()];
     monospaceFonts.toArray(MONOSPACE_FONTS_ARRAY);
 
-  	// set executables
-    load();
-		Aspell.ASPELL_EXECUTABLE = GProperties.getString("aspell.executable");
-    if(Aspell.ASPELL_EXECUTABLE == null) Aspell.ASPELL_EXECUTABLE = "aspell";
-
-    List<String> dictList;
-    try {
-      dictList = Aspell.availableDicts();
-    } catch (IOException e) {
-      dictList = new ArrayList<String>();
-    }
-    String[] aspellDicts = new String[dictList.size()];
-    dictList.toArray(aspellDicts);
-
-	  try {
-	    dictList = Hunspell.availableDicts();
-	  } catch (IOException e) {
-	    dictList = new ArrayList<String>();
-	  }
-	  String[] hunspellDicts = new String[dictList.size()];
-	  dictList.toArray(hunspellDicts);
-
     // set default for the properties file
     properties.addEntry(new Comment("\n## General properties"));
     properties.addEntry(new Comment(" Check for updates"));
@@ -137,12 +115,6 @@ public class GProperties {
     properties.addEntry(new Def(EDITOR_FONT_SIZE, INT_GT_0, "13"));
     properties.addEntry(new Def(EDITOR_FONT_ANTIALIASING, new PSet(TEXT_ANTIALIAS_KEYS), "On"));
     properties.addEntry(new Def("editor.columns_per_row", INT_GT_0, "80"));
-    properties.addEntry(new Comment(" Spell checker settings"));
-    properties.addEntry(new Def("editor.spell_checker", new PSet("none", "aspell", "hunspell"), "aspell"));
-    properties.addEntry(new Def("aspell.executable", STRING, "aspell"));
-    properties.addEntry(new Def("aspell.lang", new PSet(aspellDicts), getFromList(aspellDicts, "en_GB")));
-    properties.addEntry(new Def("hunspell.executable", STRING, "hunspell"));
-    properties.addEntry(new Def("hunspell.lang", new PSet(hunspellDicts), getFromList(hunspellDicts, "en_GB")));
 	  properties.addEntry(new Comment(" Automatic completion"));
 	  properties.addEntry(new Def("editor.auto_completion.activated", BOOLEAN, "false"));
 	  properties.addEntry(new Def("editor.auto_completion.min_number_of_letters", INT_GT_0, "3"));
@@ -242,6 +214,35 @@ public class GProperties {
     properties.addEntry(new Comment(" global log level"));
 	  properties.addEntry(new Def("log level.jlatexeditor", LOGLEVEL, "<default>"));
 	  properties.addEntry(new Def("log level.sce", LOGLEVEL, "<default>"));
+
+    properties.addEntry(new Comment("\n## Spell checker settings"));
+    properties.addEntry(new Def("editor.spell_checker", new PSet("none", "aspell", "hunspell"), "aspell"));
+    properties.addEntry(new Def("aspell.executable", STRING, "aspell"));
+    properties.addEntry(new Def("hunspell.executable", STRING, "hunspell"));
+
+  	// set executables
+    load();
+		Aspell.ASPELL_EXECUTABLE = GProperties.getString("aspell.executable");
+
+    List<String> dictList;
+    try {
+      dictList = Aspell.availableDicts();
+    } catch (IOException e) {
+      dictList = new ArrayList<String>();
+    }
+    String[] aspellDicts = new String[dictList.size()];
+    dictList.toArray(aspellDicts);
+
+	  try {
+	    dictList = Hunspell.availableDicts();
+	  } catch (IOException e) {
+	    dictList = new ArrayList<String>();
+	  }
+	  String[] hunspellDicts = new String[dictList.size()];
+	  dictList.toArray(hunspellDicts);
+
+    properties.addEntry(new Def("aspell.lang", new PSet(aspellDicts), getFromList(aspellDicts, "en_GB")));
+    properties.addEntry(new Def("hunspell.lang", new PSet(hunspellDicts), getFromList(hunspellDicts, "en_GB")));
 
     load();
     save();
