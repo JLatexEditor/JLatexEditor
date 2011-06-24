@@ -19045,9 +19045,9 @@
     <command name="flipNterm" argCount="0" />
     <command name="flipCterm" argCount="0" />
     <command name="labelstyle" argCount="6" />
-    <command name="labelregion" argCount="4" optionalArg="&,&" />
-    <command name="addtagtoNterm" argCount="4" optionalArg="&,&" />
-    <command name="addtagtoCterm" argCount="4" optionalArg="&,&" />
+    <command name="labelregion" argCount="4" optionalArg="&amp;,&amp;" />
+    <command name="addtagtoNterm" argCount="4" optionalArg="&amp;,&amp;" />
+    <command name="addtagtoCterm" argCount="4" optionalArg="&amp;,&amp;" />
     <command name="labelloop" argCount="3" optionalArg="N,0" />
     <command name="labelloops" argCount="1" />
     <command name="movelooplabel" argCount="2" />
@@ -19056,8 +19056,8 @@
     <command name="labelTMs" argCount="1" />
     <command name="moveTMlabel" argCount="2" />
     <command name="hideTMlabels" argCount="0" />
-    <command name="phosphorylation" argCount="2" optionalArg="&,&" />
-    <command name="glycosylation" argCount="2" optionalArg="&,&" />
+    <command name="phosphorylation" argCount="2" optionalArg="&amp;,&amp;" />
+    <command name="glycosylation" argCount="2" optionalArg="&amp;,&amp;" />
     <command name="countercolor" argCount="1" />
     <command name="looplabelcolor" argCount="1" />
     <command name="TMlabelcolor" argCount="1" />
@@ -19209,8 +19209,8 @@
     <command name="legendcolor" argCount="1" />
     <command name="clearvariables" argCount="0" />
     <command name="standardparameters" argCount="0" />
-    <environment name="textopo" argCount="1" optionalArg="&" />
-    <environment name="helicalwheel" argCount="2" optionalArg="&" />
+    <environment name="textopo" argCount="1" optionalArg="&amp;" />
+    <environment name="helicalwheel" argCount="2" optionalArg="&amp;" />
   </package>
   <package name="harpoon" debPackage="texlive-latex-extra">
     <command name="overleftharp" argCount="1" />
@@ -34831,8 +34831,8 @@
     <command name="gapchar" argCount="1" />
     <command name="gaprule" argCount="1" />
     <command name="domaingaprule" argCount="1" />
-    <command name="setends" argCount="3" optionalArg="&" />
-    <command name="startnumber" argCount="3" optionalArg="&" />
+    <command name="setends" argCount="3" optionalArg="&amp;" />
+    <command name="startnumber" argCount="3" optionalArg="&amp;" />
     <command name="seqlength" argCount="2" />
     <command name="hidenumbering" argCount="0" />
     <command name="hidenumber" argCount="1" />
@@ -35096,7 +35096,7 @@
     <command name="readalignfile" argCount="1" />
     <command name="alignfilename" argCount="0" />
     <command name="standarddefinitions" argCount="0" />
-    <environment name="texshade" argCount="2" optionalArg="&" />
+    <environment name="texshade" argCount="2" optionalArg="&amp;" />
   </package>
   <package name="modref" debPackage="texlive-latex-extra">
     <command name="basename" argCount="0" />
