@@ -1,12 +1,12 @@
 package jlatexeditor;
 
-import com.sun.deploy.panel.ITreeNode;
 import my.XML.XMLDocument;
 import my.XML.XMLParser;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 import util.StreamUtils;
+import util.TrieSet;
 
 import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
@@ -19,36 +19,30 @@ import java.util.HashMap;
 public class PackagesExtractor {
 	private static final String FILENAME = "data/codehelper/packages.xml";
 
-	private static HashMap<String, Command> commands = new HashMap<String, Command>();
-
 	public static void main(String[] args) {
 		XMLParser xmlParser = new XMLParser();
 		XMLDocument commandsDocument;
 		try {
 			long startTime = System.nanoTime();
-			//commandsDocument = xmlParser.parse(StreamUtils.readFile(FILENAME));
+
+			try {
+				XMLReader parser = XMLReaderFactory.createXMLReader();
+				DefaultHandler handler = new DebugHandler();
+				parser.setContentHandler(handler);
+				parser.setErrorHandler(handler);
+				try {
+					parser.parse(new InputSource(StreamUtils.getInputStream(FILENAME)));
+				} catch (IOException ioe) {
+					ioe.printStackTrace();
+				}
+			} catch (SAXException se) {
+				se.printStackTrace();
+			}
+
 			System.out.println((System.nanoTime() - startTime) / (1000 * 1000));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
-		}
-
-		//This class may be any SAX parser, but the classpath
-		// must be modified to include it.
-
-		//SAXParserFactory.newInstance().newSAXParser();
-		try {
-			XMLReader parser = XMLReaderFactory.createXMLReader();
-			DefaultHandler handler = new DebugHandler();
-			parser.setContentHandler(handler);
-			parser.setErrorHandler(handler);
-			try {
-				parser.parse(new InputSource(StreamUtils.getInputStream(FILENAME)));
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			}
-		} catch (SAXException se) {
-			se.printStackTrace();
 		}
 	}
 
@@ -56,6 +50,10 @@ public class PackagesExtractor {
 	 * Test Handler that prints debug statements
 	 */
 	public static class DebugHandler extends org.xml.sax.helpers.DefaultHandler implements org.xml.sax.ContentHandler {
+		private String pack;
+		private String debPack;
+		private TrieSet<Command> commands = new TrieSet<Command>();
+
 		public DebugHandler() {
 			super();
 		}
@@ -68,36 +66,41 @@ public class PackagesExtractor {
 		*/
 
 		public void startDocument() {
-			System.out.println("start document");
+			//System.out.println("start document");
 		}
 
 		public void endDocument() {
-			System.out.println("end document");
+			//System.out.println("end document");
 		}
 
 		public void startElement(String namespaceURI, String localName, String qname, Attributes attrList) {
-			System.out.println("start: " + localName);
+			//System.out.println("start: " + localName);
 			if (localName.equals("command")) {
 				String name = attrList.getValue("name");
 				int argCount = Integer.parseInt(attrList.getValue("argCount"));
-				Command command = new Command(name, argCount, null, null, null);
-				commands.put(name, command);
+				String optionalArg = attrList.getValue("optionalArg");
+				Command command = new Command(name, argCount, optionalArg, pack, debPack);
+				commands.add(name, command);
+			} else
+			if (localName.equals("package")) {
+				pack = attrList.getValue("name");
+				debPack = attrList.getValue("debPackage");
 			}
 		}
 
 		public void endElement(String namespaceURI, String localName, String qName) {
-			System.out.println("end: " + localName);
+			//System.out.println("end: " + localName);
 		}
 
 		@Override
 		public void error(SAXParseException e) throws SAXException {
-			System.out.println(e.getLineNumber());
+			//System.out.println(e.getLineNumber());
 			super.error(e);
 		}
 
 		@Override
 		public void fatalError(SAXParseException e) throws SAXException {
-			System.out.println(e.getLineNumber());
+			//System.out.println(e.getLineNumber());
 			super.fatalError(e);
 		}
 	}
@@ -105,7 +108,7 @@ public class PackagesExtractor {
 	public static class Command {
 		private String name;
 		private int argCount;
-		private String optionalArg = null;
+		private String optionalArg;
 		private String pack;
 		private String debPack;
 
@@ -115,6 +118,20 @@ public class PackagesExtractor {
 			this.optionalArg = optionalArg;
 			this.pack = pack;
 			this.debPack = debPack;
+		}
+
+		@Override
+		public int hashCode() {
+			return name.hashCode() + 37*pack.hashCode();
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof Command) {
+				Command that = (Command) obj;
+				return this.pack.equals(that.pack) && this.name.equals(that.name);
+			}
+			return false;
 		}
 	}
 }
