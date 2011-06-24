@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 public class EnvironmentUtils {
 	enum State {needSearch, searched, finished}
 
-	private static final Pattern envPattern = Pattern.compile("\\\\(begin|end)\\{(\\w+)\\}");
+	private static final Pattern envPattern = Pattern.compile("\\\\(begin|end)\\{([^}]+)\\}");
 
 	public static Iterator<WordWithPos> getOpenEnvIterator(SCEPane pane) {
 		return new OpenEnvIterator(pane);
