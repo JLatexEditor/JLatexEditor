@@ -17,6 +17,7 @@ public class LatexCompileError {
 
   private int type = TYPE_ERROR;
 
+	private int outputLine;
   private File file = null;
   private String fileName = null;
   private int lineStart = -1;
@@ -36,7 +37,15 @@ public class LatexCompileError {
     this.type = type;
   }
 
-  public File getFile() {
+	public int getOutputLine() {
+		return outputLine;
+	}
+
+	public void setOutputLine(int outputLine) {
+		this.outputLine = outputLine;
+	}
+
+	public File getFile() {
     return file;
   }
 

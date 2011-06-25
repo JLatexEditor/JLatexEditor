@@ -1,5 +1,6 @@
 package jlatexeditor;
 
+import com.google.inject.internal.cglib.core.MethodWrapper;
 import jlatexeditor.errorhighlighting.LatexCompileError;
 import sce.component.SCEPane;
 import sce.component.SourceCodeEditor;
@@ -9,15 +10,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreeSelectionModel;
+import javax.swing.tree.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 /**
@@ -54,6 +49,8 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
   private JScrollPane scrollWarningReference = new JScrollPane(listWarningReference);
 
   private JLabel working;
+
+	ErrorPopupMenu popup = new ErrorPopupMenu();
 
   public ErrorView(JLatexEditorJFrame latexEditor) {
     this.latexEditor = latexEditor;
@@ -139,6 +136,10 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     latexOutput.append("\n");
   }
 
+	public int getLinesCount() {
+		return latexOutput.getLineCount();
+	}
+
   public void addError(LatexCompileError error) {
     errors.add(error);
     if (error.getType() == LatexCompileError.TYPE_ERROR) lmError.addElement(new ErrorComponent(error));
@@ -214,7 +215,7 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
 		ErrorComponent errorComponent = (ErrorComponent) model.getElementAt(index);
 		LatexCompileError error = errorComponent.getError();
 
-		SourceCodeEditor editor = latexEditor.open(new Doc.FileDoc(error.getFile()));
+		SourceCodeEditor<Doc> editor = latexEditor.open(new Doc.FileDoc(error.getFile()));
 		SCEPane pane = editor.getTextPane();
 
 		int column = 0;
@@ -249,6 +250,17 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
 	}
 
 	public void mousePressed(MouseEvent e) {
+		if (e.getButton() == 3) {
+			if (e.getSource() instanceof JList) {
+				JList list = (JList) e.getSource();
+				int index = list.locationToIndex(e.getPoint());
+				Object elementAt = list.getModel().getElementAt(index);
+				if (elementAt instanceof ErrorComponent) {
+					ErrorComponent ec = (ErrorComponent) elementAt;
+					popup.show(list, ec.error, e.getX(), e.getY());
+				}
+			}
+		}
 	}
 
 	public void mouseReleased(MouseEvent e) {
@@ -335,4 +347,36 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
       return component;
     }
   }
+
+	public class ErrorPopupMenu extends JPopupMenu {
+		private JList jList;
+		private LatexCompileError error;
+
+		public ErrorPopupMenu() {
+			add(new JMenuItem("View compiler output") {{
+				addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						try {
+							int line = error.getOutputLine();
+							int start = latexOutput.getLineStartOffset(line);
+							int end = latexOutput.getLineEndOffset(line);
+							tree.getSelectionModel().setSelectionPath(new TreePath(new Object[]{nodeRoot, nodeOutput}));
+							//setRightComponent(scrollOutput);
+							latexOutput.scrollRectToVisible(new Rectangle(0, 30*latexOutput.getLineCount(), 0, 30*latexOutput.getLineCount()));
+							latexOutput.setCaretPosition(start);
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
+					}
+				});
+			}});
+		}
+
+		public void show(JList jList, LatexCompileError error, int x, int y) {
+			this.jList = jList;
+			this.error = error;
+			show(jList, x, y);
+		}
+	}
 }
