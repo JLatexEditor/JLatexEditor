@@ -4,13 +4,15 @@ import utils.ic.File._
 import utils.ic.InputStream._
 import java.io._
 import collection.mutable._
+import org.apache.commons.lang.StringEscapeUtils
 
 /**
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 object PackageParser {
 	val Def = ".*\\\\def\\s*\\\\(\\w+)([#\\[\\]\\d]*)\\s*\\{.*".r
-	val NewCommand = ".*\\\\newcommand\\{\\\\(\\w+)\\}(?:\\[(\\d+)\\])?(?:\\[([^\\]]+)\\])?.*".r
+	val DefArgCount = "#+".r
+	val NewCommand = ".*\\\\newcommand\\{?\\\\(\\w+)\\}?(?:\\[(\\d+)\\])?(?:\\[([^\\]]+)\\])?.*".r
 	val NewEnvironment = ".*\\\\newenvironment\\{(\\w+)\\}(?:\\[(\\d+)\\])?(?:\\[([^\\]]+)\\])?.*".r
 	val Input = ".*\\\\input\\{([^}]+)\\}".r
 	val DpkgResult = "([\\w\\.-]+): .*".r
@@ -35,10 +37,12 @@ object PackageParser {
 		})
 
 		val packs = new MutableList[Package]
+		val classes = new MutableList[Package]
 
-		texmfDirs.foreach(dir => parse(packs, dir))
+		texmfDirs.foreach(dir => parse(packs, classes, dir))
 
-		writeXmlFile(packs)
+		writeXmlFile("packages.xml", packs)
+		writeXmlFile("docclasses.xml", classes)
 
 		/*
 		val commandName2command = new HashMap[String, MutableList[Command]]()
@@ -55,18 +59,18 @@ object PackageParser {
 		*/
 	}
 
-	def writeXmlFile(packages: MutableList[Package]) {
-		val out = new PrintStream("packages.xml")
+	def writeXmlFile(file: String, packages: MutableList[Package]) {
+		val out = new PrintStream(file)
 		out.println("<packages>")
 		for (pack <- packages) {
 			val debPackageString = pack.debPackage.map( pack => " debPackage=\"" + pack.name + "\"").getOrElse("")
 			out.println("  <package name=\"" + pack.name + "\"" + debPackageString + ">")
 			for (command <- pack.commands.values) {
-				val optArgString = if (command.optionalArgs.isEmpty) "" else " optionalArg=\"" + command.optionalArgs(0) + "\""
+				val optArgString = if (command.optionalArgs.isEmpty) "" else " optionalArg=\"" + escape(command.optionalArgs(0)) + "\""
 				out.println("    <command name=\"" + command.name + "\" argCount=\"" + command.argCount + "\"" + optArgString + " />")
 			}
 			for (env <- pack.environments.values) {
-				val optArgString = if (env.optionalArgs.isEmpty) "" else " optionalArg=\"" + env.optionalArgs(0) + "\""
+				val optArgString = if (env.optionalArgs.isEmpty) "" else " optionalArg=\"" + escape(env.optionalArgs(0)) + "\""
 				out.println("    <environment name=\"" + env.name + "\" argCount=\"" + env.argCount + "\"" + optArgString + " />")
 			}
 			out.println("  </package>")
@@ -76,18 +80,24 @@ object PackageParser {
 		out.close()
 	}
 
-	def parse (packs: MutableList[Package], dir: File) {
+	def escape(text: String) = StringEscapeUtils.escapeHtml(text)
+
+	def parse (packs: MutableList[Package], classes: MutableList[Package], dir: File) {
 		for (file <- dir.listFiles()) {
 			if (file.isDirectory) {
-				parse(packs, file)
+				parse(packs, classes, file)
 			} else
-			if (file.isFile && file.getName.endsWith(".sty")) {
-				val packageName = file.getName.substring(0, file.getName.length() - 4)
-				//println(packageName)
-				val pack = new Package(file, packageName)
-				packs += pack
-				print(packs.size + "\r")
-				parseFile(pack, file);
+			if (file.isFile) {
+				if (file.getName.endsWith(".sty") || file.getName.endsWith(".cls")) {
+					val packageName = file.getName.substring(0, file.getName.length() - 4)
+					val pack = new Package(file, file.getName.endsWith(".cls"), packageName)
+					pack.cls match {
+						case false => packs   += pack
+						case true  => classes += pack
+					}
+					print(packs.size + " | " + classes.size + "\r")
+					parseFile(pack, file);
+				}
 			}
 		}
 	}
@@ -96,15 +106,13 @@ object PackageParser {
 		for(line <- file.readLines) {
 			line match {
 				case Def(cmd, args) =>
-					pack.commands += cmd -> Command(pack, cmd, args.count(_ == '#'))
+					pack.commands += cmd -> new Command(pack, cmd, DefArgCount.findAllIn(args).size)
 				case NewCommand(cmd, args, optArg) =>
 					val argCount = if (args == null) 0 else args.toInt
-					pack.commands += cmd -> Command(pack, cmd, argCount, if (optArg == null) List() else List(optArg))
-//					println(cmd + " with " + args + " arguments and " + optArgs)
+					pack.commands += cmd -> new Command(pack, cmd, argCount, if (optArg == null) List() else List(optArg))
 				case NewEnvironment(cmd, args, optArg) =>
 					val argCount = if (args == null) 0 else args.toInt
-					pack.environments += cmd -> Environment(pack, cmd, argCount, if (optArg == null) List() else List(optArg))
-//					println("  environment " + cmd + " with " + args + " arguments and " + optArgs)
+					pack.environments += cmd -> new Environment(pack, cmd, argCount, if (optArg == null) List() else List(optArg))
 				case Input(fileName) =>
 					try {
 						if (!processedFiles.contains(fileName)) {
@@ -115,7 +123,6 @@ object PackageParser {
 					} catch {
 						case e: FileNotFoundException =>
 					}
-//					parseFile(pack, )
 				case _ =>
 			}
 		}
@@ -155,18 +162,18 @@ object PackageParser {
 			files += file
 		}
 
-		DebPackage(name, files)
+		new DebPackage(name, files)
 	}
 
-	case class Command(pack: Package, name: String, argCount: Int, optionalArgs: List[String] = List())
-	case class Environment(pack: Package, name: String, argCount: Int, optionalArgs: List[String] = List())
-	case class Package(file: File, name: String, commands: LinkedHashMap[String, Command] = new LinkedHashMap[String, Command],
-	                   environments: LinkedHashMap[String, Environment] = new LinkedHashMap[String, Environment]) {
+	class Command(val pack: Package, val name: String, val argCount: Int, val optionalArgs: List[String] = List())
+	class Environment(val pack: Package, val name: String, val argCount: Int, val optionalArgs: List[String] = List())
+	class Package(val file: File, val cls: Boolean, val name: String, val commands: LinkedHashMap[String, Command] = new LinkedHashMap[String, Command],
+	              val environments: LinkedHashMap[String, Environment] = new LinkedHashMap[String, Environment]) {
 		val debPackage = try {
 			Some(findDebPackage(file.getAbsolutePath))
 		} catch {
 			case e: FileNotFoundException => None
 		}
 	}
-	case class DebPackage(name: String, files: MutableList[String])
+	class DebPackage(val name: String, val files: MutableList[String])
 }
