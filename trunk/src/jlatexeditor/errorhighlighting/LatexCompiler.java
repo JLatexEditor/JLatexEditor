@@ -111,6 +111,7 @@ public class LatexCompiler extends Thread {
         Matcher errorMatcher = fileLineError.matcher(line);
         if (line.startsWith("!") || errorMatcher.matches()) {
           error = new LatexCompileError();
+	        error.setOutputLine(errorView.getLinesCount()-2);
           error.setType(LatexCompileError.TYPE_ERROR);
           if (line.startsWith("!")) {
             String fileName = fileStack.get(fileStack.size() - 1);
@@ -170,6 +171,7 @@ public class LatexCompiler extends Thread {
 
         if (line.startsWith("LaTeX Warning:") || line.startsWith("LaTeX Font Warning:")) {
           error = new LatexCompileError();
+	        error.setOutputLine(errorView.getLinesCount()-2);
           error.setType(LatexCompileError.TYPE_WARNING);
           String fileName = fileStack.get(fileStack.size() - 1);
           error.setFile(SystemUtils.newFile(file.getParentFile(), fileName), fileName);
@@ -179,7 +181,7 @@ public class LatexCompiler extends Thread {
             linePos += "on input line ".length();
             try {
               error.setLine(Integer.parseInt(line.substring(linePos, line.indexOf('.', linePos))));
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
           }
 
@@ -199,6 +201,7 @@ public class LatexCompiler extends Thread {
 
         if (line.startsWith("Overfull \\hbox") || line.startsWith("Underfull \\hbox")) {
           error = new LatexCompileError();
+	        error.setOutputLine(errorView.getLinesCount()-2);
           error.setType(LatexCompileError.TYPE_OVERFULL_HBOX);
           String fileName = fileStack.get(fileStack.size() - 1);
           error.setFile(SystemUtils.newFile(file.getParentFile(), fileName), fileName);
@@ -218,7 +221,7 @@ public class LatexCompiler extends Thread {
             }
             line = in.readLine();
             errorView.appendLine(line);
-            if (line.indexOf("/10") == -1) break;
+            if (!line.contains("/10")) break;
           }
 
           compileError(error);
@@ -228,7 +231,7 @@ public class LatexCompiler extends Thread {
         }
 
         // opening and closing files
-        if ((line.indexOf("(") != -1 && !line.startsWith("(see")) || line.startsWith(")") ||
+        if ((line.contains("(") && !line.startsWith("(see")) || line.startsWith(")") ||
                 (line.indexOf(')') != -1 && (line.startsWith("[") || line.indexOf(".tex") != 0 || line.indexOf(".sty") != 0 || line.indexOf(".bbl") != 0 || line.indexOf(".aux") != 0))) {
           int position = 0;
 
