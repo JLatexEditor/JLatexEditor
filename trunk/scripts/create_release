@@ -12,10 +12,12 @@ svn copy . $svnRepo/tags/$version -m "released version $version"
 
 mkdir -p dist/releases
 
+# create versions.xml
 cd dist/${programName}_prepare
 zsh ../../scripts/create_versions_xml >versions.xml
 cd ..
 
+# replace old update dir with new one
 rm -Rf $programName
 mv ${programName}_prepare $programName
 
