@@ -108,9 +108,15 @@
         <include name="data/**"/>
       </fileset>
       <manifest>
+        <attribute name="Class-Path" value="lib/chardet.jar lib/extcos-0.2b-all.jar"/>
         <attribute name="Main-Class" value="jlatexeditor.JLatexEditorJFrame"/>
       </manifest>
     </jar>
+
+	  <!-- Copy libs. -->
+	  <mkdir dir="${uploadPrepare}/lib"/>
+	  <copy todir="${uploadPrepare}/lib" file="lib/chardet.jar"/>
+	  <copy todir="${uploadPrepare}/lib" file="lib/extcos-0.2b-all.jar"/>
 
     <!-- Copy start scripts. -->
     <copy todir="${uploadPrepare}" file="CHANGELOG"/>

@@ -173,7 +173,7 @@ public class ProgramUpdater extends JFrame implements ActionListener {
         }
       } else {
         String os = fileXml.getAttribute("os");
-        if (os == null || os.indexOf(SystemUtils.getSimpleOSType()) != -1) {
+        if (os == null || os.contains(SystemUtils.getSimpleOSType())) {
           //System.out.println("Want to download " + name + " version " + webVersion);
           // download the file
           files.put(name, fileXml);
