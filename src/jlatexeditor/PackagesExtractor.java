@@ -1,76 +1,59 @@
 package jlatexeditor;
 
-import my.XML.XMLDocument;
-import my.XML.XMLParser;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 import util.StreamUtils;
 import util.TrieSet;
 
-import javax.xml.parsers.SAXParserFactory;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 public class PackagesExtractor {
-	private static final String FILENAME = "data/codehelper/packages.xml";
+	private static final String PACKAGES_FILE = "data/codehelper/packages.xml";
+	private static final String DOCCLASSES_FILE = "data/codehelper/docclasses.xml";
+
+	private static PackageParser packageParser;
+	private static PackageParser docclassesParser;
 
 	public static void main(String[] args) {
-		XMLParser xmlParser = new XMLParser();
-		XMLDocument commandsDocument;
 		try {
 			long startTime = System.nanoTime();
 
-			try {
-				XMLReader parser = XMLReaderFactory.createXMLReader();
-				DefaultHandler handler = new DebugHandler();
-				parser.setContentHandler(handler);
-				parser.setErrorHandler(handler);
-				try {
-					parser.parse(new InputSource(StreamUtils.getInputStream(FILENAME)));
-				} catch (IOException ioe) {
-					ioe.printStackTrace();
-				}
-			} catch (SAXException se) {
-				se.printStackTrace();
-			}
+			packageParser = new PackageParser(PACKAGES_FILE);
+			docclassesParser = new PackageParser(DOCCLASSES_FILE);
 
 			System.out.println((System.nanoTime() - startTime) / (1000 * 1000));
 		} catch (Exception e) {
 			e.printStackTrace();
-			return;
 		}
 	}
 
 	/**
 	 * Test Handler that prints debug statements
 	 */
-	public static class DebugHandler extends org.xml.sax.helpers.DefaultHandler implements org.xml.sax.ContentHandler {
-		private String pack;
+	public static class PackageParser extends DefaultHandler implements ContentHandler {
+		private Package pack;
 		private String debPack;
+		private TrieSet<Package> packages = new TrieSet<Package>();
 		private TrieSet<Command> commands = new TrieSet<Command>();
 
-		public DebugHandler() {
-			super();
+		public PackageParser(String fileName) {
+			parse(fileName);
 		}
 
-		/*
-		public void characters(char[] chars, int start, int length) {
-			String string = new String(chars, start, length);
-			System.out.println("chars=" + string + "!");
-		}
-		*/
-
-		public void startDocument() {
-			//System.out.println("start document");
-		}
-
-		public void endDocument() {
-			//System.out.println("end document");
+		public void parse(String fileName) {
+			try {
+				XMLReader parser = XMLReaderFactory.createXMLReader();
+				parser.setContentHandler(this);
+				parser.setErrorHandler(this);
+				parser.parse(new InputSource(StreamUtils.getInputStream(fileName)));
+			} catch (Exception se) {
+				se.printStackTrace();
+			}
 		}
 
 		public void startElement(String namespaceURI, String localName, String qname, Attributes attrList) {
@@ -79,17 +62,13 @@ public class PackagesExtractor {
 				String name = attrList.getValue("name");
 				int argCount = Integer.parseInt(attrList.getValue("argCount"));
 				String optionalArg = attrList.getValue("optionalArg");
-				Command command = new Command(name, argCount, optionalArg, pack, debPack);
+				Command command = new Command(name, argCount, optionalArg, pack);
 				commands.add(name, command);
 			} else
 			if (localName.equals("package")) {
-				pack = attrList.getValue("name");
-				debPack = attrList.getValue("debPackage");
+				pack = new Package(attrList.getValue("name"), attrList.getValue("debPackage"));
+				packages.add(pack.name, pack);
 			}
-		}
-
-		public void endElement(String namespaceURI, String localName, String qName) {
-			//System.out.println("end: " + localName);
 		}
 
 		@Override
@@ -105,19 +84,58 @@ public class PackagesExtractor {
 		}
 	}
 
+	public static class Package {
+		private String name;
+		private String debPackage;
+
+		public Package(String name, String debPackage) {
+			this.name = name;
+			this.debPackage = debPackage;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof Package) {
+				Package that = (Package) obj;
+				return this.name.equals(that.name);
+			}
+			return false;
+		}
+
+		@Override
+		public int hashCode() {
+			return name.hashCode();
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public String getDebPackage() {
+			return debPackage;
+		}
+	}
+
 	public static class Command {
 		private String name;
 		private int argCount;
 		private String optionalArg;
-		private String pack;
-		private String debPack;
+		private Package pack;
 
-		public Command(String name, int argCount, String optionalArg, String pack, String debPack) {
+		public Command(String name, int argCount, String optionalArg, Package pack) {
 			this.name = name;
 			this.argCount = argCount;
 			this.optionalArg = optionalArg;
 			this.pack = pack;
-			this.debPack = debPack;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof Command) {
+				Command that = (Command) obj;
+				return this.name.equals(that.name) && this.pack.equals(that.pack);
+			}
+			return false;
 		}
 
 		@Override
@@ -125,13 +143,20 @@ public class PackagesExtractor {
 			return name.hashCode() + 37*pack.hashCode();
 		}
 
-		@Override
-		public boolean equals(Object obj) {
-			if (obj instanceof Command) {
-				Command that = (Command) obj;
-				return this.pack.equals(that.pack) && this.name.equals(that.name);
-			}
-			return false;
+		public String getName() {
+			return name;
+		}
+
+		public int getArgCount() {
+			return argCount;
+		}
+
+		public String getOptionalArg() {
+			return optionalArg;
+		}
+
+		public Package getPack() {
+			return pack;
 		}
 	}
 }
