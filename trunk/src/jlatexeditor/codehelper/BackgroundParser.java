@@ -368,7 +368,7 @@ public class BackgroundParser extends Thread {
 					boolean all = true;
 					for (int i = 1; i < keys.size(); i++) {
 						String key = keys.get(i);
-						if (entry.getText().toLowerCase().indexOf(key) == -1) {
+						if (!entry.getText().toLowerCase().contains(key)) {
 							all = false;
 							break;
 						}
