@@ -101,6 +101,9 @@ public class SCEManager {
 				}
 			}));
 	  }
+    codeHelper.addPatternHelper(new UsePackageCodeHelper());
+    codeHelper.addPatternHelper(new DocumentClassCodeHelper());
+    codeHelper.addPatternHelper(new BeamerCodeHelper());
     codeHelper.addPatternHelper(new IncludeCodeHelper());
 	  codeHelper.addPatternHelper(new CommandsCodeHelper());
 	  if (backgroundParser != null) {
@@ -162,7 +165,7 @@ public class SCEManager {
 		if (backgroundParser != null) {
 			codeHelper.addPatternHelper(new BibCodeHelper());
 		}
-		codeHelper.addPatternHelper(new IncludeCodeHelper());
+		//codeHelper.addPatternHelper(new IncludeCodeHelper());
 		codeHelper.addPatternHelper(new CommandsCodeHelper());
 		if (backgroundParser != null) {
 			codeHelper.addPatternHelper(new WordCompletion(backgroundParser));

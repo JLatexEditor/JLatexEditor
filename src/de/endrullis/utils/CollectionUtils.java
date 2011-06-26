@@ -1,6 +1,11 @@
 package de.endrullis.utils;
 
+import sun.org.mozilla.javascript.internal.Function;
+import util.Function1;
+
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Collection utils for Java.
@@ -74,5 +79,13 @@ public class CollectionUtils {
     } else {
 			return "";
 		}
+	}
+
+	public static <T,R> List<R> map(List<T> list, Function1<T,R> f) {
+		ArrayList<R> newList = new ArrayList<R>();
+		for (T t : list) {
+			newList.add(f.apply(t));
+		}
+		return newList;
 	}
 }

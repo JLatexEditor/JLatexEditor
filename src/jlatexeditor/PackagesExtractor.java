@@ -6,9 +6,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import util.StreamUtils;
 import util.TrieSet;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 /**
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
@@ -17,19 +14,33 @@ public class PackagesExtractor {
 	private static final String DOCCLASSES_FILE = "data/codehelper/docclasses.xml";
 
 	private static PackageParser packageParser;
-	private static PackageParser docclassesParser;
+	private static PackageParser docClassesParser;
 
 	public static void main(String[] args) {
 		try {
 			long startTime = System.nanoTime();
 
 			packageParser = new PackageParser(PACKAGES_FILE);
-			docclassesParser = new PackageParser(DOCCLASSES_FILE);
+			docClassesParser = new PackageParser(DOCCLASSES_FILE);
 
 			System.out.println((System.nanoTime() - startTime) / (1000 * 1000));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static PackageParser getPackageParser() {
+		if (packageParser == null) {
+			packageParser = new PackageParser(PACKAGES_FILE);
+		}
+		return packageParser;
+	}
+
+	public static PackageParser getDocClassesParser() {
+		if (docClassesParser == null) {
+			docClassesParser = new PackageParser(DOCCLASSES_FILE);
+		}
+		return docClassesParser;
 	}
 
 	/**
@@ -81,6 +92,14 @@ public class PackagesExtractor {
 		public void fatalError(SAXParseException e) throws SAXException {
 			//System.out.println(e.getLineNumber());
 			super.fatalError(e);
+		}
+
+		public TrieSet<Package> getPackages() {
+			return packages;
+		}
+
+		public TrieSet<Command> getCommands() {
+			return commands;
 		}
 	}
 
