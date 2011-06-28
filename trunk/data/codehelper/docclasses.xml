@@ -2852,7 +2852,7 @@
     <command name="and" argCount="0" />
     <command name="HEADING" argCount="3" />
   </package>
-  <package name="lps" title="lps" description="Class for "Logic and Philosophy of Science"." debPackage="texlive-publishers">
+  <package name="lps" title="lps" description="Class for &quot;Logic and Philosophy of Science&quot;." debPackage="texlive-publishers">
     <command name="the" argCount="0" />
     <command name="Title" argCount="1" />
     <command name="Author" argCount="1" />
@@ -4268,7 +4268,7 @@
     <command name="colsperpage" argCount="0" />
     <command name="card" argCount="2" />
   </package>
-  <package name="philosophersimprint" title="philosophersimprint" description="Typesetting articles for "Philosophers' Imprint"." debPackage="texlive-publishers">
+  <package name="philosophersimprint" title="philosophersimprint" description="Typesetting articles for &quot;Philosophers' Imprint&quot;." debPackage="texlive-publishers">
     <command name="HUGE" argCount="0" />
     <command name="and" argCount="0" />
     <command name="thanks" argCount="1" />

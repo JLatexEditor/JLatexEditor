@@ -73,7 +73,7 @@ object PackageParser {
 		val out = new PrintStream(file)
 		out.println("<packages>")
 		for (pack <- packages) {
-			val ctanPackString = pack.ctanPackInfo.map( pack => " title=\"" + pack.title + "\" description=\"" + pack.desc + "\"").getOrElse("")
+			val ctanPackString = pack.ctanPackInfo.map( pack => " title=\"" + escape(pack.title) + "\" description=\"" + escape(pack.desc) + "\"").getOrElse("")
 			val debPackageString = pack.debPackage.map( pack => " debPackage=\"" + pack.name + "\"").getOrElse("")
 			out.println("  <package name=\"" + pack.name + "\"" + ctanPackString + debPackageString + ">")
 			for (command <- pack.commands.values) {

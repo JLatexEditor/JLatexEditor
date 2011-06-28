@@ -88,7 +88,11 @@ public class HelpUrlHandler extends URLStreamHandler {
 		} else {
 			ArrayList<String> packs = new ArrayList<String>();
 			for (PackagesExtractor.Command cmd : commands) {
-				packs.add("<span>" + cmd.getPack().getName() + "</span>");
+				String hintString = "";
+				if (cmd.getDescription() != null) {
+					hintString = " hint=\"" + cmd.getDescription() + "\"";
+				}
+				packs.add("<span" + hintString + ">" + cmd.getPack().getName() + "</span>");
 			}
 			Collections.sort(packs);
 			return CollectionUtils.join(packs, ", ");

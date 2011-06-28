@@ -72,8 +72,10 @@ public class PackagesExtractor {
 			if (localName.equals("command")) {
 				String name = attrList.getValue("name");
 				int argCount = Integer.parseInt(attrList.getValue("argCount"));
+				String title = attrList.getValue("title");
+				String description = attrList.getValue("description");
 				String optionalArg = attrList.getValue("optionalArg");
-				Command command = new Command(name, argCount, optionalArg, pack);
+				Command command = new Command(name, title, description, argCount, optionalArg, pack);
 				commands.add(name, command);
 			} else
 			if (localName.equals("package")) {
@@ -137,12 +139,16 @@ public class PackagesExtractor {
 
 	public static class Command {
 		private String name;
+		private String title;
+		private String description;
 		private int argCount;
 		private String optionalArg;
 		private Package pack;
 
-		public Command(String name, int argCount, String optionalArg, Package pack) {
+		public Command(String name, String title, String description, int argCount, String optionalArg, Package pack) {
 			this.name = name;
+			this.title = title;
+			this.description = description;
 			this.argCount = argCount;
 			this.optionalArg = optionalArg;
 			this.pack = pack;
@@ -164,6 +170,14 @@ public class PackagesExtractor {
 
 		public String getName() {
 			return name;
+		}
+
+		public String getTitle() {
+			return title;
+		}
+
+		public String getDescription() {
+			return description;
 		}
 
 		public int getArgCount() {

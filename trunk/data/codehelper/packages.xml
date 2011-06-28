@@ -4231,7 +4231,7 @@
     <environment name="glosslist" argCount="0" />
     <environment name="glossitem" argCount="4" />
   </package>
-  <package name="bibarts" title="bibarts" description=""Arts"-style bibliographical information." debPackage="texlive-bibtex-extra">
+  <package name="bibarts" title="bibarts" description="&quot;Arts&quot;-style bibliographical information." debPackage="texlive-bibtex-extra">
     <command name="stressing" argCount="1" />
     <command name="punctuation" argCount="0" />
     <command name="killname" argCount="0" />
@@ -6749,7 +6749,7 @@
   <package name="cooking" debPackage="texlive-latex-extra">
     <environment name="recipe" argCount="1" />
   </package>
-  <package name="ascii" title="ascii" description="Support for IBM "standard ASCII" font." debPackage="texlive-fonts-extra">
+  <package name="ascii" title="ascii" description="Support for IBM &quot;standard ASCII&quot; font." debPackage="texlive-fonts-extra">
     <command name="asciifamily" argCount="0" />
     <command name="textascii" argCount="1" />
     <command name="NUL" argCount="0" />
@@ -7499,7 +7499,7 @@
     <environment name="termlist" argCount="0" />
     <environment name="term" argCount="0" />
   </package>
-  <package name="chicago" title="chicago" description="A "Chicago" bibliography style." debPackage="texlive-bibtex-extra">
+  <package name="chicago" title="chicago" description="A &quot;Chicago&quot; bibliography style." debPackage="texlive-bibtex-extra">
     <command name="citeauthoryear" argCount="3" />
     <command name="cite" argCount="0" />
     <command name="citeNP" argCount="0" />
@@ -8292,7 +8292,7 @@
     <command name="infer" argCount="0" />
     <command name="deduce" argCount="0" />
   </package>
-  <package name="pst-blur" title="pst-blur" description="PSTricks package for "blurred" shadows." debPackage="texlive-pstricks">
+  <package name="pst-blur" title="pst-blur" description="PSTricks package for &quot;blurred&quot; shadows." debPackage="texlive-pstricks">
     <command name="next" argCount="0" />
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
@@ -17105,7 +17105,7 @@
     <command name="citename" argCount="0" />
     <command name="citeyear" argCount="0" />
   </package>
-  <package name="emp" title="emp" description=""Encapsulate" MetaPost figures in a document." debPackage="texlive-metapost">
+  <package name="emp" title="emp" description="&quot;Encapsulate&quot; MetaPost figures in a document." debPackage="texlive-metapost">
     <command name="fileversion" argCount="0" />
     <command name="empwrite" argCount="1" />
     <command name="empfile" argCount="1" optionalArg="\jobname" />
@@ -19862,7 +19862,7 @@
   </package>
   <package name="birm" debPackage="texlive-lang-indic">
   </package>
-  <package name="hep" title="hep" description="A "convenience wrapper" for High Energy Physics packages." debPackage="texlive-science">
+  <package name="hep" title="hep" description="A &quot;convenience wrapper&quot; for High Energy Physics packages." debPackage="texlive-science">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
   </package>
@@ -23951,7 +23951,7 @@
     <command name="backrefcitedsinglestring" argCount="1" />
     <command name="backrefcitedmultistring" argCount="1" />
   </package>
-  <package name="classicthesis" title="classicthesis" description="A "classically styled" thesis package." debPackage="texlive-publishers">
+  <package name="classicthesis" title="classicthesis" description="A &quot;classically styled&quot; thesis package." debPackage="texlive-publishers">
     <command name="theenumi" argCount="0" />
     <command name="myChapter" argCount="1" />
     <command name="myPart" argCount="2" />
@@ -25857,7 +25857,7 @@
     <command name="widetable" argCount="2" />
     <command name="endwidetable" argCount="0" />
   </package>
-  <package name="mxd" title="mxd" description="Support for Mongolian "horizontal" (Xewtee Dorwoljin) script." debPackage="texlive-omega">
+  <package name="mxd" title="mxd" description="Support for Mongolian &quot;horizontal&quot; (Xewtee Dorwoljin) script." debPackage="texlive-omega">
     <command name="mxdVersion" argCount="0" />
     <command name="mxd" argCount="0" />
   </package>
@@ -26740,7 +26740,7 @@
     <command name="cjLR" argCount="1" />
     <environment name="cjhebrew" argCount="0" />
   </package>
-  <package name="pst-calendar" title="pst-calendar" description="Plot calendars in "fancy" ways." debPackage="texlive-pstricks">
+  <package name="pst-calendar" title="pst-calendar" description="Plot calendars in &quot;fancy&quot; ways." debPackage="texlive-pstricks">
     <command name="RA" argCount="0" />
     <command name="psCalDodecaeder" argCount="0" />
     <command name="faceA" argCount="0" />
@@ -27613,7 +27613,7 @@
     <command name="scalebar" argCount="7" />
     <command name="SBRound" argCount="0" />
   </package>
-  <package name="pmgraph" title="pmgraph" description=""Poor man's" graphics." debPackage="texlive-pictures">
+  <package name="pmgraph" title="pmgraph" description="&quot;Poor man's&quot; graphics." debPackage="texlive-pictures">
     <command name="vdashline" argCount="1" />
     <command name="hdashline" argCount="1" />
     <command name="romb" argCount="0" />
@@ -28410,7 +28410,7 @@
     <command name="footnotemark" argCount="0" />
     <command name="maketitle" argCount="0" />
   </package>
-  <package name="digiconfigs" title="digiconfigs" description="Writing "configurations"" debPackage="texlive-science">
+  <package name="digiconfigs" title="digiconfigs" description="Writing &quot;configurations&quot;" debPackage="texlive-science">
     <command name="setCircleChar" argCount="1" />
     <command name="setBulletChar" argCount="1" />
     <command name="setBlankChar" argCount="1" />
@@ -31371,7 +31371,7 @@
     <environment name="gridfltenv" argCount="0" />
     <environment name="gridenv" argCount="0" />
   </package>
-  <package name="pst-fun" title="pst-fun" description="Draw "funny" objects with PSTricks." debPackage="texlive-pstricks">
+  <package name="pst-fun" title="pst-fun" description="Draw &quot;funny&quot; objects with PSTricks." debPackage="texlive-pstricks">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="psParrot" argCount="0" />
@@ -33674,7 +33674,7 @@
     <command name="stdtables" argCount="0" />
     <command name="mabibliographie" argCount="2" />
   </package>
-  <package name="bbm" title="bbm" description=""Blackboard-style" cm fonts." debPackage="texlive-fonts-extra">
+  <package name="bbm" title="bbm" description="&quot;Blackboard-style&quot; cm fonts." debPackage="texlive-fonts-extra">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
   </package>
@@ -38543,7 +38543,7 @@
   </package>
   <package name="avant" debPackage="texlive-latex-base">
   </package>
-  <package name="courier" title="courier" description="Adobe Type 1 "free" copies of Courier." debPackage="texlive-latex-base">
+  <package name="courier" title="courier" description="Adobe Type 1 &quot;free&quot; copies of Courier." debPackage="texlive-latex-base">
   </package>
   <package name="palatino" debPackage="texlive-latex-base">
   </package>
@@ -39639,7 +39639,7 @@
     <command name="grtoday" argCount="0" />
     <command name="Grtoday" argCount="0" />
   </package>
-  <package name="xltxtra" title="xltxtra" description=""Extras" for LaTeX users of XeTeX." debPackage="texlive-xetex">
+  <package name="xltxtra" title="xltxtra" description="&quot;Extras&quot; for LaTeX users of XeTeX." debPackage="texlive-xetex">
     <command name="TeX" argCount="0" />
     <command name="XeTeX" argCount="0" />
     <command name="LaTeX" argCount="0" />
