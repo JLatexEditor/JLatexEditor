@@ -65,6 +65,8 @@ public class LatexQuickHelp implements QuickHelp {
 	  // Open the table of contents
     String toc_file = directory + "ltx-2.html";
 
+	  commands.put("<empty>", "empty.html");
+
     BufferedReader reader;
     try {
       reader = new BufferedReader(new InputStreamReader(StreamUtils.getInputStream(toc_file)));
@@ -121,12 +123,13 @@ public class LatexQuickHelp implements QuickHelp {
    */
   public String getHelpUrl(String command) {
     String fileName = commands.get(command);
-    if (fileName == null) return null;
+    if (fileName == null) fileName = commands.get("<empty>");
+	  // if (fileName == null) return null;
 
     URL url = StreamUtils.getURL(directory + fileName);
     if (url == null) return null;
 
-    return "help:" + url.toString();
+    return "help:" + url.toString() + "#" + command;
   }
 
   public String getHelpUrlAt(int row, int column) {

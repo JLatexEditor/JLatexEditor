@@ -2,14 +2,17 @@ package jlatexeditor.quickhelp;
 
 import de.endrullis.utils.CollectionUtils;
 import jlatexeditor.PackagesExtractor;
+import sun.net.www.protocol.file.FileURLConnection;
 import util.ConfigurableStreamHandlerFactory;
 import util.StreamUtils;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 
 /**
@@ -17,35 +20,27 @@ import java.util.HashSet;
  */
 public class HelpUrlHandler extends URLStreamHandler {
 	protected URLConnection openConnection(final URL u) throws IOException {
-		System.out.println("yeah help");
+		String command = null;
 
-		return new URLConnection(u) {
+		String realUrlString = u.toExternalForm().substring(5);
+		if (realUrlString.contains("#")) {
+			int index = realUrlString.indexOf("#");
+			command = realUrlString.substring(index + 1);
+
+			realUrlString = realUrlString.substring(0, index);
+		}
+		final URL realUrl = new URL(realUrlString);
+
+		final String finalCommand = command;
+
+		return new URLConnection(realUrl) {
 			@Override
 			public void connect() throws IOException {
 			}
 
 			@Override
-			public Object getContent() throws IOException {
-				/*
-				InputStream in = (InputStream) realUrl.getContent();
-				String content = new String(StreamUtils.readBytesFromInputStream(in));
-				content = content.replace("href=\"", "href=\"help:");
-
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
-				*/
-
-				String command = null;
-
-				String realUrlString = u.toExternalForm().substring(5);
-				if (realUrlString.contains("#")) {
-					int index = realUrlString.indexOf("#");
-					command = realUrlString.substring(index + 1);
-
-					realUrlString = realUrlString.substring(0, index);
-				}
-				URL realUrl = new URL(realUrlString);
-
-				String content = HelpUrlHandler.getHelpTextAt(command, realUrl);
+			public InputStream getInputStream() throws IOException {
+				String content = HelpUrlHandler.getHelpTextAt(finalCommand, realUrl);
 
 				return new ByteArrayInputStream(content.getBytes());
 			}
@@ -93,8 +88,9 @@ public class HelpUrlHandler extends URLStreamHandler {
 		} else {
 			ArrayList<String> packs = new ArrayList<String>();
 			for (PackagesExtractor.Command cmd : commands) {
-				packs.add(cmd.getPack().getName());
+				packs.add("<span>" + cmd.getPack().getName() + "</span>");
 			}
+			Collections.sort(packs);
 			return CollectionUtils.join(packs, ", ");
 		}
 	}
