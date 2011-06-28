@@ -62,13 +62,6 @@ public class LatexQuickHelp implements QuickHelp {
 
 	  HelpUrlHandler.register();
 
-	  System.out.println(1);
-	  try {
-		  new URL("help:asd//test").getContent();
-	  } catch (IOException e) {
-		  e.printStackTrace();
-	  }
-
 	  // Open the table of contents
     String toc_file = directory + "ltx-2.html";
 
