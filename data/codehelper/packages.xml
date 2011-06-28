@@ -1364,7 +1364,7 @@
   <package name="advi-annot" debPackage="advi">
     <command name="advi" argCount="0" />
   </package>
-  <package name="xecyr" debPackage="dblatex">
+  <package name="xecyr" title="xecyr" description="Using Cyrillic languages in XeTeX." debPackage="dblatex">
     <command name="cyrdash" argCount="0" />
   </package>
   <package name="multirow2" debPackage="dblatex">
@@ -4062,7 +4062,7 @@
     <command name="openo" argCount="0" />
     <command name="inve" argCount="0" />
   </package>
-  <package name="jurabib" debPackage="texlive-bibtex-extra">
+  <package name="jurabib" title="jurabib" description="Extended BibTeX citation support for the humanities and legal" debPackage="texlive-bibtex-extra">
     <command name="jbfulltitlefont" argCount="0" />
     <command name="jbshorttitlefont" argCount="0" />
     <command name="bibfnfont" argCount="0" />
@@ -4132,7 +4132,7 @@
     <command name="jurabibsetup" argCount="0" />
     <command name="ProcessOptionsWithKV" argCount="1" />
   </package>
-  <package name="uhrzeit" debPackage="texlive-lang-german">
+  <package name="uhrzeit" title="uhrzeit" description="Time printing, in German." debPackage="texlive-lang-german">
     <command name="uhr" argCount="2" />
     <command name="vonbis" argCount="4" />
     <command name="dtd" argCount="0" />
@@ -4147,7 +4147,7 @@
     <command name="sectionmark" argCount="1" />
     <command name="dictentry" argCount="8" />
   </package>
-  <package name="ametsoc" debPackage="texlive-publishers">
+  <package name="ametsoc" title="ametsoc" description="Official American Meteorological Society Latex Template." debPackage="texlive-publishers">
     <command name="amstitle" argCount="0" />
     <environment name="acknowledgment" argCount="0" />
   </package>
@@ -4231,7 +4231,7 @@
     <environment name="glosslist" argCount="0" />
     <environment name="glossitem" argCount="4" />
   </package>
-  <package name="bibarts" debPackage="texlive-bibtex-extra">
+  <package name="bibarts" title="bibarts" description=""Arts"-style bibliographical information." debPackage="texlive-bibtex-extra">
     <command name="stressing" argCount="1" />
     <command name="punctuation" argCount="0" />
     <command name="killname" argCount="0" />
@@ -4929,7 +4929,7 @@
     <environment name="abstract" argCount="0" />
     <environment name="dedication" argCount="0" />
   </package>
-  <package name="bbding" debPackage="texlive-fonts-extra">
+  <package name="bbding" title="bbding" description="A symbol (dingbat) font and LaTeX macros for its use." debPackage="texlive-fonts-extra">
     <command name="dingfamily" argCount="0" />
     <command name="ScissorRightBrokenBottom" argCount="0" />
     <command name="ScissorRight" argCount="0" />
@@ -5067,7 +5067,7 @@
     <command name="ita" argCount="1" />
     <command name="meta" argCount="1" />
   </package>
-  <package name="arsclassica" debPackage="texlive-publishers">
+  <package name="arsclassica" title="arsclassica" description="A different view of the ClassicThesis package." debPackage="texlive-publishers">
     <command name="theindex" argCount="0" />
     <command name="twocolumn" argCount="0" />
     <command name="onecolumn" argCount="0" />
@@ -5083,7 +5083,7 @@
     <command name="c" argCount="0" />
     <command name="counterwithin" argCount="0" />
   </package>
-  <package name="authorindex" debPackage="texlive-latex-extra">
+  <package name="authorindex" title="authorindex" description="Index citations by author names." debPackage="texlive-latex-extra">
     <command name="ainame" argCount="1" />
     <command name="aitop" argCount="1" />
     <command name="airep" argCount="1" />
@@ -5109,7 +5109,7 @@
     <command name="item" argCount="1" />
     <environment name="theauthorindex" argCount="0" />
   </package>
-  <package name="psbao" debPackage="texlive-pstricks">
+  <package name="psbao" title="psbao" description="Draw Bao diagrams." debPackage="texlive-pstricks">
     <command name="psbao" argCount="0" />
     <command name="setbaounit" argCount="1" />
     <command name="initbao" argCount="1" />
@@ -5155,7 +5155,7 @@
   <package name="cuisine" debPackage="texlive-latex-extra">
     <environment name="recipe" argCount="3" />
   </package>
-  <package name="dozenal" debPackage="texlive-fonts-extra">
+  <package name="dozenal" title="dozenal" description="Typeset documents using base twelve numbering (also called" debPackage="texlive-fonts-extra">
     <command name="doz" argCount="1" />
     <command name="x" argCount="0" />
     <command name="e" argCount="0" />
@@ -5164,7 +5164,7 @@
   </package>
   <package name="curvesls" debPackage="texlive-pictures">
   </package>
-  <package name="curves" debPackage="texlive-pictures">
+  <package name="curves" title="curves" description="Curves for LaTeX picture environment" debPackage="texlive-pictures">
     <command name="s" argCount="0" />
     <command name="arc" argCount="1" optionalArg="0" />
     <command name="bigcircle" argCount="2" optionalArg="0" />
@@ -5274,7 +5274,7 @@
     <environment name="ExerciseList" argCount="0" />
     <environment name="Answer" argCount="0" />
   </package>
-  <package name="tabvar" debPackage="texlive-lang-french">
+  <package name="tabvar" title="tabvar" description="Typesetting tables showing variations of functions." debPackage="texlive-lang-french">
     <command name="TVarrowscale" argCount="0" />
     <command name="FlecheCm" argCount="0" />
     <command name="FlecheDm" argCount="0" />
@@ -5327,7 +5327,7 @@
   </package>
   <package name="xskak-nagdef" debPackage="texlive-games">
   </package>
-  <package name="xskak" debPackage="texlive-games">
+  <package name="xskak" title="xskak" description="An extension to the skak package for chess typesetting." debPackage="texlive-games">
     <command name="chessdiagramname" argCount="0" />
     <command name="xskak" argCount="0" />
     <command name="xskaknewpgninfo" argCount="2" />
@@ -5393,7 +5393,7 @@
     <command name="orgname" argCount="1" />
     <command name="orgurl" argCount="1" />
   </package>
-  <package name="vntex" debPackage="texlive-lang-vietnamese">
+  <package name="vntex" title="vntex" description="Support for Vietnamese." debPackage="texlive-lang-vietnamese">
     <command name="prefacename" argCount="0" />
     <command name="refname" argCount="0" />
     <command name="abstractname" argCount="0" />
@@ -5468,7 +5468,7 @@
     <command name="makelabel" argCount="1" />
     <environment name="etaremune" argCount="1" />
   </package>
-  <package name="biocon" debPackage="texlive-science">
+  <package name="biocon" title="biocon" description="Typesetting biological species names" debPackage="texlive-science">
     <command name="curr" argCount="0" />
     <command name="T" argCount="0" />
     <command name="Gl" argCount="0" />
@@ -5851,7 +5851,7 @@
   <package name="randtext" debPackage="texlive-latex-extra">
     <command name="randomize" argCount="1" />
   </package>
-  <package name="cmll" debPackage="texlive-fonts-extra">
+  <package name="cmll" title="cmll" description="Symbols for linear logic." debPackage="texlive-fonts-extra">
     <command name="invampemu" argCount="0" />
     <command name="bigwithemu" argCount="0" />
     <command name="biginvampemu" argCount="0" />
@@ -5877,9 +5877,9 @@
     <command name="entryprefix" argCount="0" />
     <command name="entrypostfix" argCount="0" />
   </package>
-  <package name="pgfopts" debPackage="texlive-pictures">
+  <package name="pgfopts" title="pgfopts" description="LaTeX package options with pgfkeys." debPackage="texlive-pictures">
   </package>
-  <package name="pst-coil" debPackage="texlive-pstricks">
+  <package name="pst-coil" title="pst-coil" description="A PSTricks package for coils, etc." debPackage="texlive-pstricks">
     <command name="next" argCount="0" />
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
@@ -5891,7 +5891,7 @@
     <command name="nczigzag" argCount="0" />
     <command name="pczigzag" argCount="0" />
   </package>
-  <package name="asaetr" debPackage="texlive-publishers">
+  <package name="asaetr" title="asaetr" description="Transactions of the ASAE." debPackage="texlive-publishers">
     <command name="drop" argCount="2" />
     <command name="baselinestretch" argCount="0" />
     <command name="small" argCount="0" />
@@ -6005,7 +6005,7 @@
     <command name="done" argCount="0" />
     <environment name="flagderiv" argCount="1" />
   </package>
-  <package name="float" debPackage="texlive-latex-recommended">
+  <package name="float" title="float" description="Improved interface for floating objects." debPackage="texlive-latex-recommended">
     <command name="floatstyle" argCount="1" />
     <command name="float" argCount="0" />
     <command name="floatname" argCount="2" />
@@ -6016,7 +6016,7 @@
     <command name="floatc" argCount="0" />
     <command name="fs" argCount="0" />
   </package>
-  <package name="makeplot" debPackage="texlive-pstricks">
+  <package name="makeplot" title="makeplot" description="Easy plots from Matlab in LaTeX." debPackage="texlive-pstricks">
     <command name="MPbg" argCount="0" />
     <command name="styleoflineA" argCount="0" />
     <command name="styleoflineB" argCount="0" />
@@ -6415,7 +6415,7 @@
     <command name="AllOther" argCount="0" />
     <command name="MakeHyphenationLetter" argCount="2" />
   </package>
-  <package name="harmony" debPackage="texlive-music">
+  <package name="harmony" title="harmony" description="Typeset harmony symbols, etc., for musicology." debPackage="texlive-music">
     <command name="FAM" argCount="0" />
     <command name="Ohne" argCount="2" optionalArg="0em" />
     <command name="Dohne" argCount="0" />
@@ -6456,7 +6456,7 @@
     <command name="SechBR" argCount="0" />
     <command name="SechBr" argCount="0" />
   </package>
-  <package name="pst-fill" debPackage="texlive-pstricks">
+  <package name="pst-fill" title="pst-fill" description="Fill or tile areas with PSTricks." debPackage="texlive-pstricks">
     <command name="PstTiling" argCount="0" />
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
@@ -6481,10 +6481,10 @@
     <command name="newlist" argCount="0" />
     <command name="renewlist" argCount="0" />
   </package>
-  <package name="steinmetz" debPackage="texlive-science">
+  <package name="steinmetz" title="steinmetz" description="Print Steinmetz notation." debPackage="texlive-science">
     <command name="phase" argCount="2" optionalArg="1" />
   </package>
-  <package name="pict2e" debPackage="texlive-pictures">
+  <package name="pict2e" title="pict2e" description="New implementation of picture commands." debPackage="texlive-pictures">
     <command name="sign" argCount="0" />
     <command name="polygon" argCount="0" />
     <command name="closepath" argCount="0" />
@@ -6497,7 +6497,7 @@
     <command name="roundjoin" argCount="0" />
     <command name="beveljoin" argCount="0" />
   </package>
-  <package name="galois" debPackage="texlive-science">
+  <package name="galois" title="galois" description="Typeset Galois connections." debPackage="texlive-science">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="comp" argCount="0" />
@@ -6529,7 +6529,7 @@
     <command name="endvarwidth" argCount="0" />
     <command name="par" argCount="0" />
   </package>
-  <package name="euro" debPackage="texlive-fonts-recommended">
+  <package name="euro" title="euro" description="Provide Euro values for national currency amounts." debPackage="texlive-fonts-recommended">
     <command name="in" argCount="0" />
     <command name="out" argCount="0" />
     <command name="align" argCount="0" />
@@ -6558,7 +6558,7 @@
   <package name="pagecont" debPackage="texlive-latex-extra">
     <command name="PGC" argCount="0" />
   </package>
-  <package name="miniplot" debPackage="texlive-pictures">
+  <package name="miniplot" title="miniplot" description="A package for easy figure arrangement." debPackage="texlive-pictures">
     <command name="miniplot" argCount="0" />
     <command name="pointless" argCount="2" />
     <command name="standardGraphScale" argCount="0" />
@@ -6612,7 +6612,7 @@
     <command name="biggrb" argCount="0" />
     <command name="bigrb" argCount="0" />
   </package>
-  <package name="dottex" debPackage="texlive-pictures">
+  <package name="dottex" title="dottex" description="Use dot code in LaTeX." debPackage="texlive-pictures">
     <command name="tmpfile" argCount="0" />
     <command name="figname" argCount="0" />
     <command name="dotverbatimwrite" argCount="1" />
@@ -6660,9 +6660,9 @@
     <command name="testoe" argCount="2" />
     <command name="lt" argCount="0" />
   </package>
-  <package name="umlaute" debPackage="texlive-lang-german">
+  <package name="umlaute" title="umlaute" description="German input encodings in LaTeX." debPackage="texlive-lang-german">
   </package>
-  <package name="cmbright" debPackage="texlive-fonts-extra">
+  <package name="cmbright" title="cmbright" description="Computer Modern Bright fonts." debPackage="texlive-fonts-extra">
     <command name="oldstylenums" argCount="1" />
     <command name="mathsterling" argCount="0" />
   </package>
@@ -6749,7 +6749,7 @@
   <package name="cooking" debPackage="texlive-latex-extra">
     <environment name="recipe" argCount="1" />
   </package>
-  <package name="ascii" debPackage="texlive-fonts-extra">
+  <package name="ascii" title="ascii" description="Support for IBM "standard ASCII" font." debPackage="texlive-fonts-extra">
     <command name="asciifamily" argCount="0" />
     <command name="textascii" argCount="1" />
     <command name="NUL" argCount="0" />
@@ -7345,7 +7345,7 @@
     <command name="bigg" argCount="0" />
     <command name="Bigg" argCount="0" />
   </package>
-  <package name="algorithm2e" debPackage="texlive-science">
+  <package name="algorithm2e" title="algorithm2e" description="Floating algorithm environment with algorithmic keywords." debPackage="texlive-science">
     <command name="listalgorithmcfname" argCount="0" />
     <command name="algorithmcfname" argCount="0" />
     <command name="algocf" argCount="0" />
@@ -7499,7 +7499,7 @@
     <environment name="termlist" argCount="0" />
     <environment name="term" argCount="0" />
   </package>
-  <package name="chicago" debPackage="texlive-bibtex-extra">
+  <package name="chicago" title="chicago" description="A "Chicago" bibliography style." debPackage="texlive-bibtex-extra">
     <command name="citeauthoryear" argCount="3" />
     <command name="cite" argCount="0" />
     <command name="citeNP" argCount="0" />
@@ -8042,7 +8042,7 @@
     <command name="thebibliography" argCount="1" />
     <command name="newblock" argCount="0" />
   </package>
-  <package name="dk-bib" debPackage="texlive-bibtex-extra">
+  <package name="dk-bib" title="dk-bib" description="Danish variants of standard BibTeX styles." debPackage="texlive-bibtex-extra">
     <command name="j" argCount="0" />
     <command name="dkbiburl" argCount="1" />
     <command name="dkbibisbn" argCount="1" />
@@ -8079,7 +8079,7 @@
     <command name="filedate" argCount="0" />
     <command name="fileversion" argCount="0" />
   </package>
-  <package name="alterqcm" debPackage="texlive-latex-extra">
+  <package name="alterqcm" title="alterqcm" description="Multiple choice questionnaires in two column tables." debPackage="texlive-latex-extra">
     <command name="aqlanguage" argCount="0" />
     <command name="aqlabelforquest" argCount="0" />
     <command name="aqlabelforrep" argCount="0" />
@@ -8094,7 +8094,7 @@
     <command name="AQ" argCount="0" />
     <environment name="alterqcm" argCount="1" />
   </package>
-  <package name="aastex" debPackage="texlive-publishers">
+  <package name="aastex" title="aastex" description="Macros for Manuscript Preparation for AAS Journals." debPackage="texlive-publishers">
     <command name="next" argCount="0" />
     <command name="ProvidesFile" argCount="2" />
     <command name="ClassWarning" argCount="2" />
@@ -8292,13 +8292,13 @@
     <command name="infer" argCount="0" />
     <command name="deduce" argCount="0" />
   </package>
-  <package name="pst-blur" debPackage="texlive-pstricks">
+  <package name="pst-blur" title="pst-blur" description="PSTricks package for "blurred" shadows." debPackage="texlive-pstricks">
     <command name="next" argCount="0" />
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="psblurbox" argCount="0" />
   </package>
-  <package name="picinpar" debPackage="texlive-pictures">
+  <package name="picinpar" title="picinpar" description="Insert pictures into paragraphs." debPackage="texlive-pictures">
     <command name="wstrut" argCount="0" />
     <command name="par" argCount="0" />
     <command name="endwindow" argCount="0" />
@@ -8404,7 +8404,7 @@
     <command name="syllogTA" argCount="0" />
     <command name="syllogTAC" argCount="3" />
   </package>
-  <package name="aeguill" debPackage="texlive-lang-french">
+  <package name="aeguill" title="aeguill" description="Add several kinds of guillemets to the ae fonts." debPackage="texlive-lang-french">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="aeguillfrenchdefault" argCount="0" />
@@ -8414,7 +8414,7 @@
     <command name="aeguills" argCount="0" />
     <command name="ae" argCount="0" />
   </package>
-  <package name="dingbat" debPackage="texlive-fonts-extra">
+  <package name="dingbat" title="dingbat" description="Two dingbat symbol fonts." debPackage="texlive-fonts-extra">
     <command name="arkfamily" argCount="0" />
     <command name="ark" argCount="0" />
     <command name="carriagereturn" argCount="0" />
@@ -8438,7 +8438,7 @@
     <command name="Sborder" argCount="0" />
     <command name="Zborder" argCount="0" />
   </package>
-  <package name="pst-fractal" debPackage="texlive-pstricks">
+  <package name="pst-fractal" title="pst-fractal" description="Draw fractal sets using PSTricks." debPackage="texlive-pstricks">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="psfractal" argCount="0" />
@@ -8450,11 +8450,11 @@
     <command name="psPTree" argCount="0" />
     <command name="psFArrow" argCount="0" />
   </package>
-  <package name="fancyref" debPackage="texlive-latex-recommended">
+  <package name="fancyref" title="fancyref" description="A LaTeX package for fancy cross-referencing." debPackage="texlive-latex-recommended">
     <command name="frefformat" argCount="2" />
     <command name="Frefformat" argCount="2" />
   </package>
-  <package name="pst-circ" debPackage="texlive-pstricks">
+  <package name="pst-circ" title="pst-circ" description="PSTricks package for drawing electric circuits." debPackage="texlive-pstricks">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="wire" argCount="0" />
@@ -8537,7 +8537,7 @@
     <command name="endoverpix" argCount="0" />
     <command name="includegraphicx" argCount="0" />
   </package>
-  <package name="musictex" debPackage="texlive-music">
+  <package name="musictex" title="musictex" description="Typesetting music with TeX." debPackage="texlive-music">
   </package>
   <package name="musicper" debPackage="texlive-music">
   </package>
@@ -8571,7 +8571,7 @@
     <command name="prefZisZkropka" argCount="0" />
     <command name="prefZisZkreska" argCount="0" />
   </package>
-  <package name="polski" debPackage="texlive-lang-polish">
+  <package name="polski" title="polski" description="Typeset Polish documents with LaTeX and Polish fonts." debPackage="texlive-lang-polish">
     <command name="selecthyphenation" argCount="1" />
     <command name="Slash" argCount="0" />
     <command name="PLSlash" argCount="1" />
@@ -8661,7 +8661,7 @@
   </package>
   <package name="univers" debPackage="texlive-fonts-extra">
   </package>
-  <package name="coronet" debPackage="texlive-fonts-extra">
+  <package name="coronet" title="coronet" description="" debPackage="texlive-fonts-extra">
   </package>
   <package name="timesnew" debPackage="texlive-fonts-extra">
   </package>
@@ -8671,7 +8671,7 @@
   </package>
   <package name="cgtimes" debPackage="texlive-fonts-extra">
   </package>
-  <package name="albertus" debPackage="texlive-fonts-extra">
+  <package name="albertus" title="albertus" description="" debPackage="texlive-fonts-extra">
   </package>
   <package name="antolive" debPackage="texlive-fonts-extra">
   </package>
@@ -8683,7 +8683,7 @@
   </package>
   <package name="chessboard-keys-pgf" debPackage="texlive-games">
   </package>
-  <package name="chessboard" debPackage="texlive-games">
+  <package name="chessboard" title="chessboard" description="Print chess boards." debPackage="texlive-games">
     <command name="board" argCount="0" />
     <command name="zeroalph" argCount="1" />
     <command name="currentarea" argCount="0" />
@@ -8845,7 +8845,7 @@
     <command name="setadrto" argCount="1" />
     <command name="setadrfr" argCount="1" />
   </package>
-  <package name="pst-dbicons" debPackage="texlive-pstricks">
+  <package name="pst-dbicons" title="pst-dbicons" description="Support for drawing ER diagrams." debPackage="texlive-pstricks">
     <command name="filedate" argCount="0" />
     <command name="docdate" argCount="0" />
     <command name="fileversion" argCount="0" />
@@ -8897,7 +8897,7 @@
     <command name="rsphrase" argCount="2" />
     <command name="mhchem" argCount="0" />
   </package>
-  <package name="mhchem" debPackage="texlive-science">
+  <package name="mhchem" title="mhchem" description="Typeset chemical formulae/equations and Risk and Safety phrases." debPackage="texlive-science">
     <command name="ce" argCount="1" />
     <command name="mhchem" argCount="0" />
     <command name="sbond" argCount="0" />
@@ -9061,7 +9061,7 @@
     <command name="includegraphics" argCount="0" />
     <command name="x" argCount="0" />
   </package>
-  <package name="pst-2dplot" debPackage="texlive-pstricks">
+  <package name="pst-2dplot" title="pst-2dplot" description="A PSTricks package for drawing 2D curves." debPackage="texlive-pstricks">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="pstgraph" argCount="0" />
@@ -9086,7 +9086,7 @@
     <command name="do" argCount="1" />
     <command name="DeclareCDPSealHuesDefault" argCount="0" />
   </package>
-  <package name="booktabs" debPackage="texlive-latex-recommended">
+  <package name="booktabs" title="booktabs" description="Publication quality tables in LaTeX" debPackage="texlive-latex-recommended">
     <command name="futurenonspacelet" argCount="1" />
     <command name="toprule" argCount="0" />
     <command name="midrule" argCount="0" />
@@ -9137,7 +9137,7 @@
     <command name="textperthousand" argCount="0" />
     <command name="textpertenthousand" argCount="0" />
   </package>
-  <package name="ae" debPackage="texlive-latex-base">
+  <package name="ae" title="ae" description="Virtual fonts for T1 encoded CMR-fonts." debPackage="texlive-latex-base">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
   </package>
@@ -9586,7 +9586,7 @@
     <command name="sline" argCount="3" />
     <command name="endtiming" argCount="0" />
   </package>
-  <package name="aguplus" debPackage="texlive-publishers">
+  <package name="aguplus" title="aguplus" description="Styles for American Geophysical Union." debPackage="texlive-publishers">
     <command name="pckversion" argCount="0" />
     <command name="pckinfo" argCount="0" />
     <command name="thetable" argCount="0" />
@@ -9752,7 +9752,7 @@
   </package>
   <package name="cmmib57" debPackage="texlive-base">
   </package>
-  <package name="amsfonts" debPackage="texlive-base">
+  <package name="amsfonts" title="amsfonts" description="TeX fonts from the American Mathematical Society." debPackage="texlive-base">
   </package>
   <package name="play" debPackage="texlive-humanities">
     <command name="PLthemoduloline" argCount="0" />
@@ -10037,7 +10037,7 @@
     <environment name="body" argCount="0" />
     <environment name="bib" argCount="0" />
   </package>
-  <package name="pslatex" debPackage="texlive-latex-base">
+  <package name="pslatex" title="pslatex" description="Use PostScript fonts by default." debPackage="texlive-latex-base">
     <command name="boldmath" argCount="0" />
   </package>
   <package name="rcs-multi" debPackage="texlive-latex-extra">
@@ -10425,7 +10425,7 @@
     <environment name="regblock" argCount="1" />
     <environment name="regexp" argCount="0" />
   </package>
-  <package name="eurosans" debPackage="texlive-fonts-recommended">
+  <package name="eurosans" title="eurosans" description="Interface to Adobe's sans-serif Euro font." debPackage="texlive-fonts-recommended">
     <command name="ProcessOptionsWithKV" argCount="1" />
   </package>
   <package name="ebezier" debPackage="texlive-latex-extra">
@@ -10528,14 +10528,14 @@
     <environment name="statictable" argCount="0" />
     <environment name="staticfigure" argCount="0" />
   </package>
-  <package name="compactbib" debPackage="texlive-bibtex-extra">
+  <package name="compactbib" title="compactbib" description="Multiple thebibliography environments." debPackage="texlive-bibtex-extra">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="bibliowidth" argCount="1" />
     <command name="bibliorefname" argCount="1" />
     <environment name="thebibliographyonly" argCount="1" />
   </package>
-  <package name="fouridx" debPackage="texlive-science">
+  <package name="fouridx" title="fouridx" description="Left sub- and superscripts in maths mode." debPackage="texlive-science">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="fourIdx" argCount="5" />
@@ -10649,7 +10649,7 @@
     <command name="thumboverview" argCount="0" />
     <command name="OverviewPage" argCount="0" />
   </package>
-  <package name="rcs" debPackage="texlive-latex-recommended">
+  <package name="rcs" title="rcs" description="Use RCS (revision control system) tags in LaTeX documents." debPackage="texlive-latex-recommended">
     <command name="id" argCount="0" />
     <command name="RcsEmptyValue" argCount="0" />
     <command name="RCS_keyword" argCount="0" />
@@ -11005,7 +11005,7 @@
     <command name="filedate" argCount="0" />
     <command name="docdate" argCount="0" />
   </package>
-  <package name="bigfoot" debPackage="texlive-latex-extra">
+  <package name="bigfoot" title="bigfoot" description="Footnotes for critical editions." debPackage="texlive-latex-extra">
     <command name="RestyleFootnote" argCount="2" />
     <command name="FootnoteSpecific" argCount="1" />
     <command name="DefineFootnoteStack" argCount="1" />
@@ -11233,11 +11233,11 @@
     <command name="endcircuit" argCount="0" />
     <command name="CIRCLogo" argCount="0" />
   </package>
-  <package name="greektex" debPackage="texlive-lang-greek">
+  <package name="greektex" title="greektex" description="Fonts for typesetting Greek/English documents." debPackage="texlive-lang-greek">
     <command name="setupgreek" argCount="0" />
     <command name="nogreek" argCount="1" />
   </package>
-  <package name="metalogo" debPackage="texlive-latex-recommended">
+  <package name="metalogo" title="metalogo" description="Extended TeX logo macros." debPackage="texlive-latex-recommended">
     <command name="xl" argCount="0" />
     <command name="setlogokern" argCount="2" />
     <command name="setlogodrop" argCount="2" optionalArg="XeTeX" />
@@ -11250,7 +11250,7 @@
     <command name="stubs" argCount="2" optionalArg="0" />
     <command name="st" argCount="0" />
   </package>
-  <package name="mafr" debPackage="texlive-lang-french">
+  <package name="mafr" title="mafr" description="Mathematics in accord with French usage." debPackage="texlive-lang-french">
     <command name="scr" argCount="0" />
     <command name="parallel" argCount="0" />
     <command name="vect" argCount="1" />
@@ -11278,7 +11278,7 @@
     <command name="enumerate" argCount="0" />
     <command name="savetreesbibnote" argCount="1" />
   </package>
-  <package name="gnuplottex" debPackage="texlive-pictures">
+  <package name="gnuplottex" title="gnuplottex" description="Embed Gnuplot commands in LaTeX documents." debPackage="texlive-pictures">
     <command name="tmpfile" argCount="0" />
     <command name="figname" argCount="0" />
     <command name="gnuplotverbatimwrite" argCount="1" />
@@ -11290,7 +11290,7 @@
     <command name="extension" argCount="0" />
     <environment name="gnuplot" argCount="1" />
   </package>
-  <package name="swimgraf" debPackage="texlive-pictures">
+  <package name="swimgraf" title="swimgraf" description="Graphical/textual representations of swimming performances" debPackage="texlive-pictures">
     <command name="psvlabel" argCount="1" />
     <command name="swimgraph" argCount="0" />
     <command name="swimtext" argCount="0" />
@@ -11485,14 +11485,14 @@
     <command name="VID" argCount="0" />
     <command name="SEM" argCount="0" />
   </package>
-  <package name="encxvlna" debPackage="texlive-generic-extra">
+  <package name="encxvlna" title="encxvlna" description="Insert nonbreakable spaces, using encTeX." debPackage="texlive-generic-extra">
     <command name="spacesylab" argCount="0" />
     <command name="normalsylab" argCount="0" />
     <command name="specsylab" argCount="0" />
     <command name="spacesylabP" argCount="0" />
     <command name="spacesylabR" argCount="0" />
   </package>
-  <package name="abstract" debPackage="texlive-latex-extra">
+  <package name="abstract" title="abstract" description="Control the typesetting of the abstract environment." debPackage="texlive-latex-extra">
     <command name="abstractnamefont" argCount="0" />
     <command name="abstracttextfont" argCount="0" />
     <command name="absnamepos" argCount="0" />
@@ -11884,7 +11884,7 @@
     <command name="printcontents" argCount="4" optionalArg="default" />
     <command name="printlist" argCount="4" optionalArg="default" />
   </package>
-  <package name="siunitx" debPackage="texlive-science">
+  <package name="siunitx" title="siunitx" description="A comprehensive (SI) units package." debPackage="texlive-science">
     <command name="expandafter" argCount="0" />
     <command name="pm" argCount="0" />
     <command name="mp" argCount="0" />
@@ -11925,7 +11925,7 @@
   </package>
   <package name="pbsi" debPackage="texlive-fonts-extra">
   </package>
-  <package name="egameps" debPackage="texlive-games">
+  <package name="egameps" title="egameps" description="LaTeX package for typesetting extensive games." debPackage="texlive-games">
     <command name="egarclinestyle" argCount="0" />
     <command name="egarclinewidth" argCount="0" />
     <command name="egarclinecolor" argCount="0" />
@@ -11959,7 +11959,7 @@
     <command name="ctmbarc" argCount="0" />
     <command name="endegame" argCount="0" />
   </package>
-  <package name="covington" debPackage="texlive-humanities">
+  <package name="covington" title="covington" description="Linguistic support." debPackage="texlive-humanities">
     <command name="acm" argCount="1" />
     <command name="grm" argCount="1" />
     <command name="cim" argCount="1" />
@@ -11995,7 +11995,7 @@
     <command name="PrologQuintustrue" argCount="0" />
     <command name="PrologQuintusfalse" argCount="0" />
   </package>
-  <package name="pl" debPackage="texlive-latex-extra">
+  <package name="pl" title="pl" description="Polish extension of CM fonts in Type 1 format." debPackage="texlive-latex-extra">
     <command name="filename" argCount="0" />
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
@@ -12120,15 +12120,15 @@
     <environment name="aufgabe" argCount="1" />
     <environment name="teilaufgaben" argCount="1" />
   </package>
-  <package name="cmap" debPackage="texlive-latex-recommended">
+  <package name="cmap" title="cmap" description="Make PDF files searchable and copyable." debPackage="texlive-latex-recommended">
   </package>
-  <package name="germkorr" debPackage="texlive-lang-german">
+  <package name="germkorr" title="germkorr" description="Change kerning for german quotation marks." debPackage="texlive-lang-german">
     <command name="glqq" argCount="0" />
     <command name="glq" argCount="0" />
     <command name="germkorr" argCount="0" />
     <command name="nogermkorr" argCount="0" />
   </package>
-  <package name="hrlatex" debPackage="texlive-lang-croatian">
+  <package name="hrlatex" title="hrlatex" description="LaTeX support for Croatian documents." debPackage="texlive-lang-croatian">
   </package>
   <package name="qstest" debPackage="texlive-latex-extra">
     <command name="LogTests" argCount="3" />
@@ -12148,13 +12148,13 @@
     <command name="RemoveMatched" argCount="1" />
     <command name="MakeMatchTarget" argCount="3" optionalArg="\relax" />
   </package>
-  <package name="wnri" debPackage="texlive-lang-indic">
+  <package name="wnri" title="wnri" description="Ridgeway's fonts." debPackage="texlive-lang-indic">
   </package>
   <package name="minipage-marginpar" debPackage="texlive-latex-extra">
   </package>
   <package name="mpgmpar" debPackage="texlive-latex-extra">
   </package>
-  <package name="bophook" debPackage="texlive-latex-extra">
+  <package name="bophook" title="bophook" description="Provides an At-Begin-Page hook." debPackage="texlive-latex-extra">
   </package>
   <package name="pst-spectra" debPackage="texlive-pstricks">
     <command name="pstwlfileversion" argCount="0" />
@@ -12182,7 +12182,7 @@
     <command name="filedate" argCount="0" />
     <command name="docdate" argCount="0" />
   </package>
-  <package name="pgf-soroban" debPackage="texlive-pictures">
+  <package name="pgf-soroban" title="pgf-soroban" description="Create images of the soroban using TikZ/PGF." debPackage="texlive-pictures">
     <command name="colbil" argCount="0" />
     <command name="coltig" argCount="0" />
     <command name="ladj" argCount="1" />
@@ -12698,7 +12698,7 @@
     <command name="punderarch" argCount="1" />
     <command name="underarch" argCount="0" />
   </package>
-  <package name="pst-func" debPackage="texlive-pstricks">
+  <package name="pst-func" title="pst-func" description="PSTricks package for plotting mathematical functions." debPackage="texlive-pstricks">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="ChebyshevT" argCount="0" />
@@ -12744,7 +12744,7 @@
   </package>
   <package name="noitcrul" debPackage="texlive-latex-extra">
   </package>
-  <package name="ordinalpt" debPackage="texlive-lang-portuguese">
+  <package name="ordinalpt" title="ordinalpt" description="Counters as ordinal numbers in Portuguese." debPackage="texlive-lang-portuguese">
     <command name="ordptmasc" argCount="1" />
     <command name="Ordptmasc" argCount="1" />
     <command name="ORDPTMASC" argCount="1" />
@@ -12754,7 +12754,7 @@
   </package>
   <package name="commath" debPackage="texlive-math-extra">
   </package>
-  <package name="pst-gr3d" debPackage="texlive-pstricks">
+  <package name="pst-gr3d" title="pst-gr3d" description="Three dimensional grids with PSTricks." debPackage="texlive-pstricks">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="PstGridThreeD" argCount="0" />
@@ -12766,7 +12766,7 @@
     <command name="PstGridThreeDHookEnd" argCount="0" />
     <command name="PstGridThreeDNodeProcessor" argCount="1" />
   </package>
-  <package name="soyombo" debPackage="texlive-lang-mongolian">
+  <package name="soyombo" title="soyombo" description="Fonts and a macro for Soyombo under LaTeX." debPackage="texlive-lang-mongolian">
     <command name="SoyomboTemdegFont" argCount="0" />
     <command name="Soyombo" argCount="0" />
     <command name="soyombo" argCount="0" />
@@ -12782,7 +12782,7 @@
   </package>
   <package name="icomma" debPackage="texlive-latex-extra">
   </package>
-  <package name="struktex" debPackage="texlive-science">
+  <package name="struktex" title="struktex" description="Draw Nassi-Schneidermann charts" debPackage="texlive-science">
     <command name="filedate" argCount="0" />
     <command name="fileversion" argCount="0" />
     <command name="StrukTeX" argCount="0" />
@@ -12972,7 +12972,7 @@
   <package name="epigrafica" debPackage="texlive-fonts-extra">
     <command name="stigma" argCount="0" />
   </package>
-  <package name="beamerposter" debPackage="texlive-latex-extra">
+  <package name="beamerposter" title="beamerposter" description="Extend beamer and a0poster for custom sized posters." debPackage="texlive-latex-extra">
   </package>
   <package name="changelayout" debPackage="texlive-latex-extra">
     <command name="cpl" argCount="0" />
@@ -12998,7 +12998,7 @@
     <command name="pebid" argCount="0" />
     <command name="exbid" argCount="0" />
   </package>
-  <package name="SIunits" debPackage="texlive-science">
+  <package name="SIunits" title="SIunits" description="International System of Units." debPackage="texlive-science">
     <command name="filename" argCount="0" />
     <command name="packagemessage" argCount="0" />
     <command name="stepcounter" argCount="1" />
@@ -13103,7 +13103,7 @@
     <command name="rt" argCount="0" />
     <command name="dn" argCount="0" />
   </package>
-  <package name="juraabbrev" debPackage="texlive-humanities">
+  <package name="juraabbrev" title="juraabbrev" description="Abbreviations for typesetting (German) juridical documents." debPackage="texlive-humanities">
     <command name="abbrev" argCount="0" />
     <command name="abbrevdef" argCount="3" />
     <command name="abbrevuse" argCount="1" />
@@ -13122,7 +13122,7 @@
   <package name="sparklines" debPackage="texlive-latex-extra">
     <environment name="sparkline" argCount="1" />
   </package>
-  <package name="tkz-linknodes" debPackage="texlive-pictures">
+  <package name="tkz-linknodes" title="tkz-linknodes" description="Link nodes in mathematical environments." debPackage="texlive-pictures">
     <command name="LinkNodes" argCount="2" />
     <command name="TGCN" argCount="0" />
     <command name="TGNN" argCount="0" />
@@ -13246,7 +13246,7 @@
     <command name="russiantt" argCount="0" />
     <command name="greektt" argCount="0" />
   </package>
-  <package name="bibunits" debPackage="texlive-bibtex-extra">
+  <package name="bibunits" title="bibunits" description="Multiple bibliographies in one document." debPackage="texlive-bibtex-extra">
     <command name="thebibliography" argCount="0" />
     <command name="bibliography" argCount="1" />
     <command name="defaultbibliography" argCount="1" />
@@ -13314,7 +13314,7 @@
     <command name="downbracefill" argCount="0" />
     <command name="upbracefill" argCount="0" />
   </package>
-  <package name="ESIEEcv" debPackage="texlive-latex-extra">
+  <package name="ESIEEcv" title="ESIEEcv" description="Curriculum vitae for French use." debPackage="texlive-latex-extra">
     <command name="PreApport" argCount="0" />
     <command name="PostApport" argCount="0" />
     <command name="PrePreApports" argCount="0" />
@@ -13335,7 +13335,7 @@
   </package>
   <package name="hardmarg" debPackage="texlive-humanities">
   </package>
-  <package name="xq" debPackage="texlive-games">
+  <package name="xq" title="xq" description="Support for writing about xiangqi." debPackage="texlive-games">
     <command name="german" argCount="0" />
     <command name="english" argCount="0" />
     <command name="french" argCount="0" />
@@ -13491,7 +13491,7 @@
     <command name="largeeuroelement" argCount="3" />
     <command name="showlargewesternboard" argCount="0" />
   </package>
-  <package name="cell" debPackage="texlive-bibtex-extra">
+  <package name="cell" title="cell" description="Bibliography style for Cell." debPackage="texlive-bibtex-extra">
     <command name="thebibliography" argCount="1" />
     <command name="newblock" argCount="0" />
   </package>
@@ -13892,7 +13892,7 @@
     <command name="Tr" argCount="2" />
     <command name="IdentityMatrix" argCount="1" optionalArg="0" />
   </package>
-  <package name="ctib" debPackage="texlive-lang-tibetan">
+  <package name="ctib" title="ctib" description="Tibetan for TeX and LATeX2e." debPackage="texlive-lang-tibetan">
     <command name="CtibVersionDate" argCount="0" />
     <command name="CtibVersionRelease" argCount="0" />
     <command name="SetDocumentEncodingTibetan" argCount="0" />
@@ -13904,7 +13904,7 @@
     <command name="chgrand" argCount="0" />
     <command name="rand" argCount="0" />
   </package>
-  <package name="randbild" debPackage="texlive-pictures">
+  <package name="randbild" title="randbild" description="Marginal pictures." debPackage="texlive-pictures">
     <command name="randbild" argCount="0" />
   </package>
   <package name="lsc" debPackage="texlive-latex-extra">
@@ -13977,7 +13977,7 @@
     <command name="mainmatter" argCount="0" />
     <command name="backmatter" argCount="0" />
   </package>
-  <package name="autotab" debPackage="texlive-latex-extra">
+  <package name="autotab" title="autotab" description="Generating tabulars from input data." debPackage="texlive-latex-extra">
     <command name="testeof" argCount="0" />
     <command name="readtabline" argCount="1" />
     <command name="autotabline" argCount="0" />
@@ -13992,7 +13992,7 @@
   </package>
   <package name="mup" debPackage="texlive-music">
   </package>
-  <package name="abc" debPackage="texlive-music">
+  <package name="abc" title="abc" description="Support ABC music notation in LaTeX." debPackage="texlive-music">
     <command name="abc" argCount="0" />
     <command name="normalabcoutputfile" argCount="0" />
     <command name="normalmupoutputfile" argCount="0" />
@@ -14003,11 +14003,11 @@
     <command name="endabc" argCount="0" />
     <command name="abcinput" argCount="0" />
   </package>
-  <package name="mflogo" debPackage="texlive-base">
+  <package name="mflogo" title="mflogo" description="LaTeX support for MetaFont logo fonts." debPackage="texlive-base">
     <command name="MF" argCount="0" />
     <command name="MP" argCount="0" />
   </package>
-  <package name="crosswrd" debPackage="texlive-games">
+  <package name="crosswrd" title="crosswrd" description="Macros for typesetting crossword puzzles." debPackage="texlive-games">
     <command name="ninept" argCount="0" />
     <command name="OpenClueFiles" argCount="0" />
     <command name="ACROSStext" argCount="0" />
@@ -14201,7 +14201,7 @@
     <command name="mtcrule" argCount="0" />
     <command name="stcrule" argCount="0" />
   </package>
-  <package name="hyperref" debPackage="texlive-latex-base">
+  <package name="hyperref" title="hyperref" description="Extensive support for hypertext in LaTeX." debPackage="texlive-latex-base">
     <command name="x" argCount="1" />
     <command name="AfterBeginDocument" argCount="0" />
     <command name="hypercalcbpdef" argCount="0" />
@@ -14370,7 +14370,7 @@
     <command name="externaldocument" argCount="0" />
     <command name="f" argCount="0" />
   </package>
-  <package name="pst-grad" debPackage="texlive-pstricks">
+  <package name="pst-grad" title="pst-grad" description="Filling with colour gradients, using PStricks." debPackage="texlive-pstricks">
     <command name="next" argCount="0" />
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
@@ -14436,7 +14436,7 @@
     <command name="etc" argCount="0" />
     <command name="see" argCount="0" />
   </package>
-  <package name="chess" debPackage="texlive-games">
+  <package name="chess" title="chess" description="Fonts for typesetting chess boards." debPackage="texlive-games">
     <command name="showboard" argCount="0" />
     <command name="ifcurrentlanguage" argCount="2" />
     <command name="Whitetrue" argCount="0" />
@@ -14571,7 +14571,7 @@
   </package>
   <package name="chesskey" debPackage="texlive-games">
   </package>
-  <package name="alg" debPackage="texlive-science">
+  <package name="alg" title="alg" description="LaTeX environments for typesetting algorithms." debPackage="texlive-science">
     <command name="filedate" argCount="0" />
     <command name="floatc" argCount="0" />
     <command name="fs" argCount="0" />
@@ -14628,7 +14628,7 @@
     <command name="em" argCount="0" />
     <command name="thefootnote" argCount="0" />
   </package>
-  <package name="beton" debPackage="texlive-latex-extra">
+  <package name="beton" title="beton" description="Use Concrete fonts." debPackage="texlive-latex-extra">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="rmdefault" argCount="0" />
@@ -14638,7 +14638,7 @@
   </package>
   <package name="conditionals" debPackage="texlive-music">
   </package>
-  <package name="songbook" debPackage="texlive-music">
+  <package name="songbook" title="songbook" description="Package for typesetting song lyrics and chord books." debPackage="texlive-music">
     <command name="ChBassFont" argCount="0" />
     <command name="ChFont" argCount="0" />
     <command name="ChBkFont" argCount="0" />
@@ -14824,7 +14824,7 @@
     <command name="pageperchapter" argCount="0" />
     <command name="ppc" argCount="2" />
   </package>
-  <package name="pst-abspos" debPackage="texlive-pstricks">
+  <package name="pst-abspos" title="pst-abspos" description="Put objects at an absolute position." debPackage="texlive-pstricks">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="newpage" argCount="0" />
@@ -14956,10 +14956,10 @@
     <command name="endtablenotes" argCount="0" />
     <command name="pdfmark" argCount="2" />
   </package>
-  <package name="sudoku" debPackage="texlive-games">
+  <package name="sudoku" title="sudoku" description="Create sudoku grids." debPackage="texlive-games">
     <environment name="sudoku" argCount="0" />
   </package>
-  <package name="tikz-inet" debPackage="texlive-pictures">
+  <package name="tikz-inet" title="tikz-inet" description="Draw interaction nets with TikZ" debPackage="texlive-pictures">
     <command name="inetoptions" argCount="0" />
     <command name="inetcolor" argCount="0" />
     <command name="inet" argCount="0" />
@@ -14977,7 +14977,7 @@
     <command name="inetbox" argCount="1" />
     <command name="inetprombox" argCount="1" />
   </package>
-  <package name="r_und_s" debPackage="texlive-lang-german">
+  <package name="r_und_s" title="r_und_s" description="Chemical hazard codes." debPackage="texlive-lang-german">
     <command name="cre" argCount="0" />
     <command name="crz" argCount="0" />
     <command name="crd" argCount="0" />
@@ -15627,7 +15627,7 @@
     <command name="FmtName" argCount="0" />
     <command name="batchfile" argCount="0" />
   </package>
-  <package name="bracketkey" debPackage="texlive-latex-extra">
+  <package name="bracketkey" title="bracketkey" description="Produce bracketed identification keys." debPackage="texlive-latex-extra">
     <command name="HyperRaiseLinkDefault" argCount="0" />
     <command name="hang" argCount="0" />
     <command name="keytitle" argCount="2" optionalArg="it" />
@@ -15997,7 +15997,7 @@
   </package>
   <package name="mboxfill" debPackage="texlive-latex-extra">
   </package>
-  <package name="apacite" debPackage="texlive-bibtex-extra">
+  <package name="apacite" title="apacite" description="Citation style following the rules of the APA." debPackage="texlive-bibtex-extra">
     <command name="cite" argCount="0" />
     <command name="BCAY" argCount="3" />
     <command name="citeauthoryear" argCount="0" />
@@ -16381,7 +16381,7 @@
   </package>
   <package name="properties" debPackage="texlive-latex-extra">
   </package>
-  <package name="doipubmed" debPackage="texlive-bibtex-extra">
+  <package name="doipubmed" title="doipubmed" description="Special commands for use in bibliographies." debPackage="texlive-bibtex-extra">
   </package>
   <package name="floatpagestyle" debPackage="texlive-latex-extra">
     <command name="floatpagestyle" argCount="1" />
@@ -16506,7 +16506,7 @@
     <command name="ProcessOptionsWithKV" argCount="1" />
     <environment name="subfloatrow" argCount="0" />
   </package>
-  <package name="anysize" debPackage="texlive-latex-recommended">
+  <package name="anysize" title="anysize" description="A simple package to set up document margins." debPackage="texlive-latex-recommended">
     <command name="InitLayout" argCount="0" />
     <command name="papersize" argCount="2" />
     <command name="marginsize" argCount="4" />
@@ -16528,7 +16528,7 @@
     <command name="cwm" argCount="0" />
     <command name="supsize" argCount="0" />
   </package>
-  <package name="amsrefs" debPackage="texlive-bibtex-extra">
+  <package name="amsrefs" title="amsrefs" description="A LaTeX-based replacement for BibTeX." debPackage="texlive-bibtex-extra">
     <command name="macrotext" argCount="0" />
     <command name="vdef" argCount="2" />
     <command name="do" argCount="0" />
@@ -16679,7 +16679,7 @@
   </package>
   <package name="mathscinet" debPackage="texlive-bibtex-extra">
   </package>
-  <package name="pst-bezier" debPackage="texlive-pstricks">
+  <package name="pst-bezier" title="pst-bezier" description="Draw Bezier curves." debPackage="texlive-pstricks">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="gobble" argCount="1" />
@@ -16752,7 +16752,7 @@
   </package>
   <package name="glossaries-babel" debPackage="texlive-latex-extra">
   </package>
-  <package name="babelbib" debPackage="texlive-latex-base">
+  <package name="babelbib" title="babelbib" description="Multilingual bibliographies." debPackage="texlive-latex-base">
     <command name="btxprintmonthyear" argCount="4" />
     <command name="bbbbaddto" argCount="2" />
     <command name="inputbdf" argCount="2" />
@@ -16866,7 +16866,7 @@
     <command name="ellipsis" argCount="0" />
     <command name="ellipsispunctuation" argCount="0" />
   </package>
-  <package name="gastex" debPackage="texlive-science">
+  <package name="gastex" title="gastex" description="Graphs and Automata Simplified in TeX." debPackage="texlive-science">
     <command name="gasset" argCount="1" />
     <command name="compatiblegastexun" argCount="0" />
     <command name="setstatediam" argCount="1" />
@@ -16902,7 +16902,7 @@
     <command name="compatiblepspictpg" argCount="0" />
     <command name="circle" argCount="0" />
   </package>
-  <package name="gmverse" debPackage="texlive-humanities">
+  <package name="gmverse" title="gmverse" description="a package for typesetting (short) poems." debPackage="texlive-humanities">
     <command name="firstofone" argCount="1" />
     <command name="defobeylines" argCount="0" />
     <command name="par" argCount="0" />
@@ -16945,7 +16945,7 @@
   <package name="multiply" debPackage="texlive-latex-extra">
     <command name="multnooverflow" argCount="2" />
   </package>
-  <package name="bez123" debPackage="texlive-latex-extra">
+  <package name="bez123" title="bez123" description="Support for Bezier curves." debPackage="texlive-latex-extra">
     <command name="lbezier" argCount="2" optionalArg="0" />
     <command name="cbezier" argCount="2" optionalArg="0" />
     <command name="setweightscale" argCount="1" />
@@ -17084,7 +17084,7 @@
     <command name="Unlistize" argCount="1" />
     <command name="Commaize" argCount="2" />
   </package>
-  <package name="12many" debPackage="texlive-math-extra">
+  <package name="12many" title="12many" description="Generalising mathematical index sets." debPackage="texlive-math-extra">
     <command name="newOTMstyle" argCount="0" />
     <command name="renewOTMstyle" argCount="0" />
     <command name="newOTMparameter" argCount="3" />
@@ -17098,14 +17098,14 @@
   <package name="marginnote" debPackage="texlive-latex-extra">
     <command name="mn" argCount="0" />
   </package>
-  <package name="har2nat" debPackage="texlive-publishers">
+  <package name="har2nat" title="har2nat" description="Replace the harvard package with natbib." debPackage="texlive-publishers">
     <command name="cite" argCount="0" />
     <command name="citeaffixed" argCount="2" />
     <command name="citeasnoun" argCount="0" />
     <command name="citename" argCount="0" />
     <command name="citeyear" argCount="0" />
   </package>
-  <package name="emp" debPackage="texlive-metapost">
+  <package name="emp" title="emp" description=""Encapsulate" MetaPost figures in a document." debPackage="texlive-metapost">
     <command name="fileversion" argCount="0" />
     <command name="empwrite" argCount="1" />
     <command name="empfile" argCount="1" optionalArg="\jobname" />
@@ -17277,7 +17277,7 @@
     <command name="BeforeTOCHead" argCount="2" />
     <command name="AfterTOCHead" argCount="2" />
   </package>
-  <package name="afthesis" debPackage="texlive-publishers">
+  <package name="afthesis" title="afthesis" description="Air Force Institute of Technology thesis class." debPackage="texlive-publishers">
   </package>
   <package name="afthes10" debPackage="texlive-publishers">
     <command name="baselinestretch" argCount="0" />
@@ -17408,7 +17408,7 @@
   </package>
   <package name="semioneside" debPackage="texlive-latex-extra">
   </package>
-  <package name="pst-diffraction" debPackage="texlive-pstricks">
+  <package name="pst-diffraction" title="pst-diffraction" description="Print diffraction patterns from various apertures." debPackage="texlive-pstricks">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="psdiffractionRectangle" argCount="0" />
@@ -17576,7 +17576,7 @@
     <command name="DNA" argCount="1" />
     <command name="struty" argCount="0" />
   </package>
-  <package name="psu-thesis" debPackage="texlive-publishers">
+  <package name="psu-thesis" title="psu-thesis" description="Package for writing a thesis at Penn State University." debPackage="texlive-publishers">
     <command name="filename" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="fileversion" argCount="0" />
@@ -17749,7 +17749,7 @@
   </package>
   <package name="gmdoc-enhance" debPackage="texlive-latex-extra">
   </package>
-  <package name="guitar" debPackage="texlive-music">
+  <package name="guitar" title="guitar" description="Guitar chords and song texts." debPackage="texlive-music">
     <command name="undefined" argCount="0" />
     <command name="guitarChord" argCount="0" />
     <command name="guitarOn" argCount="0" />
@@ -17849,7 +17849,7 @@
     <command name="CalculateTan" argCount="1" />
     <command name="UseTan" argCount="1" />
   </package>
-  <package name="graphics" debPackage="texlive-latex-base">
+  <package name="graphics" title="graphics" description="Standard LaTeX graphics." debPackage="texlive-latex-base">
     <command name="DeclareGraphicsExtensions" argCount="1" />
     <command name="includegraphics" argCount="0" />
     <command name="DeclareGraphicsRule" argCount="4" />
@@ -18122,7 +18122,7 @@
     <command name="newsubfloat" argCount="1" />
     <command name="setnewfloatindents" argCount="3" />
   </package>
-  <package name="betababel" debPackage="texlive-lang-greek">
+  <package name="betababel" title="betababel" description="Insert ancient greek text coded in Beta Code." debPackage="texlive-lang-greek">
   </package>
   <package name="yagusylo" debPackage="texlive-latex-extra">
     <command name="fileversion" argCount="0" />
@@ -18189,7 +18189,7 @@
     <command name="twouplandscape" argCount="0" />
     <command name="twouponetoone" argCount="0" />
   </package>
-  <package name="booklet" debPackage="texlive-latex-extra">
+  <package name="booklet" title="booklet" description="Aids for printing simple booklets." debPackage="texlive-latex-extra">
     <command name="magstepminus" argCount="1" />
   </package>
   <package name="makebarcode" debPackage="texlive-latex-extra">
@@ -18377,7 +18377,7 @@
     <command name="HLSef" argCount="1" />
     <command name="HLSez" argCount="1" />
   </package>
-  <package name="fancyvrb" debPackage="texlive-latex-recommended">
+  <package name="fancyvrb" title="fancyvrb" description="Sophisticated verbatim text." debPackage="texlive-latex-recommended">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="VerbatimFootnotes" argCount="0" />
@@ -18419,7 +18419,7 @@
     <command name="lrbox" argCount="1" />
     <command name="endlrbox" argCount="0" />
   </package>
-  <package name="pdftricks" debPackage="texlive-pstricks">
+  <package name="pdftricks" title="pdftricks" description="Support for pstricks in pdfTeX." debPackage="texlive-pstricks">
     <command name="tmpfile" argCount="0" />
     <command name="PDFTfigname" argCount="0" />
     <command name="PDFTWarning" argCount="2" />
@@ -18761,7 +18761,7 @@
     <command name="newrefformat" argCount="2" />
     <command name="prettyref" argCount="1" />
   </package>
-  <package name="hexgame" debPackage="texlive-games">
+  <package name="hexgame" title="hexgame" description="Provide an environment to draw a hexgame-board." debPackage="texlive-games">
     <command name="colorhex" argCount="2" />
     <command name="labelhex" argCount="2" />
     <environment name="hexgame" argCount="1" />
@@ -18863,7 +18863,7 @@
     <command name="skiplevels" argCount="0" />
     <command name="endskiplevels" argCount="0" />
   </package>
-  <package name="hepparticles" debPackage="texlive-science">
+  <package name="hepparticles" title="hepparticles" description="Macros for typesetting high energy physics particle names." debPackage="texlive-science">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="myargtwo" argCount="0" />
@@ -18885,10 +18885,10 @@
   <package name="berasans" debPackage="texlive-fonts-extra">
     <command name="ProcessOptionsWithKV" argCount="1" />
   </package>
-  <package name="bera" debPackage="texlive-fonts-extra">
+  <package name="bera" title="bera" description="Bera fonts." debPackage="texlive-fonts-extra">
     <command name="fveTeX" argCount="0" />
   </package>
-  <package name="marvosym" debPackage="texlive-fonts-recommended">
+  <package name="marvosym" title="marvosym" description="Martin Vogel's Symbols (marvosym) font." debPackage="texlive-fonts-recommended">
     <command name="mvs" argCount="0" />
     <command name="mvchr" argCount="1" />
     <command name="textmvs" argCount="1" />
@@ -19076,7 +19076,7 @@
     <command name="Womanface" argCount="0" />
     <command name="MartinVogel" argCount="0" />
   </package>
-  <package name="etex" debPackage="texlive-base">
+  <package name="etex" title="etex" description="An extended version of TeX, from the NTS project." debPackage="texlive-base">
     <command name="eTeX" argCount="0" />
     <command name="tracingall" argCount="0" />
     <command name="loggingall" argCount="0" />
@@ -19370,7 +19370,7 @@
     <command name="listofplates" argCount="0" />
     <environment name="plate" argCount="0" />
   </package>
-  <package name="euler" debPackage="texlive-latex-recommended">
+  <package name="euler" title="euler" description="Use AMS Euler fonts for math." debPackage="texlive-latex-recommended">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="frak" argCount="0" />
@@ -19544,9 +19544,9 @@
   </package>
   <package name="autopagewidth" debPackage="texlive-latex-recommended">
   </package>
-  <package name="extsizes" debPackage="texlive-latex-recommended">
+  <package name="extsizes" title="extsizes" description="Extend the standard classes' size options." debPackage="texlive-latex-recommended">
   </package>
-  <package name="othello" debPackage="texlive-games">
+  <package name="othello" title="othello" description="Create othello boards in LaTeX." debPackage="texlive-games">
     <command name="gofontsize" argCount="1" />
     <command name="newgoline" argCount="0" />
     <command name="empty" argCount="0" />
@@ -19700,11 +19700,11 @@
   <package name="texilikecover" debPackage="texlive-latex-extra">
     <command name="subtitle" argCount="1" />
   </package>
-  <package name="addlines" debPackage="texlive-latex-extra">
+  <package name="addlines" title="addlines" description="A user-friendly wrapper around \enlargethispage." debPackage="texlive-latex-extra">
     <command name="addlines" argCount="1" optionalArg="1" />
     <command name="removelines" argCount="1" optionalArg="1" />
   </package>
-  <package name="acronym" debPackage="texlive-latex-extra">
+  <package name="acronym" title="acronym" description="Expand acronyms at least once." debPackage="texlive-latex-extra">
     <command name="acs" argCount="0" />
     <command name="acl" argCount="0" />
     <command name="acf" argCount="0" />
@@ -19725,7 +19725,7 @@
     <command name="aclua" argCount="1" />
     <environment name="acronym" argCount="1" optionalArg="1" />
   </package>
-  <package name="frontespizio" debPackage="texlive-lang-italian">
+  <package name="frontespizio" title="frontespizio" description="Create a frontispiece for Italian theses." debPackage="texlive-lang-italian">
     <command name="includefront" argCount="2" optionalArg="0" />
     <command name="fontoptionnormal" argCount="0" />
     <command name="fontoptionsans" argCount="0" />
@@ -19797,7 +19797,7 @@
     <command name="TabStopList" argCount="0" />
     <command name="NumTabs" argCount="1" />
   </package>
-  <package name="natbib" debPackage="texlive-latex-base">
+  <package name="natbib" title="natbib" description="Flexible bibliography support." debPackage="texlive-latex-base">
     <command name="bibstyle" argCount="0" />
     <command name="citestyle" argCount="1" />
     <command name="bibpunct" argCount="7" optionalArg=", " />
@@ -19862,7 +19862,7 @@
   </package>
   <package name="birm" debPackage="texlive-lang-indic">
   </package>
-  <package name="hep" debPackage="texlive-science">
+  <package name="hep" title="hep" description="A "convenience wrapper" for High Energy Physics packages." debPackage="texlive-science">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
   </package>
@@ -19881,7 +19881,7 @@
     <command name="putfile" argCount="2" />
     <environment name="dottedjoin" argCount="1" />
   </package>
-  <package name="eepic" debPackage="texlive-pictures">
+  <package name="eepic" title="eepic" description="Extensions to epic and the LaTeX drawing tools." debPackage="texlive-pictures">
     <command name="thinlines" argCount="0" />
     <command name="thicklines" argCount="0" />
     <command name="dottedjoin" argCount="0" />
@@ -19941,7 +19941,7 @@
     <command name="processotherdelayedfloats" argCount="0" />
     <command name="baselinestretch" argCount="0" />
   </package>
-  <package name="chemcono" debPackage="texlive-science">
+  <package name="chemcono" title="chemcono" description="Support for compound numbers in chemistry documents." debPackage="texlive-science">
     <command name="ffbibitem" argCount="0" />
     <command name="ffbibcite" argCount="0" />
     <command name="ffbibliography" argCount="1" />
@@ -20019,7 +20019,7 @@
   <package name="pgfcircvoltage" debPackage="texlive-pictures">
     <command name="pgfcircmathresult" argCount="0" />
   </package>
-  <package name="circuitikz" debPackage="texlive-pictures">
+  <package name="circuitikz" title="circuitikz" description="Draw electrical networks with TikZ." debPackage="texlive-pictures">
     <command name="pgfcircversion" argCount="0" />
     <command name="pgf" argCount="0" />
     <command name="circuitikzbasekey" argCount="0" />
@@ -20091,7 +20091,7 @@
   <package name="fancycha" debPackage="texlive-lang-cyrillic">
     <command name="Chapter" argCount="1" />
   </package>
-  <package name="cmcyralt" debPackage="texlive-lang-cyrillic">
+  <package name="cmcyralt" title="cmcyralt" description="LaTeX support for the cmcyralt fonts." debPackage="texlive-lang-cyrillic">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="No" argCount="0" />
@@ -20132,7 +20132,7 @@
     <command name="tablename" argCount="0" />
     <command name="appendixname" argCount="0" />
   </package>
-  <package name="cchess" debPackage="texlive-games">
+  <package name="cchess" title="cchess" description="Chinese chess." debPackage="texlive-games">
     <command name="largeboard" argCount="0" />
     <command name="cchessunit" argCount="0" />
     <command name="normalboard" argCount="0" />
@@ -20141,7 +20141,7 @@
     <command name="textpiece" argCount="1" />
     <environment name="position" argCount="0" />
   </package>
-  <package name="colortbl" debPackage="texlive-latex-base">
+  <package name="colortbl" title="colortbl" description="Add colour to LaTeX tables." debPackage="texlive-latex-base">
     <command name="endarray" argCount="0" />
     <command name="multicolumn" argCount="3" />
     <command name="doublerulesepcolor" argCount="2" />
@@ -20293,7 +20293,7 @@
     <command name="slashed" argCount="1" />
     <command name="declareslashed" argCount="5" />
   </package>
-  <package name="plain" debPackage="texlive-latex-base">
+  <package name="plain" title="plain" description="The Plain TeX format." debPackage="texlive-latex-base">
     <command name="plain" argCount="0" />
     <command name="cleartabs" argCount="0" />
     <command name="settabs" argCount="0" />
@@ -20355,7 +20355,7 @@
     <command name="endlongtable" argCount="0" />
     <command name="write" argCount="2" />
   </package>
-  <package name="tkz-tab" debPackage="texlive-pictures">
+  <package name="tkz-tab" title="tkz-tab" description="Tables of signs and variations using PGF/TikZ." debPackage="texlive-pictures">
     <command name="strip" argCount="0" />
   </package>
   <package name="directory" debPackage="texlive-latex-extra">
@@ -20638,7 +20638,7 @@
     <command name="labelitemiv" argCount="0" />
     <command name="familydefault" argCount="0" />
   </package>
-  <package name="t-angles" debPackage="texlive-science">
+  <package name="t-angles" title="t-angles" description="Draw tangles, trees, Hopf algebra operations and other" debPackage="texlive-science">
     <command name="FillCircDiam" argCount="0" />
     <command name="EMlinewd" argCount="0" />
     <command name="EMfilename" argCount="0" />
@@ -20747,10 +20747,10 @@
     <command name="endtangle" argCount="0" />
     <command name="enddocument" argCount="0" />
   </package>
-  <package name="Tabbing" debPackage="texlive-latex-extra">
+  <package name="Tabbing" title="Tabbing" description="Tabbing with accented letters." debPackage="texlive-latex-extra">
     <command name="TAB" argCount="1" />
   </package>
-  <package name="miller" debPackage="texlive-science">
+  <package name="miller" title="miller" description="Typeset miller indices." debPackage="texlive-science">
     <command name="hkleckig" argCount="1" />
     <command name="hklgeschweift" argCount="1" />
   </package>
@@ -20760,7 +20760,7 @@
     <command name="OVP" argCount="0" />
     <environment name="overpic" argCount="2" />
   </package>
-  <package name="kalender" debPackage="texlive-lang-german">
+  <package name="kalender" title="kalender" description="Create a calendar, in German." debPackage="texlive-lang-german">
     <command name="Kalender" argCount="1" />
     <command name="modulJahr" argCount="1" />
     <command name="monatname" argCount="0" />
@@ -21031,7 +21031,7 @@
     <command name="settominwidth" argCount="3" optionalArg="\columnwidth" />
     <command name="widthofpbox" argCount="1" />
   </package>
-  <package name="procIAGssymp" debPackage="texlive-publishers">
+  <package name="procIAGssymp" title="procIAGssymp" description="Macros for IAG symposium papers." debPackage="texlive-publishers">
     <command name="linea" argCount="0" />
   </package>
   <package name="version" debPackage="texlive-latex-extra">
@@ -21045,10 +21045,10 @@
     <environment name="makeimage" argCount="0" />
     <environment name="imagesonly" argCount="0" />
   </package>
-  <package name="itrans" debPackage="texlive-lang-indic">
+  <package name="itrans" title="itrans" description="Transliteration of Indian Languages." debPackage="texlive-lang-indic">
     <command name="itransloaded" argCount="0" />
   </package>
-  <package name="dcpic" debPackage="texlive-pictures">
+  <package name="dcpic" title="dcpic" description="Commutative diagrams in a LaTeX and TeX documents." debPackage="texlive-pictures">
     <command name="barraA" argCount="0" />
     <command name="barraB" argCount="0" />
     <command name="objPartida" argCount="0" />
@@ -21111,7 +21111,7 @@
     <command name="forloop" argCount="5" optionalArg="1" />
     <command name="forLoop" argCount="5" optionalArg="1" />
   </package>
-  <package name="amsaddr" debPackage="texlive-latex-extra">
+  <package name="amsaddr" title="amsaddr" description="Alter the position of affiliations in amsart." debPackage="texlive-latex-extra">
     <command name="filename" argCount="0" />
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
@@ -21274,7 +21274,7 @@
     <command name="resetendnotes" argCount="0" />
     <command name="notesbychapter" argCount="0" />
   </package>
-  <package name="chemstyle" debPackage="texlive-science">
+  <package name="chemstyle" title="chemstyle" description="Writing chemistry with style." debPackage="texlive-science">
   </package>
   <package name="chemscheme" debPackage="texlive-science">
     <command name="listschemename" argCount="0" />
@@ -21519,7 +21519,7 @@
     <command name="Grid" argCount="2" optionalArg="0" />
     <command name="Gtxt" argCount="1" />
   </package>
-  <package name="autoarea" debPackage="texlive-pictures">
+  <package name="autoarea" title="autoarea" description="Automatic computation of bounding boxes with PiCTeX." debPackage="texlive-pictures">
     <command name="newcommand" argCount="1" />
     <command name="plottedat" argCount="0" />
     <command name="autoaccountingon" argCount="0" />
@@ -21528,7 +21528,7 @@
     <command name="autoaccountingarcoff" argCount="0" />
     <command name="restoreanglesyntax" argCount="0" />
   </package>
-  <package name="eurosym" debPackage="texlive-fonts-recommended">
+  <package name="eurosym" title="eurosym" description="MetaFont and macros for Euro sign." debPackage="texlive-fonts-recommended">
     <command name="EUR" argCount="1" />
   </package>
   <package name="warning" debPackage="texlive-latex-extra">
@@ -21628,7 +21628,7 @@
     <command name="TypesetOctalNumber" argCount="1" />
     <command name="verifycharcode" argCount="2" />
   </package>
-  <package name="teubner" debPackage="texlive-lang-greek">
+  <package name="teubner" title="teubner" description="Philological typesetting of classical Greek." debPackage="texlive-lang-greek">
     <command name="teubner" argCount="0" />
     <command name="GreekName" argCount="0" />
     <command name="digamma" argCount="0" />
@@ -21673,7 +21673,7 @@
     <environment name="Versi" argCount="1" optionalArg="1" />
     <environment name="VERSI" argCount="1" optionalArg="1" />
   </package>
-  <package name="curve2e" debPackage="texlive-pictures">
+  <package name="curve2e" title="curve2e" description="Extensions for package pict2e." debPackage="texlive-pictures">
     <command name="roundcap" argCount="0" />
     <command name="squarecap" argCount="0" />
     <command name="roundjoin" argCount="0" />
@@ -21934,7 +21934,7 @@
   <package name="midpage" debPackage="texlive-latex-extra">
     <environment name="midpage" argCount="0" />
   </package>
-  <package name="begriff" debPackage="texlive-latex-extra">
+  <package name="begriff" title="begriff" description="Typeset Begriffschrift." debPackage="texlive-latex-extra">
     <command name="BGbracket" argCount="1" />
     <command name="BGterm" argCount="1" />
     <command name="BGstem" argCount="1" />
@@ -22063,7 +22063,7 @@
     <command name="ENcs" argCount="1" />
     <command name="felinenameuse" argCount="1" />
   </package>
-  <package name="answers" debPackage="texlive-latex-extra">
+  <package name="answers" title="answers" description="Setting questions (or exercises) and answers." debPackage="texlive-latex-extra">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="filename" argCount="0" />
@@ -22083,7 +22083,7 @@
     <command name="Currentlabel" argCount="0" />
     <environment name="Filesave" argCount="1" />
   </package>
-  <package name="mhs" debPackage="texlive-science">
+  <package name="mhs" title="mhs" description="Historical mathematics." debPackage="texlive-science">
     <command name="born" argCount="0" />
     <command name="died" argCount="0" />
     <command name="circa" argCount="0" />
@@ -23427,7 +23427,7 @@
     <command name="EndOfComment" argCount="1" />
     <command name="CommentEndDef" argCount="1" />
   </package>
-  <package name="citeref" debPackage="texlive-latex-recommended">
+  <package name="citeref" title="citeref" description="Add reference-page-list to bibliography-items." debPackage="texlive-latex-recommended">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="citepageref" argCount="2" />
@@ -23859,7 +23859,7 @@
     <command name="FParccot" argCount="2" />
     <command name="FParctancot" argCount="3" />
   </package>
-  <package name="fp" debPackage="texlive-latex-recommended">
+  <package name="fp" title="fp" description="Fixed point arithmetic." debPackage="texlive-latex-recommended">
     <command name="message" argCount="1" />
   </package>
   <package name="fp-exp" debPackage="texlive-latex-recommended">
@@ -23951,7 +23951,7 @@
     <command name="backrefcitedsinglestring" argCount="1" />
     <command name="backrefcitedmultistring" argCount="1" />
   </package>
-  <package name="classicthesis" debPackage="texlive-publishers">
+  <package name="classicthesis" title="classicthesis" description="A "classically styled" thesis package." debPackage="texlive-publishers">
     <command name="theenumi" argCount="0" />
     <command name="myChapter" argCount="1" />
     <command name="myPart" argCount="2" />
@@ -23959,7 +23959,7 @@
     <command name="finalVersionString" argCount="0" />
     <environment name="aenumerate" argCount="0" />
   </package>
-  <package name="sfg" debPackage="texlive-science">
+  <package name="sfg" title="sfg" description="Draw signal flow graphs." debPackage="texlive-science">
     <command name="sfgsetunit" argCount="1" />
     <command name="sfgsetangle" argCount="1" />
     <command name="sfgsetarrowloc" argCount="1" />
@@ -23971,7 +23971,7 @@
     <command name="sfgbranch" argCount="4" />
     <command name="sfgcurve" argCount="5" />
   </package>
-  <package name="gu" debPackage="texlive-science">
+  <package name="gu" title="gu" description="Typeset crystallographic group-subgroup-schemes." debPackage="texlive-science">
     <command name="spaltenbreiteem" argCount="0" />
     <command name="spalteneins" argCount="0" />
     <command name="spaltenzwei" argCount="0" />
@@ -24026,7 +24026,7 @@
     <command name="biblabel" argCount="2" />
     <command name="bibref" argCount="1" />
   </package>
-  <package name="index" debPackage="texlive-latex-recommended">
+  <package name="index" title="index" description="Extended index for LaTeX including multiple indexes." debPackage="texlive-latex-recommended">
     <command name="disableindex" argCount="1" />
     <command name="newindex" argCount="0" />
     <command name="renewindex" argCount="0" />
@@ -24035,16 +24035,16 @@
     <command name="raggedbottom" argCount="0" />
     <command name="flushbottom" argCount="0" />
   </package>
-  <package name="pst-asr" debPackage="texlive-pstricks">
+  <package name="pst-asr" title="pst-asr" description="Typeset autosegmental representations for linguists." debPackage="texlive-pstricks">
   </package>
-  <package name="bytefield" debPackage="texlive-science">
+  <package name="bytefield" title="bytefield" description="Create illustrations for network protocol specifications." debPackage="texlive-science">
     <command name="widthunits" argCount="0" />
     <command name="heightunits" argCount="0" />
     <environment name="bytefield" argCount="1" />
     <environment name="wordgroupr" argCount="1" />
     <environment name="wordgroupl" argCount="1" />
   </package>
-  <package name="multido" debPackage="texlive-generic-recommended">
+  <package name="multido" title="multido" description="A loop facility for Generic TeX." debPackage="texlive-generic-recommended">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="multido" argCount="0" />
@@ -24299,9 +24299,9 @@
   </package>
   <package name="cooltooltips" debPackage="texlive-latex-extra">
   </package>
-  <package name="boldtensors" debPackage="texlive-math-extra">
+  <package name="boldtensors" title="boldtensors" description="Bold latin and greek characters through simple prefix" debPackage="texlive-math-extra">
   </package>
-  <package name="boites" debPackage="texlive-latex-extra">
+  <package name="boites" title="boites" description="Boxes that may break across pages" debPackage="texlive-latex-extra">
     <command name="breakboxskip" argCount="0" />
     <command name="breakboxparindent" argCount="0" />
     <command name="breakbox" argCount="0" />
@@ -24328,7 +24328,7 @@
     <command name="gstartabular" argCount="0" />
     <command name="endgstartabular" argCount="0" />
   </package>
-  <package name="sgame" debPackage="texlive-games">
+  <package name="sgame" title="sgame" description="LaTeX style for typesetting strategic games." debPackage="texlive-games">
     <command name="sglinecolor" argCount="0" />
     <command name="sgtextcolor" argCount="0" />
     <command name="game" argCount="2" />
@@ -24361,7 +24361,7 @@
     <command name="next" argCount="0" />
     <command name="command" argCount="0" />
   </package>
-  <package name="frenchle" debPackage="texlive-lang-french">
+  <package name="frenchle" title="frenchle" description="French macros, usable stand-alone or with Babel." debPackage="texlive-lang-french">
     <command name="frenchname" argCount="0" />
     <command name="frenchpack" argCount="0" />
     <command name="ErrFrench" argCount="0" />
@@ -24645,7 +24645,7 @@
     <command name="everyslide" argCount="0" />
     <command name="section" argCount="0" />
   </package>
-  <package name="gfsbaskerville" debPackage="texlive-lang-greek">
+  <package name="gfsbaskerville" title="gfsbaskerville" description="A Greek font, from one such by Baskerville." debPackage="texlive-lang-greek">
     <command name="textgfsbaskerville" argCount="1" />
     <command name="oulig" argCount="1" />
     <environment name="gfsbaskerville" argCount="0" />
@@ -24705,7 +24705,7 @@
     <command name="ASYbase" argCount="2" />
     <command name="ASYraw" argCount="1" />
   </package>
-  <package name="asyfig" debPackage="texlive-pictures">
+  <package name="asyfig" title="asyfig" description="Commands for using Asymptote figures." debPackage="texlive-pictures">
     <command name="asypath" argCount="1" />
     <command name="asyfig" argCount="0" />
   </package>
@@ -24861,7 +24861,7 @@
     <command name="Tbox" argCount="3" optionalArg="0" />
     <environment name="tengwar" argCount="0" />
   </package>
-  <package name="itnumpar" debPackage="texlive-lang-italian">
+  <package name="itnumpar" title="itnumpar" description="Spell numbers in words (Italian)." debPackage="texlive-lang-italian">
     <command name="numeroinparole" argCount="1" />
     <command name="Numeroinparole" argCount="1" />
     <command name="ordinalem" argCount="1" />
@@ -24870,7 +24870,7 @@
     <command name="Ordinalef" argCount="1" />
     <command name="printnumeroinparole" argCount="0" />
   </package>
-  <package name="rotating" debPackage="texlive-latex-recommended">
+  <package name="rotating" title="rotating" description="Rotation tools, including rotated full-page floats." debPackage="texlive-latex-recommended">
     <command name="rotdriver" argCount="1" />
     <command name="sideways" argCount="0" />
     <command name="endsideways" argCount="0" />
@@ -24926,7 +24926,7 @@
     <command name="cygwinname" argCount="0" />
     <command name="unknownplatform" argCount="0" />
   </package>
-  <package name="bibtopicprefix" debPackage="texlive-bibtex-extra">
+  <package name="bibtopicprefix" title="bibtopicprefix" description="Prefix references to bibliographies produced by bibtopic." debPackage="texlive-bibtex-extra">
     <command name="bibprefix" argCount="0" />
   </package>
   <package name="xytree" debPackage="texlive-latex-extra">
@@ -24985,7 +24985,7 @@
     <command name="slashbox" argCount="0" />
     <command name="backslashbox" argCount="0" />
   </package>
-  <package name="inlinebib" debPackage="texlive-bibtex-extra">
+  <package name="inlinebib" title="inlinebib" description="Citations in footnotes." debPackage="texlive-bibtex-extra">
     <command name="protect" argCount="1" />
     <command name="bibcite" argCount="2" />
     <command name="noibid" argCount="0" />
@@ -25003,7 +25003,7 @@
     <command name="pages" argCount="2" optionalArg="\@gobble" />
     <command name="next" argCount="0" />
   </package>
-  <package name="cherokee" debPackage="texlive-fonts-extra">
+  <package name="cherokee" title="cherokee" description="A font for the Cherokee script." debPackage="texlive-fonts-extra">
     <command name="Csoo" argCount="0" />
     <command name="Cga" argCount="0" />
     <command name="Cha" argCount="0" />
@@ -25293,7 +25293,7 @@
     <command name="addsec" argCount="0" />
     <command name="markboth" argCount="0" />
   </package>
-  <package name="pst-3d" debPackage="texlive-pstricks">
+  <package name="pst-3d" title="pst-3d" description="A PSTricks package for tilting and other pseudo-3D tricks." debPackage="texlive-pstricks">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="ThreeDput" argCount="0" />
@@ -25301,7 +25301,7 @@
     <command name="psTilt" argCount="1" />
     <command name="psshadow" argCount="0" />
   </package>
-  <package name="pst-bar" debPackage="texlive-pstricks">
+  <package name="pst-bar" title="pst-bar" description="Produces bar charts using pstricks." debPackage="texlive-pstricks">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="psbarchart" argCount="0" />
@@ -25353,7 +25353,7 @@
     <command name="rotboxpages" argCount="0" />
     <command name="endrotboxpages" argCount="0" />
   </package>
-  <package name="attachfile" debPackage="texlive-latex-extra">
+  <package name="attachfile" title="attachfile" description="Attach arbitrary files to a PDF document" debPackage="texlive-latex-extra">
     <command name="atfi" argCount="0" />
   </package>
   <package name="pst-sigsys" debPackage="texlive-pstricks">
@@ -25682,7 +25682,7 @@
   </package>
   <package name="keys3opts2" debPackage="texlive-latex3">
   </package>
-  <package name="keys3" debPackage="texlive-latex3">
+  <package name="keys3" title="keys3" description="" debPackage="texlive-latex3">
   </package>
   <package name="unroman" debPackage="texlive-latex-extra">
   </package>
@@ -25694,7 +25694,7 @@
     <command name="Huge" argCount="0" />
     <command name="UndeclareFontFamily" argCount="2" />
   </package>
-  <package name="pgfplots" debPackage="texlive-pictures">
+  <package name="pgfplots" title="pgfplots" description="Create normal/logarithmic plots in LaTeX." debPackage="texlive-pictures">
     <command name="pgfplotsversion" argCount="0" />
     <command name="pgfsysdriver" argCount="0" />
   </package>
@@ -25707,7 +25707,7 @@
     <command name="CI" argCount="0" />
     <command name="colorValue" argCount="0" />
   </package>
-  <package name="pst-gantt" debPackage="texlive-pstricks">
+  <package name="pst-gantt" title="pst-gantt" description="Draw GANTT charts with pstricks." debPackage="texlive-pstricks">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="PstGanttChart" argCount="0" />
@@ -25808,11 +25808,11 @@
     <command name="zetta" argCount="0" />
     <command name="yotta" argCount="0" />
   </package>
-  <package name="breakurl" debPackage="texlive-latex-extra">
+  <package name="breakurl" title="breakurl" description="Line-breakable \url-like links in hyperref when compiling via" debPackage="texlive-latex-extra">
   </package>
   <package name="europs" debPackage="texlive-fonts-recommended">
   </package>
-  <package name="eurofont" debPackage="texlive-fonts-recommended">
+  <package name="eurofont" title="eurofont" description="Provides a command that prints a euro symbol." debPackage="texlive-fonts-recommended">
     <command name="userlist" argCount="0" />
     <command name="texteurolist" argCount="0" />
     <command name="chinaelist" argCount="0" />
@@ -25857,7 +25857,7 @@
     <command name="widetable" argCount="2" />
     <command name="endwidetable" argCount="0" />
   </package>
-  <package name="mxd" debPackage="texlive-omega">
+  <package name="mxd" title="mxd" description="Support for Mongolian "horizontal" (Xewtee Dorwoljin) script." debPackage="texlive-omega">
     <command name="mxdVersion" argCount="0" />
     <command name="mxd" argCount="0" />
   </package>
@@ -25954,7 +25954,7 @@
     <command name="twothirds" argCount="0" />
     <environment name="bodoni" argCount="0" />
   </package>
-  <package name="bizcard" debPackage="texlive-latex-extra">
+  <package name="bizcard" title="bizcard" description="Typeset business cards." debPackage="texlive-latex-extra">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <environment name="bizcard" argCount="0" />
@@ -26086,7 +26086,7 @@
     <environment name="edtabularc" argCount="0" />
     <environment name="edtabularr" argCount="0" />
   </package>
-  <package name="go" debPackage="texlive-games">
+  <package name="go" title="go" description="Fonts and macros for typesetting go games." debPackage="texlive-games">
     <command name="gofontsize" argCount="1" />
     <command name="newgoline" argCount="0" />
     <command name="hoshi" argCount="0" />
@@ -26166,7 +26166,7 @@
     <command name="huge" argCount="0" />
     <command name="Huge" argCount="0" />
   </package>
-  <package name="adrlist" debPackage="texlive-latex-extra">
+  <package name="adrlist" title="adrlist" description="Using address lists in LaTeX." debPackage="texlive-latex-extra">
     <command name="ifstringcompare" argCount="4" />
     <command name="concat" argCount="2" />
     <command name="ForEachAddress" argCount="2" />
@@ -26222,7 +26222,7 @@
     <command name="getMin" argCount="2" />
     <command name="getSec" argCount="2" />
   </package>
-  <package name="boxhandler" debPackage="texlive-latex-extra">
+  <package name="boxhandler" title="boxhandler" description="Flexible Captioning and Deferred Box/List Printing." debPackage="texlive-latex-extra">
     <command name="holdTables" argCount="0" />
     <command name="holdFigures" argCount="0" />
     <command name="LRTablePlacement" argCount="0" />
@@ -26275,7 +26275,7 @@
     <command name="ProvidesPackage" argCount="0" />
     <command name="ProvidesFile" argCount="0" />
   </package>
-  <package name="animate" debPackage="texlive-latex-extra">
+  <package name="animate" title="animate" description="Create PDF animations from graphics files and inline graphics." debPackage="texlive-latex-extra">
     <command name="document" argCount="0" />
     <command name="animategraphics" argCount="0" />
     <command name="width" argCount="0" />
@@ -26310,7 +26310,7 @@
   </package>
   <package name="upquote" debPackage="texlive-latex-extra">
   </package>
-  <package name="pst-eucl" debPackage="texlive-pstricks">
+  <package name="pst-eucl" title="pst-eucl" description="Euclidian geometry with pstricks." debPackage="texlive-pstricks">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="SegSymLst" argCount="0" />
@@ -26389,7 +26389,7 @@
     <command name="twocoltoc" argCount="0" />
     <environment name="tabexemple" argCount="1" />
   </package>
-  <package name="ecltree" debPackage="texlive-humanities">
+  <package name="ecltree" title="ecltree" description="Trees using epic and eepic macros." debPackage="texlive-humanities">
     <command name="bundle" argCount="1" />
     <command name="endbundle" argCount="0" />
     <command name="chunk" argCount="0" />
@@ -26480,9 +26480,9 @@
   </package>
   <package name="slantsc" debPackage="texlive-latex-extra">
   </package>
-  <package name="cyklop" debPackage="texlive-fonts-extra">
+  <package name="cyklop" title="cyklop" description="The Cyclop typeface." debPackage="texlive-fonts-extra">
   </package>
-  <package name="crop" debPackage="texlive-latex-recommended">
+  <package name="crop" title="crop" description="Support for cropmarks." debPackage="texlive-latex-recommended">
     <command name="CROP" argCount="0" />
     <command name="x" argCount="0" />
     <command name="expandafter" argCount="0" />
@@ -26584,7 +26584,7 @@
   </package>
   <package name="algpascal" debPackage="texlive-science">
   </package>
-  <package name="algorithmicx" debPackage="texlive-science">
+  <package name="algorithmicx" title="algorithmicx" description="The algorithmic style you always wanted." debPackage="texlive-science">
     <command name="algorithmicnoindent" argCount="0" />
     <command name="algbackskipbegin" argCount="0" />
     <command name="algbackskip" argCount="0" />
@@ -26704,7 +26704,7 @@
     <environment name="regdesc" argCount="1" optionalArg="0.90\textwidth" />
     <environment name="register" argCount="3" />
   </package>
-  <package name="functan" debPackage="texlive-science">
+  <package name="functan" title="functan" description="Macros for functional analysis and PDE theory" debPackage="texlive-science">
     <command name="Macro" argCount="2" />
     <command name="m" argCount="1" />
     <command name="mempty" argCount="1" />
@@ -26734,13 +26734,13 @@
     <command name="scalprod" argCount="0" />
     <command name="newscalprod" argCount="1" />
   </package>
-  <package name="cjhebrew" debPackage="texlive-lang-hebrew">
+  <package name="cjhebrew" title="cjhebrew" description="Typeset Hebrew with LaTeX." debPackage="texlive-lang-hebrew">
     <command name="cjhebfamily" argCount="0" />
     <command name="cjRL" argCount="1" />
     <command name="cjLR" argCount="1" />
     <environment name="cjhebrew" argCount="0" />
   </package>
-  <package name="pst-calendar" debPackage="texlive-pstricks">
+  <package name="pst-calendar" title="pst-calendar" description="Plot calendars in "fancy" ways." debPackage="texlive-pstricks">
     <command name="RA" argCount="0" />
     <command name="psCalDodecaeder" argCount="0" />
     <command name="faceA" argCount="0" />
@@ -26781,7 +26781,7 @@
     <command name="CBMainSectioning" argCount="0" />
     <environment name="cbunit" argCount="0" />
   </package>
-  <package name="cite" debPackage="texlive-latex-recommended">
+  <package name="cite" title="cite" description="Improved citation handling in LaTeX." debPackage="texlive-latex-recommended">
     <command name="citepunct" argCount="0" />
     <command name="citeleft" argCount="0" />
     <command name="citenum" argCount="0" />
@@ -26811,7 +26811,7 @@
     <command name="protect" argCount="0" />
     <environment name="subeqnarray" argCount="0" />
   </package>
-  <package name="gfsporson" debPackage="texlive-lang-greek">
+  <package name="gfsporson" title="gfsporson" description="A Greek font, originally from Porson." debPackage="texlive-lang-greek">
     <command name="textporson" argCount="1" />
     <environment name="porson" argCount="0" />
   </package>
@@ -26852,19 +26852,19 @@
   </package>
   <package name="mtgreek" debPackage="texlive-latex-extra">
   </package>
-  <package name="bibleref" debPackage="texlive-humanities">
+  <package name="bibleref" title="bibleref" description="Format bible citations." debPackage="texlive-humanities">
     <command name="newbiblerefstyle" argCount="2" />
     <command name="BRepistleto" argCount="0" />
     <command name="BRepistleof" argCount="0" />
   </package>
-  <package name="aurical" debPackage="texlive-fonts-extra">
+  <package name="aurical" title="aurical" description="Calligraphic fonts for use with LaTeX in T1 encoding." debPackage="texlive-fonts-extra">
     <command name="auri" argCount="0" />
     <command name="Fontauri" argCount="0" />
     <command name="Fontlukas" argCount="0" />
     <command name="Fontamici" argCount="0" />
     <command name="Fontskrivan" argCount="0" />
   </package>
-  <package name="fancyhdr" debPackage="texlive-latex-base">
+  <package name="fancyhdr" title="fancyhdr" description="Extensive control of page headers and footers in LaTeX2e." debPackage="texlive-latex-base">
     <command name="f" argCount="0" />
     <command name="def" argCount="0" />
     <command name="if" argCount="0" />
@@ -26986,7 +26986,7 @@
   </package>
   <package name="xstring" debPackage="texlive-latex-extra">
   </package>
-  <package name="barcodes" debPackage="texlive-fonts-extra">
+  <package name="barcodes" title="barcodes" description="Fonts for making barcodes." debPackage="texlive-fonts-extra">
     <command name="bcbox" argCount="1" />
     <command name="bdbox" argCount="1" />
     <command name="bebox" argCount="1" />
@@ -27009,7 +27009,7 @@
     <command name="filedate" argCount="0" />
     <command name="fileversion" argCount="0" />
   </package>
-  <package name="hepunits" debPackage="texlive-science">
+  <package name="hepunits" title="hepunits" description="A set of units useful in high energy physics applications." debPackage="texlive-science">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
   </package>
@@ -27613,7 +27613,7 @@
     <command name="scalebar" argCount="7" />
     <command name="SBRound" argCount="0" />
   </package>
-  <package name="pmgraph" debPackage="texlive-pictures">
+  <package name="pmgraph" title="pmgraph" description=""Poor man's" graphics." debPackage="texlive-pictures">
     <command name="vdashline" argCount="1" />
     <command name="hdashline" argCount="1" />
     <command name="romb" argCount="0" />
@@ -27683,7 +27683,7 @@
     <command name="settestmacro" argCount="0" />
     <environment name="Picture" argCount="0" />
   </package>
-  <package name="latex2man" debPackage="texlive-extra-utils">
+  <package name="latex2man" title="latex2man" description="Translate LaTeX-based manual pages into Unix man format." debPackage="texlive-extra-utils">
     <command name="Opt" argCount="1" />
     <command name="Arg" argCount="1" />
     <command name="OptArg" argCount="2" />
@@ -27734,16 +27734,16 @@
     <command name="PstLensShape" argCount="0" />
     <command name="PstLens" argCount="0" />
   </package>
-  <package name="apalike" debPackage="texlive-base">
+  <package name="apalike" title="apalike" description="APA-like citations" debPackage="texlive-base">
     <command name="thebibliography" argCount="1" />
     <command name="newblock" argCount="0" />
   </package>
-  <package name="boisik" debPackage="texlive-fonts-extra">
+  <package name="boisik" title="boisik" description="A font inspired by Baskerville design." debPackage="texlive-fonts-extra">
   </package>
-  <package name="anyfontsize" debPackage="texlive-latex-extra">
+  <package name="anyfontsize" title="anyfontsize" description="Select any font size in LaTeX." debPackage="texlive-latex-extra">
     <command name="fontsubfuzz" argCount="0" />
   </package>
-  <package name="imac" debPackage="texlive-publishers">
+  <package name="imac" title="imac" description="International Modal Analysis Conference format." debPackage="texlive-publishers">
     <command name="tablename" argCount="0" />
     <command name="Programname" argCount="0" />
     <command name="vect" argCount="1" />
@@ -27757,7 +27757,7 @@
   </package>
   <package name="l7xenc" debPackage="texlive-lang-lithuanian">
   </package>
-  <package name="lithuanian" debPackage="texlive-lang-lithuanian">
+  <package name="lithuanian" title="lithuanian" description="Lithuanian language support." debPackage="texlive-lang-lithuanian">
     <command name="LdfInit" argCount="0" />
     <command name="bblstyerror" argCount="0" />
     <command name="ProvidesLanguage" argCount="0" />
@@ -27778,7 +27778,7 @@
     <environment name="flushepinormal" argCount="0" />
     <environment name="epigraphs" argCount="0" />
   </package>
-  <package name="ar" debPackage="texlive-fonts-extra">
+  <package name="ar" title="ar" description="Capital A and capital R ligature for Apsect Ratio." debPackage="texlive-fonts-extra">
     <command name="AR" argCount="0" />
     <command name="tar" argCount="0" />
   </package>
@@ -27814,7 +27814,7 @@
     <command name="INVl" argCount="0" />
     <command name="INVu" argCount="0" />
   </package>
-  <package name="ctable" debPackage="texlive-latex-recommended">
+  <package name="ctable" title="ctable" description="Easily typeset centered tables." debPackage="texlive-latex-recommended">
     <command name="NN" argCount="0" />
     <command name="FL" argCount="0" />
     <command name="ML" argCount="0" />
@@ -27881,7 +27881,7 @@
   <package name="ltabptch" debPackage="texlive-latex-extra">
     <command name="fileversion" argCount="0" />
   </package>
-  <package name="fancybox" debPackage="texlive-latex-recommended">
+  <package name="fancybox" title="fancybox" description="Variants of \fbox and other games with boxes." debPackage="texlive-latex-recommended">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="shadowbox" argCount="0" />
@@ -28094,7 +28094,7 @@
     <command name="jbibitem" argCount="3" />
     <environment name="sachverhalt" argCount="0" />
   </package>
-  <package name="tdsfrmath" debPackage="texlive-lang-french">
+  <package name="tdsfrmath" title="tdsfrmath" description="Macros for French teachers of mathematics." debPackage="texlive-lang-french">
     <command name="PackageName" argCount="0" />
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
@@ -28410,7 +28410,7 @@
     <command name="footnotemark" argCount="0" />
     <command name="maketitle" argCount="0" />
   </package>
-  <package name="digiconfigs" debPackage="texlive-science">
+  <package name="digiconfigs" title="digiconfigs" description="Writing "configurations"" debPackage="texlive-science">
     <command name="setCircleChar" argCount="1" />
     <command name="setBulletChar" argCount="1" />
     <command name="setBlankChar" argCount="1" />
@@ -28428,7 +28428,7 @@
   <package name="fnbreak" debPackage="texlive-latex-extra">
     <command name="fnb" argCount="0" />
   </package>
-  <package name="dramatist" debPackage="texlive-humanities">
+  <package name="dramatist" title="dramatist" description="Typeset dramas, both in verse and in prose." debPackage="texlive-humanities">
     <command name="actmark" argCount="1" />
     <command name="scenemark" argCount="1" />
     <command name="drampermark" argCount="1" />
@@ -28492,7 +28492,7 @@
     <environment name="CharacterGroup" argCount="1" />
     <environment name="stagedir" argCount="0" />
   </package>
-  <package name="formula" debPackage="texlive-science">
+  <package name="formula" title="formula" description="Typesetting physical units." debPackage="texlive-science">
     <command name="expandafter" argCount="0" />
     <command name="eorg" argCount="2" />
     <command name="NoPreDefinition" argCount="0" />
@@ -28546,7 +28546,7 @@
     <environment name="method" argCount="0" />
     <environment name="data" argCount="0" />
   </package>
-  <package name="kerkis" debPackage="texlive-lang-greek">
+  <package name="kerkis" title="kerkis" description="Kerkis (Greek) font family." debPackage="texlive-lang-greek">
     <command name="calshape" argCount="0" />
     <command name="textcal" argCount="1" />
     <command name="uishape" argCount="0" />
@@ -28857,7 +28857,7 @@
     <command name="theenumiv" argCount="0" />
     <command name="newblock" argCount="0" />
   </package>
-  <package name="lambda" debPackage="texlive-games">
+  <package name="lambda" title="lambda" description="LaTeX format based on the Omega engine." debPackage="texlive-games">
     <command name="Identity" argCount="1" />
     <command name="First" argCount="2" />
     <command name="Second" argCount="2" />
@@ -28883,7 +28883,7 @@
     <command name="Unlistize" argCount="1" />
     <command name="Commaize" argCount="2" />
   </package>
-  <package name="skak" debPackage="texlive-games">
+  <package name="skak" title="skak" description="Fonts and macros for typesetting chess games." debPackage="texlive-games">
     <command name="normalstyles" argCount="0" />
     <command name="mainlinestyle" argCount="0" />
     <command name="variationstyle" argCount="0" />
@@ -29092,7 +29092,7 @@
     <command name="seqinsert" argCount="0" />
     <command name="seqsplit" argCount="1" />
   </package>
-  <package name="chemcompounds" debPackage="texlive-science">
+  <package name="chemcompounds" title="chemcompounds" description="Simple consecutive numbering of chemical compounds." debPackage="texlive-science">
     <command name="compoundseparator" argCount="0" />
     <command name="compoundstyle" argCount="0" />
     <command name="printcompound" argCount="1" />
@@ -29187,7 +29187,7 @@
     <command name="showlabel" argCount="1" />
     <command name="setboardwidth" argCount="0" />
   </package>
-  <package name="gchords" debPackage="texlive-music">
+  <package name="gchords" title="gchords" description="Typeset guitar chords." debPackage="texlive-music">
     <command name="strings" argCount="0" />
     <command name="numfrets" argCount="0" />
     <command name="mediumchords" argCount="0" />
@@ -29364,7 +29364,7 @@
     <command name="SetWatermarkText" argCount="1" />
     <command name="sc" argCount="0" />
   </package>
-  <package name="otibet" debPackage="texlive-lang-tibetan">
+  <package name="otibet" title="otibet" description="" debPackage="texlive-lang-tibetan">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="stop" argCount="0" />
@@ -29413,7 +29413,7 @@
     <command name="achung" argCount="1" />
     <command name="subm" argCount="1" />
   </package>
-  <package name="mltex" debPackage="texlive-formats-extra">
+  <package name="mltex" title="mltex" description="The MLTeX system." debPackage="texlive-formats-extra">
     <command name="aa" argCount="0" />
     <command name="AA" argCount="0" />
     <command name="ml" argCount="0" />
@@ -29805,7 +29805,7 @@
   <package name="emptypage" debPackage="texlive-latex-extra">
     <command name="cleardoublepage" argCount="0" />
   </package>
-  <package name="ieeepes" debPackage="texlive-publishers">
+  <package name="ieeepes" title="ieeepes" description="IEEE Power Engineering Society Transactions." debPackage="texlive-publishers">
     <command name="filename" argCount="0" />
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
@@ -30051,7 +30051,7 @@
     <command name="makesavenoteenv" argCount="0" />
     <command name="parbox" argCount="0" />
   </package>
-  <package name="xkeyval" debPackage="texlive-latex-recommended">
+  <package name="xkeyval" title="xkeyval" description="Extension of the keyval package." debPackage="texlive-latex-recommended">
     <command name="DeclareOptionX" argCount="0" />
     <command name="ExecuteOptionsX" argCount="0" />
     <command name="ProcessOptionsX" argCount="0" />
@@ -30065,7 +30065,7 @@
   <package name="xkvview" debPackage="texlive-latex-recommended">
     <command name="xkvview" argCount="1" />
   </package>
-  <package name="lgreek" debPackage="texlive-lang-greek">
+  <package name="lgreek" title="lgreek" description="Macros for using Silvio Levy's Greek fonts." debPackage="texlive-lang-greek">
     <command name="greekmode" argCount="0" />
     <command name="lt" argCount="0" />
     <command name="gt" argCount="0" />
@@ -30187,7 +30187,7 @@
     <command name="pcolbegin" argCount="2" />
     <command name="pcolend" argCount="0" />
   </package>
-  <package name="blowup" debPackage="texlive-latex-extra">
+  <package name="blowup" title="blowup" description="Upscale or downscale all pages of a document." debPackage="texlive-latex-extra">
     <command name="BL" argCount="0" />
   </package>
   <package name="mftinc" debPackage="texlive-latex-extra">
@@ -30207,7 +30207,7 @@
     <environment name="explaincode" argCount="1" />
     <environment name="wrapcomment" argCount="0" />
   </package>
-  <package name="harvard" debPackage="texlive-bibtex-extra">
+  <package name="harvard" title="harvard" description="Harvard citation package for use with LaTeX 2e." debPackage="texlive-bibtex-extra">
     <command name="harvardurl" argCount="1" />
     <command name="harvardpreambletext" argCount="0" />
     <command name="next" argCount="0" />
@@ -30356,7 +30356,7 @@
   </package>
   <package name="infix-RPN" debPackage="texlive-pstricks">
   </package>
-  <package name="pst-infixplot" debPackage="texlive-pstricks">
+  <package name="pst-infixplot" title="pst-infixplot" description="Using pstricks plotting capacities with infix expressions" debPackage="texlive-pstricks">
   </package>
   <package name="rectopma" debPackage="texlive-latex-extra">
     <command name="intitlebreak" argCount="0" />
@@ -30457,7 +30457,7 @@
     <command name="vinterv" argCount="0" />
     <command name="intervalthickness" argCount="2" optionalArg="\z@" />
   </package>
-  <package name="greekdates" debPackage="texlive-lang-greek">
+  <package name="greekdates" title="greekdates" description="Provides ancient Greek day and month names, dates, etc." debPackage="texlive-lang-greek">
     <command name="fgrkday" argCount="1" />
     <command name="fullgreekday" argCount="1" />
     <command name="sgrkday" argCount="1" />
@@ -30728,7 +30728,7 @@
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
   </package>
-  <package name="hepnames" debPackage="texlive-science">
+  <package name="hepnames" title="hepnames" description="Pre-defined high energy particle names." debPackage="texlive-science">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
   </package>
@@ -30944,9 +30944,9 @@
     <command name="vague" argCount="0" />
     <environment name="arbmatrix" argCount="2" />
   </package>
-  <package name="pst-ghsb" debPackage="texlive-pstricks">
+  <package name="pst-ghsb" title="pst-ghsb" description="" debPackage="texlive-pstricks">
   </package>
-  <package name="pst-bspline" debPackage="texlive-pstricks">
+  <package name="pst-bspline" title="pst-bspline" description="Draw cubic Bspline curves and interpolations." debPackage="texlive-pstricks">
   </package>
   <package name="spanishmx" debPackage="texlive-lang-spanish">
     <command name="LdfInit" argCount="0" />
@@ -30991,7 +30991,7 @@
     <command name="MCC" argCount="0" />
     <command name="TIME" argCount="0" />
   </package>
-  <package name="complexity" debPackage="texlive-science">
+  <package name="complexity" title="complexity" description="Computational complexity class names." debPackage="texlive-science">
     <command name="complexity" argCount="0" />
     <command name="ComplexityFont" argCount="1" />
     <command name="lang" argCount="1" />
@@ -31371,7 +31371,7 @@
     <environment name="gridfltenv" argCount="0" />
     <environment name="gridenv" argCount="0" />
   </package>
-  <package name="pst-fun" debPackage="texlive-pstricks">
+  <package name="pst-fun" title="pst-fun" description="Draw "funny" objects with PSTricks." debPackage="texlive-pstricks">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="psParrot" argCount="0" />
@@ -31392,7 +31392,7 @@
     <command name="fileversion" argCount="0" />
     <command name="docdate" argCount="0" />
   </package>
-  <package name="alnumsec" debPackage="texlive-humanities">
+  <package name="alnumsec" title="alnumsec" description="Alphanumeric section numbering." debPackage="texlive-humanities">
     <command name="otherseparators" argCount="1" />
     <command name="alnumsectionlevels" argCount="2" />
     <command name="alnumsecstyle" argCount="1" />
@@ -31429,7 +31429,7 @@
     <command name="PrintEnvName" argCount="1" />
     <command name="PrintDescribeEnv" argCount="1" />
   </package>
-  <package name="dictsym" debPackage="texlive-fonts-extra">
+  <package name="dictsym" title="dictsym" description="DictSym font and macro package" debPackage="texlive-fonts-extra">
     <command name="ProcessOptionsWithKV" argCount="1" />
     <command name="dsarchitectural" argCount="0" />
     <command name="dsbiological" argCount="0" />
@@ -31579,12 +31579,12 @@
     <command name="textblock" argCount="1" />
     <command name="endtextblock" argCount="0" />
   </package>
-  <package name="listings-ext" debPackage="texlive-extra-utils">
+  <package name="listings-ext" title="listings-ext" description="Automated input of source." debPackage="texlive-extra-utils">
     <command name="lstdef" argCount="3" />
     <command name="lstcheck" argCount="2" />
     <command name="lstuse" argCount="2" />
   </package>
-  <package name="bclogo" debPackage="texlive-pstricks">
+  <package name="bclogo" title="bclogo" description="Creating colourful boxes with logos." debPackage="texlive-pstricks">
     <command name="PackageName" argCount="0" />
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
@@ -32048,7 +32048,7 @@
     <command name="AtEndPreamble" argCount="0" />
     <command name="AfterEndPreamble" argCount="0" />
   </package>
-  <package name="braille" debPackage="texlive-fonts-extra">
+  <package name="braille" title="braille" description="Support for braille." debPackage="texlive-fonts-extra">
     <command name="brailledot" argCount="0" />
     <command name="braillebox" argCount="1" />
     <command name="put" argCount="0" />
@@ -32061,7 +32061,7 @@
     <command name="suffix" argCount="0" />
     <command name="brl" argCount="0" />
   </package>
-  <package name="jurarsp" debPackage="texlive-humanities">
+  <package name="jurarsp" title="jurarsp" description="Citations of judgements and official documents in (German)" debPackage="texlive-humanities">
     <command name="rspsetup" argCount="0" />
     <command name="ProcessOptionsWithKV" argCount="1" />
     <command name="rspitem" argCount="0" />
@@ -32120,7 +32120,7 @@
     <command name="FPifint" argCount="1" />
     <command name="next" argCount="1" />
   </package>
-  <package name="bardiag" debPackage="texlive-pictures">
+  <package name="bardiag" title="bardiag" description="LateX package for drawing bar diagrams." debPackage="texlive-pictures">
     <command name="bardiag" argCount="0" />
     <command name="bdvert" argCount="0" />
     <command name="bdhor" argCount="0" />
@@ -32199,7 +32199,7 @@
     <command name="tt" argCount="0" />
     <command name="ttname" argCount="0" />
   </package>
-  <package name="apl" debPackage="texlive-fonts-extra">
+  <package name="apl" title="apl" description="Fonts for typesetting APL programs." debPackage="texlive-fonts-extra">
     <command name="ifundefined" argCount="1" />
     <command name="aplname" argCount="0" />
     <command name="choosett" argCount="1" />
@@ -32232,7 +32232,7 @@
   </package>
   <package name="l3box" debPackage="texlive-latex3">
   </package>
-  <package name="expl3" debPackage="texlive-latex3">
+  <package name="expl3" title="expl3" description="Packages showing a proposed LaTeX3 programming convention." debPackage="texlive-latex3">
   </package>
   <package name="l3skip" debPackage="texlive-latex3">
   </package>
@@ -32287,7 +32287,7 @@
   </package>
   <package name="l3expan" debPackage="texlive-latex3">
   </package>
-  <package name="subfig" debPackage="texlive-latex-recommended">
+  <package name="subfig" title="subfig" description="Figures broken into subfigures" debPackage="texlive-latex-recommended">
     <command name="string" argCount="1" />
     <command name="next" argCount="0" />
     <command name="DeclareCaptionListOfFormat" argCount="1" />
@@ -32301,7 +32301,7 @@
     <command name="protect" argCount="0" />
     <command name="ContinuedFloat" argCount="0" />
   </package>
-  <package name="binomexp" debPackage="texlive-latex-extra">
+  <package name="binomexp" title="binomexp" description="Calculate Pascal's triangle." debPackage="texlive-latex-extra">
     <command name="binomexp" argCount="0" />
   </package>
   <package name="notes" debPackage="texlive-latex-extra">
@@ -32318,7 +32318,7 @@
     <environment name="warningnote" argCount="0" />
     <environment name="informationnote" argCount="0" />
   </package>
-  <package name="pdfpages" debPackage="texlive-latex-recommended">
+  <package name="pdfpages" title="pdfpages" description="Include PDF documents in LaTeX." debPackage="texlive-latex-recommended">
     <command name="AM" argCount="0" />
     <command name="foo" argCount="0" />
     <command name="x" argCount="0" />
@@ -32365,7 +32365,7 @@
     <command name="iddots" argCount="0" />
     <command name="circledS" argCount="0" />
   </package>
-  <package name="anonchap" debPackage="texlive-latex-extra">
+  <package name="anonchap" title="anonchap" description="Make chapters be typeset like sections." debPackage="texlive-latex-extra">
     <command name="simplechapter" argCount="1" optionalArg="\@empty" />
     <command name="restorechapter" argCount="0" />
     <command name="simplechapterdelim" argCount="0" />
@@ -32383,7 +32383,7 @@
     <command name="allPart" argCount="0" />
     <command name="dotarrow" argCount="1" />
   </package>
-  <package name="cachepic" debPackage="texlive-pictures">
+  <package name="cachepic" title="cachepic" description="Convert document fragments into graphics." debPackage="texlive-pictures">
     <command name="cachepic" argCount="2" />
     <command name="cacheinput" argCount="1" />
     <environment name="cachepicture" argCount="1" />
@@ -32462,7 +32462,7 @@
   </package>
   <package name="amsbsy" debPackage="texlive-latex-base">
   </package>
-  <package name="amstex" debPackage="texlive-latex-base">
+  <package name="amstex" title="amstex" description="American Mathematical Society plain TeX macros." debPackage="texlive-latex-base">
     <command name="do" argCount="0" />
     <command name="frenchspacing" argCount="0" />
     <command name="stepcounter" argCount="1" />
@@ -32641,7 +32641,7 @@
     <command name="stepcounter" argCount="1" />
     <command name="addtocounter" argCount="2" />
   </package>
-  <package name="amsmath" debPackage="texlive-latex-base">
+  <package name="amsmath" title="amsmath" description="AMS mathematical facilities for LaTeX." debPackage="texlive-latex-base">
     <command name="do" argCount="1" />
     <command name="AmSfont" argCount="0" />
     <command name="negmedspace" argCount="0" />
@@ -32841,7 +32841,7 @@
     <command name="tabularew" argCount="0" />
     <command name="endtabularew" argCount="0" />
   </package>
-  <package name="collref" debPackage="texlive-bibtex-extra">
+  <package name="collref" title="collref" description="Collect blocks of references into a single reference." debPackage="texlive-bibtex-extra">
     <command name="collectsep" argCount="2" />
     <command name="nocollect" argCount="1" />
     <command name="nc" argCount="0" />
@@ -32866,7 +32866,7 @@
     <command name="caption" argCount="0" />
     <command name="next" argCount="0" />
   </package>
-  <package name="caption" debPackage="texlive-latex-recommended">
+  <package name="caption" title="caption" description="Customising captions in floating environments." debPackage="texlive-latex-recommended">
     <command name="captionfont" argCount="0" />
     <command name="hspace" argCount="2" />
     <command name="captionof" argCount="0" />
@@ -32962,13 +32962,13 @@
     <command name="stretchnegthinspace" argCount="0" />
     <command name="stretchthinthinspace" argCount="0" />
   </package>
-  <package name="grverb" debPackage="texlive-lang-greek">
+  <package name="grverb" title="grverb" description="Typesetting Greek verbatim." debPackage="texlive-lang-greek">
     <command name="par" argCount="0" />
     <command name="grverbatim" argCount="0" />
     <command name="endgrverbatim" argCount="0" />
     <command name="grverb" argCount="0" />
   </package>
-  <package name="schemabloc" debPackage="texlive-pictures">
+  <package name="schemabloc" title="schemabloc" description="Draw block diagrams, using Tikz." debPackage="texlive-pictures">
     <command name="sbStyleLienDefaut" argCount="0" />
     <command name="sbStyleLien" argCount="1" />
     <command name="sbStyleBloc" argCount="1" />
@@ -33021,7 +33021,7 @@
     <command name="renvoi" argCount="4" optionalArg="1.5" />
     <command name="blocseul" argCount="4" optionalArg="1.5" />
   </package>
-  <package name="dyntree" debPackage="texlive-science">
+  <package name="dyntree" title="dyntree" description="Construct Dynkin tree diagrams." debPackage="texlive-science">
     <command name="DYNTREE" argCount="0" />
     <command name="lend" argCount="0" />
     <command name="dynbox" argCount="0" />
@@ -33126,7 +33126,7 @@
   </package>
   <package name="acjk" debPackage="texlive-lang-arabic">
   </package>
-  <package name="arabtex" debPackage="texlive-lang-arabic">
+  <package name="arabtex" title="arabtex" description="Macros and fonts for typesetting Arabic." debPackage="texlive-lang-arabic">
     <command name="theversion" argCount="0" />
     <command name="thedatum" argCount="0" />
     <command name="ArabTeX" argCount="0" />
@@ -33303,7 +33303,7 @@
   </package>
   <package name="arabsymb" debPackage="texlive-lang-arabic">
   </package>
-  <package name="alatex" debPackage="texlive-lang-arabic">
+  <package name="alatex" title="alatex" description="Abstract LaTeX." debPackage="texlive-lang-arabic">
     <command name="document" argCount="0" />
     <command name="enddocument" argCount="0" />
     <command name="verb" argCount="0" />
@@ -33397,7 +33397,7 @@
     <command name="cp" argCount="0" />
     <environment name="adjustwidth" argCount="3" optionalArg="\@empty" />
   </package>
-  <package name="eso-pic" debPackage="texlive-latex-recommended">
+  <package name="eso-pic" title="eso-pic" description="Add picture commands (or backgrounds) to every page." debPackage="texlive-latex-recommended">
     <command name="AtPageUpperLeft" argCount="1" />
     <command name="AtPageLowerLeft" argCount="1" />
     <command name="AtPageCenter" argCount="1" />
@@ -33548,7 +33548,7 @@
   <package name="wrapft" debPackage="texlive-publishers">
     <command name="endwrapfigure" argCount="0" />
   </package>
-  <package name="pst-3dplot" debPackage="texlive-pstricks">
+  <package name="pst-3dplot" title="pst-3dplot" description="Draw 3d curves and graphs using PSTricks." debPackage="texlive-pstricks">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="setIIIDplotDefaults" argCount="0" />
@@ -33604,7 +33604,7 @@
     <command name="pstSinCos" argCount="3" />
     <command name="pstRotPointIIID" argCount="0" />
   </package>
-  <package name="pictex2" debPackage="texlive-pictures">
+  <package name="pictex2" title="pictex2" description="Adds relative coordinates and improves the \plot command." debPackage="texlive-pictures">
     <command name="putanyline" argCount="0" />
     <command name="setanyline" argCount="0" />
   </package>
@@ -33625,7 +33625,7 @@
     <command name="s" argCount="0" />
     <command name="textsuetterlin" argCount="1" />
   </package>
-  <package name="calligra" debPackage="texlive-latex-extra">
+  <package name="calligra" title="calligra" description="Calligraphic font." debPackage="texlive-latex-extra">
     <command name="filename" argCount="0" />
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
@@ -33674,7 +33674,7 @@
     <command name="stdtables" argCount="0" />
     <command name="mabibliographie" argCount="2" />
   </package>
-  <package name="bbm" debPackage="texlive-fonts-extra">
+  <package name="bbm" title="bbm" description=""Blackboard-style" cm fonts." debPackage="texlive-fonts-extra">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
   </package>
@@ -33716,7 +33716,7 @@
     <command name="sectionrule" argCount="5" />
     <command name="secdef" argCount="2" />
   </package>
-  <package name="clrscode" debPackage="texlive-science">
+  <package name="clrscode" title="clrscode" description="Typesets pseudocode as in Introduction to Algorithms." debPackage="texlive-science">
     <command name="const" argCount="1" />
     <command name="proc" argCount="1" />
     <command name="text" argCount="0" />
@@ -33861,7 +33861,7 @@
     <command name="rightsliderotation" argCount="1" />
     <command name="rotate" argCount="0" />
   </package>
-  <package name="seminar" debPackage="texlive-latex-recommended">
+  <package name="seminar" title="seminar" description="Make overhead slides." debPackage="texlive-latex-recommended">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="paperwidth" argCount="0" />
@@ -33986,7 +33986,7 @@
     <command name="xcommentchar" argCount="0" />
     <command name="next" argCount="0" />
   </package>
-  <package name="achemso" debPackage="texlive-latex-extra">
+  <package name="achemso" title="achemso" description="Support for American Chemical Society journal submissions." debPackage="texlive-latex-extra">
     <command name="thebibnote" argCount="0" />
     <command name="acs" argCount="0" />
     <command name="bibliography" argCount="1" />
@@ -33997,7 +33997,7 @@
   </package>
   <package name="lewis" debPackage="texlive-latex-extra">
   </package>
-  <package name="pseudocode" debPackage="texlive-science">
+  <package name="pseudocode" title="pseudocode" description="LaTeX environment for specifying algorithms in a natural way." debPackage="texlive-science">
     <command name="pcode" argCount="0" />
     <command name="STMTNUM" argCount="2" />
     <command name="LOCAL" argCount="1" />
@@ -34144,7 +34144,7 @@
   </package>
   <package name="lstlang2" debPackage="texlive-latex-recommended">
   </package>
-  <package name="listings" debPackage="texlive-latex-recommended">
+  <package name="listings" title="listings" description="Typeset source code listings using LaTeX." debPackage="texlive-latex-recommended">
     <command name="filedate" argCount="0" />
     <command name="fileversion" argCount="0" />
     <command name="lstaspectfiles" argCount="0" />
@@ -34157,7 +34157,7 @@
     <command name="lstinputlisting" argCount="0" />
     <command name="lst" argCount="0" />
   </package>
-  <package name="biblist" debPackage="texlive-bibtex-extra">
+  <package name="biblist" title="biblist" description="Print a BibTeX database." debPackage="texlive-bibtex-extra">
     <command name="MF" argCount="0" />
     <command name="thebibliography" argCount="1" />
     <command name="prepare_check_library" argCount="0" />
@@ -34181,7 +34181,7 @@
     <command name="PBXYarat" argCount="0" />
     <command name="dggeometry" argCount="0" />
   </package>
-  <package name="pb-diagram" debPackage="texlive-pictures">
+  <package name="pb-diagram" title="pb-diagram" description="A commutative diagram package using LAMSTeX or Xy-pic fonts." debPackage="texlive-pictures">
     <command name="dgeverynode" argCount="0" />
     <command name="dgeverylabel" argCount="0" />
     <command name="dggeometry" argCount="0" />
@@ -34196,7 +34196,7 @@
     <command name="lamstarget" argCount="1" />
     <command name="lamsshaft" argCount="1" />
   </package>
-  <package name="epspdfconversion" debPackage="texlive-pictures">
+  <package name="epspdfconversion" title="epspdfconversion" description="On-the-fly conversion of EPS to PDF." debPackage="texlive-pictures">
     <command name="MinorVersion" argCount="0" />
   </package>
   <package name="vpe" debPackage="texlive-latex-extra">
@@ -34222,7 +34222,7 @@
     <command name="hrule" argCount="0" />
     <command name="vrule" argCount="0" />
   </package>
-  <package name="gb4e" debPackage="texlive-humanities">
+  <package name="gb4e" title="gb4e" description="Linguistic tools." debPackage="texlive-humanities">
     <command name="gbVersion" argCount="0" />
     <command name="primebars" argCount="0" />
     <command name="obar" argCount="1" />
@@ -34321,7 +34321,7 @@
   <package name="ucsutils" debPackage="texlive-latex-extra">
     <command name="UnicodeEmbedFont" argCount="1" />
   </package>
-  <package name="diagmac2" debPackage="texlive-pictures">
+  <package name="diagmac2" title="diagmac2" description="Diagram macros, using pict2e." debPackage="texlive-pictures">
     <command name="slopemax" argCount="0" />
     <command name="diagramunit" argCount="0" />
     <command name="centerheight" argCount="0" />
@@ -34548,7 +34548,7 @@
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
   </package>
-  <package name="auto-pst-pdf" debPackage="texlive-pstricks">
+  <package name="auto-pst-pdf" title="auto-pst-pdf" description="Wrapper for pst-pdf (with some psfrag features)." debPackage="texlive-pstricks">
     <command name="app" argCount="0" />
     <command name="OnlyIfFileExists" argCount="2" />
     <command name="NotIfFileExists" argCount="2" />
@@ -34556,7 +34556,7 @@
     <command name="mathfig" argCount="2" />
     <command name="psfragfig" argCount="2" />
   </package>
-  <package name="tikz-timing" debPackage="texlive-pictures">
+  <package name="tikz-timing" title="tikz-timing" description="Easy generation of timing diagrams as tikz pictures." debPackage="texlive-pictures">
     <command name="tikztimingwidth" argCount="0" />
     <command name="tikztiminglabel" argCount="1" />
     <command name="lastchar" argCount="0" />
@@ -34774,7 +34774,7 @@
     <command name="endwideslide" argCount="0" />
     <command name="HAP" argCount="0" />
   </package>
-  <package name="HA-prosper" debPackage="texlive-latex-extra">
+  <package name="HA-prosper" title="HA-prosper" description="Patches and improvements for prosper." debPackage="texlive-latex-extra">
     <command name="notes" argCount="1" />
     <command name="endnotes" argCount="0" />
     <command name="HAPbookmark" argCount="5" />
@@ -34836,7 +34836,7 @@
     <command name="indexmarker" argCount="0" />
     <command name="ncld" argCount="0" />
   </package>
-  <package name="bibtopic" debPackage="texlive-bibtex-extra">
+  <package name="bibtopic" title="bibtopic" description="Include multiple bibliographies in a document." debPackage="texlive-bibtex-extra">
     <command name="bt" argCount="0" />
     <command name="thebtauxfile" argCount="0" />
     <command name="MessageBreak" argCount="0" />
@@ -35204,7 +35204,7 @@
     <command name="filedate" argCount="0" />
     <command name="fileinfo" argCount="0" />
   </package>
-  <package name="microtype" debPackage="texlive-latex-recommended">
+  <package name="microtype" title="microtype" description="An interface to the micro-typographic features of pdfTeX." debPackage="texlive-latex-recommended">
     <command name="textls" argCount="2" />
     <command name="DeclareMicrotypeSet" argCount="0" />
     <command name="DeclareMicrotypeVariants" argCount="0" />
@@ -35325,7 +35325,7 @@
     <command name="engrec" argCount="1" />
     <command name="EnGrec" argCount="1" />
   </package>
-  <package name="mxedruli" debPackage="texlive-omega">
+  <package name="mxedruli" title="mxedruli" description="A pair of Georgian fonts." debPackage="texlive-omega">
     <command name="fmxedr" argCount="0" />
     <command name="fmxedb" argCount="0" />
     <command name="fmxedi" argCount="0" />
@@ -35365,7 +35365,7 @@
   <package name="everypage" debPackage="texlive-latex-extra">
     <command name="sc" argCount="0" />
   </package>
-  <package name="pinlabel" debPackage="texlive-pictures">
+  <package name="pinlabel" title="pinlabel" description="A TeX labelling package." debPackage="texlive-pictures">
     <command name="includegraphics" argCount="0" />
     <command name="includegraphicswithoptions" argCount="2" />
     <command name="includegraphicsplain" argCount="1" />
@@ -35415,19 +35415,19 @@
   </package>
   <package name="nrc2" debPackage="texlive-publishers">
   </package>
-  <package name="bgreek" debPackage="texlive-lang-greek">
+  <package name="bgreek" title="bgreek" description="Using Beccari's fonts in betacode for classical Greek." debPackage="texlive-lang-greek">
   </package>
   <package name="showexpl" debPackage="texlive-latex-extra">
     <command name="SX" argCount="0" />
   </package>
   <package name="subdepth" debPackage="texlive-latex-extra">
   </package>
-  <package name="authoraftertitle" debPackage="texlive-latex-extra">
+  <package name="authoraftertitle" title="authoraftertitle" description="Make author, etc., available after \maketitle." debPackage="texlive-latex-extra">
     <command name="Originalauthor" argCount="0" />
     <command name="Originaltitle" argCount="0" />
     <command name="Originaldate" argCount="0" />
   </package>
-  <package name="psfrag" debPackage="texlive-latex-recommended">
+  <package name="psfrag" title="psfrag" description="Replace strings in encapsulated PostScript figures." debPackage="texlive-latex-recommended">
     <command name="psfragscanon" argCount="0" />
     <command name="psfragscanoff" argCount="0" />
     <command name="psfragdebugon" argCount="0" />
@@ -35457,7 +35457,7 @@
     <command name="setcdbackmatter" argCount="1" />
     <command name="setcdspinematter" argCount="1" />
   </package>
-  <package name="jneurosci" debPackage="texlive-bibtex-extra">
+  <package name="jneurosci" title="jneurosci" description="BibTeX style for the Journal of Neuroscience." debPackage="texlive-bibtex-extra">
     <command name="cite" argCount="0" />
     <command name="citeauthoryear" argCount="2" />
     <command name="citetext" argCount="0" />
@@ -35654,7 +35654,7 @@
   </package>
   <package name="atenddvi" debPackage="texlive-latex-base">
   </package>
-  <package name="epstopdf" debPackage="texlive-latex-base">
+  <package name="epstopdf" title="epstopdf" description="Convert EPS to 'encapsulated' PDF using GhostScript." debPackage="texlive-latex-base">
     <command name="empty" argCount="0" />
     <command name="x" argCount="0" />
   </package>
@@ -35964,7 +35964,7 @@
     <command name="interval" argCount="2" />
     <command name="locinterplin" argCount="3" />
   </package>
-  <package name="ethiop" debPackage="texlive-lang-african">
+  <package name="ethiop" title="ethiop" description="LaTeX macros and fonts for typesetting Amharic." debPackage="texlive-lang-african">
     <command name="LdfInit" argCount="0" />
   </package>
   <package name="etharab" debPackage="texlive-lang-african">
@@ -35974,7 +35974,7 @@
     <command name="filedate" argCount="0" />
     <command name="thelinenumber" argCount="0" />
   </package>
-  <package name="ednotes" debPackage="texlive-humanities">
+  <package name="ednotes" title="ednotes" description="Typeset scholarly editions." debPackage="texlive-humanities">
     <command name="filedate" argCount="0" />
     <command name="Anotefmt" argCount="0" />
     <command name="variant" argCount="0" />
@@ -36029,7 +36029,7 @@
     <command name="vvstar" argCount="2" />
     <command name="vecteur" argCount="0" />
   </package>
-  <package name="bbold" debPackage="texlive-fonts-extra">
+  <package name="bbold" title="bbold" description="Sans serif blackboard bold." debPackage="texlive-fonts-extra">
     <command name="bbfamily" argCount="0" />
     <command name="textbb" argCount="1" />
   </package>
@@ -36044,7 +36044,7 @@
     <command name="feynstrut" argCount="2" />
     <command name="arrow" argCount="3" />
   </package>
-  <package name="pspicture" debPackage="texlive-latex-base">
+  <package name="pspicture" title="pspicture" description="PostScript picture support." debPackage="texlive-latex-base">
     <command name="strippt" argCount="1" />
     <command name="oval" argCount="0" />
     <command name="BL" argCount="0" />
@@ -36067,7 +36067,7 @@
     <command name="cleartooddpage" argCount="1" optionalArg="\@empty" />
     <command name="movetooddpage" argCount="1" optionalArg="\@empty" />
   </package>
-  <package name="arev" debPackage="texlive-fonts-extra">
+  <package name="arev" title="arev" description="Fonts and LaTeX support files for Arev Sans." debPackage="texlive-fonts-extra">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
   </package>
@@ -36248,7 +36248,7 @@
     <command name="isempty" argCount="0" />
     <command name="isnotempty" argCount="1" />
   </package>
-  <package name="setspace" debPackage="texlive-latex-recommended">
+  <package name="setspace" title="setspace" description="Set space between lines." debPackage="texlive-latex-recommended">
     <command name="filename" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="fileversion" argCount="0" />
@@ -36266,7 +36266,7 @@
     <environment name="onehalfspace" argCount="0" />
     <environment name="doublespace" argCount="0" />
   </package>
-  <package name="pst-fr3d" debPackage="texlive-pstricks">
+  <package name="pst-fr3d" title="pst-fr3d" description="Draw 3-dimensional framed boxes using PSTricks." debPackage="texlive-pstricks">
   </package>
   <package name="ntabbing" debPackage="texlive-latex-extra">
     <command name="ntabbing" argCount="0" />
@@ -36274,7 +36274,7 @@
     <command name="caption" argCount="1" />
     <command name="endntabbing" argCount="0" />
   </package>
-  <package name="jeopardy" debPackage="texlive-games">
+  <package name="jeopardy" title="jeopardy" description="Build a jeopardy game in LaTeX." debPackage="texlive-games">
     <command name="finito" argCount="0" />
     <command name="JeopardyNoPeekCommand" argCount="0" />
     <command name="formessage" argCount="0" />
@@ -36301,12 +36301,12 @@
     <environment name="category" argCount="1" />
     <environment name="question" argCount="0" />
   </package>
-  <package name="pst-barcode" debPackage="texlive-pstricks">
+  <package name="pst-barcode" title="pst-barcode" description="Print barcodes using PostScript." debPackage="texlive-pstricks">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="psbarcode" argCount="0" />
   </package>
-  <package name="appendix" debPackage="texlive-latex-extra">
+  <package name="appendix" title="appendix" description="Extra control of appendices." debPackage="texlive-latex-extra">
     <command name="appendixtocon" argCount="0" />
     <command name="appendixtocoff" argCount="0" />
     <command name="appendixpageon" argCount="0" />
@@ -36365,7 +36365,7 @@
     <command name="subsubparagraph" argCount="0" />
     <environment name="Map" argCount="1" />
   </package>
-  <package name="psgo" debPackage="texlive-games">
+  <package name="psgo" title="psgo" description="Typeset go diagrams with PSTricks." debPackage="texlive-games">
     <command name="psgo" argCount="0" />
     <command name="toggleblackmove" argCount="0" />
     <command name="setgounit" argCount="1" />
@@ -36418,7 +36418,7 @@
     <command name="paste" argCount="2" />
     <command name="shipout" argCount="0" />
   </package>
-  <package name="boolexpr" debPackage="texlive-latex-extra">
+  <package name="boolexpr" title="boolexpr" description="A boolean expression evaluator and a switch command." debPackage="texlive-latex-extra">
     <command name="boolexpr" argCount="1" />
     <command name="ifboolexpr" argCount="1" />
     <command name="bex_ifempty" argCount="1" />
@@ -37102,7 +37102,7 @@
   <package name="mattens" debPackage="texlive-math-extra">
     <command name="MT" argCount="0" />
   </package>
-  <package name="arydshln" debPackage="texlive-humanities">
+  <package name="arydshln" title="arydshln" description="Horizontal and vertical dashed lines in arrays and tabulars." debPackage="texlive-humanities">
     <command name="next" argCount="0" />
     <command name="ADLnullwide" argCount="0" />
     <command name="ADLsomewide" argCount="0" />
@@ -37129,7 +37129,7 @@
     <command name="dashgapcolor" argCount="0" />
     <command name="nodashgapcolor" argCount="0" />
   </package>
-  <package name="chemarrow" debPackage="texlive-science">
+  <package name="chemarrow" title="chemarrow" description="Arrows for use in chemistry." debPackage="texlive-science">
     <command name="arro" argCount="0" />
     <command name="leftharpoondownfill" argCount="0" />
     <command name="leftharpoonupfill" argCount="0" />
@@ -37193,7 +37193,7 @@
     <command name="FU" argCount="0" />
     <command name="insertfachbereich" argCount="0" />
   </package>
-  <package name="dot2texi" debPackage="texlive-pictures">
+  <package name="dot2texi" title="dot2texi" description="Create graphs within LaTeX using the dot2tex tool." debPackage="texlive-pictures">
     <command name="setoutputdir" argCount="1" />
     <command name="dottotexverbatimwrite" argCount="1" />
     <command name="BeforeStream" argCount="0" />
@@ -37304,7 +37304,7 @@
     <environment name="IfBranch" argCount="0" />
     <environment name="IfBranchDummy" argCount="0" />
   </package>
-  <package name="blindtext" debPackage="texlive-latex-extra">
+  <package name="blindtext" title="blindtext" description="Producing 'blind' text for testing." debPackage="texlive-latex-extra">
     <command name="blindfileversion" argCount="0" />
     <command name="blindfiledate" argCount="0" />
     <command name="blind" argCount="0" />
@@ -37328,7 +37328,7 @@
     <command name="Blinddocument" argCount="0" />
     <command name="blindmathpaper" argCount="0" />
   </package>
-  <package name="chessfss" debPackage="texlive-games">
+  <package name="chessfss" title="chessfss" description="A package to handle chess fonts." debPackage="texlive-games">
     <command name="cfss" argCount="0" />
     <command name="usesymfig" argCount="0" />
     <command name="usetextfig" argCount="0" />
@@ -37424,7 +37424,7 @@
     <command name="pwvbLNL" argCount="0" />
     <environment name="vertbar" argCount="0" />
   </package>
-  <package name="sistyle" debPackage="texlive-science">
+  <package name="sistyle" title="SIstyle" description="Package to typeset SI units, numbers and angles." debPackage="texlive-science">
     <command name="GetMathFontFams" argCount="0" />
     <command name="IfTbold" argCount="2" />
     <command name="IfMbold" argCount="2" />
@@ -37704,7 +37704,7 @@
     <command name="foreignword" argCount="0" />
     <command name="phrase" argCount="0" />
   </package>
-  <package name="allrunes" debPackage="texlive-fonts-extra">
+  <package name="allrunes" title="allrunes" description="Fonts and LaTeX package for almost all runes." debPackage="texlive-fonts-extra">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="DeclareFontShapeWithSizes" argCount="5" />
@@ -37731,7 +37731,7 @@
     <command name="armdefault" argCount="0" />
     <command name="armfamily" argCount="0" />
   </package>
-  <package name="footbib" debPackage="texlive-bibtex-extra">
+  <package name="footbib" title="footbib" description="Bibliographic references as footnotes." debPackage="texlive-bibtex-extra">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="fb" argCount="0" />
@@ -37787,7 +37787,7 @@
     <environment name="dinglist" argCount="1" />
     <environment name="dingautolist" argCount="1" />
   </package>
-  <package name="altfont" debPackage="texlive-latex-extra">
+  <package name="altfont" title="altfont" description="Alternative font handling in LaTeX." debPackage="texlive-latex-extra">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="DefaultRMFont" argCount="1" />
@@ -37817,7 +37817,7 @@
     <command name="trsymfileversion" argCount="0" />
     <command name="trsymfiledate" argCount="0" />
   </package>
-  <package name="geometry" debPackage="texlive-latex-base">
+  <package name="geometry" title="geometry" description="Flexible and complete interface to document dimensions." debPackage="texlive-latex-base">
     <command name="ProcessOptionsKV" argCount="0" />
     <command name="geometry" argCount="1" />
   </package>
@@ -38367,7 +38367,7 @@
   <package name="concmath" debPackage="texlive-math-extra">
     <command name="oldstylenums" argCount="1" />
   </package>
-  <package name="arcs" debPackage="texlive-latex-extra">
+  <package name="arcs" title="arcs" description="Draw arcs over and under text" debPackage="texlive-latex-extra">
     <command name="overarc" argCount="2" optionalArg="1" />
     <command name="underarc" argCount="2" optionalArg="1" />
     <command name="over" argCount="0" />
@@ -38480,7 +38480,7 @@
     <command name="thesection" argCount="0" />
     <command name="thechapter" argCount="0" />
   </package>
-  <package name="charter" debPackage="texlive-latex-base">
+  <package name="charter" title="charter" description="Charter fonts." debPackage="texlive-latex-base">
   </package>
   <package name="pifont" debPackage="texlive-latex-base">
     <command name="Pifont" argCount="1" />
@@ -38497,9 +38497,9 @@
     <environment name="dinglist" argCount="1" />
     <environment name="dingautolist" argCount="1" />
   </package>
-  <package name="bookman" debPackage="texlive-latex-base">
+  <package name="bookman" title="bookman" description="the URW Bookman fonts and support for the Adobe font set." debPackage="texlive-latex-base">
   </package>
-  <package name="mathpazo" debPackage="texlive-latex-base">
+  <package name="mathpazo" title="mathpazo" description="Fonts to typeset mathematics to match Palatino." debPackage="texlive-latex-base">
     <command name="ppleuro" argCount="0" />
     <command name="mathbb" argCount="0" />
     <command name="joinrel" argCount="0" />
@@ -38543,7 +38543,7 @@
   </package>
   <package name="avant" debPackage="texlive-latex-base">
   </package>
-  <package name="courier" debPackage="texlive-latex-base">
+  <package name="courier" title="courier" description="Adobe Type 1 "free" copies of Courier." debPackage="texlive-latex-base">
   </package>
   <package name="palatino" debPackage="texlive-latex-base">
   </package>
@@ -38674,7 +38674,7 @@
     <command name="color" argCount="1" />
     <command name="colorbox" argCount="2" />
   </package>
-  <package name="figbib" debPackage="texlive-bibtex-extra">
+  <package name="figbib" title="figbib" description="Organize figure databases with BibTeX." debPackage="texlive-bibtex-extra">
     <command name="figbibListHeader" argCount="0" />
     <command name="figbibPage" argCount="0" />
     <command name="figbibFig" argCount="0" />
@@ -38734,7 +38734,7 @@
   <package name="eqname" debPackage="texlive-latex-extra">
     <command name="eqname" argCount="1" />
   </package>
-  <package name="bpchem" debPackage="texlive-science">
+  <package name="bpchem" title="bpchem" description="Typeset chemical names, formulae, etc." debPackage="texlive-science">
     <command name="DoBPChem" argCount="1" />
     <command name="BPCSetupCat" argCount="0" />
     <command name="BPCSetup" argCount="0" />
@@ -38841,7 +38841,7 @@
     <command name="needspace" argCount="1" />
     <command name="Needspace" argCount="0" />
   </package>
-  <package name="pst-eps" debPackage="texlive-pstricks">
+  <package name="pst-eps" title="pst-eps" description="Create EPS files from PSTricks figures." debPackage="texlive-pstricks">
     <command name="next" argCount="0" />
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
@@ -38898,7 +38898,7 @@
   </package>
   <package name="akksection" debPackage="texlive-latex-extra">
   </package>
-  <package name="akktex" debPackage="texlive-latex-extra">
+  <package name="akktex" title="AkkTeX" description="A collection of packages and classes." debPackage="texlive-latex-extra">
   </package>
   <package name="akkmathtext" debPackage="texlive-latex-extra">
   </package>
@@ -39164,10 +39164,10 @@
     <command name="zimgset" argCount="1" />
     <command name="fuzzcompatible" argCount="0" />
   </package>
-  <package name="fontspec" debPackage="texlive-xetex">
+  <package name="fontspec" title="fontspec" description="An automatic interface to feature-rich fonts in XeLaTeX." debPackage="texlive-xetex">
     <command name="zf" argCount="0" />
   </package>
-  <package name="xecyr" debPackage="texlive-xetex">
+  <package name="xecyr" title="xecyr" description="Using Cyrillic languages in XeTeX." debPackage="texlive-xetex">
     <command name="cyrdash" argCount="0" />
   </package>
   <package name="hebrewcal" debPackage="texlive-xetex">
@@ -39184,7 +39184,7 @@
     <command name="Jalalimonth" argCount="1" />
     <command name="JalalimonthEnglish" argCount="1" />
   </package>
-  <package name="polyglossia" debPackage="texlive-xetex">
+  <package name="polyglossia" title="polyglossia" description="Modern multilingual typesetting with XeLaTeX." debPackage="texlive-xetex">
     <command name="languageshorthands" argCount="1" />
     <command name="markboth" argCount="2" />
     <command name="markright" argCount="1" />
@@ -39222,7 +39222,7 @@
     <command name="libertineVersionDate" argCount="0" />
     <command name="ProcessOptionsWithKV" argCount="1" />
   </package>
-  <package name="xunicode" debPackage="texlive-xetex">
+  <package name="xunicode" title="xunicode" description="Generate Unicode characters from accented glyphs." debPackage="texlive-xetex">
     <command name="notXeTeXformat" argCount="0" />
     <command name="DeclareUTFcharacter" argCount="3" optionalArg="\UTFencname" />
     <command name="UndeclareUTFcharacter" argCount="3" optionalArg="\UTFencname" />
@@ -39281,7 +39281,7 @@
     <command name="TIPAtonebarx" argCount="1" />
     <command name="TIPAstonebar" argCount="1" />
   </package>
-  <package name="xecolour" debPackage="texlive-xetex">
+  <package name="xecolour" title="xecolour" description="Support for colour in XeLaTeX." debPackage="texlive-xetex">
     <command name="notXeLaTeXformat" argCount="0" />
     <command name="aliceblue" argCount="1" />
     <command name="aquamarine" argCount="1" />
@@ -39464,7 +39464,7 @@
     <environment name="BDef" argCount="0" />
     <environment name="BCmd" argCount="0" />
   </package>
-  <package name="bidi" debPackage="texlive-xetex">
+  <package name="bidi" title="bidi" description="Support for bidirectional typesetting with XeLaTeX." debPackage="texlive-xetex">
     <command name="bididate" argCount="0" />
     <command name="bidiversion" argCount="0" />
     <command name="bidirevision" argCount="0" />
@@ -39557,7 +39557,7 @@
     <command name="alsoname" argCount="0" />
     <command name="alsoseename" argCount="0" />
   </package>
-  <package name="arabxetex" debPackage="texlive-xetex">
+  <package name="arabxetex" title="arabxetex" description="An ArabTeX-like interface for XeLaTeX." debPackage="texlive-xetex">
     <command name="SetTranslitStyle" argCount="1" />
     <command name="SetTranslitConvention" argCount="1" />
     <command name="SetAllahWithAlif" argCount="0" />
@@ -39589,7 +39589,7 @@
     <environment name="malay" argCount="1" optionalArg="\ax@mode" />
     <environment name="uighur" argCount="1" />
   </package>
-  <package name="philokalia" debPackage="texlive-xetex">
+  <package name="philokalia" title="philokalia" description="A font to typeset the Philokalia Books." debPackage="texlive-xetex">
     <command name="textinit" argCount="2" />
     <command name="phkl" argCount="0" />
     <command name="textphlk" argCount="1" />
@@ -39598,7 +39598,7 @@
     <command name="dunit" argCount="0" />
     <command name="dunknown" argCount="0" />
   </package>
-  <package name="xgreek" debPackage="texlive-lang-greek">
+  <package name="xgreek" title="xgreek" description="XeLaTeX package for typesetting Greek language documents (beta" debPackage="texlive-lang-greek">
     <command name="prefacename" argCount="0" />
     <command name="refname" argCount="0" />
     <command name="abstractname" argCount="0" />
@@ -39639,7 +39639,7 @@
     <command name="grtoday" argCount="0" />
     <command name="Grtoday" argCount="0" />
   </package>
-  <package name="xltxtra" debPackage="texlive-xetex">
+  <package name="xltxtra" title="xltxtra" description=""Extras" for LaTeX users of XeTeX." debPackage="texlive-xetex">
     <command name="TeX" argCount="0" />
     <command name="XeTeX" argCount="0" />
     <command name="LaTeX" argCount="0" />
@@ -39654,7 +39654,7 @@
     <command name="persiantoday" argCount="0" />
     <command name="persianmonth" argCount="1" />
   </package>
-  <package name="xepersian" debPackage="texlive-xetex">
+  <package name="xepersian" title="xepersian" description="Persian for LaTeX over XeTeX." debPackage="texlive-xetex">
     <command name="xepersianversion" argCount="0" />
     <command name="xepersianrevision" argCount="0" />
     <command name="xepersiandate" argCount="0" />
@@ -39737,7 +39737,7 @@
     <command name="questiontitlefont" argCount="1" />
     <environment name="question" argCount="1" />
   </package>
-  <package name="fontwrap" debPackage="texlive-xetex">
+  <package name="fontwrap" title="fontwrap" description="Bind fonts to specific unicode blocks." debPackage="texlive-xetex">
     <command name="fontwrapdefaultfont" argCount="0" />
     <command name="fontwrapdefaultCJKfont" argCount="0" />
     <command name="unicodeblockBasicLatinFont" argCount="0" />
@@ -40095,7 +40095,7 @@
     <command name="fontwrap" argCount="1" />
     <environment name="verbatimfontwrap" argCount="0" />
   </package>
-  <package name="xeCJK" debPackage="texlive-xetex">
+  <package name="xeCJK" title="xecjk" description="Support for CJK documents in XeLaTeX." debPackage="texlive-xetex">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="makexeCJKactive" argCount="0" />
@@ -40124,7 +40124,7 @@
     <command name="Unicode" argCount="2" />
     <command name="xeCJKcaption" argCount="2" />
   </package>
-  <package name="mathspec" debPackage="texlive-xetex">
+  <package name="mathspec" title="mathspec" description="Specify arbitrary fonts for mathematics in XeTeX." debPackage="texlive-xetex">
     <command name="eu" argCount="0" />
     <command name="do" argCount="1" />
     <command name="ernewcommand" argCount="1" />
@@ -40142,7 +40142,7 @@
     <command name="setallsansfonts" argCount="2" />
     <command name="setallmonofonts" argCount="2" />
   </package>
-  <package name="mathdots" debPackage="texlive-generic-extra">
+  <package name="mathdots" title="mathdots" description="Commands to produce dots in math that respect font size." debPackage="texlive-generic-extra">
   </package>
   <package name="poligraf" debPackage="texlive-generic-recommended">
     <command name="nocolorbars" argCount="0" />
@@ -40172,7 +40172,7 @@
     <command name="makeheadline" argCount="0" />
     <command name="makefootline" argCount="0" />
   </package>
-  <package name="xlop" debPackage="texlive-generic-extra">
+  <package name="xlop" title="xlop" description="Calculates and displays arithmetic operations." debPackage="texlive-generic-extra">
   </package>
   <package name="rotate" debPackage="texlive-base">
     <command name="rotate" argCount="0" />
@@ -40248,7 +40248,7 @@
   </package>
   <package name="mathabx" debPackage="texlive-fonts-extra">
   </package>
-  <package name="dirtree" debPackage="texlive-generic-extra">
+  <package name="dirtree" title="dirtree" description="Display trees in the style of windows explorer." debPackage="texlive-generic-extra">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="ITERATE" argCount="0" />
@@ -40334,7 +40334,7 @@
     <command name="originalTeX" argCount="0" />
     <command name="ngermanTeX" argCount="0" />
   </package>
-  <package name="german" debPackage="texlive-lang-german">
+  <package name="german" title="german" description="Support for German typography." debPackage="texlive-lang-german">
     <command name="SS" argCount="0" />
     <command name="UseTextSymbol" argCount="2" />
     <command name="UseTextAccent" argCount="3" />
@@ -40492,7 +40492,7 @@
   </package>
   <package name="qtxmath" debPackage="texlive-lang-polish">
   </package>
-  <package name="thumbpdf" debPackage="texlive-latex-recommended">
+  <package name="thumbpdf" title="thumbpdf" description="Thumbnails for pdfTeX and dvips/ps2pdf." debPackage="texlive-latex-recommended">
     <command name="ThumbpdfDriver" argCount="0" />
     <command name="x" argCount="0" />
     <command name="thisthumb" argCount="1" />
@@ -40516,7 +40516,7 @@
     <command name="fornexttokl" argCount="2" />
     <command name="fornexttokr" argCount="2" />
   </package>
-  <package name="fenixpar" debPackage="texlive-generic-extra">
+  <package name="fenixpar" title="fenixpar" description="One-shot changes to token registers such as \everypar." debPackage="texlive-generic-extra">
     <command name="tempa" argCount="0" />
     <command name="NewParType" argCount="2" />
     <command name="NextParL" argCount="1" />
@@ -40597,7 +40597,7 @@
     <command name="bblstyerror" argCount="0" />
     <command name="ProvidesLanguage" argCount="0" />
   </package>
-  <package name="magyar" debPackage="texlive-latex-base">
+  <package name="magyar" title="magyar" description="Hungarian language definition for Babel." debPackage="texlive-latex-base">
     <command name="LdfInit" argCount="0" />
     <command name="bblstyerror" argCount="0" />
     <command name="ProvidesLanguage" argCount="0" />
@@ -40639,13 +40639,13 @@
     <command name="ProvidesLanguage" argCount="0" />
     <command name="CurrentOption" argCount="0" />
   </package>
-  <package name="croatian" debPackage="texlive-latex-base">
+  <package name="croatian" title="croatian" description="Fonts for Croatian Glagolitic and other Croatian scripts." debPackage="texlive-latex-base">
     <command name="LdfInit" argCount="0" />
     <command name="bblstyerror" argCount="0" />
     <command name="ProvidesLanguage" argCount="0" />
     <command name="CurrentOption" argCount="0" />
   </package>
-  <package name="spanish" debPackage="texlive-latex-base">
+  <package name="spanish" title="spanish" description="Spanish in Babel." debPackage="texlive-latex-base">
     <command name="LdfInit" argCount="0" />
     <command name="bblstyerror" argCount="0" />
     <command name="ProvidesLanguage" argCount="0" />
@@ -40794,7 +40794,7 @@
   </package>
   <package name="hebfont" debPackage="texlive-latex-base">
   </package>
-  <package name="babel" debPackage="texlive-latex-base">
+  <package name="babel" title="babel" description="Multilingual support for Plain TeX or LaTeX." debPackage="texlive-latex-base">
     <command name="encodingdefault" argCount="0" />
     <command name="LdfInit" argCount="2" />
     <command name="do" argCount="0" />
@@ -40972,7 +40972,7 @@
     <command name="pertdiagram" argCount="0" />
     <command name="MaxX" argCount="1" />
   </package>
-  <package name="DraTex" debPackage="texlive-pictures">
+  <package name="DraTex" title="dratex" description="General drawing macros." debPackage="texlive-pictures">
     <command name="wlog" argCount="1" />
     <command name="Define" argCount="1" />
     <command name="WarningOn" argCount="0" />
@@ -41029,12 +41029,12 @@
     <command name="Defend" argCount="0" />
     <command name="MoveToInv" argCount="0" />
   </package>
-  <package name="fltpoint" debPackage="texlive-generic-extra">
+  <package name="fltpoint" title="fltpoint" description="Simple floating point arithmetic." debPackage="texlive-generic-extra">
   </package>
   <package name="deccomma" debPackage="texlive-generic-extra">
     <command name="CommaCheck" argCount="0" />
   </package>
-  <package name="epsf" debPackage="texlive-generic-recommended">
+  <package name="epsf" title="epsf" description="Simple macros for EPS inclusion." debPackage="texlive-generic-recommended">
     <command name="epsfllx" argCount="0" />
     <command name="epsflly" argCount="0" />
     <command name="epsfurx" argCount="0" />
@@ -41046,7 +41046,7 @@
     <command name="epsfatend" argCount="0" />
     <command name="epsfempty" argCount="0" />
   </package>
-  <package name="arrayjob" debPackage="texlive-latex-extra">
+  <package name="arrayjob" title="arrayjob" description="Array data structures for (La)TeX." debPackage="texlive-latex-extra">
     <command name="newarray" argCount="1" />
     <command name="delarray" argCount="1" />
     <command name="readarray" argCount="2" />
@@ -41067,7 +41067,7 @@
     <command name="itriangle" argCount="3" />
     <command name="chop" argCount="8" />
   </package>
-  <package name="pictex" debPackage="texlive-pictures">
+  <package name="pictex" title="pictex" description="Picture drawing macros for TeX and LaTeX." debPackage="texlive-pictures">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
   </package>
@@ -41075,12 +41075,12 @@
   </package>
   <package name="mfpic" debPackage="texlive-metapost">
   </package>
-  <package name="ifxetex" debPackage="texlive-base">
+  <package name="ifxetex" title="ifxetex" description="Am I running under XeTeX?" debPackage="texlive-base">
     <command name="RequireXeTeX" argCount="0" />
   </package>
   <package name="allfonts" debPackage="texlive-generic-extra">
   </package>
-  <package name="ofs" debPackage="texlive-generic-extra">
+  <package name="ofs" title="ofs" description="Macros for managing large font collections." debPackage="texlive-generic-extra">
     <command name="OFSversion" argCount="0" />
     <command name="bi" argCount="0" />
     <command name="bf" argCount="0" />
@@ -41152,7 +41152,7 @@
     <command name="lmsg" argCount="0" />
     <command name="HyphSubstIfExists" argCount="1" />
   </package>
-  <package name="ifluatex" debPackage="texlive-base">
+  <package name="ifluatex" title="ifluatex" description="Provides the \ifluatex switch." debPackage="texlive-base">
     <command name="empty" argCount="0" />
     <command name="x" argCount="2" />
     <command name="MessageBreak" argCount="0" />
@@ -41364,13 +41364,13 @@
     <command name="empty" argCount="0" />
     <command name="x" argCount="0" />
   </package>
-  <package name="variations" debPackage="texlive-lang-french">
+  <package name="variations" title="variations" description="Typeset tables of variations of functions." debPackage="texlive-lang-french">
     <environment name="variations" argCount="0" />
   </package>
-  <package name="texdraw" debPackage="texlive-pictures">
+  <package name="texdraw" title="texdraw" description="Graphical macros, using embedded PostScript." debPackage="texlive-pictures">
     <environment name="texdraw" argCount="0" />
   </package>
-  <package name="xypic" debPackage="texlive-pictures">
+  <package name="xypic" title="xypic" description="Flexible diagramming macros." debPackage="texlive-pictures">
   </package>
   <package name="xy" debPackage="texlive-pictures">
   </package>
@@ -41834,7 +41834,7 @@
     <command name="encodingdefault" argCount="0" />
     <environment name="inuit" argCount="0" />
   </package>
-  <package name="antomega" debPackage="texlive-omega">
+  <package name="antomega" title="antomega" description="Alternative language support for Omega/Lambda." debPackage="texlive-omega">
     <command name="LoadOCPByName" argCount="2" />
     <command name="U" argCount="1" />
     <command name="rmdefault" argCount="0" />
@@ -41902,7 +41902,7 @@
   <package name="ojapan" debPackage="texlive-omega">
     <command name="japanese" argCount="0" />
   </package>
-  <package name="omega" debPackage="texlive-omega">
+  <package name="omega" title="omega" description="A wide-character-set extension of TeX." debPackage="texlive-omega">
     <command name="textbullet" argCount="0" />
     <command name="i" argCount="0" />
     <command name="ss" argCount="0" />
@@ -41932,13 +41932,13 @@
     <environment name="pashtop" argCount="0" />
     <environment name="sindhi" argCount="0" />
   </package>
-  <package name="luainputenc" debPackage="texlive-luatex">
+  <package name="luainputenc" title="luainputenc" description="Replacing inputenc for use in LuaTeX." debPackage="texlive-luatex">
     <command name="DeclareInputMath" argCount="1" />
     <command name="DeclareInputText" argCount="2" />
     <command name="IeC" argCount="0" />
     <command name="inputencoding" argCount="1" />
   </package>
-  <package name="luatextra" debPackage="texlive-luatex">
+  <package name="luatextra" title="luatextra" description="Additional macros for Plain TeX and LaTeX in LuaTeX." debPackage="texlive-luatex">
     <command name="LuaTeX" argCount="0" />
     <command name="LuaLaTeX" argCount="0" />
     <command name="luatexRequireModule" argCount="2" optionalArg="0" />
@@ -41963,7 +41963,7 @@
     <command name="newluatexcatcodetable" argCount="1" />
     <command name="luatexsetcatcoderange" argCount="3" />
   </package>
-  <package name="luamplib" debPackage="texlive-luatex">
+  <package name="luamplib" title="luamplib" description="Use LuaTeX's built-in MetaPost interpreter." debPackage="texlive-luatex">
     <command name="mplibsetformat" argCount="1" />
     <command name="mplibsetmemfile" argCount="1" />
     <command name="MPLIBtoPDF" argCount="1" />
@@ -41977,7 +41977,7 @@
     <command name="mplibtextext" argCount="5" />
     <environment name="mplibcode" argCount="0" />
   </package>
-  <package name="luaotfload" debPackage="texlive-luatex">
+  <package name="luaotfload" title="luaotfload" description="ConTeXt OTF loading system for Plain and LaTeX." debPackage="texlive-luatex">
   </package>
   <package name="amsppt" debPackage="texlive-math-extra">
     <command name="filename" argCount="0" />
@@ -43022,7 +43022,7 @@
     <command name="record_usage" argCount="1" />
     <command name="needsfontinstversion" argCount="1" />
   </package>
-  <package name="fontinst" debPackage="texlive-font-utils">
+  <package name="fontinst" title="fontinst" description="Help with installing fonts for TeX and LaTeX." debPackage="texlive-font-utils">
     <command name="fontinstversion" argCount="0" />
     <command name="NeedsTeXFormat" argCount="1" />
     <command name="ProvidesPackage" argCount="2" />
