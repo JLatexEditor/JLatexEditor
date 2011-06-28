@@ -16,9 +16,19 @@ object PackageParser {
 	val NewEnvironment = ".*\\\\newenvironment\\{(\\w+)\\}(?:\\[(\\d+)\\])?(?:\\[([^\\]]+)\\])?.*".r
 	val Input = ".*\\\\input\\{([^}]+)\\}".r
 	val DpkgResult = "([\\w\\.-]+): .*".r
+	val CtanPackSplit = "([^=]+)=(.*)".r
 
 	val processedFiles = new HashSet[String]
 	val files2debPackage = new HashMap[String, DebPackage]
+	val ctanPackInfos = {
+		val map = new HashMap[String, CtanPackInfo]
+
+		new File("ctan-packages.txt").readLines.foreach( _ match {
+			case CtanPackSplit(title, desc) => map += title.toLowerCase -> new CtanPackInfo(title, desc.replace("\\.$", ""))
+		})
+
+		map
+	}
 
 	def main(args: Array[String]) {
 		//parseFile(new File("/usr/share/texmf-texlive/tex/latex/algorithms/algorithmic.sty"))
@@ -63,8 +73,9 @@ object PackageParser {
 		val out = new PrintStream(file)
 		out.println("<packages>")
 		for (pack <- packages) {
+			val ctanPackString = pack.ctanPackInfo.map( pack => " title=\"" + pack.title + "\" description=\"" + pack.desc + "\"").getOrElse("")
 			val debPackageString = pack.debPackage.map( pack => " debPackage=\"" + pack.name + "\"").getOrElse("")
-			out.println("  <package name=\"" + pack.name + "\"" + debPackageString + ">")
+			out.println("  <package name=\"" + pack.name + "\"" + ctanPackString + debPackageString + ">")
 			for (command <- pack.commands.values) {
 				val optArgString = if (command.optionalArgs.isEmpty) "" else " optionalArg=\"" + escape(command.optionalArgs(0)) + "\""
 				out.println("    <command name=\"" + command.name + "\" argCount=\"" + command.argCount + "\"" + optArgString + " />")
@@ -167,13 +178,16 @@ object PackageParser {
 
 	class Command(val pack: Package, val name: String, val argCount: Int, val optionalArgs: List[String] = List())
 	class Environment(val pack: Package, val name: String, val argCount: Int, val optionalArgs: List[String] = List())
-	class Package(val file: File, val cls: Boolean, val name: String, val commands: LinkedHashMap[String, Command] = new LinkedHashMap[String, Command],
+	class Package(val file: File, val cls: Boolean, val name: String,
+	              val commands: LinkedHashMap[String, Command] = new LinkedHashMap[String, Command],
 	              val environments: LinkedHashMap[String, Environment] = new LinkedHashMap[String, Environment]) {
 		val debPackage = try {
 			Some(findDebPackage(file.getAbsolutePath))
 		} catch {
 			case e: FileNotFoundException => None
 		}
+		val ctanPackInfo = ctanPackInfos.get(name.toLowerCase)
 	}
+	class CtanPackInfo(val title: String, val desc: String)
 	class DebPackage(val name: String, val files: MutableList[String])
 }
