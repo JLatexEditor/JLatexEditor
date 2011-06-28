@@ -39,13 +39,11 @@ public class HelpUrlHandler extends URLStreamHandler {
 				String realUrlString = u.toExternalForm().substring(5);
 				if (realUrlString.contains("#")) {
 					int index = realUrlString.indexOf("#");
-					command = realUrlString.substring(index);
+					command = realUrlString.substring(index + 1);
 
-					//realUrlString = realUrlString.substring()
+					realUrlString = realUrlString.substring(0, index);
 				}
 				URL realUrl = new URL(realUrlString);
-
-				//String file = url.getPath().indexOf("#");
 
 				String content = HelpUrlHandler.getHelpTextAt(command, realUrl);
 
@@ -68,18 +66,20 @@ public class HelpUrlHandler extends URLStreamHandler {
 		}
 
 		// append packages providing the command
-		String commandsPack = getPackagesString(PackagesExtractor.getPackageParser().getCommands().get(command.substring(1)));
-		String commandsDoc = getPackagesString(PackagesExtractor.getDocClassesParser().getCommands().get(command.substring(1)));
-		if (commandsPack != null || commandsDoc != null) {
-			content += "<h3>This command is provided by ...</h3>";
-			content += "<ul>";
-			if (commandsPack != null) {
-			  content += "<li><b>package(s)</b>: " + commandsPack + "</li>";
+		if (command != null) {
+			String commandsPack = getPackagesString(PackagesExtractor.getPackageParser().getCommands().get(command.substring(1)));
+			String commandsDoc = getPackagesString(PackagesExtractor.getDocClassesParser().getCommands().get(command.substring(1)));
+			if (commandsPack != null || commandsDoc != null) {
+				content += "<h3>This command is provided by ...</h3>";
+				content += "<ul>";
+				if (commandsPack != null) {
+					content += "<li><b>package(s)</b>: " + commandsPack + "</li>";
+				}
+				if (commandsDoc != null) {
+					content += "<li><b>documentclass(es)</b>: " + commandsDoc + "</li>";
+				}
+				content += "</ul>";
 			}
-			if (commandsDoc != null) {
-			  content += "<li><b>documentclass(es)</b>: " + commandsDoc + "</li>";
-			}
-			content += "</ul>";
 		}
 
 		content += "</body></html>";
