@@ -49,6 +49,7 @@ public class QuickHelpPane extends JScrollPane implements HyperlinkListener, Key
     htmlPane.addHyperlinkListener(this);
     htmlPane.setEditable(false);
     htmlPane.addPropertyChangeListener(this);
+	  htmlPane.setContentType("text/html");
 
     // add the component to the viewport
     JViewport viewPort = new JViewport();
@@ -136,7 +137,7 @@ public class QuickHelpPane extends JScrollPane implements HyperlinkListener, Key
           htmlPane.setPage(url);
         }
       } catch (IOException e1) {
-        System.err.println("SCEPaneUI: " + e1);
+	      e1.printStackTrace();
       }
       e.consume();
     }
