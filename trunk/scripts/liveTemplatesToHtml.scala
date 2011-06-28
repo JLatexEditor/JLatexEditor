@@ -1,6 +1,6 @@
 import scala.xml.XML
 
-val xml = XML.loadFile("../data/codehelper/tabCompletion.xml")
+val xml = XML.loadFile("data/codehelper/liveTemplates.xml")
 
 val commands = xml \ "command"
 for (command <- commands) {

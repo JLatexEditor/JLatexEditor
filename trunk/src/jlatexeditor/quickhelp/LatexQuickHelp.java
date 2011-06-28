@@ -1,16 +1,18 @@
 package jlatexeditor.quickhelp;
 
+import de.endrullis.utils.CollectionUtils;
+import jlatexeditor.PackagesExtractor;
 import sce.component.SCEDocument;
 import sce.quickhelp.QuickHelp;
+import util.Function1;
 import util.StreamUtils;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.net.URLStreamHandler;
+import java.net.URLStreamHandlerFactory;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -58,7 +60,16 @@ public class LatexQuickHelp implements QuickHelp {
   public LatexQuickHelp(String directory) {
     this.directory = directory;
 
-    // Open the table of contents
+	  HelpUrlHandler.register();
+
+	  System.out.println(1);
+	  try {
+		  new URL("help:asd//test").getContent();
+	  } catch (IOException e) {
+		  e.printStackTrace();
+	  }
+
+	  // Open the table of contents
     String toc_file = directory + "ltx-2.html";
 
     BufferedReader reader;
@@ -122,7 +133,7 @@ public class LatexQuickHelp implements QuickHelp {
     URL url = StreamUtils.getURL(directory + fileName);
     if (url == null) return null;
 
-    return url.toString();
+    return "help:" + url.toString();
   }
 
   public String getHelpUrlAt(int row, int column) {
@@ -130,7 +141,7 @@ public class LatexQuickHelp implements QuickHelp {
     return getHelpUrl(command);
   }
 
-  public void setDocument(SCEDocument document) {
+	public void setDocument(SCEDocument document) {
     this.document = document;
   }
 

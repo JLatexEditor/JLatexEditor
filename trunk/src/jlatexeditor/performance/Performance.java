@@ -28,7 +28,7 @@ import java.util.Random;
  */
 public class Performance {
 	private static StaticCommandsReader latexCommands = new StaticCommandsReader("data/codehelper/commands.xml");
-	private static StaticCommandsReader tabCompletions = new StaticCommandsReader("data/codehelper/tabCompletion.xml");
+	private static StaticCommandsReader tabCompletions = new StaticCommandsReader("data/codehelper/liveTemplates.xml");
 	private static BackgroundParser backgroundParser = null;
 
 	public static void main(String[] args) throws IOException, FileNotFoundException {
