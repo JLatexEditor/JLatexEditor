@@ -57,13 +57,26 @@
            hint="latex beamer frame">
     <argument name="title"/>
   </command>
-	<command name="it" usage="\textit{@text@}@|@" hint="italic">
+	<!-- Font styles -->
+	<command name="bf" usage="\textbf{@text@}@|@" hint="bold font">
 		<argument name="text"/>
 	</command>
-	<command name="bf" usage="\textbf{@text@}@|@" hint="bold">
+	<command name="it" usage="\textit{@text@}@|@" hint="italic font">
 		<argument name="text"/>
 	</command>
-	<command name="tt" usage="\texttt{@text@}@|@" hint="type writer">
+	<command name="rm" usage="\textrm{@text@}@|@" hint="roman font">
+		<argument name="text"/>
+	</command>
+	<command name="sc" usage="\textsc{@text@}@|@" hint="small caps">
+		<argument name="text"/>
+	</command>
+	<command name="sf" usage="\textsf{@text@}@|@" hint="sans serif font">
+		<argument name="text"/>
+	</command>
+	<command name="sl" usage="\textsl{@text@}@|@" hint="slanted font">
+		<argument name="text"/>
+	</command>
+	<command name="tt" usage="\texttt{@text@}@|@" hint="type writer font">
 		<argument name="text"/>
 	</command>
 	<command name="emph" usage="\emph{@text@}@|@" hint="emphasising">

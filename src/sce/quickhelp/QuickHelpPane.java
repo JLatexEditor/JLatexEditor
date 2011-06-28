@@ -14,6 +14,9 @@ import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
 
 /**
  * Window showing the help information for commands.
@@ -133,7 +136,7 @@ public class QuickHelpPane extends JScrollPane implements HyperlinkListener, Key
           htmlPane.setPage(url);
         }
       } catch (IOException e1) {
-        System.out.println("SCEPaneUI: " + e1);
+        System.err.println("SCEPaneUI: " + e1);
       }
       e.consume();
     }
