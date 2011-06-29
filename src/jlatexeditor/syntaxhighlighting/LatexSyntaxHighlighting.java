@@ -173,8 +173,7 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 						    svnRow = row.length >= 8 && chars[7].character == ' ';
 				    }
 				    if (svnRow) {
-					    for (int i = 0; i < chars.length; i++) {
-						    SCEDocumentChar aChar = chars[i];
+					    for (SCEDocumentChar aChar : chars) {
 						    aChar.style = state.getStyles()[LatexStyles.ERROR];
 						    //aChar.overlayStyle = 0;
 					    }
@@ -260,13 +259,14 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 								char_nr = setStyle(param, style, chars, char_nr + 1);
 							} else
 							if (argumentTypeName.equals("label_def")) {
-								boolean definedOnce = backgroundParser.getLabelDefs().count(param) == 1;
+								BackgroundParser.FilePos existingDef = backgroundParser.getLabelDefs().get(param);
+								boolean alreadyDefined = existingDef != null && existingDef.getLineNr() != row_nr;
 								boolean labelReferenced = backgroundParser.getLabelRefs().contains(param);
 								byte style;
-								if (definedOnce) {
-									style = stateStyles[getStyle(labelReferenced ? "label_exists" : "label_not_referenced", LatexStyles.TEXT)];
-								} else {
+								if (alreadyDefined) {
 									style = stateStyles[getStyle("label_duplicate", LatexStyles.TEXT)];
+								} else {
+									style = stateStyles[getStyle(labelReferenced ? "label_exists" : "label_not_referenced", LatexStyles.TEXT)];
 								}
 								char_nr = setStyle(param, style, chars, char_nr + 1);
 							} else
