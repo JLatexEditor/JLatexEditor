@@ -30,8 +30,7 @@ public class HelpUrlHandler extends URLStreamHandler {
 			realUrlString = realUrlString.substring(0, index);
 		}
 		final URL realUrl = new URL(realUrlString);
-		final String finalCommand = command;
-
+		final String finalCommand = command == null || command.equals("") ? null : command;
 		return new URLConnection(realUrl) {
 			private URLConnection realConnection = realUrl.openConnection();
 
