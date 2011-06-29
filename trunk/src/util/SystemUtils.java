@@ -1,6 +1,6 @@
 package util;
 
-import java.io.File;
+import java.io.*;
 import java.util.regex.Pattern;
 
 /**
@@ -35,6 +35,18 @@ public class SystemUtils {
   public static String getSimpleOSType() {
     return isWinOS() ? "windows" : "unix";
   }
+
+	public static String getLinuxDistribution() throws IOException {
+		Process process = Runtime.getRuntime().exec(new String[]{"lsb_release", "-i"});
+		InputStream in = process.getInputStream();
+		BufferedReader r = new BufferedReader(new InputStreamReader(in));
+		try {
+			String[] parts = r.readLine().split(":");
+			return parts[1].trim();
+		} catch (Exception e) {
+			throw new IOException("lsb_release produced unexpected output");
+		}
+	}
 
   public static File newFile(File parent, String fileName) {
     if (absoluteFile.matcher(fileName).matches()) return new File(fileName);

@@ -30,29 +30,37 @@ public class HelpUrlHandler extends URLStreamHandler {
 			realUrlString = realUrlString.substring(0, index);
 		}
 		final URL realUrl = new URL(realUrlString);
-
 		final String finalCommand = command;
 
 		return new URLConnection(realUrl) {
+			private URLConnection realConnection = realUrl.openConnection();
+
 			@Override
 			public void connect() throws IOException {
+				realConnection.connect();
+			}
+
+			@Override
+			public String getContentType() {
+				return realConnection.getContentType();
 			}
 
 			@Override
 			public InputStream getInputStream() throws IOException {
-				String content = HelpUrlHandler.getHelpTextAt(finalCommand, realUrl);
+				String content = HelpUrlHandler.getHelpTextAt(finalCommand, realConnection);
 
 				return new ByteArrayInputStream(content.getBytes());
 			}
 		};
 	}
 
-	public static String getHelpTextAt(String command, URL url) {
-		String content = "<html><body>";
+	public static String getHelpTextAt(String command, URLConnection urlConnection) {
+		String content = "content-type: text/html\n\n";
+		content += "<html><body>";
 
-		if (url != null) {
+		if (urlConnection != null) {
 			try {
-				BufferedInputStream in = (BufferedInputStream) url.getContent();
+				BufferedInputStream in = (BufferedInputStream) urlConnection.getContent();
 				content = readContent(in);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -65,7 +73,8 @@ public class HelpUrlHandler extends URLStreamHandler {
 			String commandsPack = getPackagesString(PackagesExtractor.getPackageParser().getCommands().get(command.substring(1)));
 			String commandsDoc = getPackagesString(PackagesExtractor.getDocClassesParser().getCommands().get(command.substring(1)));
 			if (commandsPack != null || commandsDoc != null) {
-				content += "<h3>This command is provided by ...</h3>";
+				content += "<hr/>";
+				content += "<h3>Packages providing this command</h3>";
 				content += "<ul>";
 				if (commandsPack != null) {
 					content += "<li><b>package(s)</b>: " + commandsPack + "</li>";
@@ -89,13 +98,13 @@ public class HelpUrlHandler extends URLStreamHandler {
 			ArrayList<String> packs = new ArrayList<String>();
 			for (PackagesExtractor.Command cmd : commands) {
 				String hintString = "";
-				if (cmd.getDescription() != null) {
-					hintString = " hint=\"" + cmd.getDescription() + "\"";
+				if (cmd.getPack().getDescription() != null) {
+					hintString = " - " + cmd.getPack().getDescription();
 				}
-				packs.add("<span" + hintString + ">" + cmd.getPack().getName() + "</span>");
+				packs.add("<li>" + cmd.getPack().getName() + hintString + "</li>");
 			}
 			Collections.sort(packs);
-			return CollectionUtils.join(packs, ", ");
+			return "<ul>" + CollectionUtils.join(packs, "") + "</ul>";
 		}
 	}
 
@@ -118,7 +127,7 @@ public class HelpUrlHandler extends URLStreamHandler {
 		HelpUrlHandler.register();
 
 		try {
-			System.out.println(new URL("help:file:data/quickhelp/index.html").getContent());
+			System.out.println(new URL("help:file:/home/stefan/programmierung/java/JLatexEditor/data/quickhelp/index.html").getContent());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
