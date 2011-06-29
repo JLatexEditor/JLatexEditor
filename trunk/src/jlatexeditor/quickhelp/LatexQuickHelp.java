@@ -2,6 +2,8 @@ package jlatexeditor.quickhelp;
 
 import de.endrullis.utils.CollectionUtils;
 import jlatexeditor.PackagesExtractor;
+import sce.codehelper.PatternPair;
+import sce.codehelper.WordWithPos;
 import sce.component.SCEDocument;
 import sce.quickhelp.QuickHelp;
 import util.Function1;
@@ -34,14 +36,10 @@ public class LatexQuickHelp implements QuickHelp {
    * Regular expression to extract commands from HTML pages.
    */
   static final Pattern htmlCommandsPattern = Pattern.compile("<li>.*<a href=\"([^\"]+)\">(.*)</a>.*</li>");
-  /**
-   * Command has to start with a backslash and may only contain letters.
-   */
-  static final Pattern commandStartPattern = Pattern.compile("(\\\\\\w*)$");
-  /**
-   * End of a command may end with an arbitrary number of letters.
-   */
-  static final Pattern commandEndPattern = Pattern.compile("^(\\w*)");
+	/**
+	 * PatternPair to find command under cursor.
+	 */
+  static final PatternPair commandPattern = new PatternPair("(\\\\\\w*)", "(\\w*)");
 
   /**
    * Source code.
@@ -105,14 +103,13 @@ public class LatexQuickHelp implements QuickHelp {
   public String findCommand(int row, int column) {
     String line = document.getRow(row);
 
-    Matcher startMatcher = commandStartPattern.matcher(line.substring(0, column));
-    Matcher endMatcher = commandEndPattern.matcher(line.substring(column, line.length()));
+	  List<WordWithPos> groups = commandPattern.find(line, row, column);
 
-    if (startMatcher.find() && endMatcher.find()) {
-      return startMatcher.group(1) + endMatcher.group(1);
+	  if (groups != null) {
+      return groups.get(0).word;
     }
 
-    return "";
+    return null;
   }
 
   /**
@@ -122,6 +119,8 @@ public class LatexQuickHelp implements QuickHelp {
    * @return the help file
    */
   public String getHelpUrl(String command) {
+	  if (command == null) return null;
+
     String fileName = commands.get(command);
     if (fileName == null) fileName = commands.get("<empty>");
 	  // if (fileName == null) return null;
