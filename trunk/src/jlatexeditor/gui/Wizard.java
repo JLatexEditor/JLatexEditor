@@ -130,6 +130,11 @@ public class Wizard extends JDialog implements WindowListener {
     setModal(true);
     pack();
 
+    // place window in the center of the screen
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    Dimension windowSize = getSize();
+    setLocation(screenSize.width / 2 - (windowSize.width / 2), screenSize.height / 2 - (windowSize.height / 2));
+
     // guessing suitable properties file
     if(!GProperties.hasChanges()) {
       String osName= System.getProperty("os.name");
