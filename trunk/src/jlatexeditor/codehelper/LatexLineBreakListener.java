@@ -5,10 +5,10 @@ import jlatexeditor.gproperties.GProperties;
 import org.omg.CORBA.Environment;
 import sce.codehelper.LineBreakListener;
 import sce.codehelper.WordWithPos;
-import sce.component.SCEDocument;
-import sce.component.SCEPane;
+import sce.component.*;
 
 import javax.naming.OperationNotSupportedException;
+import javax.swing.text.Caret;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 
@@ -22,20 +22,26 @@ public class LatexLineBreakListener implements LineBreakListener {
 
 	public void linedWrapped(SCEPane pane) {
 		SCEDocument doc = pane.getDocument();
-		int row = pane.getCaret().getRow();
+		SCECaret caret = pane.getCaret();
+		int row = caret.getRow();
 
 		if (row > 0) {
 			String lastLine = doc.getRow(row - 1);
 			boolean indent = false;
+			boolean closeEnv = false;
+			String envName = null;
 
-			// check if we need to indent the new line
-			if (GProperties.getBoolean("editor.auto_indentation.after_begin")) {
-				// indent if a new environment was opened in the last row
-				Iterator<WordWithPos> openEnvIterator = EnvironmentUtils.getOpenEnvIterator(pane);
-				if (openEnvIterator.hasNext()) {
-					indent = openEnvIterator.next().getStartRow() == row - 1;
+			// determine if a new environment was opened in the last row
+			Iterator<WordWithPos> openEnvIterator = EnvironmentUtils.getOpenEnvIterator(pane);
+			if (openEnvIterator.hasNext()) {
+				WordWithPos env = openEnvIterator.next();
+				if (env.getStartRow() == row - 1) {
+					indent   = GProperties.getBoolean("editor.auto_indentation.after_begin");
+					closeEnv = GProperties.getBoolean("editor.auto_close_environment");
+					envName  = env.word;
 				}
 			}
+			// check further if we need to indent the new line
 			if (!indent && GProperties.getBoolean("editor.auto_indentation.after_item")) {
 				// indent if a new item was started in the last row
 				indent = itemPattern.matcher(lastLine).find();
@@ -56,6 +62,13 @@ public class LatexLineBreakListener implements LineBreakListener {
 
 			if (indent) {
 				pane.insert("  ");
+			}
+			if (closeEnv) {
+				SCEPosition oldPos = new SCEDocumentPosition(caret.getRow(), caret.getColumn());
+				String currLine = doc.getRow(row);
+				String nextIndentation = currLine.substring(0, Math.max(0, currLine.length() - 2));
+				pane.insert("\n" + nextIndentation + "\\end{" + envName + '}');
+				caret.moveTo(oldPos, false);
 			}
 		}
 	}
