@@ -120,6 +120,10 @@ public class GProperties {
 	  properties.addEntry(new Def("editor.auto_completion.min_number_of_letters", INT_GT_0, "3"));
 	  properties.addEntry(new Def("editor.auto_completion.delay", INT_GT_0, "200"));
 	  properties.addEntry(new Def("editor.clear_selection_when_closing_search", BOOLEAN, "true"));
+	  properties.addEntry(new Comment(" Automatic indentation"));
+	  properties.addEntry(new Def("editor.auto_indentation.after_begin", BOOLEAN, "true"));
+	  properties.addEntry(new Def("editor.auto_indentation.after_item", BOOLEAN, "true"));
+	  properties.addEntry(new Def("editor.auto_indentation.after_opening_brace", BOOLEAN, "true"));
 
     properties.addEntry(new Comment("\n## Shortcuts"));
     properties.addEntry(new Comment(" File menu"));

@@ -2,6 +2,7 @@ package sce.component;
 
 import sce.codehelper.CodeHelper;
 import sce.codehelper.CodeHelperPane;
+import sce.codehelper.LineBreakListener;
 import sce.quickhelp.QuickHelp;
 import sce.quickhelp.QuickHelpPane;
 
@@ -29,6 +30,9 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 
   // auto completion
   CodeHelperPane codeHelperPane = null;
+
+	// line break listener
+	LineBreakListener lineBreakListener = null;
 
   // last mouse click
   long lastMouseClick = 0;
@@ -118,7 +122,16 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     }
   }
 
-  /**
+	/**
+	 * Sets the listener for line breaks.
+	 *
+	 * @param lineBreakListener listener for line breaks
+	 */
+	public void setLineBreakListener(LineBreakListener lineBreakListener) {
+		this.lineBreakListener = lineBreakListener;
+	}
+
+	/**
    * Scrolls the visible rectangle.
    *
    * @param rows the number of rows to scroll
@@ -266,6 +279,10 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 	    int indentCount = 0;
 	    while (indentCount < line.length() && line.charAt(indentCount) == ' ') indentCount++;
 			document.insert(line.substring(0, indentCount), row + 1, 0);
+
+	    if (lineBreakListener != null) {
+		    lineBreakListener.linedWrapped(pane);
+	    }
       e.consume();
     }
 
