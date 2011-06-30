@@ -1,10 +1,7 @@
 package jlatexeditor.addon;
 
 import jlatexeditor.JLatexEditorJFrame;
-import sce.component.SCEDocument;
-import sce.component.SCEDocumentPosition;
-import sce.component.SCEPane;
-import sce.component.SCERange;
+import sce.component.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,6 +21,8 @@ public class ColumnRealigner extends AddOn {
 	public void run(JLatexEditorJFrame jle) {
 		SCEPane pane = jle.getActiveEditor().getTextPane();
 		SCEDocument doc = pane.getDocument();
+
+		SCEPosition oldPosition = new SCEDocumentPosition(pane.getCaret().getRow(), pane.getCaret().getColumn());
 
 		ArrayList<Character> columns = new ArrayList<Character>();
 		if (!doc.hasSelection()) {
@@ -81,6 +80,7 @@ public class ColumnRealigner extends AddOn {
 		String newText = table.process(selectedText.split("\n"));
 
 		doc.replace(starPos, endPos, newText);
+		pane.getCaret().moveTo(oldPosition, false);
 	}
 
 	public static class Table {
