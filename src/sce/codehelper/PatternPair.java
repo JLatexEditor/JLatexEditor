@@ -54,7 +54,7 @@ public class PatternPair {
 	 * @return list of groups as WordWithPos if the pattern could be applied or null if it could not match
 	 */
   public List<WordWithPos> find(String rowString, int row, int column) {
-	  if (rowString.length() <= column) return null;
+	  if (rowString.length() < column) return null;
 
     Matcher leftMatcher = leftPattern.matcher(rowString.substring(0, column));
     Matcher rightMatcher = rightPattern.matcher(rowString.substring(column, rowString.length()));
