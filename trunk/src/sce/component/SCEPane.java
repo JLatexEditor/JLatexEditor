@@ -29,26 +29,18 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 	enum CT { space, special, letter }
 	
   SourceCodeEditor sourceCodeEditor;
-  /**
-   * Document.
-   */
+  /** Document. */
   SCEDocument document = null;
-  /**
-   * Code Helper (code completion).
-   */
+  /** Code Helper (code completion). */
   CodeHelper codeHelper = null;
   CodeHelper tabCompletion = null;
-  /**
-   * Quick help.
-   */
+  /** Quick help. */
   QuickHelp quickHelp = null;
-  /**
-   * Undo manager.
-   */
+	/** Listener for line breaks. */
+  LineBreakListener lineBreakListener = null;
+  /** Undo manager. */
   SCEUndoManager undoManager = null;
-  /**
-   * General SCE Popup.
-   */
+  /** General SCE Popup. */
   SCEPopup popup = null;
 
   // some text properties
@@ -208,6 +200,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     ui.setCodeHelper(codeHelper);
     ui.setTabCompletion(tabCompletion);
     ui.setQuickHelp(quickHelp);
+    ui.setLineBreakListener(lineBreakListener);
 
     // get font properties
     Graphics g2D = getGraphics();
@@ -686,7 +679,12 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     }
   }
 
-  /**
+	public void setLineBreakListener(LineBreakListener lineBreakListener) {
+		this.lineBreakListener = lineBreakListener;
+		if (ui != null) ui.setLineBreakListener(lineBreakListener);
+	}
+
+	/**
    * Finds the next splitter in the given row and direction.
    *
    * @param row       row

@@ -115,6 +115,7 @@ public class SCEManager {
     scePane.setCodeHelper(codeHelper);
     scePane.setTabCompletion(new StaticCommandsCodeHelper("(\\p{L}*)", tabCompletions));
     scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
+    scePane.setLineBreakListener(new LatexLineBreakListener());
 
 	  CombinedCodeAssistant codeAssistant = new CombinedCodeAssistant();
     try {
