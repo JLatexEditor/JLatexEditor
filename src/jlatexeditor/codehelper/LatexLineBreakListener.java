@@ -34,11 +34,22 @@ public class LatexLineBreakListener implements LineBreakListener {
 			// determine if a new environment was opened in the last row
 			Iterator<WordWithPos> openEnvIterator = EnvironmentUtils.getOpenEnvIterator(pane);
 			if (openEnvIterator.hasNext()) {
-				WordWithPos env = openEnvIterator.next();
-				if (env.getStartRow() == row - 1) {
+				WordWithPos openEnvWord = openEnvIterator.next();
+				if (openEnvWord.getStartRow() == row - 1) {
 					indent   = GProperties.getBoolean("editor.auto_indentation.after_begin");
 					closeEnv = GProperties.getBoolean("editor.auto_close_environment");
-					envName  = env.word;
+					envName  = openEnvWord.word;
+
+					if (closeEnv) {
+						// do not close env if it is already closed
+						Iterator<WordWithPos> closeEnvIterator = EnvironmentUtils.getCloseEnvIterator(pane);
+						if (closeEnvIterator.hasNext()) {
+							WordWithPos closeEnvWord = closeEnvIterator.next();
+							if (closeEnvWord.word.equals(envName)) {
+								closeEnv = closeEnvWord.getStartCol() != openEnvWord.getStartCol() - 2;
+							}
+						}
+					}
 				}
 			}
 			// check further if we need to indent the new line
