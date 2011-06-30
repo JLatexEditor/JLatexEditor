@@ -119,7 +119,6 @@ public class GProperties {
 	  properties.addEntry(new Def("editor.auto_completion.activated", BOOLEAN, "false"));
 	  properties.addEntry(new Def("editor.auto_completion.min_number_of_letters", INT_GT_0, "3"));
 	  properties.addEntry(new Def("editor.auto_completion.delay", INT_GT_0, "200"));
-	  properties.addEntry(new Def("editor.auto_completion.delay", INT_GT_0, "200"));
 	  properties.addEntry(new Def("editor.auto_close_environment", BOOLEAN, "true"));
 	  properties.addEntry(new Comment(" Automatic indentation"));
 	  properties.addEntry(new Def("editor.auto_indentation.after_begin", BOOLEAN, "true"));
