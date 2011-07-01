@@ -297,9 +297,7 @@ public class GProperties {
       Object newValue = properties.get(key);
       if (newValue == null && oldValue == null) continue;
 
-      if ((newValue == null && oldValue != null) ||
-              (newValue != null && oldValue == null) ||
-              !newValue.equals(oldValue)) {
+      if (newValue == null || oldValue == null || !newValue.equals(oldValue)) {
         for (PropertyChangeListener propertyChangeListener : changeListeners.get(key)) {
           propertyChangeListener.propertyChange(new PropertyChangeEvent(CONFIG_FILE, key, oldValue, newValue));
         }
@@ -311,7 +309,7 @@ public class GProperties {
     try {
       editorFont = new Font(properties.getProperty(EDITOR_FONT_NAME), Font.PLAIN, properties.getInt(EDITOR_FONT_SIZE));
       textAntiAliasing = TEXT_ANTIALIAS_MAP.get(properties.getProperty(EDITOR_FONT_ANTIALIASING));
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException ignored) {
     }
   }
 
@@ -329,6 +327,8 @@ public class GProperties {
 
   /**
    * Checks whether there are user changes.
+   *
+   * @return true if at least one property changed
    */
   public static boolean hasChanges() {
     for(BetterProperties2.Entry entry : properties.getEntries()) {
@@ -348,6 +348,8 @@ public class GProperties {
 
   /**
    * Returns the underlying properties.
+   *
+   * @return underlying properties
    */
   public static BetterProperties2 getProperties() {
     return properties;
