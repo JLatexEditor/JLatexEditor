@@ -191,6 +191,32 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 
 					// search for a backslash '\'
 					if (c == '\\') {
+						// check if next char is any a kind of brace
+						if (char_nr + 1 < row.length) {
+							switch (chars[char_nr+1].character) {
+								case '(':
+									MathMode mathMode = new MathMode(MathMode.Type.openingParenthesis);
+									char_nr = processMathMode(stateStack, state, chars, char_nr, 2, mathMode);
+									state = stateStack.peek();
+									continue;
+								case ')':
+									mathMode = new MathMode(MathMode.Type.closingParenthesis);
+									char_nr = processMathMode(stateStack, state, chars, char_nr, 2, mathMode);
+									state = stateStack.peek();
+									continue;
+								case '[':
+									mathMode = new MathMode(MathMode.Type.openingBracket);
+									char_nr = processMathMode(stateStack, state, chars, char_nr, 2, mathMode);
+									state = stateStack.peek();
+									continue;
+								case ']':
+									mathMode = new MathMode(MathMode.Type.closingBracket);
+									char_nr = processMathMode(stateStack, state, chars, char_nr, 2, mathMode);
+									state = stateStack.peek();
+									continue;
+							}
+						}
+
 						String command = getWord(row, char_nr + 1, true);
 
 						CHCommand chCommand = commands.get("\\" + command);
@@ -207,27 +233,16 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 
 					// search for '$' and "$$"
 					if (c == '$') {
-						sce_char.style = stateStyles[LatexStyles.MATH];
+						int charCount = 1;
 
 						MathMode.Type type = row.length > char_nr+1 && chars[char_nr+1].character == '$' ? MathMode.Type.doubled : MathMode.Type.simple;
 						if (type == MathMode.Type.doubled) {
-							char_nr++;
-							chars[char_nr].style = stateStyles[LatexStyles.MATH];
+							charCount = 2;
 						}
 
 						MathMode mathMode = new MathMode(type);
-
-						// if active math mode -> close; otherwise open
-						if (state instanceof MathMode) {
-							if (state.equals(mathMode)) {
-								stateStack.pop();
-								state = stateStack.peek();
-							} else {
-								chars[char_nr].style = stateStyles[LatexStyles.ERROR];
-							}
-						} else {
-							stateStack.push(state = mathMode);
-						}
+						char_nr = processMathMode(stateStack, state, chars, char_nr, charCount, mathMode);
+						state = stateStack.peek();
 
 						argumentsIterator = null;
 						continue;
@@ -365,6 +380,26 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
       }
     }
   }
+
+	private int processMathMode(ParserStateStack stateStack, ParserState state, SCEDocumentChar[] chars, int char_nr, int charCount, MathMode mathMode) {
+		// if active math mode -> close; otherwise open
+		byte style = LatexStyles.MATH;
+		if (state instanceof MathMode) {
+			if (mathMode.closes((MathMode) state)) {
+				stateStack.pop();
+			} else {
+				style = LatexStyles.ERROR;
+			}
+		} else {
+			if (mathMode.mayBeOpening()) {
+				stateStack.push(mathMode);
+			} else {
+				style = LatexStyles.ERROR;
+			}
+		}
+		char_nr = setStyle(charCount, style, chars, char_nr);
+		return char_nr;
+	}
 
 	private void matchAndStyle(int start, SCEDocumentChar[] chars, String param, Pattern pattern, Function1<String, Byte> styleFunc) {
 		Matcher matcher = pattern.matcher(param);
