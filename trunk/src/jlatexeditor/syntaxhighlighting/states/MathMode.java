@@ -7,7 +7,8 @@ import sce.syntaxhighlighting.ParserState;
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 public class MathMode implements ParserState {
-  private boolean doubleMath;
+	public enum Type { simple, doubled, bracket, parenthesis }
+
   private static byte[] styles = new byte[256];
 
   static {
@@ -17,28 +18,26 @@ public class MathMode implements ParserState {
     styles[LatexStyles.NUMBER] = LatexStyles.MATH;
   }
 
-  public MathMode(boolean doubleMath) {
-    this.doubleMath = doubleMath;
-  }
+	private Type type;
 
-  @Override
+	public MathMode(Type type) {
+		this.type = type;
+	}
+
+	@Override
   public boolean equals(Object obj) {
     if (obj instanceof MathMode) {
-      MathMode mathMode = (MathMode) obj;
-
+      MathMode that = (MathMode) obj;
+	    return this.type.equals(that.type);
     }
     return false;
   }
 
   public ParserState copy() {
-    return new MathMode(doubleMath);
+    return new MathMode(type);
   }
 
   public byte[] getStyles() {
     return styles;
-  }
-
-  public boolean isDoubleMath() {
-    return doubleMath;
   }
 }

@@ -209,18 +209,24 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 					if (c == '$') {
 						sce_char.style = stateStyles[LatexStyles.MATH];
 
-						boolean doubleMath = chars[char_nr + 1].character == '$';
-						if (doubleMath) {
+						MathMode.Type type = row.length > char_nr+1 && chars[char_nr+1].character == '$' ? MathMode.Type.doubled : MathMode.Type.simple;
+						if (type == MathMode.Type.doubled) {
 							char_nr++;
 							chars[char_nr].style = stateStyles[LatexStyles.MATH];
 						}
 
+						MathMode mathMode = new MathMode(type);
+
 						// if active math mode -> close; otherwise open
 						if (state instanceof MathMode) {
-							stateStack.pop();
-							state = stateStack.peek();
+							if (state.equals(mathMode)) {
+								stateStack.pop();
+								state = stateStack.peek();
+							} else {
+								chars[char_nr].style = stateStyles[LatexStyles.ERROR];
+							}
 						} else {
-							stateStack.push(state = new MathMode(doubleMath));
+							stateStack.push(state = mathMode);
 						}
 
 						argumentsIterator = null;
