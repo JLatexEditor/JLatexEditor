@@ -300,14 +300,14 @@ public class SCEDocumentRows {
    * @param row_nr    the row
    * @param column_nr the column
    */
-  public synchronized SCEDocumentPosition insert(String text, int row_nr, int column_nr) {
+  public synchronized SCEDocumentPosition insert(String text, int row_nr, int column_nr, boolean checkEditRange) {
     if (row_nr >= rowsCount) return null;
 
     // remember row and column
     SCEDocumentPosition position = new SCEDocumentPosition(row_nr, column_nr);
 
     // is this position within the edit range?
-    if (hasEditRange()) {
+    if (checkEditRange && hasEditRange()) {
       if (position.compareTo(editRangeStart) <= 0 || position.compareTo(editRangeEnd) >= 0) {
         // this is not allowed
         return null;
@@ -453,12 +453,12 @@ public class SCEDocumentRows {
    * @param endRow      the end row
    * @param endColumn   the end column (behind the last character to remove)
    */
-  public synchronized boolean remove(int startRow, int startColumn, int endRow, int endColumn) {
+  public synchronized boolean remove(int startRow, int startColumn, int endRow, int endColumn, boolean checkEditRange) {
     SCEDocumentPosition start = new SCEDocumentPosition(startRow, startColumn);
     SCEDocumentPosition end = new SCEDocumentPosition(endRow, endColumn);
 
     // is this position within the edit range?
-    if (hasEditRange()) {
+    if (checkEditRange && hasEditRange()) {
       if (start.compareTo(editRangeStart) <= 0 || end.compareTo(editRangeEnd) >= 0) {
         // this is not allowed
         return false;
