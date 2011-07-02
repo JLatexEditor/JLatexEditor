@@ -106,51 +106,6 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   public SCEPane(SourceCodeEditor sourceCodeEditor) {
     this.sourceCodeEditor = sourceCodeEditor;
 
-	  // TODO
-	  /*
-	  getInputMap().put(KeyStroke.getKeyStroke("control HOME"), "bla");
-	  getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control HOME"), "bla");
-	  getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke("control HOME"), "bla");
-	  getActionMap().put("bla", new Action() {
-		  @Override
-		  public Object getValue(String key) {
-			  System.out.println("SCEPane.getValue");
-			  return null;
-		  }
-
-		  @Override
-		  public void putValue(String key, Object value) {
-			  System.out.println("SCEPane.putValue");
-		  }
-
-		  @Override
-		  public void setEnabled(boolean b) {
-			  System.out.println("SCEPane.setEnabled");
-		  }
-
-		  @Override
-		  public boolean isEnabled() {
-			  System.out.println("SCEPane.isEnabled");
-			  return true;
-		  }
-
-		  @Override
-		  public void addPropertyChangeListener(PropertyChangeListener listener) {
-			  System.out.println("SCEPane.addPropertyChangeListener");
-		  }
-
-		  @Override
-		  public void removePropertyChangeListener(PropertyChangeListener listener) {
-			  System.out.println("SCEPane.removePropertyChangeListener");
-		  }
-
-		  @Override
-		  public void actionPerformed(ActionEvent e) {
-			  System.out.println("SCEPane.actionPerformed");
-		  }
-	  });
-	  */
-
     setOpaque(true);
     setBackground(Color.WHITE);
 
