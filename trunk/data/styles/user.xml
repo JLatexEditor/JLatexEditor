@@ -36,4 +36,6 @@
   <element name="cite_exists" style="plain" foreground="800080"/>
   <element name="cite_not_found" style="plain" foreground="ff0000"/>
 
+	<element name="env_name" style="plain" foreground="0000FF"/>
+
 </styles>

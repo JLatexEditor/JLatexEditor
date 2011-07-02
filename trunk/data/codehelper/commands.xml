@@ -907,7 +907,7 @@
   </command>
 
   <command name="\begin" usage="\begin{@environment@}@|@&nl;\end{@environment@}" hint="paragraph-making environments" style="begin">
-    <argument name="environment">
+    <argument name="environment" type="opening_env">
       <argumentValue value="abstract"/>
       <argumentValue value="array"/>
       <argumentValue value="center"/>
@@ -939,7 +939,7 @@
   </command>
 
 	<command name="\end" usage="\end{@environment@}" hint="closing environment" style="begin">
-	  <argument name="environment"/>
+	  <argument name="environment" type="closing_env"/>
 	</command>
 
   <environment name="picture">
