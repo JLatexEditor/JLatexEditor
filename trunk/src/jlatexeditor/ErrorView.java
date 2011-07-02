@@ -407,16 +407,9 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
 			this.label = label;
 		}
 
-		public ErrorTreeNode() {
-		}
-
 		public ErrorTreeNode(Object userObject, String iconFile) {
 			super(userObject);
 			icon = loadIcon(iconFile);
-		}
-
-		public int getErrors() {
-			return lm.getSize();
 		}
 
 		public ImageIcon getIcon() {
