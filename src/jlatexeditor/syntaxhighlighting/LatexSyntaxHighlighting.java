@@ -5,6 +5,7 @@
 package jlatexeditor.syntaxhighlighting;
 
 import jlatexeditor.codehelper.BackgroundParser;
+import jlatexeditor.syntaxhighlighting.states.Env;
 import jlatexeditor.syntaxhighlighting.states.MathMode;
 import jlatexeditor.syntaxhighlighting.states.RootState;
 import sce.codehelper.CHArgumentType;
@@ -22,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -304,6 +306,25 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 									}
 								});
 								char_nr += param.length();
+							} else
+							if (argumentTypeName.equals("opening_env")) {
+								stateStack.push(new Env(param, false, state));
+								byte style = stateStyles[getStyle("env_name", LatexStyles.TEXT)];
+								char_nr = setStyle(param, style, chars, char_nr + 1);
+							} else
+							if (argumentTypeName.equals("closing_env")) {
+								if (state instanceof Env) {
+									Env openingEnv = (Env) state;
+									Env closingEnv = new Env(param, true, state);
+									boolean validClosing = false;
+									if (closingEnv.closes(openingEnv)) {
+										stateStack.pop();
+										state = stateStack.peek();
+										validClosing = true;
+									}
+									byte style = stateStyles[getStyle(validClosing ? "env_name" : "error", LatexStyles.TEXT)];
+									char_nr = setStyle(param, style, chars, char_nr + 1);
+								}
 							}
 						}
 

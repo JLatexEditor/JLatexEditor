@@ -15,6 +15,7 @@ New Features and other Changes in JLatexEditor
 * major improvements:
   - replaced buggy Java open dialog with a completely new one - better looking and better usability
   - improved math environment detection and error highlighting
+  - invalid environment closing is marked as error while typing
 * minor enhancements:
   - prettied up tabs and icons in compile tree
   - added icons to menu (thanks to Tango Desktop Project for the icons)
