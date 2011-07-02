@@ -143,7 +143,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
    */
   private int findPrefixStart(int row, int column) {
     // get the command name
-    SCEDocumentRow documentRow = document.getRows()[row];
+    SCEDocumentRow documentRow = document.getRowsModel().getRow(row);
 
     int commandStart = pane.findSplitterInRow(row, column, -1);
     if (column > 0 && documentRow.chars[column - 1].character == ' ') commandStart = column;
@@ -351,7 +351,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 					  int colBefore = argumentRange.getStartPosition().getColumn();
 					  int colAfter  = argumentRange.getEndPosition().getColumn();
 					  int rowNr = argumentRange.getStartPosition().getRow();
-					  SCEDocumentRow row = document.getRows()[rowNr];
+					  SCEDocumentRow row = document.getRowsModel().getRow(rowNr);
 					  if (colBefore >= 0 && colAfter < row.length &&
 							  row.chars[colBefore].character == '[' && row.chars[colAfter].character == ']') {
 						  document.remove(rowNr, colBefore, rowNr, colAfter + 1, SCEDocumentEvent.EVENT_EDITRANGE);
@@ -383,7 +383,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 			  int colBefore = argumentRange.getStartPosition().getColumn();
 			  int colAfter  = argumentRange.getEndPosition().getColumn();
 			  int rowNr = argumentRange.getStartPosition().getRow();
-			  SCEDocumentRow row = document.getRows()[rowNr];
+			  SCEDocumentRow row = document.getRowsModel().getRow(rowNr);
 			  if (colBefore >= 0 && colAfter < row.length &&
 					  row.chars[colBefore].character != '[' || row.chars[colAfter].character != ']') {
 				  document.insert("[]", rowNr, colBefore, SCEDocumentEvent.EVENT_EDITRANGE);
@@ -422,7 +422,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
   }
 
   public void keyPressed(KeyEvent e) {
-    //int row = caret.getRow();
+    //int row = caret.getRowAsString();
     //int column = caret.getColumn();
 
     // control+space
@@ -439,7 +439,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
       String begin = "\\begin";
 
       int index = column-1;
-      String rowString = document.getRow(row);
+      String rowString = document.getRowAsString(row);
       while(index > 0) {
         char c = rowString.charAt(index);
         if(c == '{') break;
@@ -697,7 +697,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 						toWait = delay - ((System.nanoTime() - lastTime) / 1000000);
 					}
 
-					String word = document.getRow(caret.getRow(), 0, caret.getColumn());
+					String word = document.getRowsModel().getRowAsString(caret.getRow(), 0, caret.getColumn());
 					Matcher matcher = pattern.matcher(word);
 					if (matcher.find()) {
 						word = matcher.group();

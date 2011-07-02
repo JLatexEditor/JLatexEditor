@@ -75,7 +75,7 @@ public class LatexErrorHighlighting implements LatexCompileListener {
 
         if (error.getType() != LatexCompileError.TYPE_ERROR) continue;
 
-        String row = document.getRow(errorRow);
+        String row = document.getRowsModel().getRowAsString(errorRow);
 
         int errorColumn = 0;
         String before = error.getTextBefore();

@@ -224,7 +224,7 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
 
 		int column = 0;
 		if (error.getTextBefore() != null) {
-		  String line = pane.getDocument().getRow(error.getLineStart()-1);
+		  String line = pane.getDocument().getRowsModel().getRowAsString(error.getLineStart()-1);
 
 			int i = line.indexOf(error.getTextBefore());
 			if (i >= 0) {

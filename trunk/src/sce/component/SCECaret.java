@@ -78,17 +78,19 @@ public class SCECaret implements SCEPosition, Comparable, ActionListener {
    * @param keepSelection keep selection?
    */
   public void move(int direction, boolean keepSelection) {
+    SCEDocumentRows rowsModel = document.getRowsModel();
+
     if (direction == DIRECTION_UP) moveToVirt(getRow() - 1, virtualColumn, keepSelection, false);
     if (direction == DIRECTION_DOWN) moveToVirt(getRow() + 1, virtualColumn, keepSelection, false);
     if (direction == DIRECTION_LEFT) {
       if (getColumn() == 0 && getRow() > 0) {
-        moveTo(getRow() - 1, document.getRowLength(getRow() - 1), keepSelection);
+        moveTo(getRow() - 1, rowsModel.getRowLength(getRow() - 1), keepSelection);
       } else {
         moveTo(getRow(), getColumn() - 1, keepSelection);
       }
     }
     if (direction == DIRECTION_RIGHT) {
-      if (getColumn() == document.getRowLength(getRow()) && getRow() < document.getRowsCount() - 1) {
+      if (getColumn() == rowsModel.getRowLength(getRow()) && getRow() < rowsModel.getRowsCount() - 1) {
         moveTo(getRow() + 1, 0, keepSelection);
       } else {
         moveTo(getRow(), getColumn() + 1, keepSelection);
@@ -133,8 +135,8 @@ public class SCECaret implements SCEPosition, Comparable, ActionListener {
     showCursor(false);
 
 	  // set new position
-    int new_row = Math.max(Math.min(row, document.getRowsCount() - 1), 0);
-    int new_column = Math.max(Math.min(column, document.getRowLength(new_row)), 0);
+    int new_row = Math.max(Math.min(row, document.getRowsModel().getRowsCount() - 1), 0);
+    int new_column = Math.max(Math.min(column, document.getRowsModel().getRowLength(new_row)), 0);
     position.setPosition(new_row, new_column);
 
 	  // ensure we stay within edit range

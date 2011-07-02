@@ -5,15 +5,12 @@ import sce.codehelper.*;
 import sce.quickhelp.QuickHelp;
 
 import javax.swing.*;
-import javax.swing.text.TextAction;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.beans.PropertyChangeListener;
 import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.List;
@@ -485,7 +482,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   }
 
   private boolean removeComment(String commentPrefix, int row) {
-    String rowString = document.getRow(row);
+    String rowString = document.getRowsModel().getRowAsString(row);
     if (rowString.startsWith(commentPrefix)) {
       document.remove(row, 0, row, commentPrefix.length());
       return true;
@@ -687,21 +684,22 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 	/**
    * Finds the next splitter in the given row and direction.
    *
-   * @param row       row
+   * @param row_nr       row
    * @param column    column
    * @param direction -1 / 1
    * @return splitter column
    */
-  public int findSplitterInRow(int row, int column, int direction) {
-    String text = document.getRow(row);
+  public int findSplitterInRow(int row_nr, int column, int direction) {
+    SCEDocumentRow row = document.getRowsModel().getRow(row_nr);
+    String text = row.toString();
 
     int position = direction == -1 ? column - 1 : column;
     if (position < 0) return 0;
-    if (position >= document.getRowLength(row)) return document.getRowLength(row);
+    if (position >= row.length) return row.length;
 
 	  CT ct = getCharTypeAt(text, position);
 
-	  while (position >= 0 && position < document.getRowLength(row)) {
+	  while (position >= 0 && position < row.length) {
 	    if (ct != getCharTypeAt(text, position)) break;
 	    position += direction;
 	  }
@@ -740,15 +738,16 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    * @return splitter position
    */
   public SCEPosition findSplitterPosition(int row, int column, int direction) {
+    SCEDocumentRows rowsModel = document.getRowsModel();
     switch (direction) {
       case -1:
         if (column == 0 && row > 0) {
-          return new SCEDocumentPosition(row - 1, document.getRowLength(row - 1));
+          return new SCEDocumentPosition(row - 1, rowsModel.getRowLength(row - 1));
         } else {
           return new SCEDocumentPosition(row, findSplitterInRow(row, column, -1));
         }
       case 1:
-        if (column == document.getRowLength(row) && row < document.getRowsCount() - 1) {
+        if (column == rowsModel.getRowLength(row) && row < rowsModel.getRowsCount() - 1) {
           return new SCEDocumentPosition(row + 1, 0);
         } else {
           return new SCEDocumentPosition(row, findSplitterInRow(row, column, 1));
@@ -826,11 +825,12 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 
     // update the component size
     if (getParent() != null) {
+      SCEDocumentRow[] rows = document.getRowsModel().getRows();
       Dimension dimension = new Dimension();
-      for (int row_nr = 0; row_nr < document.getRowsCount(); row_nr++) {
-        dimension.width = Math.max(document.getRowLength(row_nr) * characterWidth + lineNumberSpacer + 30, dimension.width);
+      for (SCEDocumentRow row : rows) {
+        dimension.width = Math.max(row.length * characterWidth + lineNumberSpacer + 30, dimension.width);
       }
-      dimension.height = document.getRowsCount() * lineHeight + 30;
+      dimension.height = rows.length * lineHeight + 30;
       preferredSize = dimension;
       getParent().doLayout();
     }

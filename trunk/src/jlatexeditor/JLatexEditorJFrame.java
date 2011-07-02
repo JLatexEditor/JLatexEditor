@@ -890,9 +890,10 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 
 	public boolean hasDocumentClass(SCEDocument document) {
 		// search in the first 100 lines
-		for (int lineNr=0; lineNr<100 && lineNr<document.getRowsCount(); lineNr++) {
+    SCEDocumentRow[] rows = document.getRowsModel().getRows();
+		for (int lineNr = 0; lineNr < 100 && lineNr < rows.length; lineNr++) {
 			// ignore comments
-			String line = document.getRow(lineNr).replaceAll("%.*", "");
+			String line = rows[lineNr].toString().replaceAll("%.*", "");
 
 			if (line.contains("\\documentclass") || line.contains("\\input") || line.contains("\\include")) {
 				return true;
@@ -1082,7 +1083,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 		if (action.equals("select all")) {
       SCEPane pane = getActiveEditor().getTextPane();
       SCEDocument document = pane.getDocument();
-      document.setSelectionRange(document.createDocumentPosition(0,0), document.createDocumentPosition(document.getRowsCount()-1, 0));
+      document.setSelectionRange(document.createDocumentPosition(0,0), document.createDocumentPosition(document.getRowsModel().getRowsCount()-1, 0));
 		  pane.repaint();
     } else
     if (action.equals("select none")) {

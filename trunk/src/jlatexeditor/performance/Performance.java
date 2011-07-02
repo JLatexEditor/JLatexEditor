@@ -61,8 +61,8 @@ public class Performance {
     String chars = "abcdefghijklmnopqrstuvwxyz \n{}(){}";
     Random random = new Random(8923489);
     for (int i = 0; i < 200000; i++) {
-      int row = random.nextInt(document.getRowsCount());
-      int column = random.nextInt(document.getRowLength(row) + 1);
+      int row = random.nextInt(document.getRowsModel().getRowsCount());
+      int column = random.nextInt(document.getRowsModel().getRowLength(row) + 1);
       caret.moveTo(row, column, false);
 
       if (random.nextBoolean()) {

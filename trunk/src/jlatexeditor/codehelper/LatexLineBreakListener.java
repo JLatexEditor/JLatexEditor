@@ -26,7 +26,7 @@ public class LatexLineBreakListener implements LineBreakListener {
 		int row = caret.getRow();
 
 		if (row > 0) {
-			String lastLine = doc.getRow(row - 1);
+			String lastLine = doc.getRowsModel().getRowAsString(row - 1);
 			boolean indent = false;
 			boolean closeEnv = false;
 			String envName = null;
@@ -76,7 +76,7 @@ public class LatexLineBreakListener implements LineBreakListener {
 			}
 			if (closeEnv) {
 				SCEPosition oldPos = new SCEDocumentPosition(caret.getRow(), caret.getColumn());
-				String currLine = doc.getRow(row);
+				String currLine = doc.getRowsModel().getRowAsString(row);
 				String nextIndentation = currLine.substring(0, Math.max(0, currLine.length() - 2));
 				pane.insert("\n" + nextIndentation + "\\end{" + envName + '}');
 				caret.moveTo(oldPos, false);

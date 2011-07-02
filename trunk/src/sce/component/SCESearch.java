@@ -217,7 +217,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     pane.removeAllTextHighlights();
 
     if (highlightSelection && selection != null) {
-      int rows = pane.getDocument().getRowsCount();
+      int rows = pane.getDocument().getRowsModel().getRowsCount();
       SCEDocumentPosition endDocPos = new SCEDocumentPosition(rows, 0);
 
       if(selectionOnly) {
@@ -527,7 +527,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
       documentChanged = false;
 
       SCEDocument document = editor.getTextPane().getDocument();
-      SCEDocumentRow[] documentRows = document.getRows();
+      SCEDocumentRow[] documentRows = document.getRowsModel().getRows();
 
       StringBuilder builder = new StringBuilder(100000);
       for (SCEDocumentRow row : documentRows) {

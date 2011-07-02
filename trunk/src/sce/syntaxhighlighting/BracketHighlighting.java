@@ -63,7 +63,7 @@ public class BracketHighlighting implements SCECaretListener {
     int coloursCount = colors.length;
 
     SCEDocument document = pane.getDocument();
-    String line = document.getRow(row);
+    String line = document.getRowsModel().getRowAsString(row);
     if (column > 0 && (line.charAt(column - 1) == '}' || line.charAt(column - 1) == ')')) {
       // search backwards
       char open = line.charAt(column - 1);
@@ -71,7 +71,7 @@ public class BracketHighlighting implements SCECaretListener {
 
       int level = 0;
       for (int srow = row; srow >= Math.max(0, row - 40); srow--) {
-        line = document.getRow(srow);
+        line = document.getRowsModel().getRowAsString(srow);
         int startColumn = srow == row ? column - 1 : line.length() - 1;
         for (int scolumn = startColumn; scolumn >= 0; scolumn--) {
           char c = line.charAt(scolumn);
@@ -107,8 +107,8 @@ public class BracketHighlighting implements SCECaretListener {
       char close = line.charAt(column) == '{' ? '}' : ')';
 
       int level = 0;
-      for (int srow = row; srow <= Math.min(document.getRowsCount() - 1, row + 40); srow++) {
-        line = document.getRow(srow);
+      for (int srow = row; srow <= Math.min(document.getRowsModel().getRowsCount() - 1, row + 40); srow++) {
+        line = document.getRowsModel().getRowAsString(srow);
         int startColumn = srow == row ? column : 0;
         for (int scolumn = startColumn; scolumn < line.length(); scolumn++) {
           char c = line.charAt(scolumn);
@@ -122,7 +122,7 @@ public class BracketHighlighting implements SCECaretListener {
             }
             level++;
           } else if (level == 0) {
-            srow = document.getRowsCount();
+            srow = document.getRowsModel().getRowsCount();
             break;
           }
           if (c == close) {

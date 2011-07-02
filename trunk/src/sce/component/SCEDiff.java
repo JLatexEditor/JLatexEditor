@@ -208,8 +208,8 @@ public class SCEDiff extends JPanel implements ComponentListener {
     SCEDocument paneDocument = left.getDocument();
     SCEDocument diffDocument = right.getDocument();
 
-    int paneRows = paneDocument.getRowsCount();
-    int diffRows = diffDocument.getRowsCount();
+    int paneRows = paneDocument.getRowsModel().getRowsCount();
+    int diffRows = diffDocument.getRowsModel().getRowsCount();
 
     modifications = Diff.diff(diffDocument.getText(), paneDocument.getText());
 
@@ -306,7 +306,7 @@ public class SCEDiff extends JPanel implements ComponentListener {
   }
 
   private TokenList[] getRows(SCEDocument document) {
-    SCEDocumentRow[] sceRows = document.getRows();
+    SCEDocumentRow[] sceRows = document.getRowsModel().getRows();
 
     TokenList rows[] = new TokenList[sceRows.length];
     for (int row = 0; row < rows.length; row++) {

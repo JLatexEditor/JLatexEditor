@@ -233,7 +233,7 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
     if (isDiffView()) {
       return diff.getVirtualLines();
     } else {
-      return textPane.getDocument().getRowsCount();
+      return textPane.getDocument().getRowsModel().getRowsCount();
     }
   }
 

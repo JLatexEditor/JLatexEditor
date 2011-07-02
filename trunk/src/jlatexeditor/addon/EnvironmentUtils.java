@@ -80,7 +80,7 @@ public class EnvironmentUtils {
 			document = pane.getDocument();
 			rowNr = caret.getRow();
 
-			String row = document.getRow(rowNr).substring(0, caret.getColumn());
+			String row = document.getRowsModel().getRowAsString(rowNr, 0, caret.getColumn());
 			parseEnvs(openEnvStack, closeEnvStack, rowNr, row);
 		}
 
@@ -89,7 +89,7 @@ public class EnvironmentUtils {
 			if (openEnvStack.size() == 0) {
 				// search above cursor
 				for(rowNr--; rowNr >= 0; rowNr--) {
-					String row = document.getRow(rowNr);
+					String row = document.getRowsModel().getRowAsString(rowNr);
 					parseEnvs(openEnvStack, closeEnvStack, rowNr, row);
 					if (!openEnvStack.isEmpty()) break;
 				}
@@ -168,7 +168,7 @@ public class EnvironmentUtils {
 			document = pane.getDocument();
 			rowNr = caret.getRow();
 
-			String row = document.getRow(rowNr).substring(caret.getColumn());
+			String row = document.getRowsModel().getRowAsString(rowNr).substring(caret.getColumn());
 			parseEnvs(closeEnvStack, openEnvStack, rowNr, row);
 		}
 
@@ -176,8 +176,8 @@ public class EnvironmentUtils {
 		public boolean hasNext() {
 			if (closeEnvStack.size() == 0) {
 				// search above cursor
-				for(rowNr++; rowNr < document.getRowsCount(); rowNr++) {
-					String row = document.getRow(rowNr);
+				for(rowNr++; rowNr < document.getRowsModel().getRowsCount(); rowNr++) {
+					String row = document.getRowsModel().getRowAsString(rowNr);
 					parseEnvs(closeEnvStack, openEnvStack, rowNr, row);
 					if (!closeEnvStack.isEmpty()) break;
 				}
