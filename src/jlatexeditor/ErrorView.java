@@ -1,9 +1,9 @@
 package jlatexeditor;
 
-import com.google.inject.internal.cglib.core.MethodWrapper;
 import jlatexeditor.errorhighlighting.LatexCompileError;
 import sce.component.SCEPane;
 import sce.component.SourceCodeEditor;
+import util.StreamUtils;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -13,6 +13,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -31,12 +32,12 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
   private JScrollPane scrollOutput = new JScrollPane(latexOutput);
 
   private JTree tree;
-  private DefaultMutableTreeNode nodeRoot, nodeError, nodeHbox, nodeWarning, nodeWarningCitation, nodeWarningReference, nodeOutput;
-  private DefaultListModel lmError = new DefaultListModel();
-  private DefaultListModel lmHbox = new DefaultListModel();
-  private DefaultListModel lmWarning = new DefaultListModel();
-  private DefaultListModel lmWarningCitation = new DefaultListModel();
-  private DefaultListModel lmWarningReference = new DefaultListModel();
+  private ErrorTreeNode nodeRoot, nodeError, nodeHbox, nodeWarning, nodeWarningCitation, nodeWarningReference, nodeOutput;
+  private ErrorListModel lmError = new ErrorListModel();
+  private WarningListModel lmHbox = new WarningListModel();
+  private WarningListModel lmWarning = new WarningListModel();
+  private WarningListModel lmWarningCitation = new WarningListModel();
+  private WarningListModel lmWarningReference = new WarningListModel();
   private JList listError = new JList(lmError);
   private JList listHbox = new JList(lmHbox);
   private JList listWarning = new JList(lmWarning);
@@ -57,18 +58,19 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
 
     latexOutput.setFont(new Font("MonoSpaced", 0, 13));
 
-    nodeRoot = new DefaultMutableTreeNode("compile...");
-    nodeError = new DefaultMutableTreeNode();
+	  AggregatedErrors aggregatedErrors = new AggregatedErrors(new ErrorLevelInterface[]{lmError, lmHbox, lmWarning, lmWarningCitation, lmWarningReference});
+    nodeRoot = new ErrorTreeNode(aggregatedErrors, "compile...", "black");
+    nodeError = new ErrorTreeNode(lmError, "error", "red");
     nodeRoot.add(nodeError);
-    nodeHbox = new DefaultMutableTreeNode();
+    nodeHbox = new ErrorTreeNode(lmHbox, "overfull hboxes", "black");
     nodeRoot.add(nodeHbox);
-    nodeWarning = new DefaultMutableTreeNode();
-    nodeWarningCitation = new DefaultMutableTreeNode();
-    nodeWarningReference = new DefaultMutableTreeNode();
+    nodeWarning = new ErrorTreeNode(lmWarning, "warning", "black");
+    nodeWarningCitation = new ErrorTreeNode(lmWarningCitation, "citations", "black");
+    nodeWarningReference = new ErrorTreeNode(lmWarningReference, "references", "black");
     nodeRoot.add(nodeWarning);
     nodeRoot.add(nodeWarningCitation);
     nodeRoot.add(nodeWarningReference);
-    nodeOutput = new DefaultMutableTreeNode("output");
+    nodeOutput = new ErrorTreeNode("output", "text-x-generic.png");
     nodeRoot.add(nodeOutput);
     update();
     tree = new JTree(nodeRoot);
@@ -90,11 +92,12 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     JPanel treePanel = new JPanel();
     treePanel.setBackground(Color.WHITE);
     treePanel.setLayout(new BorderLayout());
-    treePanel.add(tree, BorderLayout.NORTH);
-
-    working = new JLabel(new ImageIcon(getClass().getResource("/images/working32.gif")));
-    working.setVisible(false);
-    treePanel.add(working, BorderLayout.CENTER);
+	  working = new JLabel(new ImageIcon(getClass().getResource("/images/working32.gif")));
+	  working.setVisible(false);
+	  treePanel.add(working, BorderLayout.NORTH);
+	  JScrollPane treeScrollPane = new JScrollPane(tree);
+	  treeScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+	  treePanel.add(treeScrollPane, BorderLayout.CENTER);
 
     setLeftComponent(treePanel);
     setRightComponent(scrollOutput);
@@ -124,7 +127,8 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
   }
 
   public void update() {
-    nodeError.setUserObject("<html><font color=\"" + (lmError.getSize() > 0 ? "red" : "gray") + "\">errors (" + lmError.getSize() + ")</font></html>");
+	  nodeError.update();
+    //nodeError.setUserObject("<html><font color=\"" + (lmError.getSize() > 0 ? "red" : "gray") + "\">errors (" + lmError.getSize() + ")</font></html>");
     nodeHbox.setUserObject("<html><font color=\"" + (lmHbox.getSize() > 0 ? "black" : "gray") + "\">overfull hboxes (" + lmHbox.getSize() + ")</font></html>");
     nodeWarning.setUserObject("<html><font color=\"" + (lmWarning.getSize() > 0 ? "black" : "gray") + "\">warnings (" + lmWarning.getSize() + ")</font></html>");
     nodeWarningCitation.setUserObject("<html><font color=\"" + (lmWarningCitation.getSize() > 0 ? "black" : "gray") + "\">citations (" + lmWarningCitation.getSize() + ")</font></html>");
@@ -339,7 +343,29 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
   }
 
   private class ErrorTreeCellRenderer extends DefaultTreeCellRenderer {
+	  /*
+	  public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+	      DefaultMutableTreeNode currentTreeNode = (DefaultMutableTreeNode) value;
+	      TreeEntry userObject = (TreeEntry) currentTreeNode
+	              .getUserObject();
+	      if (Vehicle.CAR.equals(userObject.getCategory())) {
+	          setLeafIcon(CAR_ICON);
+	      } else if (Vehicle.MOTO_BIKE.equals(userObject.getCategory())) {
+	          setLeafIcon(MOTOBIKE_ICON);
+	      }
+	      return super.getTreeCellRendererComponent(tree, value, sel,
+	              expanded, leaf, row, hasFocus);
+	  }
+	  */
+
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+	    ErrorTreeNode treeNode = (ErrorTreeNode) value;
+
+	    ImageIcon icon = treeNode.getIcon();
+			setLeafIcon(icon);
+			setClosedIcon(icon);
+	    setOpenIcon(icon);
+
       Component component = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
       Dimension dimension = component.getPreferredSize();
       component.setPreferredSize(new Dimension(Math.max(dimension.width, 150), dimension.height));
@@ -347,6 +373,118 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
       return component;
     }
   }
+
+	public static class ErrorTreeNode extends DefaultMutableTreeNode {
+		private final static ImageIcon ICON_CLEAR             = loadIcon("weather-clear.png");
+		private final static ImageIcon ICON_FEW_CLOUDS        = loadIcon("weather-few-clouds.png");
+		private final static ImageIcon ICON_OVERCASET         = loadIcon("weather-overcast.png");
+		private final static ImageIcon ICON_SHOWERS_SCATTERED = loadIcon("weather-showers-scattered.png");
+		private final static ImageIcon ICON_SHOWERS           = loadIcon("weather-showers.png");
+		private final static ImageIcon ICON_STORM             = loadIcon("weather-storm.png");
+		private final static ImageIcon ICON_SEVERE_ALERT      = loadIcon("weather-severe-alert.png");
+		private final static ImageIcon[] icons = new ImageIcon[]{
+			ICON_CLEAR, ICON_FEW_CLOUDS, ICON_OVERCASET, ICON_SHOWERS_SCATTERED, ICON_SHOWERS, ICON_STORM, ICON_SEVERE_ALERT
+		};
+
+		private static ImageIcon loadIcon(String filename) {
+			try {
+				return new ImageIcon(StreamUtils.readBytesFromInputStream(StreamUtils.getInputStream("data/icons/tango/" + filename)));
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+
+		private ErrorLevelInterface lm;
+		private String errorColor;
+		private String label;
+		private ImageIcon icon = null;
+
+		public ErrorTreeNode(ErrorLevelInterface lm, String label, String errorColor) {
+			super(label);
+			this.lm = lm;
+			this.errorColor = errorColor;
+			this.label = label;
+		}
+
+		public ErrorTreeNode() {
+		}
+
+		public ErrorTreeNode(Object userObject, String iconFile) {
+			super(userObject);
+			icon = loadIcon(iconFile);
+		}
+
+		public int getErrors() {
+			return lm.getSize();
+		}
+
+		public ImageIcon getIcon() {
+			if (icon != null) return icon;
+
+			return icons[lm.getErrorLevel()];
+		}
+
+		public void update() {
+			setUserObject("<html><font color=\"" + (lm.getSize() > 0 ? errorColor : "gray") + "\">" + label + " (" + lm.getSize() + ")</font></html>");
+		}
+	}
+
+	public static class WarningListModel extends DefaultListModel implements ErrorLevelInterface {
+		private final static int[] maxErrors = {0, 10, Integer.MAX_VALUE};
+
+		@Override
+		public int getErrorLevel() {
+			for (int i = 0; i < maxErrors.length; i++) {
+				if (getSize() <= maxErrors[i]) {
+					return i;
+				}
+			}
+			return 0;
+		}
+	}
+	public static class ErrorListModel extends DefaultListModel implements ErrorLevelInterface {
+		private final static int[] maxErrors = {0, -1, -1, 3, 10, 99, Integer.MAX_VALUE};
+
+		@Override
+		public int getErrorLevel() {
+			for (int i = 0; i < maxErrors.length; i++) {
+				if (getSize() <= maxErrors[i]) {
+					return i;
+				}
+			}
+			return 0;
+		}
+	}
+	public static class AggregatedErrors implements ErrorLevelInterface {
+		private ErrorLevelInterface[] errorLevels;
+
+		public AggregatedErrors(ErrorLevelInterface[] errorLevels) {
+			this.errorLevels = errorLevels;
+		}
+
+		@Override
+		public int getSize() {
+			int sum = 0;
+			for (ErrorLevelInterface size : errorLevels) {
+				sum += size.getSize();
+			}
+			return sum;
+		}
+
+		public int getErrorLevel() {
+			int maxErrorLevel = 0;
+			for (ErrorLevelInterface errorLevel : errorLevels) {
+				maxErrorLevel = Math.max(maxErrorLevel, errorLevel.getErrorLevel());
+			}
+			return maxErrorLevel;
+		}
+	}
+
+	public static interface ErrorLevelInterface {
+		public int getSize();
+		public int getErrorLevel();
+	}
 
 	public class ErrorPopupMenu extends JPopupMenu {
 		private JList jList;
