@@ -354,7 +354,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 					  SCEDocumentRow row = document.getRowsModel().getRow(rowNr);
 					  if (colBefore >= 0 && colAfter < row.length &&
 							  row.chars[colBefore].character == '[' && row.chars[colAfter].character == ']') {
-						  document.remove(rowNr, colBefore, rowNr, colAfter + 1, SCEDocumentEvent.EVENT_EDITRANGE);
+						  document.remove(rowNr, colBefore, rowNr, colAfter + 1, SCEDocumentEvent.EVENT_EDITRANGE, false);
 					  }
 				  }
 			  }
@@ -386,7 +386,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 			  SCEDocumentRow row = document.getRowsModel().getRow(rowNr);
 			  if (colBefore >= 0 && colAfter < row.length &&
 					  row.chars[colBefore].character != '[' || row.chars[colAfter].character != ']') {
-				  document.insert("[]", rowNr, colBefore, SCEDocumentEvent.EVENT_EDITRANGE);
+				  document.insert("[]", rowNr, colBefore, SCEDocumentEvent.EVENT_EDITRANGE, false);
 			  }
 		  }
 	  }
@@ -640,8 +640,8 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
           SCEDocumentPosition end = argumentRange.getEndPosition();
 
           pane.setFreezeCaret(true);
-          document.remove(start.getRow(), start.getColumn(), end.getRow(), end.getColumn(), 0);
-          document.insert(argumentValue, start.getRow(), start.getColumn(), 0);
+          document.remove(start.getRow(), start.getColumn(), end.getRow(), end.getColumn(), 0, false);
+          document.insert(argumentValue, start.getRow(), start.getColumn(), 0, false);
           pane.setFreezeCaret(false);
         }
       }

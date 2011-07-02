@@ -330,7 +330,7 @@ public class SCEDocument {
    * @param column_nr the column
    */
   public synchronized void insert(String text, int row_nr, int column_nr) {
-    insert(text, row_nr, column_nr, SCEDocumentEvent.UPDATE_VIEW);
+    insert(text, row_nr, column_nr, SCEDocumentEvent.UPDATE_VIEW, true);
   }
 
   /**
@@ -341,13 +341,13 @@ public class SCEDocument {
    * @param column_nr the column
    * @param eventID   the event to tell the listeners (-1 if not to tell)
    */
-  public synchronized void insert(String text, int row_nr, int column_nr, int eventID) {
+  public synchronized void insert(String text, int row_nr, int column_nr, int eventID, boolean checkEditRange) {
     if (!editable) return;
 
     // remember row and column
     SCEDocumentPosition position = new SCEDocumentPosition(row_nr, column_nr);
 
-    SCEDocumentPosition endPosition = rows.insert(text, row_nr, column_nr);
+    SCEDocumentPosition endPosition = rows.insert(text, row_nr, column_nr, checkEditRange);
     if(endPosition == null) return;
 
     // Inform the listeners about the change
@@ -373,7 +373,7 @@ public class SCEDocument {
    * @param endColumn   the end column (behind the last character to remove)
    */
   public void remove(int startRow, int startColumn, int endRow, int endColumn) {
-    remove(startRow, startColumn, endRow, endColumn, SCEDocumentEvent.UPDATE_VIEW);
+    remove(startRow, startColumn, endRow, endColumn, SCEDocumentEvent.UPDATE_VIEW, true);
   }
 
   /**
@@ -385,7 +385,7 @@ public class SCEDocument {
    * @param endColumn   the end column (behind the last character to remove)
    * @param eventID     the event to tell the listeners (-1 if not to tell)
    */
-  public void remove(int startRow, int startColumn, int endRow, int endColumn, int eventID) {
+  public void remove(int startRow, int startColumn, int endRow, int endColumn, int eventID, boolean checkEditRange) {
     if (!editable) return;
 
     // copy the text that will be removed
@@ -393,7 +393,7 @@ public class SCEDocument {
     SCEDocumentPosition end = new SCEDocumentPosition(endRow, endColumn);
     String text = getText(start, end);
 
-    if(!rows.remove(startRow, startColumn, endRow, endColumn)) return;
+    if(!rows.remove(startRow, startColumn, endRow, endColumn, checkEditRange)) return;
 
     // Inform the listeners about the change
     if (eventID != -1) {

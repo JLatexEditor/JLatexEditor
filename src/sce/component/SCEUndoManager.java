@@ -49,10 +49,10 @@ public class SCEUndoManager implements SCEDocumentListener {
       String text = event.getText();
 
       if (event.isInsert()) {
-        document.remove(start.getRow(), start.getColumn(), end.getRow(), end.getColumn(), SCEDocumentEvent.EVENT_UNDO);
+        document.remove(start.getRow(), start.getColumn(), end.getRow(), end.getColumn(), SCEDocumentEvent.EVENT_UNDO, false);
       }
       if (event.isRemove()) {
-        document.insert(text, start.getRow(), start.getColumn(), SCEDocumentEvent.EVENT_UNDO);
+        document.insert(text, start.getRow(), start.getColumn(), SCEDocumentEvent.EVENT_UNDO, false);
       }
 	    if (event.isEditRange()) {
 		    pane.removeEditRangeSilently();
@@ -83,10 +83,10 @@ public class SCEUndoManager implements SCEDocumentListener {
       String text = event.getText();
 
       if (event.isInsert()) {
-        document.insert(text, start.getRow(), start.getColumn(), SCEDocumentEvent.EVENT_REDO);
+        document.insert(text, start.getRow(), start.getColumn(), SCEDocumentEvent.EVENT_REDO, false);
       }
       if (event.isRemove()) {
-        document.remove(start.getRow(), start.getColumn(), end.getRow(), end.getColumn(), SCEDocumentEvent.EVENT_REDO);
+        document.remove(start.getRow(), start.getColumn(), end.getRow(), end.getColumn(), SCEDocumentEvent.EVENT_REDO, false);
       }
 
       if (atomic) break;
