@@ -41,7 +41,7 @@ public abstract class Doc implements AbstractResource, SCEDocumentListener {
 
 		private DocState(SCEDocument document) {
 			// build a balanced binary tree from the rows of the document
-			SCEDocumentRow[] rows = document.getRows();
+			SCEDocumentRow[] rows = document.getRowsModel().getRows();
 
 			int start = 0;
 			int end = rows.length - 1;

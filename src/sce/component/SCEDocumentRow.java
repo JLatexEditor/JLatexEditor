@@ -6,6 +6,11 @@ package sce.component;
 
 import sce.syntaxhighlighting.ParserStateStack;
 
+import java.awt.*;
+import java.awt.font.TextAttribute;
+import java.text.AttributedString;
+import java.util.Map;
+
 public class SCEDocumentRow {
   // the characters and length of the row
   public SCEDocumentChar chars[] = new SCEDocumentChar[0];
@@ -101,7 +106,8 @@ public class SCEDocumentRow {
     return toCharArray(0, length);
   }
 
-  public char[] toCharArray(int col_start, int col_end) {
+  public synchronized char[] toCharArray(int col_start, int col_end) {
+    col_end = Math.min(col_end, length);
     if (col_end <= col_start) return new char[0];
 
     char textChars[] = new char[col_end - col_start];
@@ -109,6 +115,58 @@ public class SCEDocumentRow {
       textChars[column_nr - col_start] = chars[column_nr].character;
     }
     return textChars;
+  }
+
+  /**
+   * Returns the row as attributed string.
+   *
+   * @return the attributed test
+   */
+  public synchronized AttributedString getRowAttributed(
+          SCEDocumentPosition selectionStart, SCEDocumentPosition selectionEnd,
+          Map<? extends TextAttribute, ?>[] stylesMap)
+  {
+    return getRowAttributed(0, length, selectionStart, selectionEnd, stylesMap);
+  }
+
+  public synchronized AttributedString getRowAttributed(
+          int col_start, int col_end,
+          SCEDocumentPosition selectionStart, SCEDocumentPosition selectionEnd,
+          Map<? extends TextAttribute, ?>[] stylesMap)
+  {
+    col_end = Math.min(col_end, length);
+    if (col_start >= col_end) return null;
+
+    // create the attributedString
+    String string = toString(col_start, col_end);
+    if (string == null || string.length() == 0) return null;
+    AttributedString attributedString = new AttributedString(string);
+
+    // add the attributes
+    for (int column_nr = col_start; column_nr < col_end; column_nr++) {
+      int begin_index = column_nr - col_start;
+      while (column_nr < col_end - 1 &&
+              chars[column_nr].style == chars[column_nr + 1].style &&
+              chars[column_nr].overlayStyle == chars[column_nr + 1].overlayStyle) column_nr++;
+      int end_index = column_nr + 1 - col_start;
+      attributedString.addAttributes(stylesMap[chars[begin_index + col_start].style], begin_index, end_index);
+      attributedString.addAttributes(stylesMap[chars[begin_index + col_start].overlayStyle], begin_index, end_index);
+    }
+
+    // pay attention to selection
+    boolean hasSelection = selectionStart != null && selectionEnd != null;
+    if (hasSelection && row_nr >= selectionStart.getRow() && row_nr <= selectionEnd.getRow()) {
+      for (int column_nr = col_start; column_nr < col_end; column_nr++) {
+        if (row_nr == selectionStart.getRow() && column_nr < selectionStart.getColumn()) continue;
+        if (row_nr == selectionEnd.getRow() && column_nr >= selectionEnd.getColumn()) continue;
+
+        // background must be set here too to override other background colors
+        attributedString.addAttribute(TextAttribute.BACKGROUND, SCEPane.selectionHighlightColor, column_nr - col_start, column_nr + 1 - col_start);
+        attributedString.addAttribute(TextAttribute.FOREGROUND, Color.WHITE, column_nr - col_start, column_nr + 1 - col_start);
+      }
+    }
+
+    return attributedString;
   }
 
   /**

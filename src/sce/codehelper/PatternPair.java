@@ -37,11 +37,11 @@ public class PatternPair {
   public List<WordWithPos> find(SCEPane pane) {
     SCECaret caret = pane.getCaret();
 
-    return find(pane.getDocument().getRow(caret.getRow()), caret.getRow(), caret.getColumn());
+    return find(pane.getDocument().getRowsModel().getRowAsString(caret.getRow()), caret.getRow(), caret.getColumn());
   }
 
   public List<WordWithPos> find(SCEPane pane, SCEPosition pos) {
-    return find(pane.getDocument().getRow(pos.getRow()), pos.getRow(), pos.getColumn());
+    return find(pane.getDocument().getRowsModel().getRowAsString(pos.getRow()), pos.getRow(), pos.getColumn());
   }
 
 	/**

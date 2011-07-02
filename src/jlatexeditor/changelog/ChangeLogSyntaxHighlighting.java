@@ -49,13 +49,12 @@ public class ChangeLogSyntaxHighlighting extends SyntaxHighlighting implements S
    */
   public void reset() {
     // get the actual document rows
-    int rowsCount = document.getRowsCount();
-    SCEDocumentRow rows[] = document.getRows();
+    SCEDocumentRow rows[] = document.getRowsModel().getRows();
 
     // reset all states states and mark rows as modified
-    for (int row_nr = 0; row_nr < rowsCount; row_nr++) {
-      rows[row_nr].modified = true;
-      rows[row_nr].parserStateStack = null;
+    for (SCEDocumentRow row : rows) {
+      row.modified = true;
+      row.parserStateStack = null;
     }
 
     // initialize the first row with states state
@@ -96,17 +95,17 @@ public class ChangeLogSyntaxHighlighting extends SyntaxHighlighting implements S
    */
   private void parse() {
     // get the actual document rows
-    int rowsCount = document.getRowsCount();
-    SCEDocumentRow rows[] = document.getRows();
+    SCEDocumentRows rowsModel = document.getRowsModel();
+    SCEDocumentRow rows[] = rowsModel.getRows();
 
     // find the rows that were modified since last parse
-    for (int row_nr = 0; row_nr < rowsCount; row_nr++) {
+    for (int row_nr = 0; row_nr < rows.length; row_nr++) {
       SCEDocumentRow row = rows[row_nr];
       if (!row.modified) continue;
 	    row.modified = false;
 
 	    if (row_nr == 1) {
-		    document.setStyle(ChangeLogStyles.HEADLINE1, row_nr, 0, row.length);
+		    rowsModel.setStyle(ChangeLogStyles.HEADLINE1, row_nr, 0, row.length);
 		    continue;
 	    }
 
@@ -116,44 +115,44 @@ public class ChangeLogSyntaxHighlighting extends SyntaxHighlighting implements S
 	    boolean item = false;
 
 	    if ((words = commentPattern.findInRow(rowString, row_nr)) != null) {
-		    document.setStyle(ChangeLogStyles.COMMENT, words.get(0));
+		    rowsModel.setStyle(ChangeLogStyles.COMMENT, words.get(0));
 	    } else
 	    if ((words = header1Pattern.findInRow(rowString, row_nr)) != null) {
-		    document.setStyle(ChangeLogStyles.UNIMPORTANT, words.get(0));
+		    rowsModel.setStyle(ChangeLogStyles.UNIMPORTANT, words.get(0));
 	    } else
 	    if ((words = header2Pattern.findInRow(rowString, row_nr)) != null) {
-		    document.setStyle(ChangeLogStyles.UNIMPORTANT, words.get(0));
-		    document.setStyle(ChangeLogStyles.HEADLINE2, words.get(1));
-		    document.setStyle(ChangeLogStyles.UNIMPORTANT, words.get(2));
+		    rowsModel.setStyle(ChangeLogStyles.UNIMPORTANT, words.get(0));
+		    rowsModel.setStyle(ChangeLogStyles.HEADLINE2, words.get(1));
+		    rowsModel.setStyle(ChangeLogStyles.UNIMPORTANT, words.get(2));
 	    } else
 	    if ((words = item1Pattern.findInRow(rowString, row_nr)) != null) {
-		    document.setStyle(ChangeLogStyles.TEXT, words.get(0));
-		    document.setStyle(ChangeLogStyles.ITEM1, words.get(1));
+		    rowsModel.setStyle(ChangeLogStyles.TEXT, words.get(0));
+		    rowsModel.setStyle(ChangeLogStyles.ITEM1, words.get(1));
 		    item = true;
 	    } else
 	    if ((words = item2Pattern.findInRow(rowString, row_nr)) != null) {
-		    document.setStyle(ChangeLogStyles.TEXT, words.get(0));
-		    document.setStyle(ChangeLogStyles.ITEM2, words.get(1));
+		    rowsModel.setStyle(ChangeLogStyles.TEXT, words.get(0));
+		    rowsModel.setStyle(ChangeLogStyles.ITEM2, words.get(1));
 		    item = true;
 	    } else
 	    if ((words = item3Pattern.findInRow(rowString, row_nr)) != null) {
-		    document.setStyle(ChangeLogStyles.TEXT, words.get(0));
-		    document.setStyle(ChangeLogStyles.ITEM3, words.get(1));
+		    rowsModel.setStyle(ChangeLogStyles.TEXT, words.get(0));
+		    rowsModel.setStyle(ChangeLogStyles.ITEM3, words.get(1));
 		    item = true;
 	    } else
 	    if ((words = linePattern.findInRow(rowString, row_nr)) != null) {
-		    document.setStyle(ChangeLogStyles.TEXT, words.get(0));
+		    rowsModel.setStyle(ChangeLogStyles.TEXT, words.get(0));
 	    }
 
 	    if (item) {
 		    for (List<WordWithPos> words2 : viaPattern.findAllInRow(rowString, row_nr)) {
-			    document.setStyle(ChangeLogStyles.SHORTCUT, words2.get(0));
+			    rowsModel.setStyle(ChangeLogStyles.SHORTCUT, words2.get(0));
 			    if (words2.size() > 1) {
-				    document.setStyle(ChangeLogStyles.MENU, words2.get(2));
+				    rowsModel.setStyle(ChangeLogStyles.MENU, words2.get(2));
 			    }
 		    }
 		    for (List<WordWithPos> words2 : stringPattern.findAllInRow(rowString, row_nr)) {
-			    document.setStyle(ChangeLogStyles.STRING, words2.get(0));
+			    rowsModel.setStyle(ChangeLogStyles.STRING, words2.get(0));
 		    }
 	    }
     }

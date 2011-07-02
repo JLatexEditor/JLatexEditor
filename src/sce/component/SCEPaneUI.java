@@ -196,7 +196,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
       }
 
       // is the caret at the last column of the line?
-      if (caret.getColumn() == document.getRowLength(caret.getRow())) {
+      if (caret.getColumn() == document.getRowsModel().getRowLength(caret.getRow())) {
         document.remove(caret.getRow(), caret.getColumn(), caret.getRow() + 1, 0);
       } else {
         document.remove(caret.getRow(), caret.getColumn(), caret.getRow(), caret.getColumn() + 1);
@@ -239,7 +239,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 					caret.moveTo(caret.getRow(), 0, keepSelection);
 				} else {
 					// move caret to the first non-space character
-					char[] chars = document.getRow(caret.getRow()).toCharArray();
+					char[] chars = document.getRowsModel().getRow(caret.getRow()).toCharArray();
 					for (int i = 0; i < chars.length; i++) {
 						if (chars[i] != ' ' && chars[i] != '\t') {
 							caret.moveTo(caret.getRow(), i, keepSelection);
@@ -250,12 +250,12 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 				e.consume();
 			}
 			if (keyCode == KeyEvent.VK_END) {
-				int rowLength = document.getRowLength(caret.getRow());
+				int rowLength = document.getRowsModel().getRowLength(caret.getRow());
 				if (caret.getColumn() != rowLength) {
 					caret.moveTo(caret.getRow(), rowLength, keepSelection);
 				} else {
 					// move caret to first non-space character
-					char[] chars = document.getRow(caret.getRow()).toCharArray();
+					char[] chars = document.getRowsModel().getRow(caret.getRow()).toCharArray();
 					for (int i = rowLength; i > 0; i--) {
 						if (chars[i - 1] != ' ' && chars[i - 1] != '\t') {
 							caret.moveTo(caret.getRow(), i, keepSelection);
@@ -273,7 +273,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
       int row = caret.getRow();
       int column = caret.getColumn();
 
-      String line = document.getRow(row).substring(0, column);
+      String line = document.getRowsModel().getRowAsString(row, 0, column);
       document.insert("\n", row, column);
 	    // take over indentation of last line
 	    int indentCount = 0;
@@ -361,7 +361,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
   }
 
   private void removeIndentation(int row) {
-    String rowString = document.getRow(row);
+    String rowString = document.getRowsModel().getRowAsString(row);
     if (rowString.startsWith("  ")) {
       document.remove(row, 0, row, 2);
     } else if (rowString.startsWith(" ")) {
@@ -377,6 +377,8 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
   }
 
   public void handleCommand(String command, boolean isShiftDown) {
+    SCEDocumentRows rowsModel = document.getRowsModel();
+
     // caret movement
     boolean viewUp = command.equals("move view up");
     boolean viewDown = command.equals("move view down");
@@ -401,19 +403,19 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
       caret.moveTo(0, 0, isShiftDown);
     }
     if (command.equals("jump to end")) {
-      int row = document.getRowsCount() - 1;
-      int column = document.getRowLength(row);
+      int row = rowsModel.getRowsCount() - 1;
+      int column = rowsModel.getRowLength(row);
       caret.moveTo(row, column, isShiftDown);
     }
 
     if (command.equals("remove line")) { // control+Y
-      if (caret.getRow() < document.getRowsCount() - 1) {
+      if (caret.getRow() < rowsModel.getRowsCount() - 1) {
         document.remove(caret.getRow(), 0, caret.getRow() + 1, 0);
       } else if (caret.getRow() > 0) {
-        document.remove(caret.getRow() - 1, document.getRowLength(caret.getRow() - 1), caret.getRow(), document.getRowLength(caret.getRow()));
+        document.remove(caret.getRow() - 1, rowsModel.getRowLength(caret.getRow() - 1), caret.getRow(), rowsModel.getRowLength(caret.getRow()));
         caret.moveTo(caret.getRow() - 1, caret.getColumn(), false);
       } else {
-        document.remove(0, 0, 0, document.getRowLength(0));
+        document.remove(0, 0, 0, rowsModel.getRowLength(0));
         caret.moveTo(0, 0, false);
       }
     }
@@ -422,7 +424,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
       document.remove(caret.getRow(), 0, caret.getRow(), caret.getColumn());
     }
     if (command.equals("remove line behind caret")) { // control+K
-      document.remove(caret.getRow(), caret.getColumn(), caret.getRow(), document.getRowLength(caret.getRow()));
+      document.remove(caret.getRow(), caret.getColumn(), caret.getRow(), rowsModel.getRowLength(caret.getRow()));
     }
     if (command.equals("remove word before caret")) { // control+backspace
       document.remove(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), -1), caret);
@@ -441,6 +443,7 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 
   public void mousePressed(MouseEvent e) {
     SCEDocumentPosition position = pane.viewToModel(e.getX(), e.getY());
+    SCEDocumentRows rowsModel = document.getRowsModel();
 
     // hide quick help
     if (quickHelpPane != null && quickHelpPane.isVisible()) {
@@ -466,8 +469,8 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
         if (select_line && lastMouseClick + 500 > System.currentTimeMillis()) {
           SCEDocumentPosition startPosition = document.createDocumentPosition(caret.getRow(), 0);
           SCEDocumentPosition endPosition = document.createDocumentPosition(caret.getRow() + 1, 0);
-          if (caret.getRow() >= document.getRowsCount() - 1) {
-            endPosition = document.createDocumentPosition(caret.getRow(), document.getRowLength(caret.getRow()));
+          if (caret.getRow() >= rowsModel.getRowsCount() - 1) {
+            endPosition = document.createDocumentPosition(caret.getRow(), rowsModel.getRowLength(caret.getRow()));
           }
           document.setSelectionRange(startPosition, endPosition);
         } else {

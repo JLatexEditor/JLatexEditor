@@ -34,7 +34,7 @@ public class ColumnRealigner extends AddOn {
 			int col = env.openWord.getEndCol();
 
 			// search for column definition after begin command
-			String restOfLine = doc.getRow(row).substring(col + 1);
+			String restOfLine = doc.getRowsModel().getRowAsString(row).substring(col + 1);
 			if (restOfLine.startsWith("{")) {
 				int openBraces = 0;
 				boolean validHeader = true;

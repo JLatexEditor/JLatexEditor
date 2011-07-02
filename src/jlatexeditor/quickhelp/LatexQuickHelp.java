@@ -101,7 +101,7 @@ public class LatexQuickHelp implements QuickHelp {
    * @return the command
    */
   public String findCommand(int row, int column) {
-    String line = document.getRow(row);
+    String line = document.getRowsModel().getRowAsString(row);
 
 	  List<WordWithPos> groups = commandPattern.find(line, row, column);
 

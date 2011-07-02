@@ -66,13 +66,12 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
    */
   public void reset() {
     // get the actual document rows
-    int rowsCount = document.getRowsCount();
-    SCEDocumentRow rows[] = document.getRows();
+    SCEDocumentRow rows[] = document.getRowsModel().getRows();
 
     // reset all states states and mark rows as modified
-    for (int row_nr = 0; row_nr < rowsCount; row_nr++) {
-      rows[row_nr].modified = true;
-      rows[row_nr].parserStateStack = null;
+    for (SCEDocumentRow row : rows) {
+      row.modified = true;
+      row.parserStateStack = null;
     }
 
     // initialize the first row with states state
@@ -113,19 +112,18 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
    */
   private void parse() {
     // get the actual document rows
-    int rowsCount = document.getRowsCount();
-    SCEDocumentRow rows[] = document.getRows();
+    SCEDocumentRow rows[] = document.getRowsModel().getRows();
 
     // find the rows that were modified since last parse
-    for (int row_nr = 0; row_nr < rowsCount; row_nr++) {
+    for (int row_nr = 0; row_nr < rows.length; row_nr++) {
       SCEDocumentRow row = rows[row_nr];
       if (!row.modified) continue;
 
       // has this row a known states state?
       if (row.parserStateStack != null) {
-        parseRow(row_nr, rowsCount, rows);
+        parseRow(row_nr, rows.length, rows);
       } else {
-        parseRow(row_nr - 1, rowsCount, rows);
+        parseRow(row_nr - 1, rows.length, rows);
       }
     }
   }
@@ -360,7 +358,7 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 				}
 
 				// extract word from row that shell be checked for misspellings
-				String rowString = document.getRow(row_nr);
+				String rowString = document.getRowsModel().getRowAsString(row_nr);
 
 				// for each term in this row
 				Matcher matcher = TERM_PATTERN.matcher(rowString);

@@ -25,11 +25,11 @@ public interface SCECharInputStream {
     SCEDocumentChar newLine = null;
 
     public FromDocument(SCEDocument document) {
-      this(document.getRows(), document.getRowsCount(), 0, 0);
+      this(document.getRowsModel().getRows(), 0, 0);
     }
 
-    public FromDocument(SCEDocumentRow rows[], int rows_count, int row_nr, int column_nr) {
-      this.rows_count = rows_count;
+    public FromDocument(SCEDocumentRow rows[], int row_nr, int column_nr) {
+      this.rows_count = rows.length;
       this.rows = rows;
 
       this.row_nr = row_nr;

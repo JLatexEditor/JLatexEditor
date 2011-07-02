@@ -42,11 +42,10 @@ public class GPropertiesSyntaxHighlighting extends SyntaxHighlighting implements
    */
   public void reset() {
     // get the actual document rows
-    int rowsCount = document.getRowsCount();
-    SCEDocumentRow rows[] = document.getRows();
+    SCEDocumentRow rows[] = document.getRowsModel().getRows();
 
     // reset all states states and mark rows as modified
-    for (int row_nr = 0; row_nr < rowsCount; row_nr++) {
+    for (int row_nr = 0; row_nr < rows.length; row_nr++) {
       rows[row_nr].modified = true;
       rows[row_nr].parserStateStack = null;
     }
@@ -89,19 +88,18 @@ public class GPropertiesSyntaxHighlighting extends SyntaxHighlighting implements
    */
   private void parse() {
     // get the actual document rows
-    int rowsCount = document.getRowsCount();
-    SCEDocumentRow rows[] = document.getRows();
+    SCEDocumentRow rows[] = document.getRowsModel().getRows();
 
     // find the rows that were modified since last parse
-    for (int row_nr = 0; row_nr < rowsCount; row_nr++) {
+    for (int row_nr = 0; row_nr < rows.length; row_nr++) {
       SCEDocumentRow row = rows[row_nr];
       if (!row.modified) continue;
 
       // has this row a known states state?
       if (row.parserStateStack != null) {
-        parseRow(row_nr, rowsCount, rows);
+        parseRow(row_nr, rows.length, rows);
       } else {
-        parseRow(row_nr - 1, rowsCount, rows);
+        parseRow(row_nr - 1, rows.length, rows);
       }
     }
   }

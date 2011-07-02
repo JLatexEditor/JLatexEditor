@@ -27,7 +27,7 @@ public class BibCodeHelper extends PatternHelper {
       return true;
     }
 
-    SCEDocumentRow[] rows = pane.getDocument().getRows();
+    SCEDocumentRow[] rows = pane.getDocument().getRowsModel().getRows();
     int row = pane.getCaret().getRow();
     int column = pane.getCaret().getColumn();
 
