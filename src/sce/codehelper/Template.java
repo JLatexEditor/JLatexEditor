@@ -260,7 +260,7 @@ public class Template {
 		if (templateArguments != null && templateArguments.size() > 0 && templateArgumentNr >= 0) {
 			if (document.hasEditRange() &&
 							event.getRangeStart().compareTo(document.getEditRangeStart()) >= 0 &&
-							event.getRangeEnd().compareTo(document.getEditRangeEnd()) <= 0 &&
+							event.getRangeStart().compareTo(document.getEditRangeEnd()) <= 0 &&
 							(event.isInsert() || event.isRemove())) {
 				// get the argument value
 				String argumentValue = document.getEditRangeText();
