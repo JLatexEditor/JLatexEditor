@@ -1,6 +1,5 @@
 package sce.codehelper;
 
-import sun.org.mozilla.javascript.internal.Function;
 import util.Function1;
 
 import java.util.HashMap;

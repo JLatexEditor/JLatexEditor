@@ -9,7 +9,6 @@ import sce.codehelper.WordWithPos;
 import util.Function1;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**

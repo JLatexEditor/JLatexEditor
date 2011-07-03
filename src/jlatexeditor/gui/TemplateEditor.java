@@ -1,9 +1,7 @@
 package jlatexeditor.gui;
 
-import jlatexeditor.EmptyResource;
 import jlatexeditor.SCEManager;
 import sce.codehelper.CHCommand;
-import sce.component.AbstractResource;
 import sce.component.SourceCodeEditor;
 
 import javax.swing.*;

@@ -6,7 +6,6 @@ package sce.component;
 
 import jlatexeditor.gproperties.GProperties;
 import org.jetbrains.annotations.Nullable;
-import sce.codehelper.WordWithPos;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;

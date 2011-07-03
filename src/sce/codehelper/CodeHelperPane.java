@@ -2,14 +2,12 @@ package sce.codehelper;
 
 import de.endrullis.utils.KeyUtils;
 import sce.component.*;
-import util.Tuple;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

@@ -2,12 +2,9 @@ package jlatexeditor.quickhelp;
 
 import de.endrullis.utils.CollectionUtils;
 import jlatexeditor.PackagesExtractor;
-import sun.net.www.protocol.file.FileURLConnection;
 import util.ConfigurableStreamHandlerFactory;
-import util.StreamUtils;
 
 import java.io.*;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;

@@ -5,8 +5,6 @@
 package sce.codehelper;
 
 import sce.component.SCEDocumentRange;
-import sun.security.pkcs11.wrapper.Functions;
-import util.Function1;
 
 import java.util.ArrayList;
 

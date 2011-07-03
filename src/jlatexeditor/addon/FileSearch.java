@@ -7,7 +7,10 @@ import sce.codehelper.SCEPopup;
 import sce.component.SCEPane;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Close current environment.

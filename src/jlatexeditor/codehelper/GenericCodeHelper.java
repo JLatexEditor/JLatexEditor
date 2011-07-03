@@ -5,7 +5,6 @@ import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
 import util.AbstractTrie;
 import util.Function0;
-import util.Trie;
 
 import java.util.ArrayList;
 import java.util.List;
