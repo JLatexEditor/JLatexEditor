@@ -268,21 +268,32 @@ public class Template {
 				// update all occurrences of the argument
 				CHCommandArgument argument = templateArguments.get(templateArgumentNr);
 
-				Iterator occurrencesIterator = argument.getOccurrences().iterator();
+				Iterator<SCEDocumentRange> occurrencesIterator = argument.getOccurrences().iterator();
 				occurrencesIterator.next(); // jump over the first occurrence
 				while (occurrencesIterator.hasNext()) {
-					SCEDocumentRange argumentRange = (SCEDocumentRange) occurrencesIterator.next();
-					SCEDocumentPosition start = new SCEDocumentPosition(argumentRange.getStartPosition().getRow(), argumentRange.getStartPosition().getColumn() + 1);
-					SCEDocumentPosition end = argumentRange.getEndPosition();
+					setArgumentValue(occurrencesIterator.next(), argumentValue);
+				}
 
-					if (!document.getText(start, end).equals(argumentValue)) {
-						pane.setFreezeCaret(true);
-						document.remove(start.getRow(), start.getColumn(), end.getRow(), end.getColumn(), 0, false);
-						document.insert(argumentValue, start.getRow(), start.getColumn(), 0, false);
-						pane.setFreezeCaret(false);
+				// update all generated arguments
+				for (CHArgumentGenerator generator : argument.getGenerators()) {
+					String generatedValue = generator.getFunction().apply(argumentValue);
+					for (SCEDocumentRange argumentRange : generator.getArgument().getOccurrences()) {
+						setArgumentValue(argumentRange, generatedValue);
 					}
 				}
 			}
+		}
+	}
+
+	private void setArgumentValue(SCEDocumentRange argumentRange, String argumentValue) {
+		SCEDocumentPosition start = new SCEDocumentPosition(argumentRange.getStartPosition().getRow(), argumentRange.getStartPosition().getColumn() + 1);
+		SCEDocumentPosition end = argumentRange.getEndPosition();
+
+		if (!document.getText(start, end).equals(argumentValue)) {
+			pane.setFreezeCaret(true);
+			document.remove(start.getRow(), start.getColumn(), end.getRow(), end.getColumn(), 0, false);
+			document.insert(argumentValue, start.getRow(), start.getColumn(), 0, false);
+			pane.setFreezeCaret(false);
 		}
 	}
 

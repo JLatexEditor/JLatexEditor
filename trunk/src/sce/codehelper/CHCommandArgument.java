@@ -5,6 +5,8 @@
 package sce.codehelper;
 
 import sce.component.SCEDocumentRange;
+import sun.security.pkcs11.wrapper.Functions;
+import util.Function1;
 
 import java.util.ArrayList;
 
@@ -20,6 +22,8 @@ public class CHCommandArgument {
   private String hint = null;
   // possible values
   private ArrayList<String> values = new ArrayList<String>();
+	// generates
+  private ArrayList<CHArgumentGenerator> generators = new ArrayList<CHArgumentGenerator>();
 
   // while editing (for templates)
   private String value = null;
@@ -158,7 +162,16 @@ public class CHCommandArgument {
     values.add(value);
   }
 
-  /**
+	public ArrayList<CHArgumentGenerator> getGenerators() {
+		return generators;
+	}
+
+	public void addGenerator(String argumentName, String functionName) {
+		if (argumentName == null || functionName == null) return;
+		generators.add(new CHArgumentGenerator(argumentName, CHFunctions.get(functionName)));
+	}
+
+	/**
    * Returns the value of the argument.
    *
    * @return the value

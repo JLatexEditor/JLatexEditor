@@ -29,8 +29,17 @@
   <command name="tikz" usage="\begin{tikzpicture}&nl;  @|@&nl;\end{tikzpicture}" hint="tikz picture environment">
   </command>
   <command name="fig" usage="\begin{figure}&nl;  @|@&nl;  \caption{@caption@}&nl;  \label{fig:@label@}&nl;\end{figure}" hint="figure environment">
-	  <argument name="caption"/>
+	  <argument name="caption">
+		  <generate name="label" function="label"/>
+		</argument>
 	  <argument name="label"/>
+  </command>
+  <command name="table" usage="\begin{table}&nl;  \caption{@caption@}&nl;  \label{tab:@label@}&nl;  \begin{tabular}{|@c@|}&nl;    @|@&nl;  \end{tabular}&nl;\end{table}" hint="table environment">
+	  <argument name="caption">
+		  <generate name="label" function="label"/>
+		</argument>
+	  <argument name="label"/>
+	  <argument name="c"/>
   </command>
   <command name="center" usage="\begin{center}&nl;  @|@&nl;\end{center}" hint="center environment">
   </command>
@@ -52,11 +61,15 @@
     <argument name="label"/>
   </command>
   <command name="ssec" usage="\subsection{@name@}\label{sec:@label@}&nl;@|@" hint="subsection">
-    <argument name="name"/>
+	  <argument name="name">
+		  <generate name="label" function="label"/>
+		</argument>
     <argument name="label"/>
   </command>
   <command name="sssec" usage="\subsubsection{@name@}\label{sec:@label@}&nl;@|@" hint="subsubsection">
-    <argument name="name"/>
+	  <argument name="name">
+		  <generate name="label" function="label"/>
+		</argument>
     <argument name="label"/>
   </command>
   <command name="frame" usage="\begin{frame}&nl;  \frametitle{@title@}&nl;  @|@&nl;\end{frame}"

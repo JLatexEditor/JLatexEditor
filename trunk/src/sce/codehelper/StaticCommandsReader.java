@@ -157,13 +157,21 @@ public class StaticCommandsReader {
 			}
 
 			// read the suggested values if there are some
-			for (XMLElement valueXML : argumentXML.getChildElements()) {
-			  argument.addValue(decode(valueXML.getAttribute("value")));
+			for (XMLElement xml : argumentXML.getChildElements()) {
+				if (xml.getName().equals("value")) {
+			    argument.addValue(decode(xml.getAttribute("value")));
+				} else
+				if (xml.getName().equals("generate")) {
+			    argument.addGenerator(decode(xml.getAttribute("name")), decode(xml.getAttribute("function")));
+				}
 			}
 
 			// add the argument to the command
 			command.addArgument(argument);
 		}
+
+		command.finalizeArguments();
+
 		return command;
 	}
 

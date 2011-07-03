@@ -5,6 +5,7 @@
 package sce.codehelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CHCommand implements Comparable {
   // the name
@@ -173,4 +174,18 @@ public class CHCommand implements Comparable {
     if(o1 == null || o2 == null) return o1 != o2;
     return o1.equals(o2);
   }
+
+	public void finalizeArguments() {
+		// create map from argument name to argument
+		HashMap<String, CHCommandArgument> argName2arg = new HashMap<String, CHCommandArgument>();
+		for (CHCommandArgument argument : arguments) {
+			argName2arg.put(argument.getName(), argument);
+		}
+		// assign arguments where generators reference argument names
+		for (CHCommandArgument argument : arguments) {
+			for (CHArgumentGenerator generator : argument.getGenerators()) {
+				generator.setArgument(argName2arg.get(generator.getArgumentName()));
+			}
+		}
+	}
 }
