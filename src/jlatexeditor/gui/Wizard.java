@@ -1,25 +1,42 @@
 package jlatexeditor.gui;
 
 import de.endrullis.utils.BetterProperties2;
-import jlatexeditor.SCEManager;
 import jlatexeditor.gproperties.GProperties;
-import util.ProcessUtil;
 import util.StreamUtils;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.*;
 import java.io.*;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Wizard extends JDialog implements WindowListener {
+  private static final int OS_LINUX = 0;
+  private static final int OS_MAC = 1;
+  private static final int OS_WINDOWS = 2;
+
+  public static final ProgramWithParameters[] VIEWERS = new ProgramWithParameters[] {
+          new ProgramWithParameters("kdvi", "kdvi", "--unique \"file:%file.dvi#src:%line&nbsp;%texfile\""),
+          new ProgramWithParameters("okular", "okular", "--unique \"file:%file.pdf#src:%line&nbsp;%texfile\""),
+          new ProgramWithParameters("Skim", "/Applications/Skim.app/Contents/SharedSupport/displayline", "%line \"%file.pdf\" \"%texfile\""),
+          new ProgramWithParameters("xdvi", "xdvi", "-sourceposition \"%line&nbsp;%file.dvi\" -nofork"),
+          new ProgramWithParameters("SumatraPDF", "SumatraPDF.exe", "TODO"),
+  };
+
+  private static int OS = OS_LINUX;
+  static {
+    String osName= System.getProperty("os.name");
+    if(osName != null && osName.toLowerCase().indexOf("mac") >= 0) {
+      OS = OS_MAC;
+    }
+    if(osName != null && osName.toLowerCase().indexOf("windows") >= 0) {
+      OS = OS_WINDOWS;
+    }
+  }
+
   private String message =
           "<font size=+2><bf>Welcome to JLatexEditor!</bf></font><br><br> " +
           "This wizard allows for a quick setup of the user interface " +
@@ -30,13 +47,31 @@ public class Wizard extends JDialog implements WindowListener {
     toolLocations.put("aspell" , new ArrayList<File>());
     toolLocations.put("pdflatex" , new ArrayList<File>());
     toolLocations.put("latex" , new ArrayList<File>());
+    toolLocations.put("dvips" , new ArrayList<File>());
+    toolLocations.put("ps2pdf" , new ArrayList<File>());
     toolLocations.put("bibtex" , new ArrayList<File>());
+
+    if(OS == OS_LINUX) {
+      toolLocations.put("xdvi" , new ArrayList<File>());
+      toolLocations.put("kdvi" , new ArrayList<File>());
+      toolLocations.put("okular" , new ArrayList<File>());
+    } else
+    if(OS == OS_MAC) {
+      toolLocations.put("Skim.app/Contents/SharedSupport/displayline" , new ArrayList<File>());
+    } else
+    if(OS == OS_WINDOWS) {
+      toolLocations.put("SumatraPDF" , new ArrayList<File>());
+    }
   }}
 
-  private JTextField aspell = new JTextField();
-  private JTextField pdfLatex = new JTextField();
-  private JTextField latex = new JTextField();
-  private JTextField bibtex = new JTextField();
+  private JComboBox aspell = new JComboBox();
+  private JComboBox pdfLatex = new JComboBox();
+  private JComboBox latex = new JComboBox();
+  private JComboBox dvips = new JComboBox();
+  private JComboBox ps2pdf = new JComboBox();
+  private JComboBox bibtex = new JComboBox();
+  private JComboBox viewer = new JComboBox();
+  private JTextField viewerParameters = new JTextField();
 
   private String[][] importantKeyStrokes = new String[][] {
           new String[] {"open", "Open File"},
@@ -61,26 +96,32 @@ public class Wizard extends JDialog implements WindowListener {
   public Wizard(JFrame owner) {
     super(owner, "Quick Setup Wizard");
 
-    Container cp = getContentPane();
+    JPanel main = new JPanel();
+    JScrollPane scrollPane = new JScrollPane(main);
+
+    getContentPane().setLayout(new BorderLayout());
+
+    JLabel welcome = new JLabel("<html>" + message + "</html>");
+    welcome.setBorder(BorderFactory.createEmptyBorder(0,5,15,5));
+    welcome.setOpaque(false);
+    getContentPane().add(welcome, BorderLayout.NORTH);
+    getContentPane().add(scrollPane, BorderLayout.CENTER);
+
     GridBagLayout layout = new GridBagLayout();
     GridBagConstraints gbc = new GridBagConstraints();
-    cp.setLayout(layout);
+    main.setLayout(layout);
 
     gbc.fill = GridBagConstraints.BOTH;
     gbc.insets = new Insets(5,15,5,15);
     gbc.ipadx = 5; gbc.ipady = 5;
 
     gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 1; gbc.gridheight = 1;
-    gbc.weightx = .2; gbc.weighty = 1;
-    JLabel welcome = new JLabel("<html>" + message + "</html>");
-    welcome.setOpaque(false);
-    cp.add(welcome, gbc);
-
     gbc.weightx = 1; gbc.weighty = .2;
 
     JPanel keystrokesPanel = new JPanel(new BorderLayout());
-    keystrokesPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
-            "Select KeyStroke Settings"));
+    TitledBorder border = new TitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), "KeyStroke Settings");
+    border.setTitleFont(border.getTitleFont().deriveFont(Font.BOLD));
+    keystrokesPanel.setBorder(border);
 
     if(GProperties.hasChanges()) {
       keyStrokesListModel.addElement(new KeyStrokeSettings("Keep My Current Settings", (BetterProperties2) GProperties.getProperties().clone()));
@@ -111,21 +152,58 @@ public class Wizard extends JDialog implements WindowListener {
     }
     keystrokesPanel.add(keyStrokesList, BorderLayout.CENTER);
 
-    gbc.gridy++;
-    cp.add(keystrokesPanel, gbc);
+    main.add(keystrokesPanel, gbc);
 
     gbc.gridy++;
-    cp.add(createProgramPanel("Aspell", "aspell.executable", aspell,
+    main.add(new ProgramPanel("Aspell", "aspell.executable", aspell,
             "The program 'aspell' is required for the live spell checker."), gbc);
     gbc.gridy++;
-    cp.add(createProgramPanel("PdfLatex", "compiler.pdflatex.executable", pdfLatex,
+    main.add(new ProgramPanel("PdfLatex", "compiler.pdflatex.executable", pdfLatex,
             "The program 'pdflatex' is required for generating PDF files."), gbc);
     gbc.gridy++;
-    cp.add(createProgramPanel("Latex", "compiler.latex.executable", latex,
+    main.add(new ProgramPanel("Latex", "compiler.latex.executable", latex,
             "The program 'latex' is required for generating DVI files."), gbc);
     gbc.gridy++;
-    cp.add(createProgramPanel("BibTex", "compiler.bibtex.executable", bibtex,
+    main.add(new ProgramPanel("DviPs", "compiler.dvips.executable", dvips,
+            "The program 'dvips' is required for converting DVI files to PS files."), gbc);
+    gbc.gridy++;
+    main.add(new ProgramPanel("Ps2Pdf", "compiler.ps2pdf.executable", ps2pdf,
+            "The program 'ps2pdf' is required for converting PS files to PDF files."), gbc);
+    gbc.gridy++;
+    main.add(new ProgramPanel("BibTex", "compiler.bibtex.executable", bibtex,
             "The program 'bibtex' is required for managing references."), gbc);
+
+    if(OS == OS_LINUX) {
+      toolLocations.put("xdvi" , new ArrayList<File>());
+      toolLocations.put("kdvi" , new ArrayList<File>());
+      toolLocations.put("okular" , new ArrayList<File>());
+    } else
+    if(OS == OS_MAC) {
+      toolLocations.put("Skim" , new ArrayList<File>());
+    } else
+    if(OS == OS_WINDOWS) {
+      toolLocations.put("SumatraPDF" , new ArrayList<File>());
+    }
+
+    gbc.gridy++;
+    main.add(new ParameterisedProgramPanel(
+            "PDF/DVI Viewer", "forward search.viewer", viewer,
+            "<html>" +
+            "This configuration is required for synchronization between the editor<br>" +
+            "and your preferred viewer. Pressing `control shift F' in the editor will<br>" +
+            "prompt the viewer to display the part that corresponds to the current<br>" +
+            "position in the editor. The `prompting' is done by executing the<br>" +
+             "command provided here." +
+            "</html>",
+            viewerParameters,
+            "<html>" +
+            "The viewer will be passed the following parameters:<br>" +
+            "<ul>" +
+            "<li>%file (the PDF or DVI file)</li>" +
+            "<li>%texfile (the current source file), and</li>" +
+            "<li>%line (the current source line).</li>" +
+            "</html>"),
+            gbc);
 
     setModal(true);
     pack();
@@ -137,54 +215,110 @@ public class Wizard extends JDialog implements WindowListener {
 
     // guessing suitable properties file
     if(!GProperties.hasChanges()) {
-      String osName= System.getProperty("os.name");
-      if(osName != null && osName.equals("Mac OS X")) {
-        keyStrokesList.setSelectedIndex(1);
-      }
+      if(OS == OS_MAC) keyStrokesList.setSelectedIndex(1);
+      if(OS == OS_WINDOWS) keyStrokesList.setSelectedIndex(3);
     }
 
     // search for tools
     searchThread.start();
   }
 
-  private JPanel createProgramPanel(String title, String executable, JTextField textField, String message) {
-    JPanel panel = new JPanel(new BorderLayout());
-    panel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), title));
+  private static class ProgramPanel extends JPanel {
+    private String programName;
+    private String gproperty;
 
-    textField.setText(GProperties.getString(executable));
-    panel.add(textField, BorderLayout.CENTER);
+    private JLabel messageLabel;
+    private JComboBox fileBox;
+    private JButton openButton;
+    private JLabel resultLabel;
 
-    JButton button = new JButton("...");
-    panel.add(button, BorderLayout.EAST);
+    private ExecutableChecker checker;
 
-    textField.setText(GProperties.getString(executable));
-    panel.add(new JLabel(message), BorderLayout.NORTH);
+    public ProgramPanel(String title, String gproperty, JComboBox fileBox, String message) {
+      this(title, gproperty, fileBox, message, true);
+    }
 
-    JLabel resultLabel = new JLabel();
-    panel.add(resultLabel, BorderLayout.SOUTH);
 
-    final ExecutableChecker checker = new ExecutableChecker(textField, resultLabel);
-    checker.run();
+    public ProgramPanel(String title, String gproperty, JComboBox fileBox, String message, boolean layout) {
+      this.programName = title.toLowerCase();
+      if(OS == OS_WINDOWS) programName = programName + ".exe";
+      this.gproperty = gproperty;
+      this.fileBox = fileBox;
 
-    textField.getDocument().addDocumentListener(new DocumentListener() {
-      public void insertUpdate(DocumentEvent e) {
-        check();
+      TitledBorder border = new TitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), title);
+      border.setTitleFont(border.getTitleFont().deriveFont(Font.BOLD));
+      setBorder(border);
+
+      ComboBoxEditor editor = fileBox.getEditor();
+      DefaultComboBoxModel model = new DefaultComboBoxModel();
+      fileBox.setEditable(true);
+      fileBox.setModel(model);
+
+      String file = GProperties.getString(gproperty);
+      if(OS == OS_WINDOWS && !file.toLowerCase().endsWith(".exe")) {
+        file = file + ".exe";
+        GProperties.set(gproperty, file);
       }
 
-      public void removeUpdate(DocumentEvent e) {
-        check();
-      }
+      model.addElement(file);
+      editor.setItem(file);
 
-      public void changedUpdate(DocumentEvent e) {
-        check();
-      }
+      messageLabel = new JLabel(message);
+      openButton = new JButton("...");
+      resultLabel = new JLabel();
 
-      private void check() {
-        SwingUtilities.invokeLater(checker);
-      }
-    });
+      checker = new ExecutableChecker(fileBox, resultLabel);
+      checker.run();
 
-    return panel;
+      editor.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          check();
+        }
+      });
+
+      fileBox.addItemListener(new ItemListener() {
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+          check();
+        }
+      });
+
+      if(layout) setupLayout();
+    }
+
+    protected void setupLayout() {
+      setLayout(new BorderLayout());
+
+      add(fileBox, BorderLayout.CENTER);
+      add(openButton, BorderLayout.EAST);
+      add(messageLabel, BorderLayout.NORTH);
+      add(resultLabel, BorderLayout.SOUTH);
+    }
+
+    public String getGproperty() {
+      return gproperty;
+    }
+
+    public String getProgramName() {
+      return programName;
+    }
+
+    private void check() {
+      SwingUtilities.invokeLater(checker);
+    }
+  }
+
+  private static class ParameterisedProgramPanel extends ProgramPanel {
+    protected JTextField parameterField;
+    protected JLabel parameterMessageLabel;
+
+    public ParameterisedProgramPanel(String title, String gproperty, JComboBox fileBox, String message, JTextField parameterField, String parameterMessage) {
+      super(title, gproperty, fileBox, message, false);
+
+      this.parameterField = parameterField;
+      parameterMessageLabel = new JLabel(parameterMessage);
+    }
   }
 
   /**
@@ -212,32 +346,48 @@ public class Wizard extends JDialog implements WindowListener {
   public void windowDeactivated(WindowEvent e) {
   }
 
-  private class ExecutableChecker implements Runnable {
-    private JTextField textField;
+  private static class ExecutableChecker implements Runnable {
+    private JComboBox comboBox;
     private JLabel resultLabel;
 
-    private ExecutableChecker(JTextField textField, JLabel resultLabel) {
-      this.textField = textField;
+    private static String[] PATH;
+    static {
+      String path = System.getenv("PATH");
+      if(path == null) path = System.getenv("Path");
+      if(path == null) path = System.getenv("path");
+      if(path == null) path = "";
+
+      PATH = path.split(File.pathSeparator);
+    }
+
+    private ExecutableChecker(JComboBox comboBox, JLabel resultLabel) {
+      this.comboBox = comboBox;
       this.resultLabel = resultLabel;
     }
 
     public void run() {
-      String path = textField.getText();
+      String path = comboBox.getEditor().getItem().toString();
 
-      boolean success = true;
-      try {
-        File dir = SCEManager.getInstance().getMainEditor().getFile().getParentFile();
-        Process process = ProcessUtil.exec(path, dir);
-        process.destroy();
-      } catch (Throwable e) {
-        success = false;
-      }
-
-      if(success) {
+      if(checkExecutable(path)) {
         resultLabel.setText("<html><font color=green>File found.</font></html>");
       } else {
         resultLabel.setText("<html><font color=red><bf>File not found.</bf></font></html>");
       }
+    }
+
+    public static boolean checkExecutable(String executable) {
+      File file = new File(executable);
+      if(file.exists() && file.canExecute()) return true;
+
+      for(String dirName : PATH) {
+        File dir = new File(dirName);
+        if(!dir.exists()) continue;
+
+        file = new File(dir, executable);
+        if(file.exists() && file.canExecute()) return true;
+      }
+
+      return false;
     }
   }
 
@@ -291,6 +441,42 @@ public class Wizard extends JDialog implements WindowListener {
           }
         }
       }
+    }
+  }
+
+  public static class ProgramWithParameters {
+    private String name;
+    private String executable;
+    private String parameters;
+
+    public ProgramWithParameters(String name, String executable, String parameters) {
+      this.name = name;
+      this.executable = executable;
+      this.parameters = parameters;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public void setName(String name) {
+      this.name = name;
+    }
+
+    public String getExecutable() {
+      return executable;
+    }
+
+    public void setExecutable(String executable) {
+      this.executable = executable;
+    }
+
+    public String getParameters() {
+      return parameters;
+    }
+
+    public void setParameters(String parameters) {
+      this.parameters = parameters;
     }
   }
 }

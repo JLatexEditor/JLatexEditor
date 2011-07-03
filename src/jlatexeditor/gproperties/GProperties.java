@@ -210,6 +210,8 @@ public class GProperties {
     properties.addEntry(new Comment(" latex"));
     properties.addEntry(new Def("compiler.latex.executable", STRING, "latex"));
     properties.addEntry(new Def("compiler.latex.parameters", STRING, "--src-specials"));
+    properties.addEntry(new Def("compiler.dvips.executable", STRING, "dvips"));
+    properties.addEntry(new Def("compiler.ps2pdf.executable", STRING, "ps2pdf"));
     properties.addEntry(new Comment(" bibtex"));
     properties.addEntry(new Def("compiler.bibtex.executable", STRING, "bibtex"));
     properties.addEntry(new Comment(" forward search"));

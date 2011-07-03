@@ -288,10 +288,9 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 
     settingsMenu.add(createMenuItem("Font", "font", 'F'));
     JMenu forwardSearch = new JMenu("Forward Search") {{
-      add(createMenuItem("Skim", "forward search: /Applications/Skim.app/Contents/SharedSupport/displayline %line \"%file.pdf\" \"%texfile\"", null));
-      add(createMenuItem("xdvi", "forward search: xdvi -sourceposition \"%line&nbsp;%file.dvi\" -nofork", null));
-      add(createMenuItem("kdvi", "forward search: kdvi --unique \"file:%file.dvi#src:%line&nbsp;%texfile\"", null));
-      add(createMenuItem("okular", "forward search: okular --unique \"file:%file.pdf#src:%line&nbsp;%texfile\"", null));
+      for(Wizard.ProgramWithParameters program : Wizard.VIEWERS) {
+        add(createMenuItem(program.getName(), "forward search: " + program.getExecutable() + " " + program.getParameters(), null));
+      }
     }};
     settingsMenu.add(forwardSearch);
     // settingsMenu.add(createMenuItem("Template Editor", "template editor", 'T'));

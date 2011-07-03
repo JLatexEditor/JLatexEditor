@@ -281,17 +281,20 @@ public class LatexCompiler extends Thread {
     }
 
     try {
+      String bibExecutable = GProperties.getString("compiler.bibtex.executable");
+      String dvipsExecutable = GProperties.getString("compiler.dvips.executable");
+      String ps2pdfExecutable = GProperties.getString("compiler.ps2pdf.executable");
+
       errorView.compileStarted("bibtex");
-      String exe = GProperties.getString("compiler.bibtex.executable");
-      bibtex = ProcessUtil.exec(new String[]{exe, baseName}, file.getParentFile());
+      bibtex = ProcessUtil.exec(new String[]{bibExecutable, baseName}, file.getParentFile());
       bibtex.waitFor();
 
       if (type == Type.dvi_ps || type == Type.dvi_ps_pdf) {
-        Process dvips = ProcessUtil.exec(new String[]{"dvips", baseName + ".dvi"}, file.getParentFile());
+        Process dvips = ProcessUtil.exec(new String[]{dvipsExecutable, baseName + ".dvi"}, file.getParentFile());
         dvips.waitFor();
       }
       if (type == Type.dvi_ps_pdf) {
-        Process ps2pdf = ProcessUtil.exec(new String[]{"ps2pdf", baseName + ".ps"}, file.getParentFile());
+        Process ps2pdf = ProcessUtil.exec(new String[]{ps2pdfExecutable, baseName + ".ps"}, file.getParentFile());
         ps2pdf.waitFor();
       }
     } catch (Exception e) {
