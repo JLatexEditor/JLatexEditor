@@ -1,8 +1,5 @@
 package util;
 
-import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
-import jlatexeditor.quickhelp.HelpUrlHandler;
-
 import java.net.URL;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;

@@ -2,13 +2,10 @@ package jlatexeditor.codehelper;
 
 import jlatexeditor.addon.EnvironmentUtils;
 import jlatexeditor.gproperties.GProperties;
-import org.omg.CORBA.Environment;
 import sce.codehelper.LineBreakListener;
 import sce.codehelper.WordWithPos;
 import sce.component.*;
 
-import javax.naming.OperationNotSupportedException;
-import javax.swing.text.Caret;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 

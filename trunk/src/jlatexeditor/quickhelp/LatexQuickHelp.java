@@ -1,20 +1,19 @@
 package jlatexeditor.quickhelp;
 
-import de.endrullis.utils.CollectionUtils;
-import jlatexeditor.PackagesExtractor;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
 import sce.component.SCEDocument;
 import sce.quickhelp.QuickHelp;
-import util.Function1;
 import util.StreamUtils;
 
-import java.io.*;
-import java.net.MalformedURLException;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.URLStreamHandler;
-import java.net.URLStreamHandlerFactory;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;

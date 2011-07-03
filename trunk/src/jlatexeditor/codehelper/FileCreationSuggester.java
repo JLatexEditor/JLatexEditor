@@ -2,9 +2,7 @@ package jlatexeditor.codehelper;
 
 import de.endrullis.utils.StringUtils;
 import jlatexeditor.Doc;
-import jlatexeditor.JLatexEditorJFrame;
 import jlatexeditor.SCEManager;
-import jlatexeditor.SCEManagerInteraction;
 import sce.codehelper.CodeAssistant;
 import sce.codehelper.PatternPair;
 import sce.codehelper.SCEPopup;
