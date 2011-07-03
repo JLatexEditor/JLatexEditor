@@ -1,4 +1,0 @@
-#!/bin/bash
-
-/usr/bin/find /usr/share/texmf* -name $1
-/usr/bin/find /usr/share/texmf* -name $1.tex

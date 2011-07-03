@@ -1,5 +1,0 @@
-<files>
-  <file name="JLatexEditor.jar" version="@jle.version@.@build.number@" length="@jle.length@"/>
-  <file name="jlatexeditor" version="0.1" length="@sh.length@"/>
-  <file name="jlatexeditor.bat" version="0.1" length="@bat.length@"/>
-</files>
