@@ -25,6 +25,7 @@ New Features and other Changes in JLatexEditor
   - improved configuration of key shortcuts
     (now allows to configure control+left/right/up/down/y/k/u...)
   - improvements for mac (now using Mac menubar)
+  - minor bug fixes and improvements
 
 == Version 0.1.56 ==
 
