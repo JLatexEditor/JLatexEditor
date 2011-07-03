@@ -17,7 +17,7 @@ public class ChangeLogSyntaxHighlighting extends SyntaxHighlighting implements S
 	private static final StandalonePattern header1Pattern = new StandalonePattern("^(\"+)$");
 	private static final StandalonePattern header2Pattern = new StandalonePattern("^(== )(.*)( ==)$");
 	private static final StandalonePattern item1Pattern = new StandalonePattern("^(\\* )(.*)$");
-	private static final StandalonePattern item2Pattern = new StandalonePattern("^(  - )(.*)$");
+	private static final StandalonePattern item2Pattern = new StandalonePattern("^(  [- ] )([^*].*)$");
 	private static final StandalonePattern item3Pattern = new StandalonePattern( "^(    \\* )(.*)$");
 	private static final StandalonePattern viaPattern = new StandalonePattern("via ([^ ]+)");
 	private static final StandalonePattern stringPattern = new StandalonePattern("[^\\w]\"([^\"]+)\"");

@@ -12,7 +12,7 @@ New Features and other Changes in JLatexEditor
   - reopen last closed document via control+shift+W or "File"->"Open Recent"->"Open Last Closed"
   - added completion for parameters of \documentclass, \usepackage, \usetheme, \usecolortheme,
     \usefonttheme, \useinnertheme, and \useoutertheme
-  - added automatic generation of labels for sections, figure, tables
+  - automatically generate labels for sections, figure, and tables (see corresponding live templates)
 * major improvements:
   - replaced buggy Java open dialog with a completely new one - better looking and better usability
   - improved math environment detection and error highlighting
@@ -20,12 +20,15 @@ New Features and other Changes in JLatexEditor
 * minor enhancements:
   - prettied up tabs and icons in compile tree
   - added icons to menu (thanks to Tango Desktop Project for the icons)
+  - added initial and very primitive file search; started via control+shift+N or "LaTeX"->"File Search"
   - svn merge conflicts are highlighted red
-  - improved bibtex highlighting (unused items are grey)
-  - improved configuration of key shortcuts
-    (now allows to configure control+left/right/up/down/y/k/u...)
+  - improved bibtex highlighting (unused items marked grey)
+  - improved LaTeX highlighting (duplicated labels marked red)
+  - improved configuration of keyboard shortcuts
+    * allows to configure control+left/right/up/down/y/k/u...
+    * open keyboard shortcut configration dialog via control+space
   - improvements for mac (now using Mac menubar)
-  - minor bug fixes and improvements
+  - several other minor bug fixes and improvements
 
 == Version 0.1.56 ==
 
