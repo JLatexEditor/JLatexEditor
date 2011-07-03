@@ -42,7 +42,9 @@
   <command name="verb" usage="\begin{verbatim}&nl;  @|@&nl;\end{verbatim}" hint="verbatim environment">
   </command>
   <command name="sec" usage="\section{@name@}\label{sec:@label@}&nl;@|@" hint="section">
-    <argument name="name"/>
+    <argument name="name">
+	    <generate name="label" function="label"/>
+		</argument>
     <argument name="label"/>
   </command>
   <command name="ssec" usage="\subsection{@name@}\label{sec:@label@}&nl;@|@" hint="subsection">

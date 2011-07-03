@@ -524,4 +524,8 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 
   public void mouseMoved(MouseEvent e) {
   }
+
+	public CodeHelperPane getCodeHelperPane() {
+		return codeHelperPane;
+	}
 }

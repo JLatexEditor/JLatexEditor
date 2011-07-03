@@ -41,14 +41,9 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
   private WordWithPos wordPos = null;
   // the prefix
 
-  // for working with templates
-  private String template = null;
-  private SCEDocumentPosition templateCaretPosition = null;
-  // template argument values
-  private ArrayList<CHCommandArgument> templateArguments = null;
-  private int templateArgumentNr = -1;
+  private Template template;
 
-  private static final String spaces = "                                                                                          ";
+  static final String spaces = "                                                                                          ";
 
   public CodeHelperPane(SCEPane pane) {
     this.pane = pane;
@@ -200,215 +195,11 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     document.replace(word.getStartPos(), word.getEndPos(), replacement);
   }
 
-  /**
-   * Starts the template execution.
-   *
-   * @param templateWithAt the template String
-   * @param arguments      the arguments
-   * @param row            the row
-   * @param column         the column
-   */
-  private void startTemplate(String templateWithAt, ArrayList<CHCommandArgument> arguments, int row, int column) {
-    String newTemplate = templateWithAt;
-
-    // remove the caret mark
-    int caretIndex = newTemplate.lastIndexOf("@|@");
-    if (caretIndex != -1) newTemplate = newTemplate.substring(0, caretIndex) + newTemplate.substring(caretIndex + 3);
-
-    // remember the template and arguments
-    newTemplate = newTemplate.replaceAll("@", "");
-    newTemplate = newTemplate.replaceAll("&at;", "@");
-    templateWithAt = templateWithAt.replaceAll("&at;", "A");
-
-    // insert the template in the document
-    document.insert(newTemplate, row, column);
-
-		// set the caret position and remove it from template
-	  Tuple<String, SCEDocumentPosition> pair = getTransformedTemplate(templateWithAt, arguments, row, column);
-		templateWithAt = pair.first;
-
-	  if (arguments.size() == 0 && !templateWithAt.contains("\n")) {
-		  caret.moveTo(pair.second, false);
-		  return;
-	  }
-
-	  template = newTemplate;
-	  templateArguments = arguments;
-	  templateCaretPosition = pair.second;
-
-    // initialize the argument values and occurrences
-    for (CHCommandArgument argument : arguments) {
-      // find occurrences
-      ArrayList<SCEDocumentRange> occurrences = new ArrayList<SCEDocumentRange>();
-      int index = -1;
-      while ((index = templateWithAt.indexOf("@" + argument.getName() + "@", index + 1)) != -1) {
-        // get the position in the document
-        int occurrence_row = row;
-        int occurrence_column = column;
-
-        for (int char_nr = 0; char_nr < index; char_nr++) {
-          char character = templateWithAt.charAt(char_nr);
-
-          if (character != '@') occurrence_column++;
-          if (character == '\n') {
-            occurrence_row++;
-            occurrence_column = 0;
-          }
-        }
-
-	      int rel = 0;
-	      if (argument.isOptional()) rel = 1;
-
-        SCEDocumentPosition occurrenceStart = document.createDocumentPosition(occurrence_row, occurrence_column - 1 - rel, rel);
-        SCEDocumentPosition occurrenceEnd = document.createDocumentPosition(occurrence_row, occurrence_column + argument.getName().length() + rel, -rel);
-        occurrences.add(new SCEDocumentRange(occurrenceStart, occurrenceEnd));
-      }
-      argument.setOccurrences(occurrences);
-    }
-
-	  for (CHCommandArgument argument : arguments) {
-		  if (!argument.getName().equals(argument.getValue())) {
-			  SCEDocumentRange range = argument.getOccurrences().get(0);
-			  SCEPosition start = range.getStartPosition().relative(0, 1);
-			  SCEDocumentPosition end = range.getEndPosition();
-			  document.replace(start, end, argument.getValue());
-		  }
-	  }
-
-    // line breaks
-    String indentation = getSpaceString(column);
-    int lineBreakPos = -1;
-    while ((lineBreakPos = template.indexOf('\n', lineBreakPos + 1)) != -1) {
-      document.insert(indentation, ++row, 0);
-    }
-
-    // hide code helper
-    setVisible(false);
-
-    // start editing with argument number 0
-    editTemplate(0);
-  }
-
-	/**
-	 * Returns a string with the given number of space characters.
-	 *
-	 * @param spaceCount number of space characters
-	 * @return string with the given number of space characters
-	 */
-	private String getSpaceString(int spaceCount) {
-		if (spaceCount < spaces.length())
-			return spaces.substring(0, spaceCount);
-		else
-			return spaces;
-	}
-
-	private Tuple<String, SCEDocumentPosition> getTransformedTemplate(String templateWithAt, ArrayList<CHCommandArgument> arguments, int row, int column) {
-		int cursorIndex = templateWithAt.lastIndexOf("@|@");
-		if (cursorIndex != -1) {
-		  templateWithAt = templateWithAt.substring(0, cursorIndex) + templateWithAt.substring(cursorIndex + 1);
-		} else {
-		  cursorIndex = templateWithAt.length();
-		}
-
-		// get the position in the document
-		int caret_row = row;
-		int caret_column = column;
-
-		for (int char_nr = 0; char_nr < cursorIndex; char_nr++) {
-		  char character = templateWithAt.charAt(char_nr);
-		  if (character != '@') caret_column++;
-		  if (character == '\n') {
-		    caret_row++;
-		    caret_column = 0;
-		  }
-		}
-
-		return new Tuple<String,SCEDocumentPosition>(templateWithAt, document.createDocumentPosition(caret_row, caret_column));
-	}
-
-	/**
-   * Edit the template argument with the given number.
-   *
-   * @param argument_nr the argument number
-   */
-  private void editTemplate(int argument_nr) {
-	  boolean noArgument = false;
-	  if (templateArguments == null || templateArguments.size() == 0) noArgument = true;
-
-	  if (!noArgument && templateArgumentNr >= 0 && templateArgumentNr < templateArguments.size()) {
-		  // leave current template argument
-		  CHCommandArgument oldArgument = templateArguments.get(templateArgumentNr);
-
-		  if (oldArgument.isOptional()) {
-			  SCEDocumentRange range = oldArgument.getOccurrences().get(0);
-			  SCEPosition start = range.getStartPosition().relative(0, 1);
-			  SCEDocumentPosition end = range.getEndPosition();
-			  String value = document.getText(start, end);
-
-			  if (value.equals("") || value.equals(oldArgument.getInitialValue())) {
-				  for (SCEDocumentRange argumentRange : oldArgument.getOccurrences()) {
-					  // check if char before range and after range is [ or ], respectively
-					  int colBefore = argumentRange.getStartPosition().getColumn();
-					  int colAfter  = argumentRange.getEndPosition().getColumn();
-					  int rowNr = argumentRange.getStartPosition().getRow();
-					  SCEDocumentRow row = document.getRowsModel().getRow(rowNr);
-					  if (colBefore >= 0 && colAfter < row.length &&
-							  row.chars[colBefore].character == '[' && row.chars[colAfter].character == ']') {
-						  document.remove(rowNr, colBefore, rowNr, colAfter + 1, SCEDocumentEvent.EVENT_EDITRANGE, false);
-					  }
-				  }
-			  }
-		  }
-	  }
-
-    if (noArgument || argument_nr >= templateArguments.size()) {
-      // end template editing
-	    endTemplateEditing(false);
-
-      // set the caret to the end position
-      caret.moveTo(templateCaretPosition, false);
-
-      return;
-    }
-    if (argument_nr < 0) argument_nr = templateArguments.size() - 1;
-
-    templateArgumentNr = argument_nr;
-
-    // set the document edit range
-    CHCommandArgument argument = templateArguments.get(argument_nr);
-
-	  if (argument.isOptional()) {
-		  for (SCEDocumentRange argumentRange : argument.getOccurrences()) {
-			  // check if char before range and after range is [ or ], respectively
-			  int colBefore = argumentRange.getStartPosition().getColumn();
-			  int colAfter  = argumentRange.getEndPosition().getColumn();
-			  int rowNr = argumentRange.getStartPosition().getRow();
-			  SCEDocumentRow row = document.getRowsModel().getRow(rowNr);
-			  if (colBefore >= 0 && colAfter < row.length &&
-					  row.chars[colBefore].character != '[' || row.chars[colAfter].character != ']') {
-				  document.insert("[]", rowNr, colBefore, SCEDocumentEvent.EVENT_EDITRANGE, false);
-			  }
-		  }
-	  }
-
-    SCEDocumentRange argumentRange = argument.getOccurrences().get(0);
-    SCEDocumentPosition start = new SCEDocumentPosition(argumentRange.getStartPosition().getRow(), argumentRange.getStartPosition().getColumn() + 1);
-    SCEDocumentPosition end = argumentRange.getEndPosition();
-    document.setEditRange(start, end, false);
-
-    // select the argument value
-    caret.moveTo(start, false);
-    caret.moveTo(end, true);
-
-	  if (argument.isCompletion()) {
-		  callCodeHelperWithCompletion();
-	  }
-  }
-
 	public void endTemplateEditing(boolean undo) {
-		templateArgumentNr = -1;
-		document.setEditRange(null, null, undo);
-		template = null;
+		if (template != null) {
+			document.setEditRange(null, null, undo);
+			template = null;
+		}
 	}
 
 	public void destroy() {
@@ -470,7 +261,11 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
           if (wordToReplace.word.equals(command.getName())) {
             SCECaret caret = pane.getCaret();
             document.remove(wordToReplace.getStartPos(), caret);
-            startTemplate(command.getUsage(), command.getArguments(), wordToReplace.getStartRow(), wordToReplace.getStartCol());
+
+            Template newTemplate = Template.startTemplate(pane, command.getUsage(), command.getArguments(), wordToReplace.getStartRow(), wordToReplace.getStartCol());
+	          if (newTemplate != null) {
+		          template = newTemplate;
+	          }
 
             e.consume();
             return;
@@ -529,7 +324,11 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
 				SCECaret caret = pane.getCaret();
 				document.remove(oldWord.getStartPos(), caret);
-				startTemplate(command.getUsage(), command.getArguments(), oldWord.getStartRow(), oldWord.getStartCol());
+
+				Template newTemplate = Template.startTemplate(pane, command.getUsage(), command.getArguments(), oldWord.getStartRow(), oldWord.getStartCol());
+				if (newTemplate != null) {
+					template = newTemplate;
+				}
 
 				e.consume();
 				return;
@@ -545,8 +344,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 	    else {
 				// end template editing
 				if (template != null) {
-					document.setEditRange(null, null, false);
-					template = null;
+					endTemplateEditing(false);
 				}
 	    }
     }
@@ -554,16 +352,18 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     // tab - template editing
     if ((e.getKeyCode() == KeyEvent.VK_TAB || e.getKeyCode() == KeyEvent.VK_ENTER) && template != null) {
       if (e.isShiftDown()) {
-        editTemplate(templateArgumentNr - 1);
+        if (!template.goToPreviousArgument())
+	        endTemplateEditing(false);
       } else {
-        editTemplate(templateArgumentNr + 1);
+        if (!template.goToNextArgument())
+	        endTemplateEditing(false);
       }
 
       e.consume();
     }
   }
 
-	private void callCodeHelperWithCompletion() {
+	void callCodeHelperWithCompletion() {
 		if (popup.isVisible()) return;
 
 		if (codeHelper.matches()) {
@@ -621,30 +421,8 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
   public void documentChanged(SCEDocument sender, SCEDocumentEvent event) {
     // if we edit a template -> update other positions
-    if (template != null && templateArguments != null && templateArguments.size() > 0 && templateArgumentNr >= 0) {
-      if (document.hasEditRange() &&
-              event.getRangeStart().compareTo(document.getEditRangeStart()) >= 0 &&
-              event.getRangeStart().compareTo(document.getEditRangeEnd()) <= 0 &&
-              (event.isInsert() || event.isRemove())) {
-        // get the argument value
-        String argumentValue = document.getEditRangeText();
-
-        // update all occurrences of the argument
-        CHCommandArgument argument = templateArguments.get(templateArgumentNr);
-
-        Iterator occurrencesIterator = argument.getOccurrences().iterator();
-        occurrencesIterator.next(); // jump over the first occurrence
-        while (occurrencesIterator.hasNext()) {
-          SCEDocumentRange argumentRange = (SCEDocumentRange) occurrencesIterator.next();
-          SCEDocumentPosition start = new SCEDocumentPosition(argumentRange.getStartPosition().getRow(), argumentRange.getStartPosition().getColumn() + 1);
-          SCEDocumentPosition end = argumentRange.getEndPosition();
-
-          pane.setFreezeCaret(true);
-          document.remove(start.getRow(), start.getColumn(), end.getRow(), end.getColumn(), 0, false);
-          document.insert(argumentValue, start.getRow(), start.getColumn(), 0, false);
-          pane.setFreezeCaret(false);
-        }
-      }
+    if (template != null) {
+	    template.documentChanged(sender, event);
     }
 
     if (isVisible()) updatePrefix();
@@ -656,10 +434,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
   }
 
 	public void editAsTemplate(ArrayList<CHCommandArgument> arguments, SCEDocumentPosition caretEndPosition) {
-		template = "";
-		templateArguments = arguments;
-		templateCaretPosition = caretEndPosition;
-		editTemplate(0);
+		template = Template.editAsTemplate(arguments, caretEndPosition);
 	}
 
 	public static class SCEListCellRenderer extends DefaultListCellRenderer {
