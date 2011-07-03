@@ -2,7 +2,7 @@
 
 <project name="JLatexEditor" default="runJLatexEditor" basedir=".">
   <!-- Update if needed. -->
-  <property name="jle.version" value="0.1"/>
+  <property name="jle.version" value="0.2"/>
 	<property name="program.name" value="${ant.project.name}"/>
 	<property name="program.cname" value="jlatexeditor"/>
   <property name="program.jar" value="${ant.project.name}.jar"/>
