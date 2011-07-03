@@ -6,7 +6,7 @@ New Features and other Changes in JLatexEditor
 # set "show_new_features" in global properties to "false".
 
 
-== Coming Version 0.2 ==
+== Version 0.2 ==
 
 * new features:
   - reopen last closed document via control+shift+W or "File"->"Open Recent"->"Open Last Closed"
