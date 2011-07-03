@@ -13,6 +13,7 @@ New Features and other Changes in JLatexEditor
   - added completion for parameters of \documentclass, \usepackage, \usetheme, \usecolortheme,
     \usefonttheme, \useinnertheme, and \useoutertheme
   - automatically generate labels for sections, figure, and tables (see corresponding live templates)
+  - quick help on commands show packages providing them
 * major improvements:
   - replaced buggy Java open dialog with a completely new one - better looking and better usability
   - improved math environment detection and error highlighting
@@ -26,8 +27,13 @@ New Features and other Changes in JLatexEditor
   - improved LaTeX highlighting (duplicated labels marked red)
   - improved configuration of keyboard shortcuts
     * allows to configure control+left/right/up/down/y/k/u...
-    * open keyboard shortcut configration dialog via control+space
+    * open keyboard shortcut configuration dialog via control+space
   - improvements for mac (now using Mac menubar)
+  - quick jump to compiler output from errors and warnings using context menu
+  - added live templates: table
+  - automatically close environments (if not yet closed)
+  - automatically increase indentation after opening an environment, after \item, and after an
+    opening brace
   - several other minor bug fixes and improvements
 
 == Version 0.1.56 ==
