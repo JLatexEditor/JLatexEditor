@@ -294,7 +294,8 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
     }};
     settingsMenu.add(forwardSearch);
     // settingsMenu.add(createMenuItem("Template Editor", "template editor", 'T'));
-    settingsMenu.add(createMenuItem("Quick Setup Wizard", "wizard", 'W'));
+		// TODO
+    // settingsMenu.add(createMenuItem("Quick Setup Wizard", "wizard", 'W'));
     settingsMenu.add(createMenuItem("Global Settings", "global settings", 'G'));
 
     JMenu helpMenu = new JMenu("Help");
