@@ -6,12 +6,16 @@
 				              usage CDATA #REQUIRED
 				              hint CDATA #IMPLIED>
 
-		<!ELEMENT argument EMPTY>
+		<!ELEMENT argument (generate*)>
 		<!ATTLIST argument name CDATA #REQUIRED
 		                   hint CDATA #IMPLIED
 		                   value CDATA #IMPLIED
 		                   values CDATA #IMPLIED
 		                   completion CDATA #IMPLIED>
+
+		<!ELEMENT generate EMPTY>
+		<!ATTLIST generate name CDATA #REQUIRED
+		                   function CDATA #REQUIRED>
 
 		<!ENTITY nl "@newline@">
 ]>
