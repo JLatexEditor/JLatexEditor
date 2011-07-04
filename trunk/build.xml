@@ -223,6 +223,7 @@
 
 			<tarfileset dir="${linux.runtime.dir}" prefix="usr/share/${program.cname}">
 				<include name="images/**"/>
+				<include name="lib/**"/>
 				<exclude name="${program.cname}"/>
 				<exclude name="${program.cname}.sh"/>
 				<exclude name="${program.cname}.desktop"/>
@@ -237,10 +238,14 @@
 	<target name="runtime-linux">
 		<delete dir="${linux.runtime.dir}"/>
 		<mkdir dir="${linux.runtime.dir}/images"/>
+		<mkdir dir="${linux.runtime.dir}/lib"/>
 		<copy todir="${linux.runtime.dir}">
 			<fileset dir="dist-resources/linux/deb"/>
 			<fileset file="dist/JLatexEditor_prepare/JLatexEditor.jar"/>
 			<fileset file="dist/JLatexEditor_prepare/CHANGELOG"/>
+		</copy>
+		<copy todir="${linux.runtime.dir}/lib">
+			<fileset dir="dist/JLatexEditor_prepare/lib"/>
 		</copy>
 		<copy file="dev/images/icon/5_object_128.png" tofile="${linux.runtime.dir}/images/icon_128.png"/>
 		<echo file="${linux.runtime.dir}/updateDisabled.txt"/>
