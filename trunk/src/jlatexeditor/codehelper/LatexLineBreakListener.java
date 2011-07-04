@@ -20,19 +20,25 @@ public class LatexLineBreakListener implements LineBreakListener {
 	public void linedWrapped(SCEPane pane) {
 		SCEDocument doc = pane.getDocument();
 		SCECaret caret = pane.getCaret();
-		int row = caret.getRow();
+		int rowNr = caret.getRow();
 
-		if (row > 0) {
-			String lastLine = doc.getRowsModel().getRowAsString(row - 1);
+		if (rowNr > 0) {
+			String lastLine = doc.getRowsModel().getRowAsString(rowNr - 1);
 			boolean indent = false;
 			boolean closeEnv = false;
 			String envName = null;
 
-			// determine if a new environment was opened in the last row
+			// determine if last line is a comment
+			if (lastLine.startsWith("%")) {
+				if (GProperties.getBoolean("editor.auto_continue_comment")) {
+					pane.insert("% ");
+				}
+			}
+			// determine if a new environment was opened in the last line
 			Iterator<WordWithPos> openEnvIterator = EnvironmentUtils.getOpenEnvIterator(pane);
 			if (openEnvIterator.hasNext()) {
 				WordWithPos openEnvWord = openEnvIterator.next();
-				if (openEnvWord.getStartRow() == row - 1) {
+				if (openEnvWord.getStartRow() == rowNr - 1) {
 					indent   = GProperties.getBoolean("editor.auto_indentation.after_begin");
 					closeEnv = GProperties.getBoolean("editor.auto_close_environment");
 					envName  = openEnvWord.word;
@@ -51,7 +57,7 @@ public class LatexLineBreakListener implements LineBreakListener {
 			}
 			// check further if we need to indent the new line
 			if (!indent && GProperties.getBoolean("editor.auto_indentation.after_item")) {
-				// indent if a new item was started in the last row
+				// indent if a new item was started in the last line
 				indent = itemPattern.matcher(lastLine).find();
 			}
 			if (!indent && GProperties.getBoolean("editor.auto_indentation.after_opening_brace")) {
@@ -73,7 +79,7 @@ public class LatexLineBreakListener implements LineBreakListener {
 			}
 			if (closeEnv) {
 				SCEPosition oldPos = new SCEDocumentPosition(caret.getRow(), caret.getColumn());
-				String currLine = doc.getRowsModel().getRowAsString(row);
+				String currLine = doc.getRowsModel().getRowAsString(rowNr);
 				String nextIndentation = currLine.substring(0, Math.max(0, currLine.length() - 2));
 				pane.insert("\n" + nextIndentation + "\\end{" + envName + '}');
 				caret.moveTo(oldPos, false);

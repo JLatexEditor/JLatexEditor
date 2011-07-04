@@ -112,15 +112,15 @@ public class LatexCompileError {
   }
 
   public String toString() {
-    StringBuffer message = new StringBuffer(getFileName()).append(": ");
+	  StringBuilder message = new StringBuilder("<font color=\"#000000\">").append(getFileName()).append("</font><font color=\"gray\">: ");
     if (getLineStart() != -1) {
       message.append(getLineStart());
       if (getLineStart() != getLineEnd()) message.append("--").append(getLineEnd());
     }
-    message.append("\n");
-    message.append("  ").append(getMessage()).append("\n");
+    message.append("</font>\n");
+    message.append("  <font color=\"#9a6634\">").append(getMessage()).append("</font>\n");
     if (getTextBefore() != null) {
-      message.append("  ").append(getTextBefore()).append("[ERROR]").append(getTextAfter()).append("\n");
+      message.append("  ").append(getTextBefore()).append("<font color=\"red\">[ERROR]</font>").append(getTextAfter()).append("\n");
     }
     return message.toString();
   }
