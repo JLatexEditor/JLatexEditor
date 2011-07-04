@@ -12,8 +12,8 @@ New Features and other Changes in JLatexEditor
   - reopen last closed document via control+shift+W or "File"->"Open Recent"->"Open Last Closed"
   - added completion for parameters of \documentclass, \usepackage, \usetheme, \usecolortheme,
     \usefonttheme, \useinnertheme, and \useoutertheme
-  - automatically generate labels for sections, figure, and tables (see corresponding live templates)
-  - quick help on commands show packages providing them
+  - automatically generate labels for sections, figures, and tables (see corresponding live templates)
+  - quick help on commands shows packages providing them
 * major improvements:
   - replaced buggy Java open dialog with a completely new one - better looking and better usability
   - improved math environment detection and error highlighting
