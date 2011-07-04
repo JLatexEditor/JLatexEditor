@@ -214,13 +214,6 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     //int row = caret.getRowAsString();
     //int column = caret.getColumn();
 
-    // control+space
-    if (e.getKeyCode() == KeyEvent.VK_SPACE && e.isControlDown() && !isVisible()) {
-	    callCodeHelperWithCompletion();
-
-	    e.consume();
-    }
-
     // TODO: move somewhere else
     /*
     // begin... end completion
@@ -361,7 +354,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     }
   }
 
-	void callCodeHelperWithCompletion() {
+	public void callCodeHelperWithCompletion() {
 		if (popup.isVisible()) return;
 
 		if (codeHelper.matches()) {
