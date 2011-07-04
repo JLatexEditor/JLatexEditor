@@ -434,6 +434,11 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
       document.remove(caret, pane.findSplitterPosition(caret.getRow(), caret.getColumn(), 1));
       clearSelection();
     }
+    if (command.equals("complete")) { // control+delete
+	    if (codeHelperPane != null) {
+	      codeHelperPane.callCodeHelperWithCompletion();
+	    }
+    }
   }
 
   // MouseListener methods

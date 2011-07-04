@@ -6,7 +6,17 @@ New Features and other Changes in JLatexEditor
 # set "show_new_features" in global properties to "false".
 
 
-== Version 0.2 ==
+== Version 0.2.1 ==
+
+* minor enhancements:
+  - colored highlighting of LaTeX errors and warnings in corresponding lists
+  - continuously comments
+  - shortcut for completion (control+space) can be configure in global.settings
+* bug fixes:
+  - fixed error in deb package which caused exceptions in open dialog
+
+
+== Version 0.2.0 ==
 
 * new features:
   - reopen last closed document via control+shift+W or "File"->"Open Recent"->"Open Last Closed"

@@ -323,6 +323,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
     createShortcut(this, RECEIVER_PANE_UI, "remove line behind caret", false);
     createShortcut(this, RECEIVER_PANE_UI, "remove word before caret", false);
     createShortcut(this, RECEIVER_PANE_UI, "remove word behind caret", false);
+    createShortcut(this, RECEIVER_PANE_UI, "complete", false);
 
     // prevent that TabbledPane consumes the "control UP"
     Object ancestorMap = UIManager.get("TabbedPane.ancestorInputMap");
