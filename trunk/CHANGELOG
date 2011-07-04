@@ -10,7 +10,7 @@ New Features and other Changes in JLatexEditor
 
 * minor enhancements:
   - colored highlighting of LaTeX errors and warnings in corresponding lists
-  - continuously comments
+  - continuous comments
   - shortcut for completion (control+space) can be configure in global.settings
 * bug fixes:
   - fixed error in deb package which caused exceptions in open dialog
