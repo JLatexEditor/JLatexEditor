@@ -128,11 +128,10 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
 
   public void update() {
 	  nodeError.update();
-    //nodeError.setUserObject("<html><font color=\"" + (lmError.getSize() > 0 ? "red" : "gray") + "\">errors (" + lmError.getSize() + ")</font></html>");
-    nodeHbox.setUserObject("<html><font color=\"" + (lmHbox.getSize() > 0 ? "black" : "gray") + "\">overfull hboxes (" + lmHbox.getSize() + ")</font></html>");
-    nodeWarning.setUserObject("<html><font color=\"" + (lmWarning.getSize() > 0 ? "black" : "gray") + "\">warnings (" + lmWarning.getSize() + ")</font></html>");
-    nodeWarningCitation.setUserObject("<html><font color=\"" + (lmWarningCitation.getSize() > 0 ? "black" : "gray") + "\">citations (" + lmWarningCitation.getSize() + ")</font></html>");
-    nodeWarningReference.setUserObject("<html><font color=\"" + (lmWarningReference.getSize() > 0 ? "black" : "gray") + "\">references (" + lmWarningReference.getSize() + ")</font></html>");
+	  nodeHbox.update();
+	  nodeWarning.update();
+	  nodeWarningCitation.update();
+	  nodeWarningReference.update();
   }
 
   public void appendLine(String line) {
