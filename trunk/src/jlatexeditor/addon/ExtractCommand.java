@@ -35,8 +35,6 @@ public class ExtractCommand extends AddOn {
 		if (document.hasSelection()) {
 			String selectedText = document.getSelectedText();
 
-			System.out.println("selectedText = " + selectedText);
-
 			BackgroundParser.FilePos lastCommandPos = getLastCommandPos(jle);
 			if (lastCommandPos == null) return;
 
