@@ -18,7 +18,8 @@ public abstract class AddOn {
 			new RenameElement(),
 			new CloseEnvironment(),
 			new ColumnRealigner(),
-			new FileSearch()
+			new FileSearch(),
+			new ExtractCommand()
 		};
 
 		for (AddOn addOn : addOns) {
