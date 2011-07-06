@@ -7,15 +7,13 @@ import jlatexeditor.SCEManager;
 import jlatexeditor.codehelper.BackgroundParser;
 import jlatexeditor.codehelper.Command;
 import sce.component.*;
+import sun.security.provider.ParameterCache;
 
 import javax.swing.*;
-import javax.xml.bind.JAXBElement;
-import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.HashSet;
 
 /**
  * AddOn for declaring commands based on the selected text.
@@ -23,6 +21,8 @@ import java.util.regex.Pattern;
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 public class ExtractCommand extends AddOn {
+	private static final int RESTRICTED_ARG_LENGTH = 50;
+
 	protected ExtractCommand() {
 		super("extract command", "Extract Command", "control shift M", "Refactoring: Extract Command");
 	}
@@ -60,47 +60,26 @@ public class ExtractCommand extends AddOn {
 		}
 	}
 
-	private void declareCommand(JLatexEditorJFrame jle, BackgroundParser.FilePos lastCommandPos, String commandName, String template) {
+	private void declareCommand(JLatexEditorJFrame jle, BackgroundParser.FilePos lastCommandPos, String commandName, String templateText) {
 		SourceCodeEditor<Doc> editor = jle.getEditor(new Doc.FileDoc(new File(lastCommandPos.getFile())));
 		SCEPane pane = editor.getTextPane();
 
-		Pattern argPattern = Pattern.compile("[^\\\\]#(\\d)");
-		Matcher matcher = argPattern.matcher(template);
-
-		ArrayList<Integer> argRefOrder = new ArrayList<Integer>();
-		int maxParam = 0;
-		while (matcher.find()) {
-			int argNr = Integer.parseInt(matcher.group(1));
-			argRefOrder.add(argNr);
-			maxParam = Math.max(maxParam, argNr);
-		}
-
-		String templateDeclaration = "\\DeclareRobustCommand{\\" + commandName + "}[" + maxParam + "]{";
-
-		if (template.contains("\n")) {
-			templateDeclaration += "%\n" + template + "%\n}";
-		} else {
-			templateDeclaration += template + "}";
-		}
-
 		SourceCodeEditor<Doc> activeEditor = jle.getActiveEditor();
 
-		pane.getDocument().insert(templateDeclaration, lastCommandPos.getLineNr() + 1, 0);
+		Template template = new Template(commandName, templateText);
 
-		String commandArgs = "";
-		for (Integer argNr : argRefOrder) {
-			commandArgs += "{\\" + argNr + "}";
-		}
+		pane.getDocument().insert(template.toDeclaration(), lastCommandPos.getLineNr() + 1, 0);
 
 		jle.open(activeEditor.getResource(), 0);
-		SCESearch lastSearch = new SCESearch(activeEditor);
-		lastSearch.setShowReplace(true);
-		lastSearch.getInput().setText(template.replaceAll("([\\\\.\\[\\]\\{\\}\\(\\)*+-])", "\\\\$1").replaceAll("([^\\\\])#(\\d)", "$1(.*)"));
-		lastSearch.getReplace().setText(commandName + commandArgs);
-		lastSearch.getRegExp().setSelected(true);
-		lastSearch.getCaseSensitive().setSelected(false);
-		lastSearch.getSelectionOnly().setSelected(false);
-		activeEditor.search(lastSearch);
+		activeEditor.getTextPane().getCaret().moveTo(0, 0, false);
+		SCESearch search = new SCESearch(activeEditor);
+		search.setShowReplace(true);
+		search.getInput().setText(template.toInputRegEx());
+		search.getReplace().setText(template.toReplacement());
+		search.getRegExp().setSelected(true);
+		search.getCaseSensitive().setSelected(false);
+		search.getSelectionOnly().setSelected(false);
+		activeEditor.search(search);
 	}
 
 	private BackgroundParser.FilePos getLastCommandPos(JLatexEditorJFrame jle) {
@@ -159,6 +138,180 @@ public class ExtractCommand extends AddOn {
 				return files2lastCommand.get(comboBox.getSelectedItem().toString());
 			} else {
 				return null;
+			}
+		}
+	}
+
+	private static String escapeRegEx(String text) {
+		return text.replaceAll("([\\\\.\\[\\]\\{\\}\\(\\)*+-])", "\\\\$1");
+	}
+
+
+	public static class Template {
+		public String commandName;
+		public ArrayList<TemplateElement> elements = new ArrayList<TemplateElement>();
+		public int argCount = 0;
+		public int maxArg = 0;
+		private HashMap<Integer, Integer> argNr2regExGroup;
+
+		public Template(String commandName, String template) {
+			this.commandName = commandName;
+
+			char[] chars = template.toCharArray();
+
+			int lastPos = 0;
+
+			for (int i = 0; i < chars.length; i++) {
+				switch (chars[i]) {
+					case '\\':
+						i++;
+						break;
+					case '#':
+						if (i != lastPos) {
+							elements.add(new Text(template.subSequence(lastPos, i)));
+						}
+						int argNr = chars[++i] - '0';
+						elements.add(new Argument(argNr));
+						lastPos = i+1;
+						break;
+				}
+			}
+			if (lastPos < chars.length) {
+				elements.add(new Text(template.subSequence(lastPos, chars.length)));
+			}
+
+			finalizeElements();
+		}
+
+		private void finalizeElements() {
+			HashSet<Integer> appearedArguments = new HashSet<Integer>();
+			HashSet<Integer> multiUsedArgs = new HashSet<Integer>();
+
+			int regExGroup = 0;
+			argNr2regExGroup = new HashMap<Integer, Integer>();
+
+			for (TemplateElement element : elements) {
+				if (element instanceof Argument) {
+
+					Argument argument = (Argument) element;
+					argument.firstOcc = !appearedArguments.contains(argument.nr);
+					if (argument.firstOcc) {
+						regExGroup++;
+						argNr2regExGroup.put(argument.nr, regExGroup);
+						argument.regExGroup = regExGroup;
+						maxArg = argument.nr;
+					} else {
+						multiUsedArgs.add(argument.nr);
+						argument.regExGroup = argNr2regExGroup.get(argument.nr);
+					}
+					appearedArguments.add(argument.nr);
+				}
+			}
+
+			for (TemplateElement element : elements) {
+				if (element instanceof Argument) {
+					Argument argument = (Argument) element;
+					if (argument.firstOcc && multiUsedArgs.contains(argument.nr)) {
+						argument.restrictLength = true;
+					}
+				}
+			}
+
+			argCount = appearedArguments.size();
+		}
+
+		public boolean isValid() {
+			return maxArg == argCount;
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+			for (TemplateElement element : elements) {
+				sb.append(element.toString());
+			}
+			return sb.toString();
+		}
+
+		public String toInputRegEx() {
+			StringBuilder sb = new StringBuilder();
+			for (TemplateElement element : elements) {
+				sb.append(element.toInputRegEx());
+			}
+			return sb.toString();
+		}
+
+		public String toReplacement() {
+			String replacement = "\\\\" + commandName;
+			for (int argNr = 1; argNr <= argCount; argNr++) {
+				replacement += "{\\" + argNr2regExGroup.get(argNr) + "}";
+			}
+			return replacement;
+		}
+
+		public String toDeclaration() {
+			String templateDeclaration = "\\DeclareRobustCommand{\\" + commandName + "}";
+			if (argCount > 0) {
+				templateDeclaration += "[" + argCount + "]";
+			}
+
+			String template = toString();
+			if (template.contains("\n")) {
+				templateDeclaration += "{%\n" + template + "%\n}";
+			} else {
+				templateDeclaration += "{" + template + "}";
+			}
+
+			return templateDeclaration;
+		}
+	}
+
+
+	public static interface TemplateElement {
+		public String toInputRegEx();
+	}
+
+	public static class Text implements TemplateElement {
+		public String value;
+
+		public Text(CharSequence value) {
+			this.value = value.toString();
+		}
+
+		@Override
+		public String toString() {
+			return value;
+		}
+
+		public String toInputRegEx() {
+			return escapeRegEx(value);
+		}
+	}
+
+	public static class Argument implements TemplateElement {
+		public int nr;
+		public boolean firstOcc = false;
+		public int regExGroup = -1;
+		public boolean restrictLength = false;
+
+		public Argument(int nr) {
+			this.nr = nr;
+		}
+
+		@Override
+		public String toString() {
+			return "#" + nr;
+		}
+
+		public String toInputRegEx() {
+			if (firstOcc) {
+				if (restrictLength) {
+					return "(.{1-" + RESTRICTED_ARG_LENGTH + "})";
+				} else {
+					return "(.*)";
+				}
+			} else {
+				return "\\" + regExGroup;
 			}
 		}
 	}

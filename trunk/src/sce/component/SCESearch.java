@@ -320,11 +320,11 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     if(jumpToLast) last();
   }
 
-  private void first() {
+  public void first() {
     if (results.size() > 0) moveTo(results.get(0));
   }
 
-  private void last() {
+  public void last() {
     if (results.size() > 0) moveTo(results.get(results.size() - 1));
   }
 
