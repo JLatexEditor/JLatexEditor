@@ -6,15 +6,13 @@ import jlatexeditor.JLatexEditorJFrame;
 import jlatexeditor.SCEManager;
 import jlatexeditor.codehelper.BackgroundParser;
 import jlatexeditor.codehelper.Command;
-import sce.component.SCEDocument;
-import sce.component.SCEDocumentRow;
-import sce.component.SCEPane;
-import sce.component.SourceCodeEditor;
+import sce.component.*;
 
 import javax.swing.*;
 import javax.xml.bind.JAXBElement;
 import java.awt.*;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -66,12 +64,15 @@ public class ExtractCommand extends AddOn {
 		SourceCodeEditor<Doc> editor = jle.getEditor(new Doc.FileDoc(new File(lastCommandPos.getFile())));
 		SCEPane pane = editor.getTextPane();
 
-		Pattern argPattern = Pattern.compile("[^\\\\]#([0-9])");
+		Pattern argPattern = Pattern.compile("[^\\\\]#(\\d)");
 		Matcher matcher = argPattern.matcher(template);
 
+		ArrayList<Integer> argRefOrder = new ArrayList<Integer>();
 		int maxParam = 0;
 		while (matcher.find()) {
-			maxParam = Math.max(maxParam, Integer.parseInt(matcher.group(1)));
+			int argNr = Integer.parseInt(matcher.group(1));
+			argRefOrder.add(argNr);
+			maxParam = Math.max(maxParam, argNr);
 		}
 
 		String templateDeclaration = "\\DeclareRobustCommand{\\" + commandName + "}[" + maxParam + "]{";
@@ -82,7 +83,24 @@ public class ExtractCommand extends AddOn {
 			templateDeclaration += template + "}";
 		}
 
+		SourceCodeEditor<Doc> activeEditor = jle.getActiveEditor();
+
 		pane.getDocument().insert(templateDeclaration, lastCommandPos.getLineNr() + 1, 0);
+
+		String commandArgs = "";
+		for (Integer argNr : argRefOrder) {
+			commandArgs += "{\\" + argNr + "}";
+		}
+
+		jle.open(activeEditor.getResource(), 0);
+		SCESearch lastSearch = new SCESearch(activeEditor);
+		lastSearch.setShowReplace(true);
+		lastSearch.getInput().setText(template.replaceAll("([\\\\.\\[\\]\\{\\}\\(\\)*+-])", "\\\\$1").replaceAll("([^\\\\])#(\\d)", "$1(.*)"));
+		lastSearch.getReplace().setText(commandName + commandArgs);
+		lastSearch.getRegExp().setSelected(true);
+		lastSearch.getCaseSensitive().setSelected(false);
+		lastSearch.getSelectionOnly().setSelected(false);
+		activeEditor.search(lastSearch);
 	}
 
 	private BackgroundParser.FilePos getLastCommandPos(JLatexEditorJFrame jle) {

@@ -201,6 +201,26 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     buttonReplaceAll.setVisible(showReplace);
   }
 
+	public JTextField getInput() {
+		return input;
+	}
+
+	public JTextField getReplace() {
+		return replace;
+	}
+
+	public JCheckBox getRegExp() {
+		return regExp;
+	}
+
+	public JCheckBox getCaseSensitive() {
+		return caseSensitive;
+	}
+
+	public JCheckBox getSelectionOnly() {
+		return selectionOnly;
+	}
+
 	@Override
 	public boolean hasFocus() {
 		return input.hasFocus();
