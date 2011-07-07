@@ -478,7 +478,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 
   public void selectionChanged(SCEDocument sender, SCEDocumentPosition start, SCEDocumentPosition end) {
     if (start == null || end == null) {
-      replaceEnabled(false);
+      replaceEnabled(false, results.size() > 0);
       return;
     }
 
@@ -487,17 +487,17 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
       SCEDocumentPosition rend = result.getEndPosition();
 
       if (start.equals(rstart) && end.equals(rend)) {
-        replaceEnabled(true);
+        replaceEnabled(true, results.size() > 0);
         return;
       }
     }
 
-    replaceEnabled(false);
+    replaceEnabled(false, results.size() > 0);
   }
 
-  private void replaceEnabled(boolean enabled) {
-    buttonReplace.setEnabled(enabled);
-    buttonReplaceAll.setEnabled(enabled);
+  private void replaceEnabled(boolean replaceEnabled, boolean replaceAllEnabled) {
+    buttonReplace.setEnabled(replaceEnabled);
+    buttonReplaceAll.setEnabled(replaceAllEnabled);
   }
 
 	public void openSearch(SCESearch lastSearch) {

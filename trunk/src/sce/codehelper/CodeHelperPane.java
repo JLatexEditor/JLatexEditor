@@ -7,6 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,7 +19,7 @@ import java.util.regex.Pattern;
  * @author Jörg Endrullis
  * @author Stefan Endrullis
  */
-public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocumentListener {
+public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocumentListener, MouseListener {
   // the source code pane
   protected SCEPane pane = null;
   protected SCEDocument document = null;
@@ -59,6 +61,12 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     list.setForeground(Color.BLACK);
     list.setSelectionBackground(new Color(0, 82, 164));
     list.setSelectionForeground(Color.WHITE);
+
+    // put us first in the listner list
+    MouseListener[] listeners = list.getMouseListeners();
+    for(MouseListener listener : listeners) list.removeMouseListener(listener);
+    list.addMouseListener(this);
+    for(MouseListener listener : listeners) list.addMouseListener(listener);
 
     // add the component to the viewport
     JViewport viewPort = new JViewport();
@@ -307,20 +315,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
 			// enter
 			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-				WordWithPos oldWord = wordPos;
-				setVisible(false);
-
-				// remove the current text and then start the template
-				CHCommand command = (CHCommand) list.getSelectedValue();
-
-				SCECaret caret = pane.getCaret();
-				document.remove(oldWord.getStartPos(), caret);
-
-				Template newTemplate = Template.startTemplate(pane, command.getUsage(), command.getArguments(), oldWord.getStartRow(), oldWord.getStartCol());
-				if (newTemplate != null) {
-					template = newTemplate;
-				}
-
+        doIt();
 				e.consume();
 				return;
 			}
@@ -351,6 +346,22 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
       }
 
       e.consume();
+    }
+  }
+
+  private void doIt() {
+    WordWithPos oldWord = wordPos;
+    setVisible(false);
+
+    // remove the current text and then start the template
+    CHCommand command = (CHCommand) list.getSelectedValue();
+
+    SCECaret caret = pane.getCaret();
+    document.remove(oldWord.getStartPos(), caret);
+
+    Template newTemplate = Template.startTemplate(pane, command.getUsage(), command.getArguments(), oldWord.getStartRow(), oldWord.getStartCol());
+    if (newTemplate != null) {
+      template = newTemplate;
     }
   }
 
@@ -428,7 +439,33 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 		template = Template.editAsTemplate(arguments, caretEndPosition);
 	}
 
-	public static class SCEListCellRenderer extends DefaultListCellRenderer {
+  /**
+   * MouseListener.
+   */
+  private int selectedIndex = -1;
+  public void mouseClicked(MouseEvent e) {
+    if(selectedIndex == list.getSelectedIndex() || e.getClickCount() >= 2) {
+      doIt();
+    }
+  }
+
+  public void mousePressed(MouseEvent e) {
+    selectedIndex = list.getSelectedIndex();
+  }
+
+  public void mouseReleased(MouseEvent e) {
+  }
+
+  public void mouseEntered(MouseEvent e) {
+  }
+
+  public void mouseExited(MouseEvent e) {
+  }
+
+
+  // inner classes
+
+  public static class SCEListCellRenderer extends DefaultListCellRenderer {
     public static final Color BACKGROUND = new Color(219, 224, 253);
 
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
