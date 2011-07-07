@@ -8,8 +8,10 @@ New Features and other Changes in JLatexEditor
 
 == Coming in Version 0.2.2 ==
 
-*
-
+* minor enhancements:
+  - the code helper popups now allow for the use of the mouse
+* bug fixes:
+  - "Replace All" button is no longer disabled if no occurrence is selected
 
 == Version 0.2.1 ==
 
