@@ -9,6 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.List;
 
 /**
@@ -17,7 +19,7 @@ import java.util.List;
  * @author Jörg Endrullis
  * @author Stefan Endrullis
  */
-public class SCEPopup extends JScrollPane implements KeyListener {
+public class SCEPopup extends JScrollPane implements KeyListener, MouseListener {
   // the source code pane
   SCEPane pane = null;
   SCEDocument document = null;
@@ -52,6 +54,12 @@ public class SCEPopup extends JScrollPane implements KeyListener {
     list.setForeground(Color.BLACK);
     list.setSelectionBackground(new Color(0, 82, 164));
     list.setSelectionForeground(Color.WHITE);
+
+    // put us first in the listner list
+    MouseListener[] listeners = list.getMouseListeners();
+    for(MouseListener listener : listeners) list.removeMouseListener(listener);
+    list.addMouseListener(this);
+    for(MouseListener listener : listeners) list.addMouseListener(listener);
 
     // add the component to the viewport
     JViewport viewPort = new JViewport();
@@ -203,19 +211,23 @@ public class SCEPopup extends JScrollPane implements KeyListener {
 
     // enter
     if ((e.getKeyCode() == KeyEvent.VK_ENTER || (e.getKeyCode() == KeyEvent.VK_SPACE) && !e.isControlDown())) {
-      if (model.size() == 0) return;
-
-      setVisible(false);
-
-      // pass the selected item to the item handler
-      Object item = list.getSelectedValue();
-      itemHandler.perform(item);
+      doIt();
       e.consume();
     }
 
     if (!e.isConsumed()) {
       setVisible(false);
     }
+  }
+
+  private void doIt() {
+    if (model.size() == 0) return;
+
+    setVisible(false);
+
+    // pass the selected item to the item handler
+    Object item = list.getSelectedValue();
+    itemHandler.perform(item);
   }
 
   private void select(int index) {
@@ -229,6 +241,29 @@ public class SCEPopup extends JScrollPane implements KeyListener {
   }
 
   public void keyReleased(KeyEvent e) {
+  }
+
+  /**
+   * MouseListener.
+   */
+  private int selectedIndex = -1;
+  public void mouseClicked(MouseEvent e) {
+    if(selectedIndex == list.getSelectedIndex() || e.getClickCount() >= 2) {
+      doIt();
+    }
+  }
+
+  public void mousePressed(MouseEvent e) {
+    selectedIndex = list.getSelectedIndex();
+  }
+
+  public void mouseReleased(MouseEvent e) {
+  }
+
+  public void mouseEntered(MouseEvent e) {
+  }
+
+  public void mouseExited(MouseEvent e) {
   }
 
 
