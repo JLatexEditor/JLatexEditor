@@ -20,7 +20,7 @@ public class AboutDialog extends JFrame {
     super(I18n.getString("about_dialog.title"));
     setUndecorated(true);
 
-    StringBuffer sb = new StringBuffer();
+	  StringBuilder sb = new StringBuilder();
     sb.append(System.getProperty("java.vm.name")).append("<br>");
     sb.append(System.getProperty("java.vendor")).append("<br>");
     sb.append(System.getProperty("java.home"));

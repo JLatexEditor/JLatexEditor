@@ -284,7 +284,7 @@ public class ExtractCommand extends AddOn {
 		}
 
 		public String toInputRegEx() {
-			return escapeRegEx(value);
+			return escapeRegEx(value).replaceAll("\\s+", "\\\\s+");
 		}
 	}
 
@@ -306,9 +306,9 @@ public class ExtractCommand extends AddOn {
 		public String toInputRegEx() {
 			if (firstOcc) {
 				if (restrictLength) {
-					return "(.{1-" + RESTRICTED_ARG_LENGTH + "})";
+					return "(.{1-" + RESTRICTED_ARG_LENGTH + "}?)";
 				} else {
-					return "(.*)";
+					return "(.*?)";
 				}
 			} else {
 				return "\\" + regExGroup;
