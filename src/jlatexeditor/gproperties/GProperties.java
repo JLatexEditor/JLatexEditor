@@ -114,7 +114,7 @@ public class GProperties {
     properties.addEntry(new Def(EDITOR_FONT_NAME, new PSet(MONOSPACE_FONTS_ARRAY), "Monospaced"));
     properties.addEntry(new Def(EDITOR_FONT_SIZE, INT_GT_0, "13"));
     properties.addEntry(new Def(EDITOR_FONT_ANTIALIASING, new PSet(TEXT_ANTIALIAS_KEYS), "On"));
-    properties.addEntry(new Def("editor.columns_per_row", INT_GT_0, "80"));
+    properties.addEntry(new Def("editor.columns_per_row", INT_GT_0, "0"));
 	  properties.addEntry(new Comment(" Automatic completion"));
 	  properties.addEntry(new Def("editor.auto_completion.activated", BOOLEAN, "false"));
 	  properties.addEntry(new Def("editor.auto_completion.min_number_of_letters", INT_GT_0, "3"));

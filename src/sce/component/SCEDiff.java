@@ -450,12 +450,12 @@ public class SCEDiff extends JPanel implements ComponentListener {
       int lineHeight = left.getLineHeight();
       int halfLines = visibleHeight / 2 / lineHeight;
 
-      int lineOffset = Math.min(halfLines, line2Pane.length);
-      while (lineOffset < line2Pane.length && line2Pane[lineOffset] < halfLines && line2Diff[lineOffset] < halfLines) lineOffset++;
+      int lineOffset = Math.min(halfLines, line2Pane.length-1);
+      while (lineOffset < line2Pane.length-1 && line2Pane[lineOffset] < halfLines && line2Diff[lineOffset] < halfLines) lineOffset++;
       int yCorrection = lineHeight * (int) Math.max(line2Pane[lineOffset], line2Diff[lineOffset]);
 
       y = y - lineOffset * lineHeight;
-      int line = Math.max(0, -y / lineHeight);
+      int line = Math.min(Math.max(0, -y / lineHeight), line2Pane.length-2);
       double lineFraction = (-y - line * lineHeight) / (double) lineHeight;
 
       double paneLine = (1 - lineFraction) * line2Pane[line] + lineFraction * line2Pane[line + 1];
@@ -464,8 +464,9 @@ public class SCEDiff extends JPanel implements ComponentListener {
       leftViewport.setViewPosition(new Point(-rx, (int) (paneLine * lineHeight) - yCorrection));
       rightViewport.setViewPosition(new Point(-rx, (int) (diffLine * lineHeight) - yCorrection));
 
-      left.setSize(leftViewport.getWidth() - rx, left.getHeight());
-      right.setSize(rightViewport.getWidth() - rx, right.getHeight());
+      int viewWidth = Math.max(leftViewport.getWidth() - rx, rightViewport.getWidth() - rx);
+      left.setSize(viewWidth, left.getHeight());
+      right.setSize(viewWidth, right.getHeight());
 
       repaint();
     }
