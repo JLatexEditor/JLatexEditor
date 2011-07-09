@@ -858,4 +858,8 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   public void setColumnsPerRow(int columnsPerRow) {
     this.columnsPerRow = columnsPerRow;
 	}
+
+	public void dispose() {
+		ui.uninstallUI(this);
+	}
 }

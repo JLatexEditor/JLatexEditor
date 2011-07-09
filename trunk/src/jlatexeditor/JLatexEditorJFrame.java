@@ -30,6 +30,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.plaf.PanelUI;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.awt.event.*;
@@ -47,8 +48,6 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
   public static final File FILE_LAST_SESSION = new File(System.getProperty("user.home") + "/.jlatexeditor/last.session");
   public static final File FILE_RECENT = new File(System.getProperty("user.home") + "/.jlatexeditor/recent");
   public static final File CHANGELOG = new File("CHANGELOG");
-
-  private static final String RECEIVER_PANE_UI = "PaneUI <= ";
 
 	/** Logger. */
 	private static Logger logger = Logger.getLogger(JLatexEditorJFrame.class.getName());
@@ -312,18 +311,18 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
     helpMenu.add(createMenuItem("Acknowledgements", "acknowledgements", 'K'));
 
     // misc keyboard actions
-    createShortcut(this, RECEIVER_PANE_UI, "jump left", true);
-    createShortcut(this, RECEIVER_PANE_UI, "jump right", true);
-    createShortcut(this, RECEIVER_PANE_UI, "jump to front", true);
-    createShortcut(this, RECEIVER_PANE_UI, "jump to end", true);
-    createShortcut(this, RECEIVER_PANE_UI, "move view up", true);
-    createShortcut(this, RECEIVER_PANE_UI, "move view down", true);
-    createShortcut(this, RECEIVER_PANE_UI, "remove line", false);
-    createShortcut(this, RECEIVER_PANE_UI, "remove line before caret", false);
-    createShortcut(this, RECEIVER_PANE_UI, "remove line behind caret", false);
-    createShortcut(this, RECEIVER_PANE_UI, "remove word before caret", false);
-    createShortcut(this, RECEIVER_PANE_UI, "remove word behind caret", false);
-    createShortcut(this, RECEIVER_PANE_UI, "complete", false);
+    createPaneShortcut(SCEPaneUI.Actions.JUMP_LEFT, true);
+    createPaneShortcut(SCEPaneUI.Actions.JUMP_RIGHT, true);
+    createPaneShortcut(SCEPaneUI.Actions.JUMP_TO_FRONT, true);
+    createPaneShortcut(SCEPaneUI.Actions.JUMP_TO_END, true);
+    createPaneShortcut(SCEPaneUI.Actions.MOVE_VIEW_UP, true);
+    createPaneShortcut(SCEPaneUI.Actions.MOVE_VIEW_DOWN, true);
+    createPaneShortcut(SCEPaneUI.Actions.REMOVE_LINE, false);
+    createPaneShortcut(SCEPaneUI.Actions.REMOVE_LINE_BEFORE_CARET, false);
+    createPaneShortcut(SCEPaneUI.Actions.REMOVE_LINE_BEHIND_CARET, false);
+    createPaneShortcut(SCEPaneUI.Actions.REMOVE_WORD_BEFORE_CARET, false);
+    createPaneShortcut(SCEPaneUI.Actions.REMOVE_WORD_BEHIND_CARET, false);
+    createPaneShortcut(SCEPaneUI.Actions.COMPLETE, false);
 
     // prevent that TabbledPane consumes the "control UP"
     Object ancestorMap = UIManager.get("TabbedPane.ancestorInputMap");
@@ -518,33 +517,22 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
   /**
    * Creates a keyboard shortcut without a menu item.
    *
-   * @param listener action listener to be informed about keystrokes
-   * @param receiver receiver
    * @param command action command
    * @param withAndWithoutShift register the shortcut also in combination with shift?
    */
-  private void createShortcut(final ActionListener listener, final String receiver, final String command, final boolean withAndWithoutShift) {
+  private void createPaneShortcut(final String command, final boolean withAndWithoutShift) {
 	  // register a property change listener to update the shortcut in the menu if it has been changed in global.properties
 	  PropertyChangeListener propertyChangeListener = new PropertyChangeListener() {
-		  private ArrayList<KeyStroke> oldKeyStrokes = new ArrayList<KeyStroke>();
-
 		  public void propertyChange(PropertyChangeEvent evt) {
-			  // unregister old keystrokes
-			  for (KeyStroke oldKeyStroke : oldKeyStrokes) {
-				  menuBar.unregisterKeyboardAction(oldKeyStroke);
-			  }
-
 			  // register new keystroke
 			  String shortcutString = GProperties.getString("shortcut." + command);
 			  if (shortcutString != null && !shortcutString.equals("")) {
 			    KeyStroke keyStroke = KeyStroke.getKeyStroke(shortcutString);
-			    menuBar.registerKeyboardAction(listener, receiver + command, keyStroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
-				  oldKeyStrokes.add(keyStroke);
+			    SCEPaneUI.replaceKeyStrokeAndAction(keyStroke, command);
 
 			    if(withAndWithoutShift) {
 			      keyStroke = KeyStroke.getKeyStroke("shift " + shortcutString);
-			      menuBar.registerKeyboardAction(listener, receiver + command, keyStroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
-				    oldKeyStrokes.add(keyStroke);
+			      SCEPaneUI.replaceKeyStrokeAndAction(keyStroke, command + " shift");
 			    }
 			  }
 		  }
@@ -947,6 +935,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
       tabbedPane.removeTabAt(tab);
     }
     editor.getTextPane().setText("");
+	  editor.dispose();
   }
 
 	public boolean isOpen(File file) {
@@ -969,7 +958,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
     if(OSUtil.getOS() == OSUtil.OS_MAC) {
       try {
         MacUtil.activateApplication();
-      } catch(Throwable e) {}
+      } catch(Throwable ignored) {}
     }
 
 	  // bringing window to the front
@@ -983,15 +972,6 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 
   public void actionPerformed(ActionEvent e) {
     String action = e.getActionCommand();
-
-    // forward to paneUI ?
-    if (action.startsWith(RECEIVER_PANE_UI)) {
-      SourceCodeEditor editor = getActiveEditor();
-      editor.getTextPane().getPaneUI().handleCommand(
-              action.substring(RECEIVER_PANE_UI.length()),
-              (e.getModifiers() & ActionEvent.SHIFT_MASK) != 0);
-      return;
-    }
 
 		// timer
 		if (action.equals("timer")) {
