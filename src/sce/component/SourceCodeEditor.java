@@ -299,4 +299,8 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
 		search.openSearch(lastSearch);
 		validate();
 	}
+
+	public void dispose() {
+		textPane.dispose();
+	}
 }

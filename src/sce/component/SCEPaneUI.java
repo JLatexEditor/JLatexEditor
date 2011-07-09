@@ -5,12 +5,20 @@ import sce.codehelper.CodeHelperPane;
 import sce.codehelper.LineBreakListener;
 import sce.quickhelp.QuickHelp;
 import sce.quickhelp.QuickHelpPane;
+import sun.swing.DefaultLookup;
+import sun.swing.UIAction;
 
+import javax.swing.*;
+import javax.swing.plaf.ComponentUI;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.*;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * SourceCodeEditor UI.
@@ -18,8 +26,8 @@ import java.awt.event.*;
  * @author Jörg Endrullis
  * @author Stefan Endrullis
  */
-public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListener {
-  // properties
+public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener, MouseMotionListener {
+	// properties
   private SCEPane pane = null;
   private SCEDocument document = null;
   private SCECaret caret = null;
@@ -60,6 +68,8 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
     // MouseListener
     pane.addMouseListener(this);
     pane.addMouseMotionListener(this);
+
+	  installUI(pane);
   }
 
   /**
@@ -376,70 +386,209 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
   public void keyReleased(KeyEvent e) {
   }
 
-  public void handleCommand(String command, boolean isShiftDown) {
-    SCEDocumentRows rowsModel = document.getRowsModel();
+// UI Installation/De-installation
 
-    // caret movement
-    boolean viewUp = command.equals("move view up");
-    boolean viewDown = command.equals("move view down");
-    if (viewUp || viewDown) {
-      int jump = viewUp ? -1 : 1;
-      Rectangle visibleRect = scrollVisibleRect(jump);
+	public void installUI(JComponent c) {
+		this.pane = (SCEPane) c;
 
-      int minRow = visibleRect.y / pane.getLineHeight();
-      int maxRow = (visibleRect.y + visibleRect.height) / pane.getLineHeight();
+		installInputMap(pane);
+		installKeyboardActions();
+	}
 
-      if (caret.getRow() < minRow + 2) caret.move(SCECaret.DIRECTION_DOWN, isShiftDown);
-      if (caret.getRow() > maxRow - 2) caret.move(SCECaret.DIRECTION_UP, isShiftDown);
-    }
+	public void uninstallUI(JComponent c) {
+		uninstallKeyboardActions();
+		uninstallInputMap(pane);
 
-    if (command.equals("jump left")) {
-      caret.moveTo(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), -1), isShiftDown);
-    }
-    if (command.equals("jump right")) {
-      caret.moveTo(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), 1), isShiftDown);
-    }
-    if (command.equals("jump to front")) {
-      caret.moveTo(0, 0, isShiftDown);
-    }
-    if (command.equals("jump to end")) {
-      int row = rowsModel.getRowsCount() - 1;
-      int column = rowsModel.getRowLength(row);
-      caret.moveTo(row, column, isShiftDown);
-    }
+		this.pane = null;
+	}
 
-    if (command.equals("remove line")) { // control+Y
-      if (caret.getRow() < rowsModel.getRowsCount() - 1) {
-        document.remove(caret.getRow(), 0, caret.getRow() + 1, 0);
-      } else if (caret.getRow() > 0) {
-        document.remove(caret.getRow() - 1, rowsModel.getRowLength(caret.getRow() - 1), caret.getRow(), rowsModel.getRowLength(caret.getRow()));
-        caret.moveTo(caret.getRow() - 1, caret.getColumn(), false);
-      } else {
-        document.remove(0, 0, 0, rowsModel.getRowLength(0));
-        caret.moveTo(0, 0, false);
-      }
-    }
+	protected void installKeyboardActions() {
+		//InputMap km = getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+		InputMap km = new ComponentInputMap(pane);
+		km.put(KeyStroke.getKeyStroke("control shift L"), Actions.JUMP_LEFT);
 
-    if (command.equals("remove line before caret")) { // control+U
-      document.remove(caret.getRow(), 0, caret.getRow(), caret.getColumn());
-    }
-    if (command.equals("remove line behind caret")) { // control+K
-      document.remove(caret.getRow(), caret.getColumn(), caret.getRow(), rowsModel.getRowLength(caret.getRow()));
-    }
-    if (command.equals("remove word before caret")) { // control+backspace
-      document.remove(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), -1), caret);
-      clearSelection();
-    }
-    if (command.equals("remove word behind caret")) { // control+delete
-      document.remove(caret, pane.findSplitterPosition(caret.getRow(), caret.getColumn(), 1));
-      clearSelection();
-    }
-    if (command.equals("complete")) { // control+delete
-	    if (codeHelperPane != null) {
-	      codeHelperPane.callCodeHelperWithCompletion();
-	    }
-    }
-  }
+		SwingUtilities.replaceUIInputMap(pane, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, km);
+		km = getInputMap(JComponent.WHEN_FOCUSED);
+		SwingUtilities.replaceUIInputMap(pane, JComponent.WHEN_FOCUSED, km);
+
+		pane.setActionMap(Actions.getActionMap());
+
+		//LazyActionMap.installLazyActionMap(pane, BasicTabbedPaneUI.class, "SCEPane.actionMap");
+		//updateMnemonics();
+	}
+
+	protected InputMap getInputMap(int condition) {
+		if (condition == JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT) {
+			return (InputMap) DefaultLookup.get(pane, this, "SCEPane.ancestorInputMap");
+		}
+		else if (condition == JComponent.WHEN_FOCUSED) {
+			return (InputMap)DefaultLookup.get(pane, this, "SCEPane.focusInputMap");
+		}
+		return null;
+	}
+
+	protected void uninstallKeyboardActions() {
+		SwingUtilities.replaceUIActionMap(pane, null);
+		SwingUtilities.replaceUIInputMap(pane, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, null);
+		SwingUtilities.replaceUIInputMap(pane, JComponent.WHEN_FOCUSED, null);
+		SwingUtilities.replaceUIInputMap(pane, JComponent.WHEN_IN_FOCUSED_WINDOW, null);
+	}
+
+	public static class Actions extends UIAction {
+		public static final String MOVE_VIEW_UP             = "move view up";
+		public static final String MOVE_VIEW_UP_SHIFT       = "move view up shift";
+		public static final String MOVE_VIEW_DOWN           = "move view down";
+		public static final String MOVE_VIEW_DOWN_SHIFT     = "move view down shift";
+		public static final String JUMP_RIGHT               = "jump right";
+		public static final String JUMP_RIGHT_SHIFT         = "jump right shift";
+		public static final String JUMP_LEFT                = "jump left";
+		public static final String JUMP_LEFT_SHIFT          = "jump left shift";
+		public static final String JUMP_TO_FRONT            = "jump to front";
+		public static final String JUMP_TO_FRONT_SHIFT      = "jump to front shift";
+		public static final String JUMP_TO_END              = "jump to end";
+		public static final String JUMP_TO_END_SHIFT        = "jump to end shift";
+		public static final String REMOVE_LINE              = "remove line";
+		public static final String REMOVE_LINE_BEFORE_CARET = "remove line before caret";
+		public static final String REMOVE_LINE_BEHIND_CARET = "remove line behind caret";
+		public static final String REMOVE_WORD_BEFORE_CARET = "remove word before caret";
+		public static final String REMOVE_WORD_BEHIND_CARET = "remove word behind caret";
+		public static final String COMPLETE                 = "complete";
+
+		Actions(String key) {
+			super(key);
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			String key = getName();
+			SCEPane pane = (SCEPane) e.getSource();
+			SCEPaneUI ui = pane.getPaneUI();
+
+			if (ui == null) return;
+
+			if (key.startsWith(MOVE_VIEW_UP)) {
+				ui.moveViewVertically(-1, key.endsWith(" shift"));
+			} else
+			if (key.startsWith(MOVE_VIEW_DOWN)) {
+				ui.moveViewVertically(1, key.endsWith(" shift"));
+			} else
+			if (key.startsWith(JUMP_LEFT)) {
+				ui.jumpSideways(-1, key.endsWith(" shift"));
+			} else
+			if (key.startsWith(JUMP_RIGHT)) {
+				ui.jumpSideways(1, key.endsWith(" shift"));
+			} else
+			if (key.startsWith(JUMP_TO_FRONT)) {
+				ui.jumpToFront(key.endsWith(" shift"));
+			} else
+			if (key.startsWith(JUMP_TO_END)) {
+				ui.jumpToEnd(key.endsWith(" shift"));
+			} else
+			if (key.equals(REMOVE_LINE)) {
+				ui.removeLine();
+			} else
+			if (key.equals(REMOVE_LINE_BEFORE_CARET)) {
+				ui.removeLineBeforeCaret();
+			} else
+			if (key.equals(REMOVE_LINE_BEHIND_CARET)) {
+				ui.removeLineBehindCaret();
+			} else
+			if (key.equals(REMOVE_WORD_BEFORE_CARET)) {
+				ui.removeWordBeforeCaret();
+			} else
+			if (key.equals(REMOVE_WORD_BEHIND_CARET)) {
+				ui.removeWordBehindCaret();
+			} else
+			if (key.equals(COMPLETE)) {
+				ui.complete();
+			}
+		}
+
+		public static ActionMap getActionMap() {
+			ActionMap am = new ActionMap();
+			add(am, MOVE_VIEW_UP, MOVE_VIEW_UP_SHIFT, MOVE_VIEW_DOWN, MOVE_VIEW_DOWN_SHIFT,
+				JUMP_LEFT, JUMP_LEFT_SHIFT, JUMP_RIGHT, JUMP_RIGHT_SHIFT, JUMP_TO_FRONT, JUMP_TO_FRONT_SHIFT, JUMP_TO_END_SHIFT,
+				REMOVE_LINE, REMOVE_LINE_BEFORE_CARET, REMOVE_LINE_BEHIND_CARET, REMOVE_WORD_BEFORE_CARET, REMOVE_WORD_BEHIND_CARET,
+				COMPLETE);
+			return am;
+		}
+
+		public static void add(ActionMap am, String... commands) {
+			for (String command : commands) {
+				am.put(command, new Actions(command));
+			}
+		}
+	}
+
+	public void moveViewVertically(int direction, boolean isShiftDown) {
+		Rectangle visibleRect = scrollVisibleRect(direction);
+
+		int minRow = visibleRect.y / pane.getLineHeight();
+		int maxRow = (visibleRect.y + visibleRect.height) / pane.getLineHeight();
+
+		if (caret.getRow() < minRow + 2) caret.move(SCECaret.DIRECTION_DOWN, isShiftDown);
+		if (caret.getRow() > maxRow - 2) caret.move(SCECaret.DIRECTION_UP, isShiftDown);
+	}
+
+	/**
+	 * Jumps one word to the left or right.
+	 * Use direction -1 for left and 1 for right.
+	 *
+	 * @param direction -1 for left and 1 for right
+	 * @param isShiftDown is shift pressed
+	 */
+	public void jumpSideways(int direction, boolean isShiftDown) {
+		caret.moveTo(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), direction), isShiftDown);
+	}
+
+	public void jumpToFront(boolean isShiftDown) {
+		caret.moveTo(0, 0, isShiftDown);
+	}
+
+	public void jumpToEnd(boolean isShiftDown) {
+		SCEDocumentRows rowsModel = document.getRowsModel();
+
+		int row = rowsModel.getRowsCount() - 1;
+		int column = rowsModel.getRowLength(row);
+		caret.moveTo(row, column, isShiftDown);
+	}
+
+	public void removeLine() {
+		SCEDocumentRows rowsModel = document.getRowsModel();
+
+		if (caret.getRow() < rowsModel.getRowsCount() - 1) {
+		  document.remove(caret.getRow(), 0, caret.getRow() + 1, 0);
+		} else if (caret.getRow() > 0) {
+		  document.remove(caret.getRow() - 1, rowsModel.getRowLength(caret.getRow() - 1), caret.getRow(), rowsModel.getRowLength(caret.getRow()));
+		  caret.moveTo(caret.getRow() - 1, caret.getColumn(), false);
+		} else {
+		  document.remove(0, 0, 0, rowsModel.getRowLength(0));
+		  caret.moveTo(0, 0, false);
+		}
+	}
+
+	public void removeLineBeforeCaret() {
+		document.remove(caret.getRow(), 0, caret.getRow(), caret.getColumn());
+	}
+
+	public void removeLineBehindCaret() {
+		document.remove(caret.getRow(), caret.getColumn(), caret.getRow(), document.getRowsModel().getRowLength(caret.getRow()));
+	}
+
+	public void removeWordBeforeCaret() {
+		document.remove(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), -1), caret);
+		clearSelection();
+	}
+
+	public void removeWordBehindCaret() {
+		document.remove(caret, pane.findSplitterPosition(caret.getRow(), caret.getColumn(), 1));
+		clearSelection();
+	}
+
+	public void complete() {
+		if (codeHelperPane != null) {
+		  codeHelperPane.callCodeHelperWithCompletion();
+		}
+	}
 
   // MouseListener methods
 
@@ -532,5 +681,60 @@ public class SCEPaneUI implements KeyListener, MouseListener, MouseMotionListene
 
 	public CodeHelperPane getCodeHelperPane() {
 		return codeHelperPane;
+	}
+
+
+	private static final ArrayList<WeakReference<SCEPane>> allPanes = new ArrayList<WeakReference<SCEPane>>();
+	private static final HashMap<KeyStroke, String> keyStrokeMap = new HashMap<KeyStroke, String>();
+	private static final HashMap<String, KeyStroke> actionMap = new HashMap<String, KeyStroke>();
+
+	private static void installInputMap(SCEPane pane) {
+		allPanes.add(new WeakReference<SCEPane>(pane));
+
+		for (Map.Entry<KeyStroke, String> keyStrokeStringEntry : keyStrokeMap.entrySet()) {
+			pane.getInputMap().put(keyStrokeStringEntry.getKey(), keyStrokeStringEntry.getValue());
+		}
+	}
+
+	private static void uninstallInputMap(SCEPane pane) {
+		allPanes.remove(new WeakReference<SCEPane>(pane));
+
+		for (KeyStroke keyStroke : keyStrokeMap.keySet()) {
+			pane.getInputMap().remove(keyStroke);
+		}
+	}
+
+	public static void replaceKeyStrokeAndAction(KeyStroke keyStroke, String action) {
+		// remove action
+		if (actionMap.containsKey(action)) {
+			removeKeyStroke(actionMap.get(action));
+		}
+		// remove keystroke
+		if (keyStrokeMap.containsKey(keyStroke)) {
+			removeKeyStroke(keyStroke);
+		}
+		// add keystroke
+		addKeyStroke(keyStroke, action);
+	}
+
+	public static void addKeyStroke(KeyStroke keyStroke, String action) {
+		// overwrite keystroke
+		for (WeakReference<SCEPane> paneRef : allPanes) {
+			SCEPane pane = paneRef.get();
+			pane.getInputMap().put(keyStroke, action);
+		}
+		keyStrokeMap.put(keyStroke, action);
+		actionMap.put(action, keyStroke);
+	}
+
+	public static void removeKeyStroke(KeyStroke keyStroke) {
+		if (keyStrokeMap.containsKey(keyStroke)) {
+			for (WeakReference<SCEPane> paneRef : allPanes) {
+				SCEPane pane = paneRef.get();
+				pane.getInputMap().remove(keyStroke);
+			}
+		}
+		actionMap.remove(keyStrokeMap.get(keyStroke));
+		keyStrokeMap.remove(keyStroke);
 	}
 }
