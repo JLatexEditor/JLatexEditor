@@ -18,7 +18,7 @@ import java.util.List;
  * @author Stefan Endrullis
  */
 public class SpellCheckSuggester implements CodeAssistant, SCEPopup.ItemHandler {
-  public static final PatternPair wordPattern = new PatternPair("([a-zA-ZäöüÄÖÜß]*)", "([a-zA-ZäöüÄÖÜß]*)");
+  public static final PatternPair wordPattern = new PatternPair("(\\p{L}*)", "(\\p{L}*)");
 
   static final Action addToDictionary = new Action("<add to dictionary>");
   static final Action removeFromDictionary = new Action("<remove from dictionary>");
