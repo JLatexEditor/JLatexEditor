@@ -44,7 +44,7 @@ public class ExtractCommand extends AddOn {
 				"Template name:", commandNameTextField,
 				"\nDefine your template (use #1-#9 for parameters):\n", templateSce
 			};
-			int resp = JOptionPane.showConfirmDialog(null, message, "Declare command", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+			int resp = JOptionPane.showConfirmDialog(jle, message, "Declare command", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
 			if (resp != JOptionPane.OK_OPTION) {
 				return;
@@ -132,7 +132,7 @@ public class ExtractCommand extends AddOn {
 			}
 
 			Object[] message = {"Choose a file in which the command shall be declared:\n", comboBox};
-			int resp = JOptionPane.showConfirmDialog(null, message, "Declare command", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+			int resp = JOptionPane.showConfirmDialog(jle, message, "Declare command", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
 			if (resp == JOptionPane.OK_OPTION) {
 				return files2lastCommand.get(comboBox.getSelectedItem().toString());
