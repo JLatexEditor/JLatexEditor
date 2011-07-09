@@ -1323,8 +1323,13 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
   }
 
   private void svnList(String message, StringBuilder builder, ArrayList<SVN.UpdateResult> results, int[] types) {
+	  int count = 0;
     boolean first = true;
     for (SVN.UpdateResult result : results) {
+	    if (count >= 30) {
+		    builder.append("<li>...</li>");
+		    break;
+	    }
       for (int type : types) {
         if (result.getType() == type) {
           if (first) {
@@ -1335,6 +1340,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
           builder.append("<li>" + result.getFile().getName() + "</li>");
         }
       }
+	    count++;
     }
     if (!first) builder.append("</ul>");
   }
@@ -1514,6 +1520,8 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 	      getActiveEditor().getFocusedPane().requestFocus();
 
         setExtendedState(getExtendedState() | GProperties.getInt("main_window.maximized_state"));
+	      // TODO
+	      //textToolsSplit.setDividerLocation((int) (GProperties.getDouble("main_window.tools_location") * getHeight()));
       }
     });
   }
@@ -1547,6 +1555,8 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
       try {
 	      // save windows position and state
 	      GProperties.setMainWindowBounds(mainWindow.getBounds(), mainWindow.getExtendedState() & JFrame.MAXIMIZED_BOTH);
+	      // TODO
+	      //GProperties.set("main_window.tools_location", "" + ((double ) textToolsSplit.getDividerLocation() / getHeight()));
 	      GProperties.save();
 
 	      // save last session
