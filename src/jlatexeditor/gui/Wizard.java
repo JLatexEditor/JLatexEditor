@@ -2,6 +2,7 @@ package jlatexeditor.gui;
 
 import de.endrullis.utils.BetterProperties2;
 import jlatexeditor.gproperties.GProperties;
+import util.OSUtil;
 import util.StreamUtils;
 
 import javax.swing.*;
@@ -14,10 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Wizard extends JDialog implements WindowListener {
-  private static final int OS_LINUX = 0;
-  private static final int OS_MAC = 1;
-  private static final int OS_WINDOWS = 2;
-
   public static final ProgramWithParameters[] VIEWERS = new ProgramWithParameters[] {
           new ProgramWithParameters("kdvi", "kdvi", "--unique \"file:%file.dvi#src:%line&nbsp;%texfile\""),
           new ProgramWithParameters("okular", "okular", "--unique \"file:%file.pdf#src:%line&nbsp;%texfile\""),
@@ -26,16 +23,6 @@ public class Wizard extends JDialog implements WindowListener {
           new ProgramWithParameters("SumatraPDF", "SumatraPDF.exe", "TODO"),
   };
 
-  private static int OS = OS_LINUX;
-  static {
-    String osName= System.getProperty("os.name");
-    if(osName != null && osName.toLowerCase().indexOf("mac") >= 0) {
-      OS = OS_MAC;
-    }
-    if(osName != null && osName.toLowerCase().indexOf("windows") >= 0) {
-      OS = OS_WINDOWS;
-    }
-  }
 
   private String message =
           "<font size=+2><bf>Welcome to JLatexEditor!</bf></font><br><br> " +
@@ -51,15 +38,15 @@ public class Wizard extends JDialog implements WindowListener {
     toolLocations.put("ps2pdf" , new ArrayList<File>());
     toolLocations.put("bibtex" , new ArrayList<File>());
 
-    if(OS == OS_LINUX) {
+    if(OSUtil.getOS() == OSUtil.OS_LINUX) {
       toolLocations.put("xdvi" , new ArrayList<File>());
       toolLocations.put("kdvi" , new ArrayList<File>());
       toolLocations.put("okular" , new ArrayList<File>());
     } else
-    if(OS == OS_MAC) {
+    if(OSUtil.getOS() == OSUtil.OS_MAC) {
       toolLocations.put("Skim.app/Contents/SharedSupport/displayline" , new ArrayList<File>());
     } else
-    if(OS == OS_WINDOWS) {
+    if(OSUtil.getOS() == OSUtil.OS_WINDOWS) {
       toolLocations.put("SumatraPDF" , new ArrayList<File>());
     }
   }}
@@ -173,15 +160,15 @@ public class Wizard extends JDialog implements WindowListener {
     main.add(new ProgramPanel("BibTex", "compiler.bibtex.executable", bibtex,
             "The program 'bibtex' is required for managing references."), gbc);
 
-    if(OS == OS_LINUX) {
+    if(OSUtil.getOS() == OSUtil.OS_LINUX) {
       toolLocations.put("xdvi" , new ArrayList<File>());
       toolLocations.put("kdvi" , new ArrayList<File>());
       toolLocations.put("okular" , new ArrayList<File>());
     } else
-    if(OS == OS_MAC) {
+    if(OSUtil.getOS() == OSUtil.OS_MAC) {
       toolLocations.put("Skim" , new ArrayList<File>());
     } else
-    if(OS == OS_WINDOWS) {
+    if(OSUtil.getOS() == OSUtil.OS_WINDOWS) {
       toolLocations.put("SumatraPDF" , new ArrayList<File>());
     }
 
@@ -215,8 +202,8 @@ public class Wizard extends JDialog implements WindowListener {
 
     // guessing suitable properties file
     if(!GProperties.hasChanges()) {
-      if(OS == OS_MAC) keyStrokesList.setSelectedIndex(1);
-      if(OS == OS_WINDOWS) keyStrokesList.setSelectedIndex(3);
+      if(OSUtil.getOS() == OSUtil.OS_MAC) keyStrokesList.setSelectedIndex(1);
+      if(OSUtil.getOS() == OSUtil.OS_WINDOWS) keyStrokesList.setSelectedIndex(3);
     }
 
     // search for tools
@@ -241,7 +228,7 @@ public class Wizard extends JDialog implements WindowListener {
 
     public ProgramPanel(String title, String gproperty, JComboBox fileBox, String message, boolean layout) {
       this.programName = title.toLowerCase();
-      if(OS == OS_WINDOWS) programName = programName + ".exe";
+      if(OSUtil.getOS() == OSUtil.OS_WINDOWS) programName = programName + ".exe";
       this.gproperty = gproperty;
       this.fileBox = fileBox;
 
@@ -255,7 +242,7 @@ public class Wizard extends JDialog implements WindowListener {
       fileBox.setModel(model);
 
       String file = GProperties.getString(gproperty);
-      if(OS == OS_WINDOWS && !file.toLowerCase().endsWith(".exe")) {
+      if(OSUtil.getOS() == OSUtil.OS_WINDOWS && !file.toLowerCase().endsWith(".exe")) {
         file = file + ".exe";
         GProperties.set(gproperty, file);
       }

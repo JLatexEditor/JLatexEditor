@@ -583,7 +583,7 @@ public class SCEDiff extends JPanel implements ComponentListener {
     }
 
     public Dimension getPreferredSize() {
-      return new Dimension(1800, 19);
+      return new Dimension(2600, 19);
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
