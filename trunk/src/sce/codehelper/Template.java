@@ -113,9 +113,7 @@ public class Template {
 	  template.codeHelperPane.setVisible(false);
 
 	  // start editing with argument number 0
-	  template.editTemplate(0);
-
-		return template;
+	  return template.editTemplate(0) ? template : null;
 	}
 
 	private void setup(SCEPane pane) {
