@@ -159,7 +159,9 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     FontMetrics fm = g2D.getFontMetrics(fontText);
     lineHeight = fm.getAscent() + fm.getDescent() + fm.getLeading();
     lineAscent = fm.getAscent();
-    characterWidth = fm.charWidth(' ');
+    characterWidth = fm.charWidth('W');
+
+	  updateComponentSize();
   }
 
 
@@ -779,18 +781,9 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     SCEDocumentPosition end = event.getRangeEnd();
 
     // update the component size
-    if (getParent() != null) {
-      SCEDocumentRow[] rows = document.getRowsModel().getRows();
-      Dimension dimension = new Dimension();
-      for (SCEDocumentRow row : rows) {
-        dimension.width = Math.max(row.length * characterWidth + lineNumberSpacer + 30, dimension.width);
-      }
-      dimension.height = rows.length * lineHeight + 30;
-      preferredSize = dimension;
-      getParent().doLayout();
-    }
+	  updateComponentSize();
 
-    // update the caret position
+	  // update the caret position
     if (event.isInsert() && !freezeCaret) {
       caret.moveTo(end.getRow(), end.getColumn(), false);
 	    // TODO: repaint here is new. hopefully correct
@@ -803,7 +796,20 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     }
   }
 
-  // sce.component.SCECaretListener methods
+	private void updateComponentSize() {
+		if (getParent() != null) {
+		  SCEDocumentRow[] rows = document.getRowsModel().getRows();
+		  Dimension dimension = new Dimension();
+		  for (SCEDocumentRow row : rows) {
+		    dimension.width = Math.max(row.length * characterWidth + lineNumberSpacer + 30, dimension.width);
+		  }
+		  dimension.height = rows.length * lineHeight + 30;
+		  preferredSize = dimension;
+		  getParent().doLayout();
+		}
+	}
+
+	// sce.component.SCECaretListener methods
 
   public void caretMoved(int row, int column, int lastRow, int lastColumn) {
     if (row != lastRow || document.hasSelection()) {
