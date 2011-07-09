@@ -965,7 +965,17 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 	}
 
 	public void bringToFront() {
-		toFront();
+    // for Mac OS X: bring application to front
+    if(OSUtil.getOS() == OSUtil.OS_MAC) {
+      try {
+        MacUtil.activateApplication();
+      } catch(Throwable e) {}
+    }
+
+	  // bringing window to the front
+    toFront();
+
+    requestFocus();
 		getActiveEditor().getFocusedPane().requestFocus();
 	}
 
