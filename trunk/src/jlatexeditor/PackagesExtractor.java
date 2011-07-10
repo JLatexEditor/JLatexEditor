@@ -103,7 +103,7 @@ public class PackagesExtractor {
 		}
 	}
 
-	public static class Package {
+	public static class Package implements Comparable<Package> {
 		private String name;
 		private String title;
 		private String description;
@@ -145,9 +145,14 @@ public class PackagesExtractor {
 		public String getDebPackage() {
 			return debPackage;
 		}
+
+		@Override
+		public int compareTo(Package that) {
+			return this.name.compareTo(that.name);
+		}
 	}
 
-	public static class Command {
+	public static class Command implements Comparable<Command> {
 		private String name;
 		private int argCount;
 		private String optionalArg;
@@ -188,6 +193,11 @@ public class PackagesExtractor {
 
 		public Package getPack() {
 			return pack;
+		}
+
+		@Override
+		public int compareTo(Command that) {
+			return this.name.compareTo(that.name);
 		}
 	}
 }

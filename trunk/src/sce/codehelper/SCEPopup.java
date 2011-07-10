@@ -88,6 +88,7 @@ public class SCEPopup extends JScrollPane implements KeyListener, MouseListener 
    * Opens the popup at the current caret position.
    *
    * @param newContent new content of the popup
+   * @param itemHandler object handling the selected item
    */
   public void openPopup(List<?> newContent, ItemHandler itemHandler) {
     openPopup(pane.getCaret(), newContent, itemHandler);
@@ -150,7 +151,7 @@ public class SCEPopup extends JScrollPane implements KeyListener, MouseListener 
   public Dimension getPreferredSize() {
     Dimension dimension = list.getPreferredSize();
 
-    dimension.width = Math.min(480, dimension.width + 30);
+    dimension.width = Math.min(640, dimension.width + 30);
     dimension.height = Math.min(320, dimension.height + 5);
 
     return dimension;
