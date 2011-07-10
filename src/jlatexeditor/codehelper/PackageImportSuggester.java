@@ -5,13 +5,10 @@ import sce.codehelper.CodeAssistant;
 import sce.codehelper.PatternPair;
 import sce.codehelper.SCEPopup;
 import sce.codehelper.WordWithPos;
-import sce.component.SCEDocument;
 import sce.component.SCEPane;
-import sce.component.SCESearch;
 import sce.component.SourceCodeEditor;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -45,28 +42,38 @@ public class PackageImportSuggester implements CodeAssistant, SCEPopup.ItemHandl
 
 		HashSet<PackagesExtractor.Command> commands = PackagesExtractor.getPackageParser().getCommands().get(commandName);
 
-		ArrayList<String> packages = new ArrayList<String>();
+		// build up lists of imported and importable packages providing the command
+		ArrayList<String> importablePackages = new ArrayList<String>();
+		ArrayList<String> importedPackages = new ArrayList<String>();
 		for (PackagesExtractor.Command command : commands) {
 			String packageName = command.getPack().getName();
-			if (!packages.contains(packageName)) {
-				packages.add(packageName);
+			if (!importedPackages.contains(packageName) && !importablePackages.contains(packageName)) {
+				if (SCEManager.getBackgroundParser().getPackages().contains(packageName)) {
+					importedPackages.add(packageName);
+				} else {
+					importablePackages.add(packageName);
+				}
 			}
 		}
-		Collections.sort(packages);
+		Collections.sort(importedPackages);
+		Collections.sort(importablePackages);
 
-		ArrayList<PackageImport> packageImports = new ArrayList<PackageImport>();
-		for (String pack : packages) {
-			packageImports.add(new PackageImport(pack));
+		ArrayList<Object> importPackages = new ArrayList<Object>();
+		for (String pack : importedPackages) {
+			importPackages.add("<html><body bgcolor='#404040'><font color='#808080'>package</font> <font color='#ffffff'>" + pack + "</font> <font color='#808080'>already imported</font></s>");
+		}
+		for (String pack : importablePackages) {
+			importPackages.add(new ImportPackage(pack));
 		}
 
-		pane.getPopup().openPopup(packageImports, this);
+		pane.getPopup().openPopup(importPackages, this);
 		return true;
 	}
 
 	public void perform(Object item) {
-	  if (item instanceof PackageImport) {
-		  PackageImport packageImport = (PackageImport) item;
-		  importPackage(packageImport.name);
+	  if (item instanceof ImportPackage) {
+		  ImportPackage importPackage = (ImportPackage) item;
+		  importPackage(importPackage.name);
 	  }
 	}
 
@@ -112,10 +119,10 @@ public class PackageImportSuggester implements CodeAssistant, SCEPopup.ItemHandl
 
 // inner classes
 
-	private class PackageImport {
+	private class ImportPackage {
 	  String name;
 
-	  PackageImport(String name) {
+	  ImportPackage(String name) {
 	    this.name = name;
 	  }
 
