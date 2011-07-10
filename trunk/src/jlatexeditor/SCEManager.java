@@ -120,6 +120,7 @@ public class SCEManager {
 	  CombinedCodeAssistant codeAssistant = new CombinedCodeAssistant();
     try {
 	    codeAssistant.addAssistant(new FileCreationSuggester());
+      codeAssistant.addAssistant(new PackageImportSuggester(instance));
       codeAssistant.addAssistant(new SpellCheckSuggester(createSpellChecker()));
     } catch (Exception ignored) {
     }
