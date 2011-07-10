@@ -5,7 +5,6 @@ import utils.ic.InputStream._
 import java.io._
 import collection.mutable._
 import org.apache.commons.lang.StringEscapeUtils
-import javax.management.remote.rmi._RMIConnection_Stub
 
 /**
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
