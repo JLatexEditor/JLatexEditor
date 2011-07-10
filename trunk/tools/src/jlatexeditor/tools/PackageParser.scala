@@ -79,7 +79,8 @@ object PackageParser {
 			val requiresPackagesString = if(pack.requiresPackages.isEmpty) "" else " requiresPackages=\"" + pack.requiresPackages.mkString(",") + "\"";
 			val ctanPackString = pack.ctanPackInfo.map( pack => " title=\"" + escape(pack.title) + "\" description=\"" + escape(pack.desc) + "\"").getOrElse("")
 			val debPackageString = pack.debPackage.map( pack => " debPackage=\"" + pack.name + "\"").getOrElse("")
-			out.println("  <package name=\"" + pack.name + "\"" + optionsPackString + requiresPackagesString + ctanPackString + debPackageString + ">")
+			val usageCountString = pack.usageCount.map( count => " usageCount=\"" + count + "\"").getOrElse("")
+			out.println("  <package name=\"" + pack.name + "\"" + optionsPackString + requiresPackagesString + ctanPackString + debPackageString + usageCountString + ">")
 			for (command <- pack.commands.values) {
 				val optArgString = if (command.optionalArgs.isEmpty) "" else " optionalArg=\"" + escape(command.optionalArgs(0)) + "\""
 				out.println("    <command name=\"" + command.name + "\" argCount=\"" + command.argCount + "\"" + optArgString + " />")
@@ -196,6 +197,7 @@ object PackageParser {
 			case e: FileNotFoundException => None
 		}
 		val ctanPackInfo = ctanPackInfos.get(name.toLowerCase)
+		val usageCount = PackageUsageCounter.packages2usageCount.get(name)
 	}
 	class CtanPackInfo(val title: String, val desc: String)
 	class DebPackage(val name: String, val files: MutableList[String])
