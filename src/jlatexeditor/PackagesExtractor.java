@@ -92,7 +92,7 @@ public class PackagesExtractor {
 				commands.add(name, command);
 			} else
 			if (localName.equals("package")) {
-				pack = new Package(attrList.getValue("name"), attrList.getValue("options"), attrList.getValue("requiresPackages"), attrList.getValue("title"), attrList.getValue("description"), attrList.getValue("debPackage"));
+				pack = new Package(attrList.getValue("name"), attrList.getValue("options"), attrList.getValue("requiresPackages"), attrList.getValue("title"), attrList.getValue("description"), attrList.getValue("debPackage"), attrList.getValue("usageCount"));
 				packages.add(pack.name, pack);
 			}
 		}
@@ -133,8 +133,9 @@ public class PackagesExtractor {
 		private String title;
 		private String description;
 		private String debPackage;
+		private int usageCount;
 
-		public Package(String name, String optionsList, String requiresPackagesList, String title, String description, String debPackage) {
+		public Package(String name, String optionsList, String requiresPackagesList, String title, String description, String debPackage, String usageCount) {
 			this.name = name;
 			if (optionsList != null) {
 				options = optionsList.split(",");
@@ -145,6 +146,9 @@ public class PackagesExtractor {
 			this.title = title;
 			this.description = description;
 			this.debPackage = debPackage;
+			if (usageCount != null) {
+				this.usageCount = Integer.parseInt(usageCount);
+			}
 		}
 
 		@Override
@@ -184,6 +188,20 @@ public class PackagesExtractor {
 			return requiresPackages;
 		}
 
+		public HashSet<Package> getRequiredPackagesRecursively() {
+			return addRequiredPackagesRecursively(new HashSet<Package>());
+		}
+
+		public HashSet<Package> addRequiredPackagesRecursively(HashSet<Package> reqPackages) {
+			if (!reqPackages.contains(this)) {
+				reqPackages.add(this);
+				for (Package reqPackage : getRequiresPackages()) {
+					reqPackage.addRequiredPackagesRecursively(reqPackages);
+				}
+			}
+			return reqPackages;
+		}
+
 		public ArrayList<Package> getDependantPackages() {
 			return dependantPackages;
 		}
@@ -212,6 +230,10 @@ public class PackagesExtractor {
 
 		public String getDebPackage() {
 			return debPackage;
+		}
+
+		public int getUsageCount() {
+			return usageCount;
 		}
 
 		@Override
