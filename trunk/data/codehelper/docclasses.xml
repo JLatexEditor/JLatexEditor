@@ -1,5 +1,5 @@
 <packages>
-  <package name="jss" requiresPackages="color,graphicx,a4wide,hyperref,ae,fancyvrb">
+  <package name="jss">
     <command name="fileversion" argCount="0" />
     <command name="filename" argCount="0" />
     <command name="filedate" argCount="0" />
@@ -60,12 +60,12 @@
     <environment name="Schunk" argCount="0" />
     <environment name="CodeChunk" argCount="0" />
   </package>
-  <package name="beamer" requiresPackages="beamerbasercs,beamerbasemisc,pgfcore,beamerbasetitle,beamerbaseframesize,beamerbaseoverlay,beamerbaseframecomponents,beamerbasemodes,beamerbasenavigation,beamerbasethemes,beamerbaseoptions,beamerbasetemplates,beamerbasetwoscreens,beamerbasecompatibility,xxcolor,beamerbasefont,beamerbasecolor,beamerbasesection,beamerbasenotes,beamerbaselocalstructure,amssymb,beamerbaseframe,pgfbaseimage,beamerbasetoc,beamerbaseverbatim,beamerbasetheorems" debPackage="latex-beamer">
+  <package name="beamer" debPackage="latex-beamer">
     <command name="insertpagenumber" argCount="0" />
     <command name="familydefault" argCount="0" />
     <command name="mathfamilydefault" argCount="0" />
   </package>
-  <package name="prosper" requiresPackages="pstcol" debPackage="prosper">
+  <package name="prosper" debPackage="prosper">
     <command name="PDFCroppingBox" argCount="1" />
     <command name="Dissolve" argCount="0" />
     <command name="Replace" argCount="0" />
@@ -117,7 +117,7 @@
     <environment name="itemstep" argCount="1" optionalArg="1" />
     <environment name="Overlays" argCount="0" />
   </package>
-  <package name="privat" requiresPackages="german,ifthen">
+  <package name="privat">
     <command name="closing" argCount="1" />
     <command name="showrefbox" argCount="0" />
     <command name="refbox" argCount="1" />
@@ -127,7 +127,7 @@
     <command name="refboxtext" argCount="0" />
     <command name="datebox" argCount="0" />
   </package>
-  <package name="minijour" requiresPackages="german,ifthen,calc">
+  <package name="minijour">
     <command name="ausgabename" argCount="0" />
     <command name="maintitle" argCount="1" />
     <command name="subtitle" argCount="1" />
@@ -138,9 +138,9 @@
     <command name="mjbcom" argCount="0" />
     <command name="mjecom" argCount="0" />
   </package>
-  <package name="faltblat" requiresPackages="german">
+  <package name="faltblat">
   </package>
-  <package name="buch" options="bel,elegant,tech,modern,celg" requiresPackages="makeidx,german,ifthen,calc">
+  <package name="buch">
     <command name="filename" argCount="0" />
     <command name="subtitle" argCount="1" />
     <command name="dateofbook" argCount="1" />
@@ -151,20 +151,20 @@
     <command name="editorname" argCount="0" />
     <command name="preface" argCount="2" optionalArg="\prefacename" />
   </package>
-  <package name="ppex" requiresPackages="pspicture">
+  <package name="ppex">
     <command name="gobblepreamble" argCount="2" />
     <command name="ResetPreambleCommands" argCount="0" />
   </package>
-  <package name="ttctexareport" requiresPackages="times">
+  <package name="ttctexareport">
   </package>
-  <package name="ttctexa" requiresPackages="times">
+  <package name="ttctexa">
   </package>
-  <package name="ttctexamargin" requiresPackages="color,times">
+  <package name="ttctexamargin">
   </package>
-  <package name="faq" requiresPackages="multicol,faq">
+  <package name="faq">
     <command name="addvspace" argCount="1" />
   </package>
-  <package name="scrguide" requiresPackages="makeidx,multicol,graphicx,amsmath,booktabs,scrdate,afterpage,textcomp,scrtime,listings,longtable" debPackage="texlive-latex-recommended">
+  <package name="scrguide" debPackage="texlive-latex-recommended">
     <command name="languages" argCount="0" />
     <command name="maketitle" argCount="0" />
     <command name="do" argCount="1" />
@@ -194,7 +194,7 @@
     <environment name="desctabular" argCount="1" optionalArg="2em" />
     <environment name="desctable" argCount="1" optionalArg="2em" />
   </package>
-  <package name="sciposter" requiresPackages="color,lettrine,boxedminipage,times,graphics,shadow,ifthen,a0size" title="sciposter" description="Make posters of ISO A3 size and larger." debPackage="texlive-science">
+  <package name="sciposter" title="sciposter" description="Make posters of ISO A3 size and larger." debPackage="texlive-science">
     <command name="papertype" argCount="0" />
     <command name="requestpointsize" argCount="0" />
     <command name="fontpointsize" argCount="0" />
@@ -253,7 +253,7 @@
     <command name="PARstart" argCount="2" />
     <environment name="algorithm" argCount="1" optionalArg="h" />
   </package>
-  <package name="hepthesis" requiresPackages="comment,rotating,verbatim,setspace,fancyhdr,amsmath,array,chngpage,booktabs,draftcopy" title="hepthesis" description="A class for academic reports, especially PhD theses." debPackage="texlive-science">
+  <package name="hepthesis" title="hepthesis" description="A class for academic reports, especially PhD theses." debPackage="texlive-science">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="cleardoublepage" argCount="0" />
@@ -283,7 +283,7 @@
     <environment name="thesismainmatter" argCount="0" />
     <environment name="thesisbackmatter" argCount="0" />
   </package>
-  <package name="uiucthesis" requiresPackages="setspace" debPackage="texlive-publishers">
+  <package name="uiucthesis" debPackage="texlive-publishers">
     <command name="filedate" argCount="0" />
     <command name="makeindex" argCount="0" />
     <command name="draftheader" argCount="0" />
@@ -330,7 +330,7 @@
     <environment name="abstract" argCount="0" />
     <environment name="dedication" argCount="0" />
   </package>
-  <package name="nddiss2e" requiresPackages="rotating,float,hypernat,xspace,ifpdf,lscape,enumerate,amsmath,indentfirst,booktabs,url,amssymb,ifthen,exscale,tabularx,latexsym,longtable" debPackage="texlive-publishers">
+  <package name="nddiss2e" debPackage="texlive-publishers">
     <command name="normalspacing" argCount="0" />
     <command name="single" argCount="0" />
     <command name="double" argCount="0" />
@@ -357,9 +357,9 @@
     <environment name="acknowledge" argCount="0" />
     <environment name="symbols" argCount="1" optionalArg="rl" />
   </package>
-  <package name="image-gallery" requiresPackages="keyval,graphicx,url" debPackage="texlive-latex-extra">
+  <package name="image-gallery" debPackage="texlive-latex-extra">
   </package>
-  <package name="assignment" requiresPackages="ifthen" title="assignment" description="A class file for typesetting homework and lab assignments" debPackage="texlive-latex-extra">
+  <package name="assignment" title="assignment" description="A class file for typesetting homework and lab assignments" debPackage="texlive-latex-extra">
     <command name="solutionstext" argCount="0" />
     <command name="coursetitle" argCount="1" />
     <command name="courselabel" argCount="1" />
@@ -383,7 +383,7 @@
     <command name="firstauthor" argCount="1" />
     <command name="floatpagefraction" argCount="0" />
   </package>
-  <package name="talk" requiresPackages="amsmath,graphicx,hyperref,multido,pgf" debPackage="texlive-latex-extra">
+  <package name="talk" debPackage="texlive-latex-extra">
     <command name="title" argCount="0" />
     <command name="author" argCount="0" />
     <command name="pres" argCount="0" />
@@ -422,7 +422,7 @@
     <command name="KeyWordName" argCount="0" />
     <command name="KeyWords" argCount="1" />
   </package>
-  <package name="revtex4" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" debPackage="texlive-publishers">
+  <package name="revtex4" debPackage="texlive-publishers">
     <command name="ProvidesPackage" argCount="2" />
     <command name="tracingplain" argCount="0" />
     <command name="traceoutput" argCount="0" />
@@ -595,7 +595,7 @@
     <environment name="quasitable" argCount="0" />
     <environment name="mathletters" argCount="0" />
   </package>
-  <package name="dtk" requiresPackages="color,ngerman,multicol,makeidx,graphicx,eurosans,dtklogos" debPackage="texlive-latex-extra">
+  <package name="dtk" debPackage="texlive-latex-extra">
     <command name="filename" argCount="0" />
     <command name="RequirePackage" argCount="1" />
     <command name="InputIfFileExists" argCount="3" />
@@ -698,7 +698,7 @@
     <command name="makeafterword" argCount="0" />
     <command name="makeabstract" argCount="0" />
   </package>
-  <package name="apa" requiresPackages="ftnright,times,endnotes,longtable" title="apa" description="American Psychological Association format." debPackage="texlive-publishers">
+  <package name="apa" title="apa" description="American Psychological Association format." debPackage="texlive-publishers">
     <command name="rheadname" argCount="0" />
     <command name="acksname" argCount="0" />
     <command name="figurecaptionsname" argCount="0" />
@@ -825,7 +825,7 @@
     <command name="headinglevels" argCount="1" />
     <command name="bibliographystyle" argCount="1" />
   </package>
-  <package name="ucdavisthesis" requiresPackages="ifthen" debPackage="texlive-publishers">
+  <package name="ucdavisthesis" debPackage="texlive-publishers">
     <command name="titlesize" argCount="1" />
     <command name="authordegrees" argCount="1" />
     <command name="committee" argCount="3" />
@@ -1160,7 +1160,7 @@
     <environment name="deluxetable" argCount="1" />
     <environment name="plate" argCount="0" />
   </package>
-  <package name="vxulicentiate" options="twocolumn,oneside,11pt,12pt,a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape,notitlepage,titlepage" requiresPackages="geometry,ifpdf,fancyhdr" debPackage="texlive-publishers">
+  <package name="vxulicentiate" debPackage="texlive-publishers">
     <command name="information" argCount="0" />
     <command name="ISSN" argCount="0" />
     <command name="ISRN" argCount="2" />
@@ -1238,7 +1238,7 @@
     <environment name="quotation" argCount="0" />
     <environment name="quote" argCount="0" />
   </package>
-  <package name="stage" requiresPackages="fancyhdr,extramarks,ifthen" debPackage="texlive-humanities">
+  <package name="stage" debPackage="texlive-humanities">
     <command name="doublespace" argCount="0" />
     <command name="introduce" argCount="1" />
     <command name="address" argCount="1" />
@@ -1261,7 +1261,7 @@
     <environment name="changemargin" argCount="2" />
     <environment name="castpage" argCount="0" />
   </package>
-  <package name="exam" requiresPackages="ifthen" debPackage="texlive-latex-extra">
+  <package name="exam" debPackage="texlive-latex-extra">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="addpoints" argCount="0" />
@@ -1670,7 +1670,7 @@
     <environment name="table" argCount="0" />
     <environment name="newlfm" argCount="0" />
   </package>
-  <package name="csbulletin" requiresPackages="ifpdf,mflogo,lmodern,csbulacronym" title="csbulletin" description="LaTeX class for articles submitted to the CSTUG Bulletin" debPackage="texlive-lang-czechslovak">
+  <package name="csbulletin" title="csbulletin" description="LaTeX class for articles submitted to the CSTUG Bulletin" debPackage="texlive-lang-czechslovak">
     <command name="macdef" argCount="0" />
     <command name="looser" argCount="0" />
     <command name="denser" argCount="0" />
@@ -1714,9 +1714,9 @@
     <command name="PridejDeleni" argCount="1" />
     <environment name="summary" argCount="0" />
   </package>
-  <package name="ltxdockit" requiresPackages="keyval,multicol,etoolbox,hyperref,textcomp,ltxdockit" debPackage="texlive-latex-extra">
+  <package name="ltxdockit" debPackage="texlive-latex-extra">
   </package>
-  <package name="cd-cover" requiresPackages="rotating" debPackage="texlive-latex-extra">
+  <package name="cd-cover" debPackage="texlive-latex-extra">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <environment name="bookletsheets" argCount="0" />
@@ -1726,7 +1726,7 @@
   </package>
   <package name="lettcdpadi" debPackage="texlive-latex-extra">
   </package>
-  <package name="letteracdp" options="executivepaper,legalpaper,letterpaper,b5paper,a5paper,a4paper,landscape" debPackage="texlive-latex-extra">
+  <package name="letteracdp" debPackage="texlive-latex-extra">
     <command name="do" argCount="1" />
     <command name="andcc" argCount="0" />
     <command name="date" argCount="1" />
@@ -1761,12 +1761,12 @@
     <command name="thesenderaddress" argCount="0" />
     <command name="thesubject" argCount="0" />
   </package>
-  <package name="timesht" requiresPackages="calendar" debPackage="texlive-latex-extra">
+  <package name="timesht" debPackage="texlive-latex-extra">
     <command name="maketimes" argCount="2" />
     <command name="timesheets" argCount="2" />
     <environment name="timesheet" argCount="0" />
   </package>
-  <package name="spie" requiresPackages="ifthen" title="spie" description="Support for formatting SPIE Proceedings manuscripts." debPackage="texlive-publishers">
+  <package name="spie" title="spie" description="Support for formatting SPIE Proceedings manuscripts." debPackage="texlive-publishers">
     <command name="skiplinehalf" argCount="0" />
     <command name="skipline" argCount="0" />
     <command name="exspace" argCount="0" />
@@ -1901,7 +1901,7 @@
     <environment name="acknowledgements" argCount="0" />
     <environment name="frontmatter" argCount="0" />
   </package>
-  <package name="cc" requiresPackages="cclayout,multicol,ccalgo,ccaux,ccproof,babel,cccite,cc2cite,ccthm" debPackage="texlive-science">
+  <package name="cc" debPackage="texlive-science">
     <command name="cc" argCount="0" />
     <command name="numberwithin" argCount="2" />
     <command name="square" argCount="0" />
@@ -2029,7 +2029,7 @@
     <command name="nobalance" argCount="0" />
     <environment name="notation" argCount="1" />
   </package>
-  <package name="mentis" requiresPackages="geometry,xspace,makeidx,multicol,lgreek,scrpage2,picinpar,relsize,ragged2e,babel,jurabib,textcomp" title="mentis" description="A basis for books to be published by Mentis publishers." debPackage="texlive-publishers">
+  <package name="mentis" title="mentis" description="A basis for books to be published by Mentis publishers." debPackage="texlive-publishers">
     <command name="Dll" argCount="0" />
     <command name="Drr" argCount="0" />
     <command name="Dl" argCount="0" />
@@ -2066,7 +2066,7 @@
     <environment name="footquote" argCount="0" />
     <environment name="tolerant" argCount="1" optionalArg="4900" />
   </package>
-  <package name="acmtrans2e" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" requiresPackages="latexsym" debPackage="texlive-publishers">
+  <package name="acmtrans2e" debPackage="texlive-publishers">
     <command name="pages" argCount="0" />
     <command name="mypage" argCount="0" />
     <command name="pdfinfo" argCount="2" />
@@ -2205,7 +2205,7 @@
     <environment name="verseplay" argCount="1" optionalArg="8em" />
     <environment name="play" argCount="0" />
   </package>
-  <package name="jhep" options="a4paper,letterpaper,legalpaper,executivepaper" title="jhep" description="Class for JHEP." debPackage="texlive-publishers">
+  <package name="jhep" title="jhep" description="Class for JHEP." debPackage="texlive-publishers">
     <command name="logo" argCount="0" />
     <command name="JHEP" argCount="1" />
     <command name="href" argCount="2" />
@@ -2408,7 +2408,7 @@
     <command name="vita" argCount="1" />
     <command name="makelabel" argCount="1" />
   </package>
-  <package name="gaceta" options="openbib" requiresPackages="geometry,graphicx,url" title="gaceta" description="A class to typeset La Gaceta de la RSME." debPackage="texlive-publishers">
+  <package name="gaceta" title="gaceta" description="A class to typeset La Gaceta de la RSME." debPackage="texlive-publishers">
     <command name="thejourname" argCount="0" />
     <command name="theyearofpublication" argCount="0" />
     <command name="thevolume" argCount="0" />
@@ -2482,9 +2482,9 @@
     <environment name="olimpicproblem" argCount="1" />
     <environment name="thebibliography" argCount="1" />
   </package>
-  <package name="omdoc" requiresPackages="omdoc" debPackage="texlive-math-extra">
+  <package name="omdoc" debPackage="texlive-math-extra">
   </package>
-  <package name="cnx" options="letterpaper,a4paper" requiresPackages="keyval,graphicx" debPackage="texlive-math-extra">
+  <package name="cnx" debPackage="texlive-math-extra">
     <command name="small" argCount="0" />
     <command name="footnotesize" argCount="0" />
     <command name="scriptsize" argCount="0" />
@@ -2527,7 +2527,7 @@
     <environment name="keywordlist" argCount="0" />
     <environment name="cnxabstract" argCount="0" />
   </package>
-  <package name="tcldoc" requiresPackages="rtkinenc" debPackage="texlive-latex-extra">
+  <package name="tcldoc" debPackage="texlive-latex-extra">
   </package>
   <package name="tclldoc" debPackage="texlive-latex-extra">
   </package>
@@ -2540,7 +2540,7 @@
     <command name="appendix" argCount="0" />
     <command name="backmatter" argCount="0" />
   </package>
-  <package name="coursepaper" requiresPackages="ifthen" debPackage="texlive-latex-extra">
+  <package name="coursepaper" debPackage="texlive-latex-extra">
     <command name="college" argCount="1" />
     <command name="coursename" argCount="1" />
     <command name="coursenumber" argCount="1" />
@@ -2551,7 +2551,7 @@
     <command name="baselinestretch" argCount="0" />
     <command name="epigraph" argCount="2" />
   </package>
-  <package name="kerntest" requiresPackages="color,keyval,helvet,array,calc,ifthen,longtable" debPackage="texlive-latex-extra">
+  <package name="kerntest" debPackage="texlive-latex-extra">
     <command name="krntst" argCount="0" />
     <command name="ProcessOptionsWithKV" argCount="1" />
     <command name="kernsetup" argCount="0" />
@@ -2576,7 +2576,7 @@
     <command name="encodingsetup" argCount="1" />
     <environment name="kerntable" argCount="0" />
   </package>
-  <package name="paper" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" debPackage="texlive-latex-extra">
+  <package name="paper" debPackage="texlive-latex-extra">
     <command name="filename" argCount="0" />
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
@@ -2702,7 +2702,7 @@
     <command name="appendixname" argCount="0" />
     <command name="contentsname" argCount="0" />
   </package>
-  <package name="disser" requiresPackages="ifpdf,exscale" title="disser" description="Class and templates for typesetting dissertations in Russian." debPackage="texlive-lang-cyrillic">
+  <package name="disser" title="disser" description="Class and templates for typesetting dissertations in Russian." debPackage="texlive-lang-cyrillic">
     <command name="j" argCount="0" />
     <command name="singlespacing" argCount="0" />
     <command name="onehalfspacing" argCount="0" />
@@ -2787,10 +2787,10 @@
     <environment name="thebibliography" argCount="1" />
     <environment name="theindex" argCount="0" />
   </package>
-  <package name="cours" requiresPackages="mafr" debPackage="texlive-lang-french">
+  <package name="cours" debPackage="texlive-lang-french">
     <command name="chapitre" argCount="2" />
   </package>
-  <package name="fiche" requiresPackages="mafr" debPackage="texlive-lang-french">
+  <package name="fiche" debPackage="texlive-lang-french">
     <command name="entete" argCount="3" />
     <command name="sque" argCount="0" />
     <command name="squ" argCount="0" />
@@ -2839,9 +2839,9 @@
     <command name="repl" argCount="1" />
     <command name="paren" argCount="1" />
   </package>
-  <package name="uebungsblatt" requiresPackages="uebungsblatt,akkgerman,ifthen" debPackage="texlive-latex-extra">
+  <package name="uebungsblatt" debPackage="texlive-latex-extra">
   </package>
-  <package name="mtn" requiresPackages="fancyheadings,mapleenv" debPackage="texlive-latex-extra">
+  <package name="mtn" debPackage="texlive-latex-extra">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="title" argCount="1" />
@@ -2852,7 +2852,7 @@
     <command name="and" argCount="0" />
     <command name="HEADING" argCount="3" />
   </package>
-  <package name="lps" requiresPackages="geometry,mathptmx,lastpage,titletoc" title="lps" description="Class for &quot;Logic and Philosophy of Science&quot;." debPackage="texlive-publishers">
+  <package name="lps" title="lps" description="Class for &quot;Logic and Philosophy of Science&quot;." debPackage="texlive-publishers">
     <command name="the" argCount="0" />
     <command name="Title" argCount="1" />
     <command name="Author" argCount="1" />
@@ -2866,7 +2866,7 @@
     <command name="Keywords" argCount="1" />
     <command name="ps" argCount="0" />
   </package>
-  <package name="sageep" requiresPackages="caption,indentfirst" title="sageep" description="Format papers for the annual meeting of EEGS." debPackage="texlive-publishers">
+  <package name="sageep" title="sageep" description="Format papers for the annual meeting of EEGS." debPackage="texlive-publishers">
     <command name="maketitle" argCount="0" />
   </package>
   <package name="amsart" debPackage="texlive-latex-base">
@@ -3017,7 +3017,7 @@
     <environment name="proof" argCount="1" optionalArg="\proofname" />
     <environment name="pf" argCount="0" />
   </package>
-  <package name="amsdtx" requiresPackages="doc" debPackage="texlive-latex-base">
+  <package name="amsdtx" debPackage="texlive-latex-base">
     <command name="urlsetup" argCount="0" />
     <command name="urlbreak" argCount="1" />
     <command name="urlfix" argCount="1" />
@@ -3408,7 +3408,7 @@
     <environment name="dialogue" argCount="2" />
     <environment name="titleover" argCount="1" />
   </package>
-  <package name="muthesis" requiresPackages="setspace" title="muthesis" description="Classes for University of Manchester Dept of Computer Science." debPackage="texlive-publishers">
+  <package name="muthesis" title="muthesis" description="Classes for University of Manchester Dept of Computer Science." debPackage="texlive-publishers">
     <command name="degreetitle" argCount="0" />
     <command name="comment" argCount="1" />
     <command name="dept" argCount="1" />
@@ -3514,7 +3514,7 @@
     <command name="VeryHuge" argCount="0" />
     <command name="VERYHuge" argCount="0" />
   </package>
-  <package name="york-thesis" requiresPackages="makeidx,calc,ifthen" debPackage="texlive-publishers">
+  <package name="york-thesis" debPackage="texlive-publishers">
     <command name="spacing" argCount="1" />
     <command name="resetfootnote" argCount="0" />
     <command name="baselinestretch" argCount="0" />
@@ -3548,7 +3548,7 @@
     <environment name="fquotation" argCount="0" />
     <environment name="fverse" argCount="0" />
   </package>
-  <package name="refrep" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,smallborder,landscape,square" debPackage="texlive-latex-extra">
+  <package name="refrep" debPackage="texlive-latex-extra">
     <command name="ref" argCount="0" />
     <command name="settextfraction" argCount="1" />
     <command name="chaptermark" argCount="1" />
@@ -3612,7 +3612,7 @@
     <environment name="maxipage" argCount="0" />
     <environment name="fullpage" argCount="0" />
   </package>
-  <package name="refart" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,smallborder,landscape,square" debPackage="texlive-latex-extra">
+  <package name="refart" debPackage="texlive-latex-extra">
     <command name="ref" argCount="0" />
     <command name="settextfraction" argCount="1" />
     <command name="sectionmark" argCount="1" />
@@ -3680,7 +3680,7 @@
     <environment name="Rabstract" argCount="0" />
     <environment name="Eabstract" argCount="0" />
   </package>
-  <package name="ncc" options="a4paper,a5paper,a5a4paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" requiresPackages="ncctitlepage,makeidx,ncclatex,nccbiblist,dcounter,nccold,nccheadings,afterpackage,watermark,topsection,tocenter" debPackage="texlive-latex-extra">
+  <package name="ncc" debPackage="texlive-latex-extra">
     <command name="AuthorBeforeTitle" argCount="0" />
     <command name="TitleBeforeAuthor" argCount="0" />
     <command name="theyear" argCount="0" />
@@ -3726,7 +3726,7 @@
     <environment name="theindex" argCount="0" />
     <environment name="theglossary" argCount="0" />
   </package>
-  <package name="leaflet" requiresPackages="everyshi,etex,graphicx,calc" debPackage="texlive-latex-extra">
+  <package name="leaflet" debPackage="texlive-latex-extra">
     <command name="LL" argCount="0" />
     <command name="immediate" argCount="0" />
     <command name="shipout" argCount="0" />
@@ -3739,7 +3739,7 @@
     <command name="AddToBackground" argCount="0" />
     <command name="LenToUnit" argCount="1" />
   </package>
-  <package name="courseoutline" requiresPackages="ifthen" debPackage="texlive-latex-extra">
+  <package name="courseoutline" debPackage="texlive-latex-extra">
     <command name="university" argCount="1" />
     <command name="department" argCount="1" />
     <command name="coursename" argCount="1" />
@@ -3770,7 +3770,7 @@
     <environment name="tutorials" argCount="1" optionalArg="Tutorials" />
     <environment name="administrivia" argCount="1" optionalArg="Miscellaneous" />
   </package>
-  <package name="umthesis" requiresPackages="hyperref" debPackage="texlive-publishers">
+  <package name="umthesis" debPackage="texlive-publishers">
     <command name="filename" argCount="0" />
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
@@ -3815,7 +3815,7 @@
     <environment name="preface" argCount="0" />
     <environment name="abstract" argCount="0" />
   </package>
-  <package name="rtklage" requiresPackages="alphanum,color,xspace,twoopt,eso-pic,graphicx,scrdate,calc,ifthen" debPackage="texlive-humanities">
+  <package name="rtklage" debPackage="texlive-humanities">
     <command name="rtbgtext" argCount="1" />
     <command name="stggsger" argCount="2" />
     <environment name="antraege" argCount="0" />
@@ -4119,7 +4119,7 @@
     <environment name="quote" argCount="0" />
     <environment name="addmargin" argCount="0" />
   </package>
-  <package name="afthesis" requiresPackages="ulem" title="afthesis" description="Air Force Institute of Technology thesis class." debPackage="texlive-publishers">
+  <package name="afthesis" title="afthesis" description="Air Force Institute of Technology thesis class." debPackage="texlive-publishers">
     <command name="numberbychapter" argCount="0" />
     <command name="thefigure" argCount="0" />
     <command name="thetable" argCount="0" />
@@ -4184,7 +4184,7 @@
     <environment name="preface" argCount="0" />
     <environment name="vita" argCount="0" />
   </package>
-  <package name="thuthesis" requiresPackages="CJKspace,hypernat,ifpdf,xunicode,breakurl,ccmap,CJKutf8,graphicx,amsmath,indentfirst,hyperref,array,txfonts,booktabs,ifxetex,CJKnumb,calc,xltxtra,amssymb,ifthen,longtable" debPackage="texlive-publishers">
+  <package name="thuthesis" debPackage="texlive-publishers">
     <command name="thuthesis" argCount="0" />
     <command name="version" argCount="0" />
     <command name="RequirePDFTeX" argCount="0" />
@@ -4234,7 +4234,7 @@
     <environment name="ack" argCount="0" />
     <environment name="resume" argCount="0" />
   </package>
-  <package name="gmdocc" requiresPackages="gmeometric,gmdoc,amssymb,xkeyval" debPackage="texlive-latex-extra">
+  <package name="gmdocc" debPackage="texlive-latex-extra">
     <command name="mpttversion" argCount="0" />
     <command name="agrave" argCount="0" />
     <command name="cacute" argCount="0" />
@@ -4268,7 +4268,7 @@
     <command name="colsperpage" argCount="0" />
     <command name="card" argCount="2" />
   </package>
-  <package name="philosophersimprint" requiresPackages="color,ifpdf,fancyhdr,graphicx,courier,textcomp,mathpazo" title="philosophersimprint" description="Typesetting articles for &quot;Philosophers' Imprint&quot;." debPackage="texlive-publishers">
+  <package name="philosophersimprint" title="philosophersimprint" description="Typesetting articles for &quot;Philosophers' Imprint&quot;." debPackage="texlive-publishers">
     <command name="HUGE" argCount="0" />
     <command name="and" argCount="0" />
     <command name="thanks" argCount="1" />
@@ -4277,7 +4277,7 @@
     <command name="today" argCount="0" />
     <command name="maketitle" argCount="0" />
   </package>
-  <package name="IMTEKda" requiresPackages="calc" title="imtekda" description="IMTEK thesis class." debPackage="texlive-publishers">
+  <package name="IMTEKda" title="imtekda" description="IMTEK thesis class." debPackage="texlive-publishers">
     <command name="nomname" argCount="0" />
     <command name="figurename" argCount="0" />
     <command name="titlepic" argCount="1" />
@@ -4295,7 +4295,7 @@
     <environment name="abstract" argCount="0" />
     <environment name="nomenclature" argCount="0" />
   </package>
-  <package name="pracjourn" requiresPackages="color,switcheml,graphicx,hyperref,lmodern,textcomp" title="pracjourn" description="Typeset articles for PracTeX." debPackage="texlive-publishers">
+  <package name="pracjourn" title="pracjourn" description="Typeset articles for PracTeX." debPackage="texlive-publishers">
     <command name="ExecuteOptions" argCount="1" />
     <command name="addinfo" argCount="2" />
     <command name="new" argCount="0" />
@@ -4318,13 +4318,13 @@
     <command name="PS" argCount="0" />
     <command name="TPJ" argCount="0" />
   </package>
-  <package name="tufte-handout" requiresPackages="tufte-common" debPackage="texlive-pictures">
+  <package name="tufte-handout" debPackage="texlive-pictures">
   </package>
-  <package name="tufte-book" requiresPackages="tufte-common" debPackage="texlive-pictures">
+  <package name="tufte-book" debPackage="texlive-pictures">
   </package>
-  <package name="upmethodology-document" requiresPackages="fancyhdr,upmethodology-document,upmethodology-frontpage,a4wide" debPackage="texlive-latex-extra">
+  <package name="upmethodology-document" debPackage="texlive-latex-extra">
   </package>
-  <package name="extbook" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" requiresPackages="exscale" debPackage="texlive-latex-recommended">
+  <package name="extbook" debPackage="texlive-latex-recommended">
     <command name="chaptermark" argCount="1" />
     <command name="sectionmark" argCount="1" />
     <command name="maketitle" argCount="0" />
@@ -4375,7 +4375,7 @@
     <environment name="thebibliography" argCount="1" />
     <environment name="theindex" argCount="0" />
   </package>
-  <package name="extarticle" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" requiresPackages="exscale" debPackage="texlive-latex-recommended">
+  <package name="extarticle" debPackage="texlive-latex-recommended">
     <command name="sectionmark" argCount="1" />
     <command name="subsectionmark" argCount="1" />
     <command name="maketitle" argCount="0" />
@@ -4423,12 +4423,12 @@
     <environment name="thebibliography" argCount="1" />
     <environment name="theindex" argCount="0" />
   </package>
-  <package name="extproc" options="a5paper,b5paper" debPackage="texlive-latex-recommended">
+  <package name="extproc" debPackage="texlive-latex-recommended">
     <command name="maketitle" argCount="0" />
     <command name="copyrightspace" argCount="0" />
     <command name="pagename" argCount="0" />
   </package>
-  <package name="extreport" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" requiresPackages="exscale" debPackage="texlive-latex-recommended">
+  <package name="extreport" debPackage="texlive-latex-recommended">
     <command name="chaptermark" argCount="1" />
     <command name="sectionmark" argCount="1" />
     <command name="maketitle" argCount="0" />
@@ -4478,7 +4478,7 @@
     <environment name="thebibliography" argCount="1" />
     <environment name="theindex" argCount="0" />
   </package>
-  <package name="extletter" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" requiresPackages="exscale" debPackage="texlive-latex-recommended">
+  <package name="extletter" debPackage="texlive-latex-recommended">
     <command name="fromname" argCount="0" />
     <command name="fromsig" argCount="0" />
     <command name="fromaddress" argCount="0" />
@@ -4501,7 +4501,7 @@
     <environment name="quotation" argCount="0" />
     <environment name="quote" argCount="0" />
   </package>
-  <package name="ebsthesis" requiresPackages="comment,remreset" title="ebsthesis" description="Typesetting theses for economics" debPackage="texlive-publishers">
+  <package name="ebsthesis" title="ebsthesis" description="Typesetting theses for economics" debPackage="texlive-publishers">
     <command name="abkuerzungsverzeichnisname" argCount="0" />
     <command name="appendicesname" argCount="0" />
     <command name="geleitwortname" argCount="0" />
@@ -4569,7 +4569,7 @@
     <command name="remarkname" argCount="0" />
     <command name="casename" argCount="0" />
   </package>
-  <package name="petiteannonce" requiresPackages="keyval,graphicx" debPackage="texlive-latex-extra">
+  <package name="petiteannonce" debPackage="texlive-latex-extra">
     <command name="petiteannonce" argCount="3" />
     <command name="petiteannoncewidth" argCount="1" />
   </package>
@@ -4601,7 +4601,7 @@
     <environment name="dedication" argCount="0" />
     <environment name="acknowledgements" argCount="0" />
   </package>
-  <package name="juraurtl" requiresPackages="fancyhdr,jurabase" debPackage="texlive-humanities">
+  <package name="juraurtl" debPackage="texlive-humanities">
     <command name="rjust" argCount="1" />
     <command name="gegen" argCount="0" />
     <command name="bl" argCount="1" />
@@ -4625,7 +4625,7 @@
     <environment name="wortlaut" argCount="0" />
     <environment name="antraege" argCount="0" />
   </package>
-  <package name="juraovw" requiresPackages="jurabase,pifont,array,fancybox" debPackage="texlive-humanities">
+  <package name="juraovw" debPackage="texlive-humanities">
     <command name="biggerparskip" argCount="0" />
     <command name="resetparskip" argCount="0" />
     <command name="settheme" argCount="2" />
@@ -4651,7 +4651,7 @@
     <environment name="triangles" argCount="0" />
     <environment name="aufzaehlung" argCount="0" />
   </package>
-  <package name="jurabook" requiresPackages="remreset,fancyhdr,multicol" debPackage="texlive-humanities">
+  <package name="jurabook" debPackage="texlive-humanities">
     <command name="jubo" argCount="0" />
     <command name="dumpoptions" argCount="1" optionalArg="0" />
     <command name="jb" argCount="0" />
@@ -4722,7 +4722,7 @@
     <command name="shortpage" argCount="1" optionalArg="1" />
     <environment name="decisionlist" argCount="0" />
   </package>
-  <package name="hcslides" requiresPackages="xspace,multicol,palatino,html,pifont,babel,fancybox,ifthen,fancyref,mathpple,natbib" debPackage="texlive-latex-extra">
+  <package name="hcslides" debPackage="texlive-latex-extra">
     <command name="thisclass" argCount="0" />
     <command name="superclass" argCount="0" />
     <command name="defaulttitle" argCount="0" />
@@ -4827,7 +4827,7 @@
     <environment name="crosslist" argCount="0" />
     <environment name="checklist" argCount="0" />
   </package>
-  <package name="hcart" requiresPackages="xspace,multicol,palatino,html,pifont,typearea,babel,ifthen,fancyref,mathpple,natbib" debPackage="texlive-latex-extra">
+  <package name="hcart" debPackage="texlive-latex-extra">
     <command name="thisclass" argCount="0" />
     <command name="superclass" argCount="0" />
     <command name="defaulttitle" argCount="0" />
@@ -4940,7 +4940,7 @@
     <environment name="artsubtit" argCount="3" />
     <environment name="arttitsub" argCount="3" />
   </package>
-  <package name="hcletter" requiresPackages="xspace,palatino,html,pifont,babel,ifthen,fancyref,mathpple" debPackage="texlive-latex-extra">
+  <package name="hcletter" debPackage="texlive-latex-extra">
     <command name="thisclass" argCount="0" />
     <command name="superclass" argCount="0" />
     <command name="defaulttitle" argCount="0" />
@@ -5017,7 +5017,7 @@
     <environment name="crosslist" argCount="0" />
     <environment name="checklist" argCount="0" />
   </package>
-  <package name="hcreport" options="openany,openright" requiresPackages="xspace,multicol,palatino,html,pifont,typearea,babel,ifthen,fancyref,mathpple,natbib" debPackage="texlive-latex-extra">
+  <package name="hcreport" debPackage="texlive-latex-extra">
     <command name="thisclass" argCount="0" />
     <command name="superclass" argCount="0" />
     <command name="defaulttitle" argCount="0" />
@@ -5129,7 +5129,7 @@
     <environment name="artsubtit" argCount="3" />
     <environment name="arttitsub" argCount="3" />
   </package>
-  <package name="curve" requiresPackages="graphicx,ltxtable,calc,ifthen" title="curve" description="A class for making curriculum vitae." debPackage="texlive-pictures">
+  <package name="curve" title="curve" description="A class for making curriculum vitae." debPackage="texlive-pictures">
     <command name="keyfont" argCount="1" />
     <command name="keyalignment" argCount="1" />
     <command name="prefix" argCount="1" />
@@ -5172,7 +5172,7 @@
     <environment name="rubric" argCount="1" />
     <environment name="thebibliography" argCount="1" />
   </package>
-  <package name="tkz-doc" requiresPackages="makeidx,lscape,multicol,etex,graphicx,eso-pic,amsmath,ragged2e,array,framed,booktabs,tikz,url,calc,textcomp,amssymb,multido,tabularx,tkzexample" title="tkz-doc" description="Documentation macros for the TKZ series of packages." debPackage="texlive-pictures">
+  <package name="tkz-doc" title="tkz-doc" description="Documentation macros for the TKZ series of packages." debPackage="texlive-pictures">
     <command name="SectionFontStyle" argCount="0" />
     <command name="UrlFont" argCount="0" />
     <command name="cmd" argCount="1" />
@@ -5186,7 +5186,7 @@
     <environment name="NewMacroBox" argCount="2" />
     <environment name="NewEnvBox" argCount="1" />
   </package>
-  <package name="protocol" options="a5paper,b5paper,twocolumn,titlepage,nonext" debPackage="texlive-latex-extra">
+  <package name="protocol" debPackage="texlive-latex-extra">
     <command name="groupname" argCount="1" />
     <command name="chair" argCount="1" />
     <command name="writer" argCount="1" />
@@ -5199,7 +5199,7 @@
     <environment name="Persons" argCount="0" />
     <environment name="Absent" argCount="0" />
   </package>
-  <package name="powerdot" requiresPackages="verbatim,powerdot-\pd@@style,graphicx" title="powerdot" description="A presentation class." debPackage="texlive-latex-recommended">
+  <package name="powerdot" title="powerdot" description="A presentation class." debPackage="texlive-latex-recommended">
     <command name="def" argCount="0" />
     <command name="pd" argCount="0" />
     <command name="theslide" argCount="0" />
@@ -5224,7 +5224,7 @@
     <command name="lyxend" argCount="0" />
     <command name="label" argCount="0" />
   </package>
-  <package name="erdc" requiresPackages="color,fancyhdr,graphicx,caption,amsmath,dcolumn,natbib,longtable" title="erdc" description="Style for Reports by US Army Corps of Engineers." debPackage="texlive-publishers">
+  <package name="erdc" title="erdc" description="Style for Reports by US Army Corps of Engineers." debPackage="texlive-publishers">
     <command name="itemize" argCount="0" />
     <command name="makelabel" argCount="1" />
     <command name="enumerate" argCount="0" />
@@ -5259,7 +5259,7 @@
     <command name="listoffiguresandtables" argCount="0" />
     <command name="arraystretch" argCount="0" />
   </package>
-  <package name="macqassign" requiresPackages="fourier,amsthm,multicol,fancyhdr,pstricks,enumerate,amsmath,graphicx,pifont,fancybox,amssymb" title="macqassign" description="Typeset assignments for Macquarie University." debPackage="texlive-publishers">
+  <package name="macqassign" title="macqassign" description="Typeset assignments for Macquarie University." debPackage="texlive-publishers">
     <command name="NumberLastPage" argCount="0" />
     <command name="assignmentnumber" argCount="1" />
     <command name="firstname" argCount="1" />
@@ -5270,11 +5270,11 @@
     <command name="abstractname" argCount="0" />
     <command name="proofname" argCount="0" />
   </package>
-  <package name="cd" requiresPackages="rotating" debPackage="texlive-latex-extra">
+  <package name="cd" debPackage="texlive-latex-extra">
     <command name="CDname" argCount="0" />
     <command name="CDlistname" argCount="0" />
   </package>
-  <package name="euproposal" requiresPackages="keyval,eurosym,lscape,colortbl,graphicx,hyperref,array,xcolor,url,calc,textcomp,amssymb,longtable" title="euproposal" description="A class for preparing FP7 proposals." debPackage="texlive-publishers">
+  <package name="euproposal" title="euproposal" description="A class for preparing FP7 proposals." debPackage="texlive-publishers">
     <command name="thepart" argCount="0" />
     <command name="thechapter" argCount="0" />
     <command name="tableofcontents" argCount="0" />
@@ -5318,7 +5318,7 @@
     <environment name="delivrables" argCount="1" />
     <environment name="partnerdesc" argCount="1" />
   </package>
-  <package name="estcpmm" requiresPackages="fancyhdr,graphicx" title="estcpmm" description="Style for Munitions Management Project Reports." debPackage="texlive-publishers">
+  <package name="estcpmm" title="estcpmm" description="Style for Munitions Management Project Reports." debPackage="texlive-publishers">
     <command name="logo" argCount="2" />
     <command name="subtitle" argCount="1" />
     <command name="projectno" argCount="1" />
@@ -5328,7 +5328,7 @@
     <command name="maketitle" argCount="0" />
     <command name="specialsection" argCount="1" />
   </package>
-  <package name="octavo" options="foolscap,crown,post,largepost,demy,medium,royal,superroyal,imperial" debPackage="texlive-latex-extra">
+  <package name="octavo" debPackage="texlive-latex-extra">
     <command name="chaptermark" argCount="1" />
     <command name="sectionmark" argCount="1" />
     <command name="maketitle" argCount="0" />
@@ -5379,7 +5379,7 @@
     <environment name="thebibliography" argCount="1" />
     <environment name="theindex" argCount="0" />
   </package>
-  <package name="usthesis" requiresPackages="ifpdf,calc" debPackage="texlive-publishers">
+  <package name="usthesis" debPackage="texlive-publishers">
     <command name="USfileversion" argCount="0" />
     <command name="USfiledate" argCount="0" />
     <command name="AorE" argCount="2" />
@@ -5422,9 +5422,9 @@
     <environment name="SetMargins" argCount="2" />
     <environment name="abstract" argCount="1" optionalArg="\languagename" />
   </package>
-  <package name="toptesi" requiresPackages="toptesi" debPackage="texlive-publishers">
+  <package name="toptesi" debPackage="texlive-publishers">
   </package>
-  <package name="isodoc" requiresPackages="ctable,marvosym,fancyhdr,graphicx" debPackage="texlive-latex-extra">
+  <package name="isodoc" debPackage="texlive-latex-extra">
     <command name="Undefined" argCount="1" />
     <command name="fontpackage" argCount="0" />
     <command name="company" argCount="0" />
@@ -5720,14 +5720,14 @@
     <environment name="quasitable" argCount="0" />
     <environment name="mathletters" argCount="0" />
   </package>
-  <package name="nature" requiresPackages="times,cite,ifthen,fullpage" title="nature" description="Prepare papers for the journal Nature." debPackage="texlive-publishers">
+  <package name="nature" title="nature" description="Prepare papers for the journal Nature." debPackage="texlive-publishers">
     <command name="spacing" argCount="1" />
     <command name="NAT" argCount="0" />
     <environment name="affiliations" argCount="0" />
     <environment name="methods" argCount="0" />
     <environment name="addendum" argCount="0" />
   </package>
-  <package name="ijmart" requiresPackages="ifpdf,fancyhdr,lastpage" title="ijmart" description="LaTeX Class for the Israel Journal of Mathematics." debPackage="texlive-publishers">
+  <package name="ijmart" title="ijmart" description="LaTeX Class for the Israel Journal of Mathematics." debPackage="texlive-publishers">
     <command name="pagespan" argCount="2" />
     <command name="doiinfo" argCount="1" />
     <command name="thanks" argCount="1" />
@@ -5751,7 +5751,7 @@
     <command name="qedsymbol" argCount="0" />
     <environment name="namedprop" argCount="0" />
   </package>
-  <package name="hpsdiss" requiresPackages="rotating,geometry,mparhack,ragged2e,graphicx,calc,colordvi" debPackage="texlive-latex-extra">
+  <package name="hpsdiss" debPackage="texlive-latex-extra">
     <command name="TextAlignment" argCount="0" />
     <command name="SpecialFonts" argCount="0" />
     <command name="DT" argCount="0" />
@@ -6130,7 +6130,7 @@
     <command name="inghead" argCount="0" />
     <command name="ingred" argCount="1" />
   </package>
-  <package name="recipecard" requiresPackages="boxedminipage,calc,ifthen" debPackage="texlive-latex-extra">
+  <package name="recipecard" debPackage="texlive-latex-extra">
     <command name="textdegree" argCount="0" />
     <command name="ingredient" argCount="1" />
     <command name="changeingrdlistnum" argCount="1" />
@@ -6138,7 +6138,7 @@
     <command name="cooktemp" argCount="2" />
     <environment name="recipe" argCount="2" />
   </package>
-  <package name="elpres" requiresPackages="fancyhdr,ifthen" debPackage="texlive-latex-extra">
+  <package name="elpres" debPackage="texlive-latex-extra">
     <command name="fontna" argCount="0" />
     <command name="distance" argCount="1" />
     <command name="abstand" argCount="1" />
@@ -6148,7 +6148,7 @@
     <environment name="cenumerate" argCount="0" />
     <environment name="cdescription" argCount="0" />
   </package>
-  <package name="sffms" requiresPackages="ulem,fancyhdr" debPackage="texlive-latex-extra">
+  <package name="sffms" debPackage="texlive-latex-extra">
     <command name="scenesepstring" argCount="0" />
     <command name="thirtystring" argCount="0" />
     <command name="disposablestring" argCount="0" />
@@ -6172,7 +6172,7 @@
     <command name="sffms" argCount="0" />
     <environment name="synopsis" argCount="0" />
   </package>
-  <package name="icsv" requiresPackages="bm,fixltx2e,fancyhdr,fix-cm,amsmath,graphicx,hyperref,array,calc,textcomp,amssymb,ifthen" title="icsv" description="Class for typesetting articles for the ICSV conference." debPackage="texlive-publishers">
+  <package name="icsv" title="icsv" description="Class for typesetting articles for the ICSV conference." debPackage="texlive-publishers">
     <command name="enumerate" argCount="0" />
     <command name="makelabel" argCount="1" />
     <command name="itemize" argCount="0" />
@@ -6184,7 +6184,7 @@
     <command name="make" argCount="0" />
     <command name="showaffiliations" argCount="0" />
   </package>
-  <package name="active-conf" requiresPackages="bm,amsmath,graphicx,hyperref,array,url,calc,textcomp,ifthen,amssymb" title="active-conf" description="Class for typesetting ACTIVE conference papers." debPackage="texlive-publishers">
+  <package name="active-conf" title="active-conf" description="Class for typesetting ACTIVE conference papers." debPackage="texlive-publishers">
     <command name="enumerate" argCount="0" />
     <command name="makelabel" argCount="1" />
     <command name="itemize" argCount="0" />
@@ -6207,7 +6207,7 @@
     <command name="num" argCount="2" />
     <command name="cite" argCount="0" />
   </package>
-  <package name="lettre" requiresPackages="graphicx" debPackage="texlive-latex-extra">
+  <package name="lettre" debPackage="texlive-latex-extra">
     <command name="defaultlanguage" argCount="0" />
     <command name="t" argCount="2" />
     <command name="detailledaddress" argCount="0" />
@@ -6345,7 +6345,7 @@
     <command name="footnoterule" argCount="0" />
     <command name="totalpages" argCount="0" />
   </package>
-  <package name="script_s" requiresPackages="latexsym" debPackage="texlive-latex-extra">
+  <package name="script_s" debPackage="texlive-latex-extra">
     <command name="filedate" argCount="0" />
     <command name="fileversion" argCount="0" />
     <command name="tensfb" argCount="0" />
@@ -6665,7 +6665,7 @@
     <command name="dbltopfraction" argCount="0" />
     <command name="dblfloatpagefraction" argCount="0" />
   </package>
-  <package name="ppr-prv" requiresPackages="keyval,ifpdf,float,pstricks,graphicx,textcomp" debPackage="texlive-latex-extra">
+  <package name="ppr-prv" debPackage="texlive-latex-extra">
     <command name="NoPageBreak" argCount="0" />
     <command name="PageBreak" argCount="0" />
     <command name="slidetitle" argCount="1" />
@@ -6707,7 +6707,7 @@
     <environment name="itemstep" argCount="1" />
     <environment name="slide" argCount="2" />
   </package>
-  <package name="moderncv" requiresPackages="ifpdf,marvosym,aeguill,aecompl,url,ifthen,ae" debPackage="texlive-latex-extra">
+  <package name="moderncv" debPackage="texlive-latex-extra">
     <command name="refname" argCount="0" />
     <command name="newblock" argCount="0" />
     <command name="today" argCount="0" />
@@ -6810,7 +6810,7 @@
     <environment name="postliminary" argCount="0" />
     <environment name="vita" argCount="0" />
   </package>
-  <package name="abstbook" requiresPackages="minitoc" debPackage="texlive-latex-base">
+  <package name="abstbook" debPackage="texlive-latex-base">
     <command name="titlstyle" argCount="0" />
     <command name="mtctitle" argCount="0" />
     <command name="conferenceday" argCount="1" />
@@ -6824,7 +6824,7 @@
   </package>
   <package name="beletter" debPackage="texlive-latex-base">
   </package>
-  <package name="flashcard" options="a4paper,letterpaper,landscape" requiresPackages="calc" debPackage="texlive-latex-base">
+  <package name="flashcard" debPackage="texlive-latex-base">
     <command name="flashcardformat" argCount="0" />
     <command name="today" argCount="0" />
     <command name="FC" argCount="0" />
@@ -6832,7 +6832,7 @@
     <command name="flashcard" argCount="0" />
     <command name="flushflashcards" argCount="0" />
   </package>
-  <package name="iagproc" requiresPackages="times,mathptm,apalike,natbib" debPackage="texlive-latex-base">
+  <package name="iagproc" debPackage="texlive-latex-base">
     <command name="keywordsname" argCount="0" />
     <command name="journal" argCount="1" />
     <command name="refname" argCount="0" />
@@ -6842,7 +6842,7 @@
     <environment name="keywords" argCount="0" />
     <environment name="acknowledgements" argCount="0" />
   </package>
-  <package name="cweb" requiresPackages="keyvald" title="cweb" description="A Web system in C." debPackage="texlive-latex-extra">
+  <package name="cweb" title="cweb" description="A Web system in C." debPackage="texlive-latex-extra">
     <command name="id" argCount="0" />
     <command name="CwebBaseClass" argCount="0" />
     <command name="cweb_set_language" argCount="1" />
@@ -6865,7 +6865,7 @@
     <command name="CwebXRUse" argCount="0" />
     <command name="CwebXRUses" argCount="0" />
   </package>
-  <package name="FUpowerdot" requiresPackages="breakurl,graphicx,pifont,babel,calc,tabularx" debPackage="texlive-publishers">
+  <package name="FUpowerdot" debPackage="texlive-publishers">
     <command name="insertframelogo" argCount="0" />
     <command name="inserttitlelogo" argCount="0" />
     <command name="insertfachbereich" argCount="0" />
@@ -6878,9 +6878,9 @@
     <command name="labelitemiv" argCount="0" />
     <command name="thefootnote" argCount="0" />
   </package>
-  <package name="jura" requiresPackages="alphanum" title="jura" description="A document class for German legal texts." debPackage="texlive-humanities">
+  <package name="jura" title="jura" description="A document class for German legal texts." debPackage="texlive-humanities">
   </package>
-  <package name="ecca" requiresPackages="geometry,setspace,mathptmx,courier,endnotes,url,csquotes,ifthen" debPackage="texlive-publishers">
+  <package name="ecca" debPackage="texlive-publishers">
     <command name="veclatin" argCount="1" />
     <command name="matlatin" argCount="1" />
     <command name="vecgreek" argCount="1" />
@@ -6895,7 +6895,7 @@
     <command name="citetPage" argCount="2" />
     <command name="citepPage" argCount="2" />
   </package>
-  <package name="agecon" requiresPackages="geometry,setspace,url,titlesec,lmodern,csquotes,ifthen" debPackage="texlive-publishers">
+  <package name="agecon" debPackage="texlive-publishers">
     <command name="veclatin" argCount="1" />
     <command name="matlatin" argCount="1" />
     <command name="vecgreek" argCount="1" />
@@ -6907,7 +6907,7 @@
     <command name="citetPage" argCount="2" />
     <command name="citepPage" argCount="2" />
   </package>
-  <package name="oegatb" requiresPackages="geometry,setspace,fancyhdr,amsmath,url,titlesec,ifthen" debPackage="texlive-publishers">
+  <package name="oegatb" debPackage="texlive-publishers">
     <command name="StartTextFormat" argCount="0" />
     <command name="EndTextFormat" argCount="0" />
     <command name="SetFormulaSpacings" argCount="0" />
@@ -6919,7 +6919,7 @@
     <command name="citetPage" argCount="2" />
     <command name="citepPage" argCount="2" />
   </package>
-  <package name="itaxpf" requiresPackages="geometry,setspace,amsmath,endnotes,url,lmodern,csquotes,ifthen" debPackage="texlive-publishers">
+  <package name="itaxpf" debPackage="texlive-publishers">
     <command name="veclatin" argCount="1" />
     <command name="matlatin" argCount="1" />
     <command name="vecgreek" argCount="1" />
@@ -6935,7 +6935,7 @@
     <command name="citetPage" argCount="2" />
     <command name="citepPage" argCount="2" />
   </package>
-  <package name="apecon" requiresPackages="geometry,setspace,amsmath,url,lmodern,textcomp,ifthen,csquotes" debPackage="texlive-publishers">
+  <package name="apecon" debPackage="texlive-publishers">
     <command name="veclatin" argCount="1" />
     <command name="matlatin" argCount="1" />
     <command name="vecgreek" argCount="1" />
@@ -6948,7 +6948,7 @@
     <command name="citetPage" argCount="2" />
     <command name="citepPage" argCount="2" />
   </package>
-  <package name="regstud" requiresPackages="geometry,verbatim,setspace,amsmath,soul,endnotes,url,lmodern,titlesec,csquotes,ifthen" debPackage="texlive-publishers">
+  <package name="regstud" debPackage="texlive-publishers">
     <command name="veclatin" argCount="1" />
     <command name="matlatin" argCount="1" />
     <command name="vecgreek" argCount="1" />
@@ -6964,7 +6964,7 @@
     <command name="citetPage" argCount="2" />
     <command name="citepPage" argCount="2" />
   </package>
-  <package name="worlddev" requiresPackages="geometry,setspace,endnotes,url,lmodern,titlesec,textcomp,ifthen,csquotes" debPackage="texlive-publishers">
+  <package name="worlddev" debPackage="texlive-publishers">
     <command name="veclatin" argCount="1" />
     <command name="matlatin" argCount="1" />
     <command name="vecgreek" argCount="1" />
@@ -6980,7 +6980,7 @@
     <command name="citetPage" argCount="2" />
     <command name="citepPage" argCount="2" />
   </package>
-  <package name="erae" requiresPackages="geometry,setspace,mathptmx,courier,amsmath,url,titlesec,csquotes,ifthen" debPackage="texlive-publishers">
+  <package name="erae" debPackage="texlive-publishers">
     <command name="veclatin" argCount="1" />
     <command name="matlatin" argCount="1" />
     <command name="vecgreek" argCount="1" />
@@ -6992,7 +6992,7 @@
     <command name="citetPage" argCount="2" />
     <command name="citepPage" argCount="2" />
   </package>
-  <package name="ajae" requiresPackages="geometry,bm,setspace,mathptmx,courier,endnotes,url,titlesec,ifthen" debPackage="texlive-publishers">
+  <package name="ajae" debPackage="texlive-publishers">
     <command name="veclatin" argCount="1" />
     <command name="matlatin" argCount="1" />
     <command name="vecgreek" argCount="1" />
@@ -7013,7 +7013,7 @@
     <command name="citetPage" argCount="2" />
     <command name="citepPage" argCount="2" />
   </package>
-  <package name="jrurstud" requiresPackages="geometry,stringstrings,setspace,amsmath,endnotes,url,lmodern,textcomp,ifthen,csquotes" debPackage="texlive-publishers">
+  <package name="jrurstud" debPackage="texlive-publishers">
     <command name="veclatin" argCount="1" />
     <command name="matlatin" argCount="1" />
     <command name="vecgreek" argCount="1" />
@@ -7030,7 +7030,7 @@
     <command name="citetPage" argCount="2" />
     <command name="citepPage" argCount="2" />
   </package>
-  <package name="pocoec" requiresPackages="geometry,stringstrings,setspace,mathptmx,courier,amsmath,url,textcomp,ifthen" debPackage="texlive-publishers">
+  <package name="pocoec" debPackage="texlive-publishers">
     <command name="veclatin" argCount="1" />
     <command name="matlatin" argCount="1" />
     <command name="vecgreek" argCount="1" />
@@ -7056,7 +7056,7 @@
     <command name="tablenotes" argCount="0" />
     <command name="makelabel" argCount="1" />
   </package>
-  <package name="nostarch" requiresPackages="ragged2e" title="nostarch" description="LaTeX class for No Starch Press." debPackage="texlive-publishers">
+  <package name="nostarch" title="nostarch" description="LaTeX class for No Starch Press." debPackage="texlive-publishers">
     <command name="dgdefault" argCount="0" />
     <command name="subtitle" argCount="1" />
     <command name="nostarchlogo" argCount="1" />
@@ -7098,7 +7098,7 @@
     <environment name="programme" argCount="1" />
     <environment name="composition" argCount="4" />
   </package>
-  <package name="my-thesis" requiresPackages="my-title" debPackage="texlive-publishers">
+  <package name="my-thesis" debPackage="texlive-publishers">
     <command name="chapter" argCount="0" />
     <command name="section" argCount="0" />
     <command name="subsection" argCount="0" />
@@ -7112,7 +7112,7 @@
     <command name="indexchap" argCount="0" />
     <command name="numberline" argCount="1" />
   </package>
-  <package name="ua-thesis" requiresPackages="ua-title" debPackage="texlive-publishers">
+  <package name="ua-thesis" debPackage="texlive-publishers">
     <command name="contentsname" argCount="0" />
     <command name="bibname" argCount="0" />
     <command name="dedicationname" argCount="0" />
@@ -7128,15 +7128,15 @@
     <command name="numberline" argCount="1" />
     <command name="chapterline" argCount="1" />
   </package>
-  <package name="eskdtext" requiresPackages="eskdlang,eskdsect,eskdcap,eskdlist,eskdinfo,eskdtitle,eskdbiblist,eskdtitlebase,eskdindent,eskdfootnote,eskdexplan" debPackage="texlive-lang-cyrillic">
+  <package name="eskdtext" debPackage="texlive-lang-cyrillic">
     <command name="ESKD" argCount="0" />
   </package>
-  <package name="eskdtab" requiresPackages="eskdlang,eskdinfo" debPackage="texlive-lang-cyrillic">
+  <package name="eskdtab" debPackage="texlive-lang-cyrillic">
   </package>
-  <package name="eskdgraph" requiresPackages="eskdlang,eskdinfo" debPackage="texlive-lang-cyrillic">
+  <package name="eskdgraph" debPackage="texlive-lang-cyrillic">
     <environment name="ESKDdrawing" argCount="0" />
   </package>
-  <package name="barticle" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" debPackage="texlive-lang-indic">
+  <package name="barticle" debPackage="texlive-lang-indic">
     <command name="sectionmark" argCount="1" />
     <command name="subsectionmark" argCount="1" />
     <command name="maketitle" argCount="0" />
@@ -7185,7 +7185,7 @@
     <environment name="thebibliography" argCount="1" />
     <environment name="theindex" argCount="0" />
   </package>
-  <package name="bletter" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" debPackage="texlive-lang-indic">
+  <package name="bletter" debPackage="texlive-lang-indic">
     <command name="fromname" argCount="0" />
     <command name="fromsig" argCount="0" />
     <command name="fromaddress" argCount="0" />
@@ -7208,7 +7208,7 @@
     <environment name="quotation" argCount="0" />
     <environment name="quote" argCount="0" />
   </package>
-  <package name="bbook" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" debPackage="texlive-lang-indic">
+  <package name="bbook" debPackage="texlive-lang-indic">
     <command name="chaptermark" argCount="1" />
     <command name="sectionmark" argCount="1" />
     <command name="maketitle" argCount="0" />
@@ -7261,7 +7261,7 @@
   </package>
   <package name="postcards" debPackage="texlive-latex-extra">
   </package>
-  <package name="confproc" options="a4paper,letterpaper,compil=bibmerge,compil=bibbackref,compil=last,draft,final,twocolindex,threecolindex,twocolbib,onecolbib,twocoltoc,onecoltoc,tocnumleft,tocnumright,movepagenumbers,debug,verbose" requiresPackages="color,sectsty,fancyhdr,index,multicol,graphicx,pdfpages,newapave,titletoc" title="confproc" description="A set of tools for generating conference proceedings." debPackage="texlive-publishers">
+  <package name="confproc" title="confproc" description="A set of tools for generating conference proceedings." debPackage="texlive-publishers">
     <command name="shiftsafourpaper" argCount="0" />
     <command name="shiftsletterpaper" argCount="0" />
     <command name="confcite" argCount="1" />
@@ -7295,7 +7295,7 @@
     <command name="procbibintro" argCount="0" />
     <command name="insertindex" argCount="0" />
   </package>
-  <package name="mwbk" options="a4paper,a5paper,a6paper,b4paper,b5paper,b6paper,letterpaper,legalpaper,executivepaper,landscape,wide,withmarginpar,withoutmarginpar" debPackage="texlive-lang-polish">
+  <package name="mwbk" debPackage="texlive-lang-polish">
     <command name="mw" argCount="0" />
     <command name="sectsettings" argCount="0" />
     <command name="titlesettings" argCount="0" />
@@ -7360,7 +7360,7 @@
     <environment name="thebibliography" argCount="1" />
     <environment name="theindex" argCount="0" />
   </package>
-  <package name="mwrep" options="a4paper,a5paper,a6paper,b4paper,b5paper,b6paper,letterpaper,legalpaper,executivepaper,landscape,wide,withmarginpar,withoutmarginpar" debPackage="texlive-lang-polish">
+  <package name="mwrep" debPackage="texlive-lang-polish">
     <command name="mw" argCount="0" />
     <command name="sectsettings" argCount="0" />
     <command name="titlesettings" argCount="0" />
@@ -7424,7 +7424,7 @@
     <environment name="thebibliography" argCount="1" />
     <environment name="theindex" argCount="0" />
   </package>
-  <package name="mwart" options="a4paper,a5paper,a6paper,b4paper,b5paper,b6paper,letterpaper,legalpaper,executivepaper,landscape,wide,withmarginpar,withoutmarginpar" debPackage="texlive-lang-polish">
+  <package name="mwart" debPackage="texlive-lang-polish">
     <command name="mw" argCount="0" />
     <command name="sectsettings" argCount="0" />
     <command name="titlesettings" argCount="0" />
@@ -7518,7 +7518,7 @@
     <command name="gruss" argCount="1" />
     <command name="anlage" argCount="1" optionalArg="Anlage" />
   </package>
-  <package name="eskd" requiresPackages="rotating,keyval,pscyr,fancyhdr,lastpage,ifthen" title="eskd" description="Modern Russian typesetting." debPackage="texlive-lang-cyrillic">
+  <package name="eskd" title="eskd" description="Modern Russian typesetting." debPackage="texlive-lang-cyrillic">
     <command name="eskdheight" argCount="0" />
     <command name="eskdencoding" argCount="0" />
     <command name="eskdyear" argCount="0" />
@@ -7556,7 +7556,7 @@
     <command name="titleBottom" argCount="1" />
     <command name="eskdListOfChanges" argCount="0" />
   </package>
-  <package name="facsimile" requiresPackages="fancyhdr,lastpage" debPackage="texlive-latex-extra">
+  <package name="facsimile" debPackage="texlive-latex-extra">
     <command name="f" argCount="0" />
     <command name="datename" argCount="0" />
     <command name="onepagename" argCount="0" />
@@ -7572,7 +7572,7 @@
     <command name="fromsig" argCount="0" />
     <command name="closing" argCount="1" />
   </package>
-  <package name="codedoc" requiresPackages="makeidx" debPackage="texlive-latex-extra">
+  <package name="codedoc" debPackage="texlive-latex-extra">
     <command name="StopHere" argCount="1" />
     <command name="DocStripMarginpar" argCount="0" />
     <command name="PrintMacro" argCount="1" />
@@ -7622,7 +7622,7 @@
     <command name="Header" argCount="0" />
     <command name="DangerousEnvironment" argCount="1" />
   </package>
-  <package name="pecha" options="a4pecha3,a4pecha2,a4paper,a5pecha3,a5pecha2,a5paper,b5pecha3,b5pecha2,b5paper,letterpecha3,letterpecha2,letterpaper,legalpecha3,legalpecha2,legalpaper,executivepaper" requiresPackages="rotating,times,ctib" debPackage="texlive-latex-extra">
+  <package name="pecha" debPackage="texlive-latex-extra">
     <command name="tibsmall" argCount="1" />
     <command name="tibnumeral" argCount="1" />
     <command name="oddleft" argCount="2" />
@@ -7663,7 +7663,7 @@
     <command name="SetTOCSecIndent" argCount="1" />
     <environment name="Dvd" argCount="2" />
   </package>
-  <package name="l3doc" requiresPackages="color,hypdoc,fixltx2e,underscore,trace,array,enumitem,lmodern,doc,expl3,textcomp,alphalph,l3names" debPackage="texlive-latex3">
+  <package name="l3doc" debPackage="texlive-latex3">
     <command name="tn" argCount="1" />
     <command name="EnableDocumentation" argCount="0" />
     <command name="EnableImplementation" argCount="0" />
@@ -7683,7 +7683,7 @@
     <environment name="TemplateDescription" argCount="2" />
     <environment name="InstanceDescription" argCount="4" optionalArg="xxxxxxxxxxxxxxx" />
   </package>
-  <package name="memoir" options="ebook" title="memoir" description="Typeset fiction, non-fiction and mathematical books." debPackage="texlive-latex-recommended">
+  <package name="memoir" title="memoir" description="Typeset fiction, non-fiction and mathematical books." debPackage="texlive-latex-recommended">
     <command name="nametest" argCount="2" />
     <command name="kill" argCount="0" />
     <command name="memjustarg" argCount="1" />
@@ -8283,7 +8283,7 @@
     <environment name="vplace" argCount="1" optionalArg="1" />
     <environment name="midsloppypar" argCount="0" />
   </package>
-  <package name="chletter" options="landscape" debPackage="texlive-latex-extra">
+  <package name="chletter" debPackage="texlive-latex-extra">
     <command name="fromname" argCount="0" />
     <command name="fromsig" argCount="0" />
     <command name="fromaddress" argCount="0" />
@@ -8309,7 +8309,7 @@
   </package>
   <package name="myletter" debPackage="texlive-latex-extra">
   </package>
-  <package name="akletter" options="a4paper,a4offset,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" title="akletter" description="Comprehensive letter support." debPackage="texlive-latex-extra">
+  <package name="akletter" title="akletter" description="Comprehensive letter support." debPackage="texlive-latex-extra">
     <command name="captionsenglish" argCount="0" />
     <command name="yourrefname" argCount="0" />
     <command name="yourmailname" argCount="0" />
@@ -8364,7 +8364,7 @@
     <environment name="quotation" argCount="0" />
     <environment name="quote" argCount="0" />
   </package>
-  <package name="brief" options="a4paper,a5paper,b5paper,letterpaper,USletter,legalpaper,executivepaper" debPackage="texlive-latex-recommended">
+  <package name="brief" debPackage="texlive-latex-recommended">
     <command name="fromname" argCount="0" />
     <command name="fromsig" argCount="0" />
     <command name="fromlocation" argCount="0" />
@@ -8399,7 +8399,7 @@
     <environment name="quotation" argCount="0" />
     <environment name="quote" argCount="0" />
   </package>
-  <package name="rapport3" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" debPackage="texlive-latex-recommended">
+  <package name="rapport3" debPackage="texlive-latex-recommended">
     <command name="chaptermark" argCount="1" />
     <command name="sectionmark" argCount="1" />
     <command name="labelitemi" argCount="0" />
@@ -8418,7 +8418,7 @@
     <environment name="thebibliography" argCount="1" />
     <environment name="theindex" argCount="0" />
   </package>
-  <package name="boek3" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" debPackage="texlive-latex-recommended">
+  <package name="boek3" debPackage="texlive-latex-recommended">
     <command name="chaptermark" argCount="1" />
     <command name="sectionmark" argCount="1" />
     <command name="labelitemi" argCount="0" />
@@ -8436,26 +8436,7 @@
     <environment name="thebibliography" argCount="1" />
     <environment name="theindex" argCount="0" />
   </package>
-  <package name="boek" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" debPackage="texlive-latex-recommended">
-    <command name="chaptermark" argCount="1" />
-    <command name="sectionmark" argCount="1" />
-    <command name="labelitemi" argCount="0" />
-    <command name="makelabel" argCount="1" />
-    <command name="verbatim" argCount="0" />
-    <command name="endverbatim" argCount="0" />
-    <command name="today" argCount="0" />
-    <environment name="description" argCount="0" />
-    <environment name="abstract" argCount="0" />
-    <environment name="verse" argCount="0" />
-    <environment name="quotation" argCount="0" />
-    <environment name="quote" argCount="0" />
-    <environment name="titlepage" argCount="0" />
-    <environment name="figure" argCount="0" />
-    <environment name="table" argCount="0" />
-    <environment name="thebibliography" argCount="1" />
-    <environment name="theindex" argCount="0" />
-  </package>
-  <package name="rapport1" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" debPackage="texlive-latex-recommended">
+  <package name="boek" debPackage="texlive-latex-recommended">
     <command name="chaptermark" argCount="1" />
     <command name="sectionmark" argCount="1" />
     <command name="labelitemi" argCount="0" />
@@ -8474,7 +8455,26 @@
     <environment name="thebibliography" argCount="1" />
     <environment name="theindex" argCount="0" />
   </package>
-  <package name="artikel2" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" debPackage="texlive-latex-recommended">
+  <package name="rapport1" debPackage="texlive-latex-recommended">
+    <command name="chaptermark" argCount="1" />
+    <command name="sectionmark" argCount="1" />
+    <command name="labelitemi" argCount="0" />
+    <command name="makelabel" argCount="1" />
+    <command name="verbatim" argCount="0" />
+    <command name="endverbatim" argCount="0" />
+    <command name="today" argCount="0" />
+    <environment name="description" argCount="0" />
+    <environment name="abstract" argCount="0" />
+    <environment name="verse" argCount="0" />
+    <environment name="quotation" argCount="0" />
+    <environment name="quote" argCount="0" />
+    <environment name="titlepage" argCount="0" />
+    <environment name="figure" argCount="0" />
+    <environment name="table" argCount="0" />
+    <environment name="thebibliography" argCount="1" />
+    <environment name="theindex" argCount="0" />
+  </package>
+  <package name="artikel2" debPackage="texlive-latex-recommended">
     <command name="sectionmark" argCount="1" />
     <command name="subsectionmark" argCount="1" />
     <command name="labelitemi" argCount="0" />
@@ -8493,7 +8493,7 @@
     <environment name="thebibliography" argCount="1" />
     <environment name="theindex" argCount="0" />
   </package>
-  <package name="artikel1" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" debPackage="texlive-latex-recommended">
+  <package name="artikel1" debPackage="texlive-latex-recommended">
     <command name="sectionmark" argCount="1" />
     <command name="subsectionmark" argCount="1" />
     <command name="labelitemi" argCount="0" />
@@ -8512,7 +8512,7 @@
     <environment name="thebibliography" argCount="1" />
     <environment name="theindex" argCount="0" />
   </package>
-  <package name="artikel3" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" debPackage="texlive-latex-recommended">
+  <package name="artikel3" debPackage="texlive-latex-recommended">
     <command name="sectionmark" argCount="1" />
     <command name="subsectionmark" argCount="1" />
     <command name="labelitemi" argCount="0" />
@@ -8716,7 +8716,7 @@
     <environment name="table" argCount="0" />
     <environment name="abstract" argCount="0" />
   </package>
-  <package name="seminar" requiresPackages="sem-page" title="seminar" description="Make overhead slides." debPackage="texlive-latex-recommended">
+  <package name="seminar" title="seminar" description="Make overhead slides." debPackage="texlive-latex-recommended">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="do" argCount="1" />
@@ -8850,7 +8850,7 @@
     <command name="frontmatter" argCount="0" />
     <command name="tableofcontents" argCount="0" />
   </package>
-  <package name="elsart" requiresPackages="latexsym" debPackage="texlive-publishers">
+  <package name="elsart" debPackage="texlive-publishers">
     <command name="RCSfile" argCount="0" />
     <command name="RCSversion" argCount="0" />
     <command name="RCSdate" argCount="0" />
@@ -9087,7 +9087,7 @@
     <command name="frontmatter" argCount="0" />
     <command name="tableofcontents" argCount="0" />
   </package>
-  <package name="achemso" requiresPackages="mciteplus,natmove,xkeyval" title="achemso" description="Support for American Chemical Society journal submissions." debPackage="texlive-latex-extra">
+  <package name="achemso" title="achemso" description="Support for American Chemical Society journal submissions." debPackage="texlive-latex-extra">
     <command name="thebibnote" argCount="0" />
     <command name="acs" argCount="0" />
     <command name="bibliography" argCount="1" />
@@ -9105,7 +9105,7 @@
     <environment name="suppinfo" argCount="0" />
     <environment name="tocentry" argCount="0" />
   </package>
-  <package name="papertex" requiresPackages="color,datetime,ifpdf,multicol,fancyhdr,ragged2e,fancybox,ifthen,multido,wrapfig" debPackage="texlive-latex-extra">
+  <package name="papertex" debPackage="texlive-latex-extra">
     <command name="papertex" argCount="0" />
     <command name="raggedFormat" argCount="0" />
     <command name="editionFormat" argCount="0" />
@@ -9171,7 +9171,7 @@
     <environment name="editorial" argCount="4" />
     <environment name="shortnews" argCount="4" />
   </package>
-  <package name="jpsj2" options="a4paper,letterpaper" requiresPackages="graphicx,overcite,amssymb" debPackage="texlive-publishers">
+  <package name="jpsj2" debPackage="texlive-publishers">
     <command name="balancecolumns" argCount="0" />
     <command name="enddocument" argCount="0" />
     <command name="newlabel" argCount="0" />
@@ -9246,7 +9246,7 @@
     <environment name="halftable" argCount="0" />
     <environment name="fulltable" argCount="0" />
   </package>
-  <package name="IEEEconf" requiresPackages="mathptmx,helvet,courier,array,titlesec" title="IEEEconf" description="Macros for IEEE conference proceedings." debPackage="texlive-publishers">
+  <package name="IEEEconf" title="IEEEconf" description="Macros for IEEE conference proceedings." debPackage="texlive-publishers">
     <command name="ieee" argCount="0" />
     <command name="and" argCount="0" />
     <command name="dobeforekey" argCount="2" />
@@ -9254,7 +9254,7 @@
     <command name="extrareflistcode" argCount="0" />
     <environment name="affiliation" argCount="0" />
   </package>
-  <package name="elsarticle" requiresPackages="geometry,graphicx,pifont" debPackage="texlive-latex-extra">
+  <package name="elsarticle" debPackage="texlive-latex-extra">
     <command name="RCSfile" argCount="0" />
     <command name="RCSversion" argCount="0" />
     <command name="RCSdate" argCount="0" />
@@ -9321,7 +9321,7 @@
     <command name="appendixname" argCount="0" />
     <environment name="frontmatter" argCount="0" />
   </package>
-  <package name="examdesign" requiresPackages="keyval,multicol,enumerate" debPackage="texlive-latex-extra">
+  <package name="examdesign" debPackage="texlive-latex-extra">
     <command name="NoKey" argCount="0" />
     <command name="OneKey" argCount="0" />
     <command name="BoldfaceCorrectMultipleChoiceAnswer" argCount="0" />
@@ -9518,11 +9518,11 @@
     <environment name="flenumerate" argCount="0" />
     <environment name="flitemize" argCount="0" />
   </package>
-  <package name="nih" requiresPackages="fancyhdr,amsmath,ifthen,fullpage" title="nih" description="A class for NIH grant applications." debPackage="texlive-publishers">
+  <package name="nih" title="nih" description="A class for NIH grant applications." debPackage="texlive-publishers">
     <command name="nih" argCount="0" />
     <command name="piname" argCount="1" />
   </package>
-  <package name="acmconf" requiresPackages="flushend" title="acmconf" description="Class for ACM conference proceedings." debPackage="texlive-publishers">
+  <package name="acmconf" title="acmconf" description="Class for ACM conference proceedings." debPackage="texlive-publishers">
     <command name="IfPrepare" argCount="2" />
     <command name="IfSubmit" argCount="2" />
     <command name="IfAccept" argCount="2" />
@@ -9562,7 +9562,7 @@
     <command name="l" argCount="0" />
     <environment name="keywords" argCount="0" />
   </package>
-  <package name="ecv" requiresPackages="color,fancyhdr,helvet,paralist,url,ifthen,pgf,longtable" debPackage="texlive-latex-extra">
+  <package name="ecv" debPackage="texlive-latex-extra">
     <command name="fileversion" argCount="0" />
     <command name="filedate" argCount="0" />
     <command name="ecv" argCount="0" />
@@ -9632,7 +9632,7 @@
     <command name="ecvSignature" argCount="2" />
     <environment name="ecv" argCount="0" />
   </package>
-  <package name="dinbrief" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper" debPackage="texlive-latex-extra">
+  <package name="dinbrief" debPackage="texlive-latex-extra">
     <command name="RCSdate" argCount="0" />
     <command name="RCSrevision" argCount="0" />
     <command name="partone" argCount="0" />
@@ -9778,7 +9778,7 @@
     <command name="Anlagen" argCount="1" />
     <command name="Verteiler" argCount="1" />
   </package>
-  <package name="pbsheet" requiresPackages="color,rotating,amsfonts,xspace,amsthm,amsmath,moreverb,amssymb,listings,latexsym" debPackage="texlive-latex-extra">
+  <package name="pbsheet" debPackage="texlive-latex-extra">
     <command name="phantomsection" argCount="0" />
     <command name="MFILE" argCount="1" />
     <command name="SCEFILE" argCount="1" />
@@ -10083,7 +10083,7 @@
     <command name="Vector" argCount="2" />
     <command name="Bimatrix" argCount="2" />
   </package>
-  <package name="limap" requiresPackages="fancyhdr,booktabs,longtable" debPackage="texlive-latex-extra">
+  <package name="limap" debPackage="texlive-latex-extra">
     <command name="filename" argCount="0" />
     <command name="LIMAP" argCount="0" />
     <command name="MapRuleWidth" argCount="0" />
@@ -10108,7 +10108,7 @@
     <command name="subsubparagraph" argCount="0" />
     <environment name="Map" argCount="1" />
   </package>
-  <package name="book" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" debPackage="texlive-latex-base">
+  <package name="book" debPackage="texlive-latex-base">
     <command name="chaptermark" argCount="1" />
     <command name="sectionmark" argCount="1" />
     <command name="maketitle" argCount="0" />
@@ -10159,7 +10159,7 @@
     <environment name="thebibliography" argCount="1" />
     <environment name="theindex" argCount="0" />
   </package>
-  <package name="report" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" debPackage="texlive-latex-base">
+  <package name="report" debPackage="texlive-latex-base">
     <command name="chaptermark" argCount="1" />
     <command name="sectionmark" argCount="1" />
     <command name="maketitle" argCount="0" />
@@ -10209,7 +10209,7 @@
     <environment name="thebibliography" argCount="1" />
     <environment name="theindex" argCount="0" />
   </package>
-  <package name="ltxdoc" requiresPackages="doc" debPackage="texlive-latex-base">
+  <package name="ltxdoc" debPackage="texlive-latex-base">
     <command name="cmd" argCount="1" />
     <command name="next" argCount="0" />
     <command name="commentline" argCount="0" />
@@ -10220,7 +10220,7 @@
     <command name="filesep" argCount="0" />
     <command name="task" argCount="2" />
   </package>
-  <package name="ltnews" requiresPackages="url" debPackage="texlive-latex-base">
+  <package name="ltnews" debPackage="texlive-latex-base">
     <command name="pplTeX" argCount="0" />
     <command name="putTeX" argCount="0" />
     <command name="phvTeX" argCount="0" />
@@ -10250,14 +10250,14 @@
     <environment name="latexonly" argCount="0" />
     <environment name="citations" argCount="0" />
   </package>
-  <package name="proc" options="a5paper,b5paper" debPackage="texlive-latex-base">
+  <package name="proc" debPackage="texlive-latex-base">
     <command name="maketitle" argCount="0" />
     <command name="copyrightspace" argCount="0" />
     <command name="pagename" argCount="0" />
   </package>
   <package name="minimal" debPackage="texlive-latex-base">
   </package>
-  <package name="article" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" debPackage="texlive-latex-base">
+  <package name="article" debPackage="texlive-latex-base">
     <command name="sectionmark" argCount="1" />
     <command name="subsectionmark" argCount="1" />
     <command name="maketitle" argCount="0" />
@@ -10305,7 +10305,7 @@
     <environment name="thebibliography" argCount="1" />
     <environment name="theindex" argCount="0" />
   </package>
-  <package name="ltxguide" requiresPackages="shortvrb" debPackage="texlive-latex-base">
+  <package name="ltxguide" debPackage="texlive-latex-base">
     <command name="clsguide" argCount="0" />
     <command name="usrguide" argCount="0" />
     <command name="fntguide" argCount="0" />
@@ -10333,7 +10333,7 @@
     <command name="URL" argCount="1" />
     <environment name="decl" argCount="1" />
   </package>
-  <package name="slides" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" debPackage="texlive-latex-base">
+  <package name="slides" debPackage="texlive-latex-base">
     <command name="newifG" argCount="1" />
     <command name="theslide" argCount="0" />
     <command name="theoverlay" argCount="0" />
@@ -10400,7 +10400,7 @@
     <environment name="quote" argCount="0" />
     <environment name="description" argCount="0" />
   </package>
-  <package name="letter" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" debPackage="texlive-latex-base">
+  <package name="letter" debPackage="texlive-latex-base">
     <command name="fromname" argCount="0" />
     <command name="fromsig" argCount="0" />
     <command name="fromaddress" argCount="0" />
@@ -10423,7 +10423,7 @@
     <environment name="quotation" argCount="0" />
     <environment name="quote" argCount="0" />
   </package>
-  <package name="kluwer" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" title="kluwer" description="" debPackage="texlive-publishers">
+  <package name="kluwer" title="kluwer" description="" debPackage="texlive-publishers">
     <command name="filedate" argCount="0" />
     <command name="kluclassname" argCount="0" />
     <command name="kluclassversion" argCount="0" />
@@ -10817,7 +10817,7 @@
     <environment name="thebibliography" argCount="1" />
     <environment name="theindex" argCount="0" />
   </package>
-  <package name="europecv" requiresPackages="ucs,array,longtable" debPackage="texlive-latex-extra">
+  <package name="europecv" debPackage="texlive-latex-extra">
     <command name="ecv" argCount="0" />
     <command name="ecvfootnote" argCount="1" />
     <command name="ecvarg" argCount="0" />
@@ -10826,7 +10826,7 @@
     <command name="ecvitem" argCount="0" />
     <environment name="europecv" argCount="0" />
   </package>
-  <package name="isov2" options="a4paper,letterpaper" requiresPackages="url" debPackage="texlive-latex-extra">
+  <package name="isov2" debPackage="texlive-latex-extra">
     <command name="fillline" argCount="0" />
     <command name="makecommand" argCount="0" />
     <command name="make" argCount="0" />
@@ -11026,7 +11026,7 @@
     <environment name="foreword" argCount="0" />
     <environment name="introduction" argCount="0" />
   </package>
-  <package name="FUbeamer" requiresPackages="graphicx,babel,tabularx" debPackage="texlive-publishers">
+  <package name="FUbeamer" debPackage="texlive-publishers">
     <command name="insertfachbereich" argCount="0" />
     <command name="maketitle" argCount="0" />
     <command name="FU" argCount="0" />
@@ -11044,7 +11044,7 @@
     <command name="topicmargin" argCount="0" />
     <environment name="topic" argCount="0" />
   </package>
-  <package name="bookest" requiresPackages="color,geometry,everyshi,setspace,graphicx,eso-pic,hyperref" title="bookest" description="Extended book class." debPackage="texlive-latex-extra">
+  <package name="bookest" title="bookest" description="Extended book class." debPackage="texlive-latex-extra">
     <command name="shipoutimage" argCount="2" />
     <command name="shipouttext" argCount="3" />
     <command name="bibname" argCount="0" />
@@ -11125,7 +11125,7 @@
     <command name="BKopf" argCount="0" />
     <command name="nBKopf" argCount="0" />
   </package>
-  <package name="fribrief" options="a4paper" debPackage="texlive-latex-extra">
+  <package name="fribrief" debPackage="texlive-latex-extra">
     <command name="BKopf" argCount="1" />
     <command name="Ref" argCount="0" />
     <command name="betreff" argCount="0" />
@@ -11145,7 +11145,7 @@
     <command name="PageLayout" argCount="0" />
     <command name="Anrede" argCount="0" />
   </package>
-  <package name="flashcards" requiresPackages="geometry,ifthen" debPackage="texlive-latex-extra">
+  <package name="flashcards" debPackage="texlive-latex-extra">
     <command name="flashcards" argCount="0" />
     <command name="cardfrontstyle" argCount="2" />
     <command name="cardbackstyle" argCount="2" />
@@ -11154,7 +11154,7 @@
     <command name="cardfrontfoot" argCount="1" />
     <environment name="flashcard" argCount="2" />
   </package>
-  <package name="hitec" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,executivepaper,landscape" debPackage="texlive-latex-extra">
+  <package name="hitec" debPackage="texlive-latex-extra">
     <command name="footruleskip" argCount="0" />
     <command name="company" argCount="1" />
     <command name="confidential" argCount="1" />
@@ -11349,7 +11349,7 @@
     <command name="fenstermarken" argCount="0" />
     <command name="unserzeichen" argCount="0" />
   </package>
-  <package name="combine" requiresPackages="keyval" debPackage="texlive-latex-extra">
+  <package name="combine" debPackage="texlive-latex-extra">
     <command name="c" argCount="0" />
     <command name="provideenvironment" argCount="0" />
     <command name="noexpand" argCount="2" />
@@ -11384,7 +11384,7 @@
     <environment name="tocindent" argCount="1" />
     <environment name="papers" argCount="1" optionalArg="\cleardoublepage" />
   </package>
-  <package name="emulateapj" requiresPackages="graphicx,epsf" debPackage="texlive-latex-extra">
+  <package name="emulateapj" debPackage="texlive-latex-extra">
     <command name="arraystretch" argCount="0" />
     <command name="blankaffiliation" argCount="0" />
     <command name="AppendixApjSectionMarkInTitle" argCount="1" />
@@ -11770,13 +11770,13 @@
     <environment name="IEEEbiography" argCount="2" />
     <environment name="IEEEbiographynophoto" argCount="1" />
   </package>
-  <package name="akkscript" requiresPackages="float,verbatim,theorem,lscape,enumerate,ifthen,akkconditional,longtable" debPackage="texlive-latex-extra">
+  <package name="akkscript" debPackage="texlive-latex-extra">
   </package>
-  <package name="akktecdoc" requiresPackages="ifthen,akkconditional,akktex" debPackage="texlive-latex-extra">
+  <package name="akktecdoc" debPackage="texlive-latex-extra">
   </package>
-  <package name="akklecture" requiresPackages="fancyhdr" debPackage="texlive-latex-extra">
+  <package name="akklecture" debPackage="texlive-latex-extra">
   </package>
-  <package name="bidimoderncv" requiresPackages="marvosym,fancyhdr,pstricks,graphicx,hyperref,url,ifthen" debPackage="texlive-xetex">
+  <package name="bidimoderncv" debPackage="texlive-xetex">
     <command name="firstnamecolour" argCount="1" />
     <command name="familynamecolour" argCount="1" />
     <command name="titlecolour" argCount="1" />
@@ -11788,12 +11788,12 @@
     <command name="newblock" argCount="0" />
     <environment name="thebibliography" argCount="1" />
   </package>
-  <package name="bidibeamer" requiresPackages="beamerbasercs,beamerbasemisc,pgfcore,beamerbasetitle,beamerbaseframesize,beamerbaseoverlay,beamerbaseframecomponents,beamerbasemodes,beamerbasenavigation,beamerbasethemes,beamerbaseoptions,bidibeamerbasetemplates,beamerbasetwoscreens,beamerbasecompatibility,xxcolor,beamerbasefont,beamerbasecolor,beamerbasesection,beamerbasenotes,beamerbaselocalstructure,amssymb,beamerbaseframe,pgfbaseimage,beamerbasetoc,beamerbaseverbatim,beamerbasetheorems" debPackage="texlive-xetex">
+  <package name="bidibeamer" debPackage="texlive-xetex">
     <command name="insertpagenumber" argCount="0" />
     <command name="familydefault" argCount="0" />
     <command name="mathfamilydefault" argCount="0" />
   </package>
-  <package name="bidipresentation" requiresPackages="fancyhdr" debPackage="texlive-xetex">
+  <package name="bidipresentation" debPackage="texlive-xetex">
     <command name="distance" argCount="1" />
     <command name="abstand" argCount="1" />
     <command name="itemize" argCount="0" />
@@ -11843,7 +11843,7 @@
     <command name="latinwrittenfor" argCount="0" />
     <command name="latinundersupervision" argCount="0" />
   </package>
-  <package name="xepersian-magazine" requiresPackages="datetime,fancyhdr,ragged2e,fancybox,ifxetex,ifthen,fmultico,multido" debPackage="texlive-xetex">
+  <package name="xepersian-magazine" debPackage="texlive-xetex">
     <command name="xepersian" argCount="0" />
     <command name="raggedFormat" argCount="0" />
     <command name="customwwwTxt" argCount="1" />
