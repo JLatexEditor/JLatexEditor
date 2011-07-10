@@ -28,22 +28,11 @@ public class BackgroundParser extends Thread {
   private JLatexEditorJFrame jle;
 
   private long bibModified = 0;
-  private ArrayList<FilePos<BibEntry>> bibEntries = new ArrayList<FilePos<BibEntry>>();
 
-	private HashSet<File> files = new HashSet<File>();
-  private Trie words = new Trie();
-  private Trie commandNames = new Trie();
-  private TrieSet<String> commandsAndFiles = new TrieSet<String>();
-  private Trie<Command> commands = new Trie<Command>();
-  private Trie<FilePos> labelDefs = new Trie<FilePos>();
-	private TrieSet<FilePos> labelRefs = new TrieSet<FilePos>();
-	private Trie<FilePos<BibEntry>> bibKeys2bibEntries = new Trie<FilePos<BibEntry>>();
-	private TrieSet<BibEntry> bibWords2bibEntries = new TrieSet<BibEntry>();
-  private TrieSet<FilePos> bibRefs = new TrieSet<FilePos>();
+	private ParserState stableState = new ParserState();
+	private ParserState buildingState = new ParserState();
 
-  private DefaultTreeModel structure = new DefaultTreeModel(new DefaultMutableTreeNode());
-
-  private ArrayList<TODO> todos = new ArrayList<TODO>();
+	private DefaultTreeModel structure = new DefaultTreeModel(new DefaultMutableTreeNode());
 
 	private boolean parsing = false;
 	private final Object syncObject = new Object();
@@ -56,43 +45,51 @@ public class BackgroundParser extends Thread {
   }
 
   public ArrayList<FilePos<BibEntry>> getBibEntries() {
-    return bibEntries;
+    return stableState.bibEntries;
   }
 
 	public HashSet<File> getFiles() {
-		return files;
+		return stableState.files;
 	}
 
 	public Trie<?> getWords() {
-    return words;
+    return stableState.words;
   }
 
-  public Trie<?> getCommandNames() {
-    return commandNames;
+	public DocumentClass getDocumentClass() {
+		return stableState.documentClass;
+	}
+
+	public Trie<Package> getPackages() {
+		return stableState.packages;
+	}
+
+	public Trie<?> getCommandNames() {
+    return stableState.commandNames;
   }
 
 	public TrieSet<String> getCommandsAndFiles() {
-		return commandsAndFiles;
+		return stableState.commandsAndFiles;
 	}
 
 	public Trie<Command> getCommands() {
-    return commands;
+    return stableState.commands;
   }
 
   public Trie<FilePos> getLabelDefs() {
-    return labelDefs;
+    return stableState.labelDefs;
   }
 
 	public TrieSet<FilePos> getLabelRefs() {
-		return labelRefs;
+		return stableState.labelRefs;
 	}
 
   public TrieSet<FilePos> getBibRefs() {
-    return bibRefs;
+    return stableState.bibRefs;
   }
 
 	public Trie<FilePos<BibEntry>> getBibKeys2bibEntries() {
-		return bibKeys2bibEntries;
+		return stableState.bibKeys2bibEntries;
 	}
 
   public void run() {
@@ -122,29 +119,13 @@ public class BackgroundParser extends Thread {
       File file = ((Doc.FileDoc) resource).getFile();
       File directory = file.getParentFile();
 
-	    HashSet<File> files = new HashSet<File>();
-	    Trie words = new Trie();
-      Trie commandNames = new Trie();
-      TrieSet<String> commandsAndFiles = new TrieSet<String>();
-      Trie<FilePos> labelDefs = new Trie<FilePos>();
-      TrieSet<FilePos> labelRefs = new TrieSet<FilePos>();
-      TrieSet<FilePos> bibRefs = new TrieSet<FilePos>();
-      Trie<Command> commands = new Trie<Command>();
+	    buildingState = new ParserState();
+	    buildingState.structureStack.add(new StructureEntry("Project", 0, resource.getName(), 0));
 
-      ArrayList<StructureEntry> structureStack = new ArrayList<StructureEntry>();
-      structureStack.add(new StructureEntry("Project", 0, resource.getName(), 0));
+      parseTex(directory, file.getName(), new HashSet<String>());
 
-      parseTex(directory, file.getName(), files, words, commandNames, commandsAndFiles, commands, labelDefs, labelRefs, bibRefs, structureStack, new HashSet<String>());
-
-	    this.files = files;
-	    this.words = words;
-      this.commandNames = commandNames;
-      this.commandsAndFiles = commandsAndFiles;
-      this.commands = commands;
-      this.labelDefs = labelDefs;
-      this.labelRefs = labelRefs;
-      this.bibRefs = bibRefs;
-      structure.setRoot(structureStack.get(0));
+	    stableState = buildingState;
+      structure.setRoot(stableState.structureStack.get(0));
 
       try {
         synchronized (syncObject) {
@@ -172,17 +153,17 @@ public class BackgroundParser extends Thread {
 		}
 	}
 
-  private void parseTex(File directory, String fileName, HashSet<File> files, Trie words, Trie commandNames,
-                        TrieSet<String> commandsAndFiles, Trie<Command> commands,
-                        Trie<FilePos> labelDefs, TrieSet<FilePos> labelRefs, TrieSet<FilePos> bibRefs, ArrayList<StructureEntry> structure, HashSet<String> done) {
+  private void parseTex(File directory, String fileName, HashSet<String> done) {
     if (done.contains(fileName)) return;
     else done.add(fileName);
 
-    File file = new File(directory, fileName);
+	  File file = new File(directory, fileName);
     if (!file.exists()) file = new File(directory, fileName + ".tex");
     if (!file.exists()) return;
 
-	  files.add(file);
+	  buildingState.files.add(file);
+
+	  ArrayList<StructureEntry> structure = buildingState.structureStack;
 
     String tex;
     String fileCanonicalPath;
@@ -212,7 +193,7 @@ public class BackgroundParser extends Thread {
 	        if (commentString.length() > matcher.start() + 5) {
             todoMsg = commentString.substring(matcher.start() + 5);
 	        }
-          todos.add(new TODO(todoMsg, file, line));
+          buildingState.todos.add(new TODO(todoMsg, file, line));
         }
         continue;
       }
@@ -235,8 +216,8 @@ public class BackgroundParser extends Thread {
 
       // the command
       String command = tex.substring(begin, index);
-      commandNames.add(command);
-	    commandsAndFiles.add(command, file.getAbsolutePath());
+      buildingState.commandNames.add(command);
+	    buildingState.commandsAndFiles.add(command, file.getAbsolutePath());
 
       // newcommand
       if (command.equals("newcommand") || command.equals("renewcommand") || command.equals("DeclareRobustCommand")) {
@@ -264,12 +245,12 @@ public class BackgroundParser extends Thread {
 	      } catch (StringIndexOutOfBoundsException ignored) {
 	      }
         name = name.substring(1);
-        commands.add(name, new Command(name, fileCanonicalPath, line, numberOfArgs, optional, body));
-	      commandsAndFiles.add(name, file.getAbsolutePath());
+        buildingState.commands.add(name, new Command(name, fileCanonicalPath, line, numberOfArgs, optional, body));
+	      buildingState.commandsAndFiles.add(name, file.getAbsolutePath());
 	      // commandNames.add(name);
       // label, input, include
       } else if (command.equals("label") || command.equals("bibliography") || command.equals("input") || command.equals("include") ||
-	               command.equals("ref") || command.equals("cite")) {
+	               command.equals("ref") || command.equals("cite") || command.equals("usepackage")) {
         String optionalArgument = null;
         if(tex.charAt(index) == '[') {
           optionalArgument = ParseUtil.parseBalanced(tex, index+1, ']');
@@ -278,18 +259,33 @@ public class BackgroundParser extends Thread {
         String argument = ParseUtil.parseBalanced(tex, index+1, '}');
 
         if (command.equals("label")) {
-          labelDefs.add(argument, new FilePos(argument, fileCanonicalPath, line));
+          buildingState.labelDefs.add(argument, new FilePos(argument, fileCanonicalPath, line));
         } else if (command.equals("ref")) {
-          labelRefs.add(argument, new FilePos(argument, fileCanonicalPath, line));
+          buildingState.labelRefs.add(argument, new FilePos(argument, fileCanonicalPath, line));
+        } else if (command.equals("documentclass")) {
+	        String[] options = new String[0];
+	        if (optionalArgument != null) {
+	          options = optionalArgument.split(",");
+	        }
+					buildingState.documentClass = new DocumentClass(argument, fileCanonicalPath, line, options);
+        } else if (command.equals("usepackage")) {
+	        String[] packageNames = argument.split(",");
+	        String[] options = new String[0];
+	        if (optionalArgument != null) {
+	          options = optionalArgument.split(",");
+	        }
+	        for (String packageName : packageNames) {
+		        buildingState.packages.add(packageName, new Package(packageName, fileCanonicalPath, line, options));
+	        }
         } else if (command.equals("cite")) {
           argument = argument.replaceAll("(?:\\{|\\})", "");
           for(String ref : argument.split(",")) {
-            bibRefs.add(ref.trim(), new FilePos(ref.trim(), fileCanonicalPath, line));
+            buildingState.bibRefs.add(ref.trim(), new FilePos(ref.trim(), fileCanonicalPath, line));
           }
         } else if (command.equals("bibliography")) {
-          parseBib(directory, Command.unfoldRecursive(argument, commands, 10));
+          parseBib(directory, Command.unfoldRecursive(argument, buildingState.commands, 10));
         } else {
-          parseTex(directory, Command.unfoldRecursive(argument, commands, 10), files, words, commandNames, commandsAndFiles, commands, labelDefs, labelRefs, bibRefs, structure, done);
+          parseTex(directory, Command.unfoldRecursive(argument, buildingState.commands, 10), done);
         }
       // sections
       } else if (command.equals("chapter") || command.equals("section") || command.equals("subsection") || command.equals("subsubsection")) {
@@ -319,7 +315,7 @@ public class BackgroundParser extends Thread {
     // collect words
     Matcher matcher = WORD_PATTERN.matcher(tex);
     while (matcher.find()) {
-      words.add(matcher.group());
+      buildingState.words.add(matcher.group());
     }
   }
 
@@ -327,19 +323,24 @@ public class BackgroundParser extends Thread {
 		// TODO: consider jle.getCurrentContent(file) to get last version
     if (!fileName.endsWith(".bib")) fileName = fileName + ".bib";
     File bibFile = new File(directory, fileName);
-    if (bibFile.lastModified() == bibModified) return;
+    if (bibFile.lastModified() == bibModified) {
+	    buildingState.bibEntries = stableState.bibEntries;
+	    buildingState.bibKeys2bibEntries = stableState.bibKeys2bibEntries;
+	    buildingState.bibWords2bibEntries = stableState.bibWords2bibEntries;
+	    return;
+    }
     bibModified = bibFile.lastModified();
 
-    bibEntries = BibParser.parseBib(bibFile);
-	  bibKeys2bibEntries = new Trie<FilePos<BibEntry>>();
-	  for (FilePos<BibEntry> bibEntry : bibEntries) {
-		  bibKeys2bibEntries.add(bibEntry.getName(), bibEntry);
+    buildingState.bibEntries = BibParser.parseBib(bibFile);
+	  buildingState.bibKeys2bibEntries = new Trie<FilePos<BibEntry>>();
+	  for (FilePos<BibEntry> bibEntry : buildingState.bibEntries) {
+		  buildingState.bibKeys2bibEntries.add(bibEntry.getName(), bibEntry);
 	  }
-	  bibWords2bibEntries = new TrieSet<BibEntry>();
-	  for (FilePos<BibEntry> filePos : bibEntries) {
+	  buildingState.bibWords2bibEntries = new TrieSet<BibEntry>();
+	  for (FilePos<BibEntry> filePos : buildingState.bibEntries) {
 		  BibEntry bibEntry = filePos.element;
-		  bibWords2bibEntries.add(bibEntry.getEntryName().toLowerCase(), bibEntry);
-		  bibWords2bibEntries.add(bibEntry.getYear(), bibEntry);
+		  buildingState.bibWords2bibEntries.add(bibEntry.getEntryName().toLowerCase(), bibEntry);
+		  buildingState.bibWords2bibEntries.add(bibEntry.getYear(), bibEntry);
 
 		  addBibWords(bibEntry.getAuthors().toLowerCase(), bibEntry);
 		  addBibWords(bibEntry.getTitle().toLowerCase(), bibEntry);
@@ -351,7 +352,7 @@ public class BackgroundParser extends Thread {
 		Matcher matcher = WORD_PATTERN.matcher(authors);
 		while (matcher.find()) {
 			String author = matcher.group();
-			bibWords2bibEntries.add(author, bibEntry);
+			buildingState.bibWords2bibEntries.add(author, bibEntry);
 		}
 	}
 
@@ -361,7 +362,7 @@ public class BackgroundParser extends Thread {
 
 		if (keys.size() > 0) {
 			int count = keys.size() < 2 ? 10 : 100;
-			List<BibEntry> selectedEntries = bibWords2bibEntries.getObjects(keys.get(0), count);
+			List<BibEntry> selectedEntries = stableState.bibWords2bibEntries.getObjects(keys.get(0), count);
 
 			if (selectedEntries != null) {
 				for (BibEntry entry : selectedEntries) {
@@ -377,7 +378,7 @@ public class BackgroundParser extends Thread {
 				}
 			}
 		} else {
-			return bibWords2bibEntries.getObjects("", 10);
+			return stableState.bibWords2bibEntries.getObjects("", 10);
 		}
 
     return entries;
@@ -394,7 +395,7 @@ public class BackgroundParser extends Thread {
 	 * @return true if the file is referenced by the master document
 	 */
 	public boolean isResponsibleFor(File file) {
-		return files.contains(file);
+		return stableState.files.contains(file);
 	}
 
 	public static class TODO {
@@ -466,4 +467,24 @@ public class BackgroundParser extends Thread {
       return depth;
     }
   }
+
+	class ParserState {
+		DocumentClass documentClass;
+		HashSet<File> files = new HashSet<File>();
+	  Trie words = new Trie();
+	  Trie<Package> packages = new Trie<Package>();
+	  Trie commandNames = new Trie();
+	  TrieSet<String> commandsAndFiles = new TrieSet<String>();
+	  Trie<Command> commands = new Trie<Command>();
+	  Trie<FilePos> labelDefs = new Trie<FilePos>();
+		TrieSet<FilePos> labelRefs = new TrieSet<FilePos>();
+		Trie<FilePos<BibEntry>> bibKeys2bibEntries = new Trie<FilePos<BibEntry>>();
+		ArrayList<FilePos<BibEntry>> bibEntries = new ArrayList<FilePos<BibEntry>>();
+		TrieSet<BibEntry> bibWords2bibEntries = new TrieSet<BibEntry>();
+	  TrieSet<FilePos> bibRefs = new TrieSet<FilePos>();
+
+		ArrayList<StructureEntry> structureStack = new ArrayList<StructureEntry>();
+
+	  ArrayList<TODO> todos = new ArrayList<TODO>();
+	}
 }
