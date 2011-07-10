@@ -77,7 +77,7 @@ public class PackagesExtractor {
 				commands.add(name, command);
 			} else
 			if (localName.equals("package")) {
-				pack = new Package(attrList.getValue("name"), attrList.getValue("title"), attrList.getValue("description"), attrList.getValue("debPackage"));
+				pack = new Package(attrList.getValue("name"), attrList.getValue("options"), attrList.getValue("requiresPackages"), attrList.getValue("title"), attrList.getValue("description"), attrList.getValue("debPackage"));
 				packages.add(pack.name, pack);
 			}
 		}
@@ -105,12 +105,20 @@ public class PackagesExtractor {
 
 	public static class Package implements Comparable<Package> {
 		private String name;
+		private String[] options = new String[0];
+		private String[] requiresPackages = new String[0];
 		private String title;
 		private String description;
 		private String debPackage;
 
-		public Package(String name, String title, String description, String debPackage) {
+		public Package(String name, String optionsList, String requiresPackagesList, String title, String description, String debPackage) {
 			this.name = name;
+			if (optionsList != null) {
+				options = optionsList.split(",");
+			}
+			if (requiresPackagesList != null) {
+				requiresPackages = requiresPackagesList.split(",");
+			}
 			this.title = title;
 			this.description = description;
 			this.debPackage = debPackage;
@@ -132,6 +140,14 @@ public class PackagesExtractor {
 
 		public String getName() {
 			return name;
+		}
+
+		public String[] getOptions() {
+			return options;
+		}
+
+		public String[] getRequiresPackages() {
+			return requiresPackages;
 		}
 
 		public String getTitle() {
