@@ -43,15 +43,15 @@ public class PackageImportSuggester implements CodeAssistant, SCEPopup.ItemHandl
 		HashSet<PackagesExtractor.Command> commands = PackagesExtractor.getPackageParser().getCommands().get(commandName);
 
 		// build up lists of imported and importable packages providing the command
-		ArrayList<String> importablePackages = new ArrayList<String>();
-		ArrayList<String> importedPackages = new ArrayList<String>();
+		ArrayList<PackagesExtractor.Package> importablePackages = new ArrayList<PackagesExtractor.Package>();
+		ArrayList<PackagesExtractor.Package> importedPackages = new ArrayList<PackagesExtractor.Package>();
 		for (PackagesExtractor.Command command : commands) {
-			String packageName = command.getPack().getName();
-			if (!importedPackages.contains(packageName) && !importablePackages.contains(packageName)) {
-				if (SCEManager.getBackgroundParser().getPackages().contains(packageName)) {
-					importedPackages.add(packageName);
+			PackagesExtractor.Package pack = command.getPack();
+			if (!importedPackages.contains(pack) && !importablePackages.contains(pack)) {
+				if (SCEManager.getBackgroundParser().getPackages().contains(pack.getName())) {
+					importedPackages.add(pack);
 				} else {
-					importablePackages.add(packageName);
+					importablePackages.add(pack);
 				}
 			}
 		}
@@ -59,10 +59,11 @@ public class PackageImportSuggester implements CodeAssistant, SCEPopup.ItemHandl
 		Collections.sort(importablePackages);
 
 		ArrayList<Object> importPackages = new ArrayList<Object>();
-		for (String pack : importedPackages) {
-			importPackages.add("<html><body bgcolor='#404040'><font color='#808080'>package</font> <font color='#ffffff'>" + pack + "</font> <font color='#808080'>already imported</font></s>");
+		for (PackagesExtractor.Package pack : importedPackages) {
+			String descString = pack.getDescription() != null ? pack.getDescription() : "";
+			importPackages.add("<html><body bgcolor='#404040'><table><tr><td width='200'><font color='#A0A0A0'>package</font> <font color='#ffffff'>" + pack.getName() + "</font> <font color='#A0A0A0'>already imported</font></td><td width='300'>" + descString);
 		}
-		for (String pack : importablePackages) {
+		for (PackagesExtractor.Package pack : importablePackages) {
 			importPackages.add(new ImportPackage(pack));
 		}
 
@@ -73,7 +74,7 @@ public class PackageImportSuggester implements CodeAssistant, SCEPopup.ItemHandl
 	public void perform(Object item) {
 	  if (item instanceof ImportPackage) {
 		  ImportPackage importPackage = (ImportPackage) item;
-		  importPackage(importPackage.name);
+		  importPackage(importPackage.pack.getName());
 	  }
 	}
 
@@ -120,15 +121,17 @@ public class PackageImportSuggester implements CodeAssistant, SCEPopup.ItemHandl
 // inner classes
 
 	private class ImportPackage {
-	  String name;
+	  PackagesExtractor.Package pack;
 
-	  ImportPackage(String name) {
-	    this.name = name;
+	  ImportPackage(PackagesExtractor.Package pack) {
+	    this.pack = pack;
 	  }
 
 	  @Override
 	  public String toString() {
-	    return "<html><body><font color='#808080'>import package</font> " + name;
+		  String descString = pack.getDescription() != null ? pack.getDescription() : "";
+
+		  return "<html><body><table><tr><td width='200'><font color='#808080'>import package</font> " + pack.getName() + "</td><td width='300'>" + descString;
 	  }
 	}
 }
