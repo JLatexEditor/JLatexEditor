@@ -16,20 +16,26 @@ import scala.collection.JavaConversions._
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 object  PackageUsageCounter {
+	val FILE_NAME = "packageUsageCounts.properties"
 	val CODE_SEARCH_FEEDS_URL = "https://www.google.com/codesearch/feeds/search?"
 	val codeSearchService = new CodeSearchService("gdata-sample-codesearch")
 
-	def main(args: Array[String]) {
-		val packages = (XML.loadFile("packages.xml") \ "package").map(node => (node \ "@name").text).sortBy(x => x).distinct
-
+	lazy val packages2usageCount = {
 		val properties = new Properties()
-		properties.load(new FileInputStream("packageUsageCounts.properties"))
+		properties.load(new FileInputStream(FILE_NAME))
 		val lastValue = new HashMap[String, String]()
 		for (entry <- properties.entrySet()) {
 			lastValue += entry.getKey.toString -> entry.getValue.toString
 		}
+		lastValue
+	}
 
-		val out = new PrintStream("packageUsageCounts.properties");
+	def main(args: Array[String]) {
+		val packages = (XML.loadFile("packages.xml") \ "package").map(node => (node \ "@name").text).sortBy(x => x).distinct
+
+		val lastValue = packages2usageCount
+
+		val out = new PrintStream(FILE_NAME);
 
 		try {
 			for (pack <- packages) {
