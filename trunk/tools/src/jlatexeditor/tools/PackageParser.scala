@@ -5,11 +5,14 @@ import utils.ic.InputStream._
 import java.io._
 import collection.mutable._
 import org.apache.commons.lang.StringEscapeUtils
+import javax.management.remote.rmi._RMIConnection_Stub
 
 /**
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 object PackageParser {
+	val DeclareOption = ".*\\\\DeclareOption\\s*\\{([^\\}]+)}".r
+	val RequirePackage = ".*\\\\RequirePackage\\s*\\{([^\\}]+)}".r
 	val Def = ".*\\\\def\\s*\\\\(\\w+)([#\\[\\]\\d]*)\\s*\\{.*".r
 	val DefArgCount = "#+".r
 	val NewCommand = ".*\\\\newcommand\\{?\\\\(\\w+)\\}?(?:\\[(\\d+)\\])?(?:\\[([^\\]]+)\\])?.*".r
@@ -24,7 +27,7 @@ object PackageParser {
 		val map = new HashMap[String, CtanPackInfo]
 
 		new File("ctan-packages.txt").readLines.foreach( _ match {
-			case CtanPackSplit(title, desc) => map += title.toLowerCase -> new CtanPackInfo(title, desc.replace("\\.$", ""))
+			case CtanPackSplit(title, desc) => map += title.toLowerCase -> new CtanPackInfo(title, desc.trim().replace("\\.$", ""))
 		})
 
 		map
@@ -73,9 +76,11 @@ object PackageParser {
 		val out = new PrintStream(file)
 		out.println("<packages>")
 		for (pack <- packages) {
+			val optionsPackString = if(pack.options.isEmpty) "" else " options=\"" + pack.options.mkString(",") + "\"";
+			val requiresPackagesString = if(pack.requiresPackages.isEmpty) "" else " requiresPackages=\"" + pack.requiresPackages.mkString(",") + "\"";
 			val ctanPackString = pack.ctanPackInfo.map( pack => " title=\"" + escape(pack.title) + "\" description=\"" + escape(pack.desc) + "\"").getOrElse("")
 			val debPackageString = pack.debPackage.map( pack => " debPackage=\"" + pack.name + "\"").getOrElse("")
-			out.println("  <package name=\"" + pack.name + "\"" + ctanPackString + debPackageString + ">")
+			out.println("  <package name=\"" + pack.name + "\"" + optionsPackString + requiresPackagesString + ctanPackString + debPackageString + ">")
 			for (command <- pack.commands.values) {
 				val optArgString = if (command.optionalArgs.isEmpty) "" else " optionalArg=\"" + escape(command.optionalArgs(0)) + "\""
 				out.println("    <command name=\"" + command.name + "\" argCount=\"" + command.argCount + "\"" + optArgString + " />")
@@ -116,6 +121,10 @@ object PackageParser {
 	def parseFile (pack: Package, file: File) {
 		for(line <- file.readLines) {
 			line match {
+				case DeclareOption(option) =>
+					pack.options += option
+				case RequirePackage(packList) =>
+					pack.requiresPackages ++= packList.split(",").toList.map(_.trim())
 				case Def(cmd, args) =>
 					pack.commands += cmd -> new Command(pack, cmd, DefArgCount.findAllIn(args).size)
 				case NewCommand(cmd, args, optArg) =>
@@ -178,7 +187,8 @@ object PackageParser {
 
 	class Command(val pack: Package, val name: String, val argCount: Int, val optionalArgs: List[String] = List())
 	class Environment(val pack: Package, val name: String, val argCount: Int, val optionalArgs: List[String] = List())
-	class Package(val file: File, val cls: Boolean, val name: String,
+	class Package(val file: File, val cls: Boolean, val name: String, val options: LinkedHashSet[String] = new LinkedHashSet[String],
+								val requiresPackages: HashSet[String] = new HashSet[String],
 	              val commands: LinkedHashMap[String, Command] = new LinkedHashMap[String, Command],
 	              val environments: LinkedHashMap[String, Environment] = new LinkedHashMap[String, Environment]) {
 		val debPackage = try {
