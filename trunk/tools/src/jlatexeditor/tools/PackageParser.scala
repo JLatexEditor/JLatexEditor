@@ -124,7 +124,7 @@ object PackageParser {
 				case DeclareOption(option) =>
 					pack.options += option
 				case RequirePackage(packList) =>
-					pack.requiresPackages ++= packList.split(",").toList.map(_.trim())
+					pack.requiresPackages ++= packList.split(",").toList.map(_.trim()).filterNot(_.contains("<"))
 				case Def(cmd, args) =>
 					pack.commands += cmd -> new Command(pack, cmd, DefArgCount.findAllIn(args).size)
 				case NewCommand(cmd, args, optArg) =>
