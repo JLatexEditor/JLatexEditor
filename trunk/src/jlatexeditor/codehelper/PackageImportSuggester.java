@@ -9,10 +9,7 @@ import sce.component.SCEPane;
 import sce.component.SourceCodeEditor;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * Package import suggester.
@@ -61,21 +58,57 @@ public class PackageImportSuggester implements CodeAssistant, SCEPopup.ItemHandl
 		HashSet<PackagesExtractor.Command> commands = PackagesExtractor.getPackageParser().getCommands().get(commandName);
 
 		if (commands != null) {
+			// build HashSet with all packages directly and indirectly imported in this document
+			HashSet<PackagesExtractor.Package> directlyImportedPackagesHash = new HashSet<PackagesExtractor.Package>();
+			HashSet<PackagesExtractor.Package> indirectlyImportedPackagesHash = new HashSet<PackagesExtractor.Package>();
+			for (Package pack : backgroundParser.getPackages()) {
+				PackagesExtractor.Package aPackage = PackagesExtractor.getPackageParser().getPackages().get(pack.getName());
+				if (aPackage != null) {
+					directlyImportedPackagesHash.add(aPackage);
+					aPackage.addRequiredPackagesRecursively(indirectlyImportedPackagesHash);
+				}
+			}
+
+			// build HashSet with all packages directly or indirectly providing the given command
+			HashSet<PackagesExtractor.Package> dependentPackagesHash = new HashSet<PackagesExtractor.Package>();
+			for (PackagesExtractor.Command command : commands) {
+				command.getPack().addDependantPackagesRecursively(dependentPackagesHash);
+			}
+
 			// build up lists of imported and importable packages providing the command
 			ArrayList<PackagesExtractor.Package> importablePackages = new ArrayList<PackagesExtractor.Package>();
 			ArrayList<PackagesExtractor.Package> importedPackages = new ArrayList<PackagesExtractor.Package>();
+			for (PackagesExtractor.Package pack : dependentPackagesHash) {
+				if (indirectlyImportedPackagesHash.contains(pack)) {
+					importedPackages.add(pack);
+				} else {
+					importablePackages.add(pack);
+				}
+			}
+			/*
 			for (PackagesExtractor.Command command : commands) {
 				PackagesExtractor.Package pack = command.getPack();
-				if (!importedPackages.contains(pack) && !importablePackages.contains(pack)) {
-					if (backgroundParser.getPackages().contains(pack.getName())) {
-						importedPackages.add(pack);
-					} else {
-						importablePackages.add(pack);
+				for (PackagesExtractor.Package depPack : pack.getDependantPackagesRecursively()) {
+					if (!importedPackages.contains(depPack) && !importablePackages.contains(depPack)) {
+						if (backgroundParser.getPackages().contains(pack.getName())) {
+							importedPackages.add(pack);
+						} else {
+							importablePackages.add(pack);
+						}
 					}
 				}
 			}
-			Collections.sort(importedPackages);
-			Collections.sort(importablePackages);
+			*/
+			Comparator<PackagesExtractor.Package> comparator = new Comparator<PackagesExtractor.Package>() {
+				@Override
+				public int compare(PackagesExtractor.Package o1, PackagesExtractor.Package o2) {
+					if (o1.getUsageCount() > o2.getUsageCount()) return -1;
+					if (o1.getUsageCount() == o2.getUsageCount()) return o1.getName().compareToIgnoreCase(o2.getName());
+					return 1;
+				}
+			};
+			Collections.sort(importedPackages, comparator);
+			Collections.sort(importablePackages, comparator);
 
 			for (PackagesExtractor.Package pack : importedPackages) {
 				String descString = pack.getDescription() != null ? pack.getDescription() : "";
