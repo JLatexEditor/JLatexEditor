@@ -250,7 +250,7 @@ public class BackgroundParser extends Thread {
 	      // commandNames.add(name);
       // label, input, include
       } else if (command.equals("label") || command.equals("bibliography") || command.equals("input") || command.equals("include") ||
-	               command.equals("ref") || command.equals("cite") || command.equals("usepackage")) {
+	               command.equals("ref") || command.equals("cite") || command.equals("documentclass") || command.equals("usepackage")) {
         String optionalArgument = null;
         if(tex.charAt(index) == '[') {
           optionalArgument = ParseUtil.parseBalanced(tex, index+1, ']');

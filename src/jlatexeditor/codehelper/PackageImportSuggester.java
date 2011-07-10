@@ -71,7 +71,7 @@ public class PackageImportSuggester implements CodeAssistant, SCEPopup.ItemHandl
 	}
 
 	private void importPackage(String packageName) {
-		Package lastPackagePos = getLastPackagePos();
+		BackgroundParser.FilePos lastPackagePos = getLastPackagePos();
 
 		SourceCodeEditor<Doc> editor = jle.getEditor(new Doc.FileDoc(new File(lastPackagePos.getFile())));
 		SCEPane pane = editor.getTextPane();
@@ -85,19 +85,28 @@ public class PackageImportSuggester implements CodeAssistant, SCEPopup.ItemHandl
 		//jle.open(activeEditor.getResource(), 0);
 	}
 
-	private Package getLastPackagePos() {
-		Package lastPackage = null;
+	private BackgroundParser.FilePos getLastPackagePos() {
+		BackgroundParser.FilePos lastPos = null;
+
+		// determine last position of \\usepackage
 		for (Package pack : SCEManager.getBackgroundParser().getPackages().getObjectsIterable("")) {
-			if (lastPackage == null || pack.getLineNr() > lastPackage.getLineNr()) {
-				lastPackage = pack;
+			if (lastPos == null || pack.getLineNr() > lastPos.getLineNr()) {
+				lastPos = pack;
 			}
 		}
 
-		// TODO
-		if (lastPackage == null) {
+		if (lastPos == null) {
+			// determine position of \documentclass
+			lastPos = SCEManager.getBackgroundParser().getDocumentClass();
 		}
 
-		return lastPackage;
+		if (lastPos == null) {
+			// return first line of main document
+			SourceCodeEditor<Doc> mainEditor = SCEManager.getInstance().getMainEditor();
+			lastPos = new BackgroundParser.FilePos(mainEditor.getName(), mainEditor.getFile().getAbsolutePath(), -1);
+		}
+
+		return lastPos;
 	}
 
 
