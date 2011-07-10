@@ -4,7 +4,11 @@ import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 import util.StreamUtils;
+import util.Trie;
 import util.TrieSet;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
@@ -20,10 +24,17 @@ public class PackagesExtractor {
 		try {
 			long startTime = System.nanoTime();
 
-			packageParser = new PackageParser(PACKAGES_FILE);
-			docClassesParser = new PackageParser(DOCCLASSES_FILE);
+			packageParser = getPackageParser();
+			docClassesParser = getDocClassesParser();
+
+			Package graphics = packageParser.getPackages().get("graphics");
+			for (Package dependantPackage : graphics.getDependantPackagesRecursively()) {
+				System.out.println(dependantPackage.getName());
+			}
 
 			System.out.println((System.nanoTime() - startTime) / (1000 * 1000));
+			System.out.println();
+			System.out.println(graphics.getDependantPackagesRecursively().size());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -32,6 +43,10 @@ public class PackagesExtractor {
 	public static PackageParser getPackageParser() {
 		if (packageParser == null) {
 			packageParser = new PackageParser(PACKAGES_FILE);
+
+			// long time = System.nanoTime();
+			packageParser.finalizePackages();
+			// System.out.println((System.nanoTime() - time) / 1000 / 1000);
 		}
 		return packageParser;
 	}
@@ -49,7 +64,7 @@ public class PackagesExtractor {
 	public static class PackageParser extends DefaultHandler implements ContentHandler {
 		private Package pack;
 		private String debPack;
-		private TrieSet<Package> packages = new TrieSet<Package>();
+		private Trie<Package> packages = new Trie<Package>();
 		private TrieSet<Command> commands = new TrieSet<Command>();
 
 		public PackageParser(String fileName) {
@@ -94,19 +109,27 @@ public class PackagesExtractor {
 			super.fatalError(e);
 		}
 
-		public TrieSet<Package> getPackages() {
+		public Trie<Package> getPackages() {
 			return packages;
 		}
 
 		public TrieSet<Command> getCommands() {
 			return commands;
 		}
+
+		protected void finalizePackages() {
+			for (Package pack : packages) {
+				pack.finalizePackage();
+			}
+		}
 	}
 
 	public static class Package implements Comparable<Package> {
 		private String name;
 		private String[] options = new String[0];
-		private String[] requiresPackages = new String[0];
+		private String[] requiresPackageNames = new String[0];
+		private ArrayList<Package> requiresPackages = null;
+		private ArrayList<Package> dependantPackages = new ArrayList<Package>();
 		private String title;
 		private String description;
 		private String debPackage;
@@ -117,7 +140,7 @@ public class PackagesExtractor {
 				options = optionsList.split(",");
 			}
 			if (requiresPackagesList != null) {
-				requiresPackages = requiresPackagesList.split(",");
+				requiresPackageNames = requiresPackagesList.split(",");
 			}
 			this.title = title;
 			this.description = description;
@@ -146,8 +169,37 @@ public class PackagesExtractor {
 			return options;
 		}
 
-		public String[] getRequiresPackages() {
+		public ArrayList<Package> getRequiresPackages() {
+			if (requiresPackages == null) {
+				requiresPackages = new ArrayList<Package>();
+				for (String packageName : requiresPackageNames) {
+					Package pack = getPackageParser().getPackages().get(packageName);
+					if (pack != null) {
+						requiresPackages.add(pack);
+					}
+				}
+				// free memory
+				requiresPackageNames = null;
+			}
 			return requiresPackages;
+		}
+
+		public ArrayList<Package> getDependantPackages() {
+			return dependantPackages;
+		}
+
+		public HashSet<Package> getDependantPackagesRecursively() {
+			return addDependantPackagesRecursively(new HashSet<Package>());
+		}
+
+		public HashSet<Package> addDependantPackagesRecursively(HashSet<Package> depPackages) {
+			if (!depPackages.contains(this)) {
+				depPackages.add(this);
+				for (Package dependantPackage : dependantPackages) {
+					dependantPackage.addDependantPackagesRecursively(depPackages);
+				}
+			}
+			return depPackages;
 		}
 
 		public String getTitle() {
@@ -165,6 +217,12 @@ public class PackagesExtractor {
 		@Override
 		public int compareTo(Package that) {
 			return this.name.compareTo(that.name);
+		}
+
+		public void finalizePackage() {
+			for (Package pack : getRequiresPackages()) {
+				pack.dependantPackages.add(this);
+			}
 		}
 	}
 
