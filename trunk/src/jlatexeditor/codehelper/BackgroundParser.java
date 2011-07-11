@@ -2,6 +2,7 @@ package jlatexeditor.codehelper;
 
 import jlatexeditor.Doc;
 import jlatexeditor.JLatexEditorJFrame;
+import jlatexeditor.PackagesExtractor;
 import sce.component.AbstractResource;
 import sce.component.SourceCodeEditor;
 import util.ParseUtil;
@@ -60,8 +61,22 @@ public class BackgroundParser extends Thread {
 		return stableState.documentClass;
 	}
 
+	/**
+	 * Returns all imported packages as Trie.
+	 *
+	 * @return all imported packages as Trie
+	 */
 	public Trie<Package> getPackages() {
 		return stableState.packages;
+	}
+
+	/**
+	 * Returns a HashSet with all directly and indirectly imported packages.
+	 *
+	 * @return HashSet with all directly and indirectly imported packages
+	 */
+	public HashSet<PackagesExtractor.Package> getIndirectlyImportedPackages() {
+		return stableState.getIndirectlyImportedPackages();
 	}
 
 	public Trie<?> getCommandNames() {
@@ -486,5 +501,27 @@ public class BackgroundParser extends Thread {
 		ArrayList<StructureEntry> structureStack = new ArrayList<StructureEntry>();
 
 	  ArrayList<TODO> todos = new ArrayList<TODO>();
+
+		private HashSet<PackagesExtractor.Package> indirectlyImportedPackages = null;
+
+		public HashSet<PackagesExtractor.Package> getIndirectlyImportedPackages() {
+			if (indirectlyImportedPackages == null) {
+				// evaluate lazy value
+				indirectlyImportedPackages = new HashSet<PackagesExtractor.Package>();
+				// add packages directly or indirectly imported by imported packages
+				for (Package pack : packages) {
+					PackagesExtractor.Package aPackage = PackagesExtractor.getPackageParser().getPackages().get(pack.getName());
+					if (aPackage != null) {
+						aPackage.addRequiredPackagesRecursively(indirectlyImportedPackages);
+					}
+				}
+				// add packages directly or indirectly imported by documentclass
+				if (documentClass != null) {
+					PackagesExtractor.Package aPackage = PackagesExtractor.getDocClassesParser().getPackages().get(documentClass.getName());
+					aPackage.addRequiredPackagesRecursively(indirectlyImportedPackages);
+				}
+			}
+			return indirectlyImportedPackages;
+		}
 	}
 }

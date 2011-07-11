@@ -66,6 +66,7 @@ public class PackagesExtractor {
 		private String debPack;
 		private Trie<Package> packages = new Trie<Package>();
 		private TrieSet<Command> commands = new TrieSet<Command>();
+		private TrieSet<Environment> environments = new TrieSet<Environment>();
 
 		public PackageParser(String fileName) {
 			parse(fileName);
@@ -91,6 +92,13 @@ public class PackagesExtractor {
 				Command command = new Command(name, argCount, optionalArg, pack);
 				commands.add(name, command);
 			} else
+			if (localName.equals("environment")) {
+				String name = attrList.getValue("name");
+				int argCount = Integer.parseInt(attrList.getValue("argCount"));
+				String optionalArg = attrList.getValue("optionalArg");
+				Environment environment = new Environment(name, argCount, optionalArg, pack);
+				environments.add(name, environment);
+			} else
 			if (localName.equals("package")) {
 				pack = new Package(attrList.getValue("name"), attrList.getValue("options"), attrList.getValue("requiresPackages"), attrList.getValue("title"), attrList.getValue("description"), attrList.getValue("debPackage"), attrList.getValue("usageCount"));
 				packages.add(pack.name, pack);
@@ -115,6 +123,10 @@ public class PackagesExtractor {
 
 		public TrieSet<Command> getCommands() {
 			return commands;
+		}
+
+		public TrieSet<Environment> getEnvironments() {
+			return environments;
 		}
 
 		protected void finalizePackages() {
@@ -248,13 +260,13 @@ public class PackagesExtractor {
 		}
 	}
 
-	public static class Command implements Comparable<Command> {
-		private String name;
-		private int argCount;
-		private String optionalArg;
-		private Package pack;
+	public abstract static class ComEnv implements Comparable<ComEnv> {
+		protected String name;
+		protected int argCount;
+		protected String optionalArg;
+		protected Package pack;
 
-		public Command(String name, int argCount, String optionalArg, Package pack) {
+		public ComEnv(String name, int argCount, String optionalArg, Package pack) {
 			this.name = name;
 			this.argCount = argCount;
 			this.optionalArg = optionalArg;
@@ -263,8 +275,8 @@ public class PackagesExtractor {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (obj instanceof Command) {
-				Command that = (Command) obj;
+			if (obj instanceof ComEnv) {
+				ComEnv that = (ComEnv) obj;
 				return this.name.equals(that.name) && this.pack.equals(that.pack);
 			}
 			return false;
@@ -292,8 +304,20 @@ public class PackagesExtractor {
 		}
 
 		@Override
-		public int compareTo(Command that) {
+		public int compareTo(ComEnv that) {
 			return this.name.compareTo(that.name);
+		}
+	}
+
+	public static class Command extends ComEnv {
+		public Command(String name, int argCount, String optionalArg, Package pack) {
+			super(name, argCount, optionalArg, pack);
+		}
+	}
+
+	public static class Environment extends ComEnv {
+		public Environment(String name, int argCount, String optionalArg, Package pack) {
+			super(name, argCount, optionalArg, pack);
 		}
 	}
 }
