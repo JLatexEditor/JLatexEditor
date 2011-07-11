@@ -160,8 +160,9 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
   public void keyTyped(KeyEvent e) {
     if (e.isConsumed()) return;
 
-    if (allowedChars.indexOf(e.getKeyChar()) == -1) return;
+    //if (allowedChars.indexOf(e.getKeyChar()) == -1) return;
     if (e.isControlDown() || e.isAltDown() || e.isMetaDown()) return;
+	  if (Character.isISOControl(e.getKeyChar())) return;
 
     if (document.hasSelection()) removeSelection();
     document.insert(e.getKeyChar() + "", caret.getRow(), caret.getColumn());
@@ -506,7 +507,7 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
 		public static ActionMap getActionMap() {
 			ActionMap am = new ActionMap();
 			add(am, MOVE_VIEW_UP, MOVE_VIEW_UP_SHIFT, MOVE_VIEW_DOWN, MOVE_VIEW_DOWN_SHIFT,
-				JUMP_LEFT, JUMP_LEFT_SHIFT, JUMP_RIGHT, JUMP_RIGHT_SHIFT, JUMP_TO_FRONT, JUMP_TO_FRONT_SHIFT, JUMP_TO_END_SHIFT,
+				JUMP_LEFT, JUMP_LEFT_SHIFT, JUMP_RIGHT, JUMP_RIGHT_SHIFT, JUMP_TO_FRONT, JUMP_TO_FRONT_SHIFT, JUMP_TO_END, JUMP_TO_END_SHIFT,
 				REMOVE_LINE, REMOVE_LINE_BEFORE_CARET, REMOVE_LINE_BEHIND_CARET, REMOVE_WORD_BEFORE_CARET, REMOVE_WORD_BEHIND_CARET,
 				COMPLETE);
 			return am;
