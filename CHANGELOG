@@ -9,7 +9,7 @@ New Features and other Changes in JLatexEditor
 == Coming in Version 0.2.2 ==
 
 * new features:
-  - suggestions for package imports via alt+ENTER on undeclared commands
+  - suggestions for package imports via alt+ENTER on undefined commands or environment
   - quick help shows lists of packages and documentclasses providing command under cursor
   - option to create macro from existing LaTeX code via control+shift+M or "LaTeX"->"Extract Command"
 * minor enhancements:

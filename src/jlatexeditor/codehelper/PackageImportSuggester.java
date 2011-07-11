@@ -7,6 +7,7 @@ import sce.codehelper.SCEPopup;
 import sce.codehelper.WordWithPos;
 import sce.component.SCEPane;
 import sce.component.SourceCodeEditor;
+import sun.print.BackgroundLookupListener;
 
 import java.io.File;
 import java.util.*;
@@ -17,7 +18,8 @@ import java.util.*;
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 public class PackageImportSuggester implements CodeAssistant, SCEPopup.ItemHandler {
-	public static final PatternPair wordPattern = new PatternPair("\\\\(\\p{L}*)", "(\\p{L}*)");
+	public static final PatternPair commandPattern = new PatternPair("\\\\(\\p{L}*)", "(\\p{L}*)");
+	public static final PatternPair environmentPattern = new PatternPair("\\\\begin\\{(\\p{L}*)", "(\\p{L}*)\\}");
 
 	private SCEManagerInteraction jle;
 	/** Last misspelled word ant its position in the document. */
@@ -29,13 +31,19 @@ public class PackageImportSuggester implements CodeAssistant, SCEPopup.ItemHandl
 
 	public boolean assistAt(SCEPane pane) {
 	  // get the word under the caret
-	  List<WordWithPos> wordList = wordPattern.find(pane);
+	  List<WordWithPos> wordList = commandPattern.find(pane);
 
-	  if (wordList == null) return false;
+		boolean isCommand = wordList != null;
+
+		if (!isCommand) {
+			wordList = environmentPattern.find(pane);
+
+			if (wordList == null) return false;
+		}
 
 	  wordUnderCaret = wordList.get(0);
-		String commandName = wordUnderCaret.word;
-	  if(commandName.length() == 0) return false;
+		String comEnvName = wordUnderCaret.word;
+	  if(comEnvName.length() == 0) return false;
 
 		ArrayList<Object> suggestionList = new ArrayList<Object>();
 
@@ -43,36 +51,39 @@ public class PackageImportSuggester implements CodeAssistant, SCEPopup.ItemHandl
 		if (backgroundParser.getDocumentClass() != null) {
 			String docClass = backgroundParser.getDocumentClass().getName();
 
-			HashSet<PackagesExtractor.Command> commands = PackagesExtractor.getDocClassesParser().getCommands().get(commandName);
+			HashSet<? extends PackagesExtractor.ComEnv> comEnvs;
+			if (isCommand) {
+				comEnvs = PackagesExtractor.getDocClassesParser().getCommands().get(comEnvName);
+			} else {
+				comEnvs = PackagesExtractor.getDocClassesParser().getEnvironments().get(comEnvName);
+			}
 
-			if (commands != null) {
-				for (PackagesExtractor.Command command : commands) {
-					if (command.getPack().getName().equals(docClass)) {
-						suggestionList.add("<html><body bgcolor='#202080'><table><tr><td width='500'><font color='#ffff00'>already provided</font> <font color='#A0A0A0'>by documentclass</font> <font color='#ffffff'>" + command.getPack().getName());
+			// is document class providing the command / environment
+			if (comEnvs != null) {
+				for (PackagesExtractor.ComEnv comEnv : comEnvs) {
+					if (comEnv.getPack().getName().equals(docClass)) {
+						suggestionList.add("<html><body bgcolor='#202080'><table><tr><td width='500'><font color='#ffff00'>already provided</font> <font color='#A0A0A0'>by documentclass</font> <font color='#ffffff'>" + comEnv.getPack().getName());
 						break;
 					}
 				}
 			}
 		}
 
-		HashSet<PackagesExtractor.Command> commands = PackagesExtractor.getPackageParser().getCommands().get(commandName);
+		HashSet<? extends PackagesExtractor.ComEnv> comEnvs;
+		if (isCommand) {
+			comEnvs = PackagesExtractor.getPackageParser().getCommands().get(comEnvName);
+		} else {
+			comEnvs = PackagesExtractor.getPackageParser().getEnvironments().get(comEnvName);
+		}
 
-		if (commands != null) {
+		if (comEnvs != null) {
 			// build HashSet with all packages directly and indirectly imported in this document
-			HashSet<PackagesExtractor.Package> directlyImportedPackagesHash = new HashSet<PackagesExtractor.Package>();
-			HashSet<PackagesExtractor.Package> indirectlyImportedPackagesHash = new HashSet<PackagesExtractor.Package>();
-			for (Package pack : backgroundParser.getPackages()) {
-				PackagesExtractor.Package aPackage = PackagesExtractor.getPackageParser().getPackages().get(pack.getName());
-				if (aPackage != null) {
-					directlyImportedPackagesHash.add(aPackage);
-					aPackage.addRequiredPackagesRecursively(indirectlyImportedPackagesHash);
-				}
-			}
+			HashSet<PackagesExtractor.Package> indirectlyImportedPackagesHash = backgroundParser.getIndirectlyImportedPackages();
 
 			// build HashSet with all packages directly or indirectly providing the given command
 			HashSet<PackagesExtractor.Package> dependentPackagesHash = new HashSet<PackagesExtractor.Package>();
-			for (PackagesExtractor.Command command : commands) {
-				command.getPack().addDependantPackagesRecursively(dependentPackagesHash);
+			for (PackagesExtractor.ComEnv comEnv : comEnvs) {
+				comEnv.getPack().addDependantPackagesRecursively(dependentPackagesHash);
 			}
 
 			// build up lists of imported and importable packages providing the command
