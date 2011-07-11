@@ -71,15 +71,23 @@ public class SVN {
 
     StringBuilder builder = new StringBuilder();
 
+		int linesCount = 0;
+
     BufferedReader in = new BufferedReader(new InputStreamReader(svn.getInputStream()), 100000);
     try {
       String line, lastLine = null;
       while ((line = in.readLine()) != null) {
-        if (line.startsWith("svn:")) {
-          builder.append("<font color=red><b>" + line + "</b></font><br>");
-        } else {
-          builder.append(line + "<br>");
-        }
+				if (line.startsWith("svn:")) {
+					builder.append("<font color=red><b>" + line + "</b></font><br>");
+				} else {
+					linesCount++;
+		      // limit the number of content lines shown in the svn popup to 30
+					if (linesCount <= 30) {
+						builder.append(line + "<br>");
+					} else if (linesCount == 31) {
+						builder.append("...<br>");
+					}
+				}
         if (line.startsWith("svn: Commit failed")) success = false;
         lastLine = line;
       }
