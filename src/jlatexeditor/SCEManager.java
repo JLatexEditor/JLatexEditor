@@ -106,6 +106,7 @@ public class SCEManager {
     codeHelper.addPatternHelper(new BeamerCodeHelper());
     codeHelper.addPatternHelper(new IncludeCodeHelper());
 	  codeHelper.addPatternHelper(new CommandsCodeHelper());
+	  codeHelper.addPatternHelper(new EnvironmentCodeHelper());
 	  if (backgroundParser != null) {
 	    codeHelper.addPatternHelper(new WordCompletion(backgroundParser));
 	  }
