@@ -1,0 +1,14 @@
+package jlatexeditor.tools
+
+import scala.xml._
+import java.io.PrintStream
+
+/**
+ * Determine how often a package is used via Google Code Search.
+ *
+ * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
+ */
+object CommandUsageCounter extends UsageCounter("commandUsageCounts.properties") {
+	val names = (XML.loadFile("packages.xml") \ "package" \ "command").map(node => (node \ "@name").text).sortBy(x => x).distinct
+	def getCode(name: String) = "\\\\" + name + "\\b"
+}
