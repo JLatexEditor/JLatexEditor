@@ -197,7 +197,7 @@ object PackageParser {
 			case e: FileNotFoundException => None
 		}
 		val ctanPackInfo = ctanPackInfos.get(name.toLowerCase)
-		val usageCount = PackageUsageCounter.packages2usageCount.get(name)
+		val usageCount = PackageUsageCounter.usageCounts.get(name)
 	}
 	class CtanPackInfo(val title: String, val desc: String)
 	class DebPackage(val name: String, val files: MutableList[String])
