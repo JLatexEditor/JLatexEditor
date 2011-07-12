@@ -31,7 +31,7 @@ public class LatexCompiler extends Thread {
   // The listeners
   private ArrayList<LatexCompileListener> compileListeners = new ArrayList<LatexCompileListener>();
 
-  private static Pattern fileLineError = Pattern.compile("((?:[A-Z]:)?[^:]+):([\\d]+):(.*)");
+  private static Pattern fileLineError = Pattern.compile("((?:[A-Z]:)?[^:]+):([\\d]+): (.*)");
 
   // instance
   private static LatexCompiler instance = null;
@@ -151,7 +151,13 @@ public class LatexCompiler extends Thread {
 		      String fileName = errorMatcher.group(1);
 		      error.setFile(SystemUtils.newFile(file.getParentFile(), fileName), fileName);
 		      error.setLine(Integer.parseInt(errorMatcher.group(2)));
-		      error.setMessage(errorMatcher.group(3).trim());
+			    String message = errorMatcher.group(3);
+			    while (!message.endsWith(".")) {
+				    line = in.readLine();
+				    errorView.appendLine(line);
+				    message += line;
+			    }
+		      error.setMessage(message);
 
 		      // bug
 		      if (!fileStack.get(fileStack.size() - 1).equals(fileName)) fileStack.add(fileName);
