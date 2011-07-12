@@ -14,6 +14,7 @@ New Features and other Changes in JLatexEditor
   - option to create macro from existing LaTeX code via control+shift+M or "LaTeX"->"Extract Command"
 * minor enhancements:
   - the code helper popups now allow for the use of the mouse
+  - improved detection of warning in latex output
 * bug fixes:
   - "Replace All" button is no longer disabled if no occurrence is selected
 
