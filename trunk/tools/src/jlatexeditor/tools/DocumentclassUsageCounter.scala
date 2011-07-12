@@ -8,6 +8,6 @@ import scala.xml._
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 object DocumentclassUsageCounter extends UsageCounter("docclassUsageCounts.properties") {
-	val names = (XML.loadFile("docclasses.xml") \ "package" \ "environment").map(node => (node \ "@name").text).sortBy(x => x).distinct
+	val names = (XML.loadFile("docclasses.xml") \ "package").map(node => (node \ "@name").text).sortBy(x => x).distinct
 	def getCode(name: String) = "\\\\documentclass(\\[[^\\]]*\\])?\\{" + name + "\\}"
 }
