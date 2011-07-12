@@ -100,7 +100,7 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
 	  treePanel.add(treeScrollPane, BorderLayout.CENTER);
 
     setLeftComponent(treePanel);
-    setRightComponent(scrollOutput);
+	  selectNode(nodeOutput);
 
     setResizeWeight(0);
   }
@@ -201,6 +201,15 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     }
   }
 
+	public void selectNode(ErrorTreeNode node) {
+		Object[] path = {nodeRoot, node};
+		if (node == nodeRoot) {
+			path = new Object[]{nodeRoot};
+		}
+
+		tree.getSelectionModel().setSelectionPath(new TreePath(path));
+	}
+
 	@Override
   public void requestFocus() {
     tree.requestFocus();
@@ -291,7 +300,7 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
 	}
 
 
-	
+
 	// inner classes
 	private class ErrorComponent extends JLabel {
     private LatexCompileError error;
@@ -491,7 +500,7 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
 							int line = error.getOutputLine();
 							int start = latexOutput.getLineStartOffset(line);
 							int end = latexOutput.getLineEndOffset(line);
-							tree.getSelectionModel().setSelectionPath(new TreePath(new Object[]{nodeRoot, nodeOutput}));
+							selectNode(nodeOutput);
 							//setRightComponent(scrollOutput);
 							latexOutput.scrollRectToVisible(new Rectangle(0, 30*latexOutput.getLineCount(), 0, 30*latexOutput.getLineCount()));
 							latexOutput.setCaretPosition(start);
