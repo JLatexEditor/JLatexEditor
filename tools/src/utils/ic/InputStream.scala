@@ -35,7 +35,7 @@ object InputStream {
 	  def writeTo (file: io.File) {
 	    val out = new FileOutputStream(file)
 	    writeTo(out)
-	    out.close
+	    out.close()
 	  }
 
 	  /**
@@ -45,19 +45,19 @@ object InputStream {
 	  def copyLinewiseTo (file: io.File) {
 		  val out = new FileOutputStream(file)
 		  writeLinewiseTo(out)
-		  out.close
+		  out.close()
 	  }
 
 		/**
 		 * Returns the content of the input stream as String.
 		 */
-		def getContent () = {
+		def getContent = {
 			val out = new ByteArrayOutputStream()
 
 			StreamUtils.copyStream(in, out)
 
-			in.close
-			out.close
+			in.close()
+			out.close()
 
 			new String(out.toByteArray)
 		}

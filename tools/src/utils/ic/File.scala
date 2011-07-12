@@ -35,8 +35,8 @@ object File {
 
       StreamUtils.copyStream(in, out)
       
-      in.close
-      out.close
+      in.close()
+      out.close()
     }
 
     /**
@@ -63,7 +63,7 @@ object File {
      * Reads the file and returns the content as String.
      */
     def getContent: String = {
-      new FileInputStream(file).getContent()
+      new FileInputStream(file).getContent
     }
 
 	  /**
