@@ -33,7 +33,7 @@ abstract class UsageCounter(val fileName: String) {
 			for (name <- names) {
 				println(name)
 				val usageCountFor = lastValue.getOrElse(name, {
-					Thread.sleep(1000);
+					Thread.sleep(100);
 					"" + GoogleCodeSearch.determineUsageCountForLatexCode(getCode(name))
 				})
 				out.println(name + "=" + usageCountFor)
