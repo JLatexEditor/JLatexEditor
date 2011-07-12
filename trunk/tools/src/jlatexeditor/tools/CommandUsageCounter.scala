@@ -4,7 +4,7 @@ import scala.xml._
 import java.io.PrintStream
 
 /**
- * Determine how often a package is used via Google Code Search.
+ * Determine how often a command is used via Google Code Search.
  *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
