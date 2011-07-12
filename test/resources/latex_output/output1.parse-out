@@ -1,0 +1,203 @@
+warning:
+<font color="#000000">./main.aux</font><font color="gray">: </font>
+  <font color="#9a6634">Label `sec:query_generators' multiply defined.</font>
+
+warning:
+<font color="#000000">./intro.tex</font><font color="gray">: 210</font>
+  <font color="#9a6634">Reference `sec:query_selection_functions' on page 2 undefined on input line 210.</font>
+
+warning:
+<font color="#000000">./intro.tex</font><font color="gray">: 218</font>
+  <font color="#9a6634">Reference `sec:pre-filtering_of_query_generators' on page 2 undefined on input line 218.</font>
+
+warning:
+<font color="#000000">./intro.tex</font><font color="gray">: 218</font>
+  <font color="#9a6634">Reference `sec:dynamic_entity_filters' on page 2 undefined on input line 218.</font>
+
+warning:
+<font color="#000000">./problem_description.tex</font><font color="gray">: 109</font>
+  <font color="#9a6634">Citation `Frameworks_for_entity_matching-_A_comparison' on page 5 undefined on input line 109.</font>
+
+overfull hbox:
+<font color="#000000">./query_strategies.tex</font><font color="gray">: 57</font>
+  <font color="#9a6634">Underfull \hbox (badness 10000) in paragraph at lines 57--57</font>
+
+overfull hbox:
+<font color="#000000">./query_strategies.tex</font><font color="gray">: 74--88</font>
+  <font color="#9a6634">Underfull \hbox (badness 10000) in paragraph at lines 74--88</font>
+
+overfull hbox:
+<font color="#000000">./query_strategies.tex</font><font color="gray">: 94--95</font>
+  <font color="#9a6634">Overfull \hbox (5.27588pt too wide) in paragraph at lines 94--95</font>
+
+overfull hbox:
+<font color="#000000">./query_strategies.tex</font><font color="gray">: 306</font>
+  <font color="#9a6634">Overfull \hbox (2.41643pt too wide) in paragraph at lines 306--306</font>
+
+overfull hbox:
+<font color="#000000">./query_strategies.tex</font><font color="gray">: 315</font>
+  <font color="#9a6634">Overfull \hbox (3.55244pt too wide) in paragraph at lines 315--315</font>
+
+overfull hbox:
+<font color="#000000">./query_strategies.tex</font><font color="gray">: 316</font>
+  <font color="#9a6634">Underfull \hbox (badness 10000) in paragraph at lines 316--316</font>
+
+error:
+<font color="#000000">./evaluation_of_query_generators.tex</font><font color="gray">: 124</font>
+  <font color="#9a6634">LaTeX Error: Environment fiasdfasd un</font>
+  \begin{fiasdfasd}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./evaluation_of_query_generators.tex</font><font color="gray">: 126</font>
+  <font color="#9a6634">LaTeX Error: \begin{document} ended b</font>
+  \end{fiasdfasd}<font color="red">[ERROR]</font>
+
+warning:
+<font color="#000000">./evaluation_of_query_generators.tex</font><font color="gray">: 249</font>
+  <font color="#9a6634">Reference `sec:pre-filtering_of_query_generators' on page 10 undefined on input line 249.</font>
+
+warning:
+<font color="#000000">./evaluation_of_query_generators.tex</font><font color="gray">: 264</font>
+  <font color="#9a6634">File `plots/amazon/train/adaptiveSourcesUnfiltered/cat_comparison/overall_coverage.pdf' not found on input line 264.</font>
+
+error:
+<font color="#000000">./evaluation_of_query_generators.tex</font><font color="gray">: 264</font>
+  <font color="#9a6634">Package pdftex.def Error: File `plots</font>
+    }<font color="red">[ERROR]</font>
+
+warning:
+<font color="#000000">./evaluation_of_query_generators.tex</font><font color="gray">: 268</font>
+  <font color="#9a6634">File `plots/amazon/train/adaptiveSourcesUnfiltered/cat_comparison/overall_cEfficiency.pdf' not found on input line 268.</font>
+
+error:
+<font color="#000000">./evaluation_of_query_generators.tex</font><font color="gray">: 268</font>
+  <font color="#9a6634">Package pdftex.def Error: File `plots</font>
+    }<font color="red">[ERROR]</font>
+
+warning:
+<font color="#000000">./evaluation_of_query_generators.tex</font><font color="gray">: 272</font>
+  <font color="#9a6634">File `plots/amazon/train/adaptiveSourcesUnfiltered/cat_comparison/cEfficiency.pdf' not found on input line 272.</font>
+
+error:
+<font color="#000000">./evaluation_of_query_generators.tex</font><font color="gray">: 272</font>
+  <font color="#9a6634">Package pdftex.def Error: File `plots</font>
+    }<font color="red">[ERROR]</font>
+
+warning:
+<font color="#000000">./evaluation_of_query_generators.tex</font><font color="gray">: 301</font>
+  <font color="#9a6634">File `plots/amazon/train/adaptiveSourcesUnfiltered/resultCoverage/graph_level_1.pdf' not found on input line 301.</font>
+
+error:
+<font color="#000000">./evaluation_of_query_generators.tex</font><font color="gray">: 301</font>
+  <font color="#9a6634">Package pdftex.def Error: File `plots</font>
+    }<font color="red">[ERROR]</font>
+
+warning:
+<font color="#000000">./evaluation_of_query_generators.tex</font><font color="gray">: 304</font>
+  <font color="#9a6634">File `plots/amazon/train/adaptiveSourcesUnfiltered/resultCoverage/graph_level_2.pdf' not found on input line 304.</font>
+
+error:
+<font color="#000000">./evaluation_of_query_generators.tex</font><font color="gray">: 304</font>
+  <font color="#9a6634">Package pdftex.def Error: File `plots</font>
+    }<font color="red">[ERROR]</font>
+
+warning:
+<font color="#000000">./evaluation_of_query_generators.tex</font><font color="gray">: 326</font>
+  <font color="#9a6634">File `plots/amazon/train/recall_vs_procItems/1r_coverage.pdf' not found on input line 326.</font>
+
+error:
+<font color="#000000">./evaluation_of_query_generators.tex</font><font color="gray">: 326</font>
+  <font color="#9a6634">Package pdftex.def Error: File `plots</font>
+  rain/recall_vs_procItems/1r_coverage.pdf}<font color="red">[ERROR]</font>
+
+warning:
+<font color="#000000">./evaluation_of_query_generators.tex</font><font color="gray">: 348</font>
+  <font color="#9a6634">File `plots/bib/train/standardSmallUnfiltered/cat_comparison/overall_coverage.pdf' not found on input line 348.</font>
+
+error:
+<font color="#000000">./evaluation_of_query_generators.tex</font><font color="gray">: 348</font>
+  <font color="#9a6634">Package pdftex.def Error: File `plots</font>
+    }<font color="red">[ERROR]</font>
+
+warning:
+<font color="#000000">./evaluation_of_query_generators.tex</font><font color="gray">: 352</font>
+  <font color="#9a6634">File `plots/bib/train/standardSmallUnfiltered/cat_comparison/overall_cEfficiency.pdf' not found on input line 352.</font>
+
+error:
+<font color="#000000">./evaluation_of_query_generators.tex</font><font color="gray">: 352</font>
+  <font color="#9a6634">Package pdftex.def Error: File `plots</font>
+    }<font color="red">[ERROR]</font>
+
+warning:
+<font color="#000000">./evaluation_of_query_generators.tex</font><font color="gray">: 356</font>
+  <font color="#9a6634">File `plots/bib/train/standardSmallUnfiltered/cat_comparison/cEfficiency.pdf' not found on input line 356.</font>
+
+error:
+<font color="#000000">./evaluation_of_query_generators.tex</font><font color="gray">: 356</font>
+  <font color="#9a6634">Package pdftex.def Error: File `plots</font>
+    }<font color="red">[ERROR]</font>
+
+warning:
+<font color="#000000">./evaluation.tex</font><font color="gray">: 15</font>
+  <font color="#9a6634">Reference `sec:pre-filtering_of_query_generators' on page 11 undefined on input line 15.</font>
+
+warning:
+<font color="#000000">./evaluation.tex</font><font color="gray">: 23</font>
+  <font color="#9a6634">File `plots/amazon/train/parQsAndSeqQsByMaxTrials/qual_eff_regarding_coverage.pdf' not found on input line 23.</font>
+
+error:
+<font color="#000000">./evaluation.tex</font><font color="gray">: 23</font>
+  <font color="#9a6634">Package pdftex.def Error: File `plots/amazon/train/parQsAn</font>
+  MaxTrials/qual_eff_regarding_coverage.pdf}<font color="red">[ERROR]</font>
+
+warning:
+<font color="#000000">./evaluation.tex</font><font color="gray">: 28</font>
+  <font color="#9a6634">File `plots/bib/train/parQsAndSeqQsByMaxTrials/qual_eff_regarding_coverage.pdf' not found on input line 28.</font>
+
+error:
+<font color="#000000">./evaluation.tex</font><font color="gray">: 28</font>
+  <font color="#9a6634">Package pdftex.def Error: File `plots/bib/train/parQsAndSe</font>
+  MaxTrials/qual_eff_regarding_coverage.pdf}<font color="red">[ERROR]</font>
+
+warning:
+<font color="#000000">./evaluation.tex</font><font color="gray">: 37</font>
+  <font color="#9a6634">Reference `sec:dynamic_entity_filters' on page 11 undefined on input line 37.</font>
+
+warning:
+<font color="#000000">./evaluation.tex</font><font color="gray">: 64</font>
+  <font color="#9a6634">Reference `fig:eval_e50_harmonic' on page 12 undefined on input line 64.</font>
+
+warning:
+<font color="#000000">./evaluation.tex</font><font color="gray">: 67</font>
+  <font color="#9a6634">File `plots/amazon/train/seqQsByMaxTrialsOrDynFilterThreshold/harmonic_regarding_coverage.pdf' not found on input line 67.</font>
+
+error:
+<font color="#000000">./evaluation.tex</font><font color="gray">: 67</font>
+  <font color="#9a6634">Package pdftex.def Error: File `plots/amazon/train/seqQsBy</font>
+  Threshold/harmonic_regarding_coverage.pdf}<font color="red">[ERROR]</font>
+
+warning:
+<font color="#000000">./evaluation.tex</font><font color="gray">: 72</font>
+  <font color="#9a6634">File `plots/amazon/train/peQsByMaxTrialsOrDynFilterThreshold/harmonic_regarding_coverage.pdf' not found on input line 72.</font>
+
+error:
+<font color="#000000">./evaluation.tex</font><font color="gray">: 72</font>
+  <font color="#9a6634">Package pdftex.def Error: File `plots/amazon/train/peQsByM</font>
+  Threshold/harmonic_regarding_coverage.pdf}<font color="red">[ERROR]</font>
+
+overfull hbox:
+<font color="#000000">./evaluation.tex</font><font color="gray">: 99--104</font>
+  <font color="#9a6634">Underfull \hbox (badness 10000) in paragraph at lines 99--104</font>
+
+overfull hbox:
+<font color="#000000">./evaluation.tex</font><font color="gray">: 113--118</font>
+  <font color="#9a6634">Underfull \hbox (badness 10000) in paragraph at lines 113--118</font>
+
+warning:
+<font color="#000000">./main.tex</font><font color="gray">: </font>
+  <font color="#9a6634">There were undefined references.</font>
+
+warning:
+<font color="#000000">./main.tex</font><font color="gray">: </font>
+  <font color="#9a6634">There were multiply-defined labels.</font>
+

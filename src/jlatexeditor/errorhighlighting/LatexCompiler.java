@@ -206,16 +206,23 @@ public class LatexCompiler extends Thread {
 		    String fileName = fileStack.get(fileStack.size() - 1);
 		    error.setFile(SystemUtils.newFile(file.getParentFile(), fileName), fileName);
 
-		    int linePos = line.indexOf("on input line ");
+			  String unwrappedLine = line;
+			  while (!unwrappedLine.endsWith(".")) {
+				  line = in.readLine();
+				  errorView.appendLine(line);
+				  unwrappedLine += line;
+			  }
+
+		    int linePos = unwrappedLine.indexOf("on input line ");
 		    if (linePos != -1) {
 		      linePos += "on input line ".length();
 		      try {
-		        error.setLine(Integer.parseInt(line.substring(linePos, line.indexOf('.', linePos))));
+		        error.setLine(Integer.parseInt(unwrappedLine.substring(linePos, unwrappedLine.indexOf('.', linePos))));
 		      } catch (Exception ignored) {
 		      }
 		    }
 
-		    StringBuffer errorMessage = new StringBuffer(line.substring(line.indexOf(':') + 1).trim());
+		    StringBuffer errorMessage = new StringBuffer(unwrappedLine.substring(unwrappedLine.indexOf(':') + 1).trim());
 		    for (int i = 0; i < 5; i++) {
 		      line = in.readLine();
 		      errorView.appendLine(line);
