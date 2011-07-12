@@ -1,10 +1,6 @@
 package jlatexeditor.tools
 
 import scala.xml._
-import java.net.URL
-import com.google.gdata.client.codesearch.CodeSearchService
-import com.google.gdata.data.codesearch.CodeSearchFeed
-import com.google.gdata.util.ServiceException
 import java.io.{FileInputStream, PrintStream}
 import java.util.{Properties}
 import collection.mutable.HashMap
@@ -17,8 +13,6 @@ import scala.collection.JavaConversions._
  */
 object  PackageUsageCounter {
 	val FILE_NAME = "packageUsageCounts.properties"
-	val CODE_SEARCH_FEEDS_URL = "https://www.google.com/codesearch/feeds/search?"
-	val codeSearchService = new CodeSearchService("gdata-sample-codesearch")
 
 	lazy val packages2usageCount = {
 		val properties = new Properties()
@@ -40,29 +34,16 @@ object  PackageUsageCounter {
 		try {
 			for (pack <- packages) {
 				println(pack)
-				//try {
 				val usageCountFor = lastValue.getOrElse(pack, {
 					Thread.sleep(1000);
-					"" + determineUsageCountFor(pack)
+					"" + GoogleCodeSearch.determineUsageCountForLatexCode("\\\\usepackage\\{" + pack + "\\}")
 				})
 				out.println(pack + "=" + usageCountFor)
-/*				} catch {
-					case e: ServiceException =>
-						out.println(pack + "=error")
-				}*/
 			}
 		} catch {
 			case e: Exception => e.printStackTrace()
 		}
 		out.flush()
 		out.close()
-	}
-
-	def determineUsageCountFor(pack: String) = {
-		val query: String = "lang:tex$%20\\\\usepackage\\{" + pack + "\\}"
-		val url = new URL(CODE_SEARCH_FEEDS_URL + "q=" + query)
-		val feed: CodeSearchFeed = codeSearchService.getFeed(url, classOf[CodeSearchFeed])
-
-		feed.getTotalResults
 	}
 }
