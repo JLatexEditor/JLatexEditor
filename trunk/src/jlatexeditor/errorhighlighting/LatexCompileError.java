@@ -33,6 +33,15 @@ public class LatexCompileError {
     return type;
   }
 
+	public String getTypeString() {
+		switch (type) {
+			case TYPE_ERROR: return "error";
+			case TYPE_WARNING: return "warning";
+			case TYPE_OVERFULL_HBOX: return "overfull hbox";
+		}
+		return null;
+	}
+
   public void setType(int type) {
     this.type = type;
   }
