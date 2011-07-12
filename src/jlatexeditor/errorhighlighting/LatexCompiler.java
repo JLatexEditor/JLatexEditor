@@ -99,184 +99,7 @@ public class LatexCompiler extends Thread {
 
     BufferedReader in = new BufferedReader(new InputStreamReader(latexCompiler.getInputStream()), 100000);
     try {
-      LatexCompileError error;
-
-      ArrayList<String> fileStack = new ArrayList<String>();
-      String versionString = in.readLine();
-	    errorView.appendLine(versionString);
-      String line = in.readLine();
-      errorView.appendLine(line);
-      while (line != null) {
-        // error messages
-        Matcher errorMatcher = fileLineError.matcher(line);
-        if (line.startsWith("!") || errorMatcher.matches()) {
-          error = new LatexCompileError();
-	        error.setOutputLine(errorView.getLinesCount()-2);
-          error.setType(LatexCompileError.TYPE_ERROR);
-          if (line.startsWith("!")) {
-            String fileName = fileStack.get(fileStack.size() - 1);
-            error.setFile(SystemUtils.newFile(file.getParentFile(), fileName), fileName);
-            error.setMessage(line.substring(1).trim());
-          } else {
-            String fileName = errorMatcher.group(1);
-            error.setFile(SystemUtils.newFile(file.getParentFile(), fileName), fileName);
-            error.setLine(Integer.parseInt(errorMatcher.group(2)));
-            error.setMessage(errorMatcher.group(3).trim());
-
-            // bug
-            if (!fileStack.get(fileStack.size() - 1).equals(fileName)) fileStack.add(fileName);
-          }
-
-          while (line != null && !line.startsWith("l.")) {
-            if (line.startsWith("<argument>")) {
-              error.setCommand(line.substring("<argument>".length()).trim());
-            }
-            line = in.readLine();
-            errorView.appendLine(line);
-          }
-
-          if (line == null) {
-            compileError(error);
-            continue;
-          }
-
-          if (line.startsWith("l.")) {
-            int space = line.indexOf(' ');
-            if (space == -1) space = line.length();
-
-            try {
-              error.setLine(Integer.parseInt(line.substring(2, space)));
-            } catch (Exception e) {
-              continue;
-            }
-
-            String before = line.substring(space + 1);
-            if (before.startsWith("...")) before = before.substring(3);
-            error.setTextBefore(before);
-
-            int position = line.length();
-            line = in.readLine();
-            errorView.appendLine(line);
-            error.setTextAfter(line.substring(position));
-
-            compileError(error);
-            line = in.readLine();
-            errorView.appendLine(line);
-            continue;
-          } else {
-            compileError(error);
-            continue;
-          }
-        }
-
-        if (line.startsWith("LaTeX Warning:") || line.startsWith("LaTeX Font Warning:")) {
-          error = new LatexCompileError();
-	        error.setOutputLine(errorView.getLinesCount()-2);
-          error.setType(LatexCompileError.TYPE_WARNING);
-          String fileName = fileStack.get(fileStack.size() - 1);
-          error.setFile(SystemUtils.newFile(file.getParentFile(), fileName), fileName);
-
-          int linePos = line.indexOf("on input line ");
-          if (linePos != -1) {
-            linePos += "on input line ".length();
-            try {
-              error.setLine(Integer.parseInt(line.substring(linePos, line.indexOf('.', linePos))));
-            } catch (Exception ignored) {
-            }
-          }
-
-          StringBuffer errorMessage = new StringBuffer(line.substring(line.indexOf(':') + 1).trim());
-          for (int i = 0; i < 5; i++) {
-            line = in.readLine();
-            errorView.appendLine(line);
-            if (line.trim().equals("")) break;
-          }
-          error.setMessage(errorMessage.toString());
-
-          compileError(error);
-          line = in.readLine();
-          errorView.appendLine(line);
-          continue;
-        }
-
-        if (line.startsWith("Overfull \\hbox") || line.startsWith("Underfull \\hbox")) {
-          error = new LatexCompileError();
-	        error.setOutputLine(errorView.getLinesCount()-2);
-          error.setType(LatexCompileError.TYPE_OVERFULL_HBOX);
-          String fileName = fileStack.get(fileStack.size() - 1);
-          error.setFile(SystemUtils.newFile(file.getParentFile(), fileName), fileName);
-          error.setMessage(line);
-
-          while (!line.trim().equals("")) {
-            int linePos = line.indexOf("at lines ");
-            if (linePos != -1) {
-              linePos += "at lines ".length();
-              int mmPos = line.indexOf("--", linePos);
-              try {
-                error.setLineStart(Integer.parseInt(line.substring(linePos, mmPos)));
-                error.setLineEnd(Integer.parseInt(line.substring(mmPos + 2)));
-              } catch (Exception e) {
-                continue;
-              }
-            }
-            line = in.readLine();
-            errorView.appendLine(line);
-            if (!line.contains("/10")) break;
-          }
-
-          compileError(error);
-          line = in.readLine();
-          errorView.appendLine(line);
-          continue;
-        }
-
-        // opening and closing files
-        if ((line.contains("(") && !line.startsWith("(see")) || line.startsWith(")") ||
-                (line.indexOf(')') != -1 && (line.startsWith("[") || line.indexOf(".tex") != 0 || line.indexOf(".sty") != 0 || line.indexOf(".bbl") != 0 || line.indexOf(".aux") != 0))) {
-          int position = 0;
-
-          while (position < line.length()) {
-            int open = line.indexOf('(', position);
-            int close = line.indexOf(')', position);
-
-            if (close == -1 && open == -1) break;
-
-            if (close == -1 || (open != -1 && open < close)) {
-              String fileName = "";
-              while (true) {
-                int space = line.indexOf(' ', open);
-                if (space == -1) space = line.length();
-                close = line.indexOf(')', open);
-                if (close != -1 && close < space) space = close;
-
-                position = space;
-                fileName += line.substring(open + 1, space);
-                if (line.length() == 79 && position == line.length()) {
-                  line = in.readLine();
-                  errorView.appendLine(line);
-                  open = -1;
-                } else break;
-              }
-              fileStack.add(fileName);
-            } else {
-              // never empty the stack... parsing bugs
-              if (fileStack.size() > 1) fileStack.remove(fileStack.size() - 1);
-              position = close + 1;
-            }
-          }
-
-          // for debugging: print the stack of open files
-          // for(String fileName : fileStack) System.out.print(fileName + " ");
-          // System.out.println();
-
-          line = in.readLine();
-          errorView.appendLine(line);
-          continue;
-        }
-
-        line = in.readLine();
-        errorView.appendLine(line);
-      }
+	    parseLatexOutput(file, in);
     } catch (IOException ignored) {
     }
 
@@ -305,7 +128,188 @@ public class LatexCompiler extends Thread {
     errorView.compileFinished();
   }
 
-  public void halt() {
+	public void parseLatexOutput(File file, BufferedReader in) throws IOException {
+		LatexCompileError error;
+
+		ArrayList<String> fileStack = new ArrayList<String>();
+		String versionString = in.readLine();
+		errorView.appendLine(versionString);
+		String line = in.readLine();
+		errorView.appendLine(line);
+		while (line != null) {
+		  // error messages
+		  Matcher errorMatcher = fileLineError.matcher(line);
+		  if (line.startsWith("!") || errorMatcher.matches()) {
+		    error = new LatexCompileError();
+			  error.setOutputLine(errorView.getLinesCount()-2);
+		    error.setType(LatexCompileError.TYPE_ERROR);
+		    if (line.startsWith("!")) {
+		      String fileName = fileStack.get(fileStack.size() - 1);
+		      error.setFile(SystemUtils.newFile(file.getParentFile(), fileName), fileName);
+		      error.setMessage(line.substring(1).trim());
+		    } else {
+		      String fileName = errorMatcher.group(1);
+		      error.setFile(SystemUtils.newFile(file.getParentFile(), fileName), fileName);
+		      error.setLine(Integer.parseInt(errorMatcher.group(2)));
+		      error.setMessage(errorMatcher.group(3).trim());
+
+		      // bug
+		      if (!fileStack.get(fileStack.size() - 1).equals(fileName)) fileStack.add(fileName);
+		    }
+
+		    while (line != null && !line.startsWith("l.")) {
+		      if (line.startsWith("<argument>")) {
+		        error.setCommand(line.substring("<argument>".length()).trim());
+		      }
+		      line = in.readLine();
+		      errorView.appendLine(line);
+		    }
+
+		    if (line == null) {
+		      compileError(error);
+		      continue;
+		    }
+
+		    if (line.startsWith("l.")) {
+		      int space = line.indexOf(' ');
+		      if (space == -1) space = line.length();
+
+		      try {
+		        error.setLine(Integer.parseInt(line.substring(2, space)));
+		      } catch (Exception e) {
+		        continue;
+		      }
+
+		      String before = line.substring(space + 1);
+		      if (before.startsWith("...")) before = before.substring(3);
+		      error.setTextBefore(before);
+
+		      int position = line.length();
+		      line = in.readLine();
+		      errorView.appendLine(line);
+		      error.setTextAfter(line.substring(position));
+
+		      compileError(error);
+		      line = in.readLine();
+		      errorView.appendLine(line);
+		      continue;
+		    } else {
+		      compileError(error);
+		      continue;
+		    }
+		  }
+
+		  if (line.startsWith("LaTeX Warning:") || line.startsWith("LaTeX Font Warning:")) {
+		    error = new LatexCompileError();
+			  error.setOutputLine(errorView.getLinesCount()-2);
+		    error.setType(LatexCompileError.TYPE_WARNING);
+		    String fileName = fileStack.get(fileStack.size() - 1);
+		    error.setFile(SystemUtils.newFile(file.getParentFile(), fileName), fileName);
+
+		    int linePos = line.indexOf("on input line ");
+		    if (linePos != -1) {
+		      linePos += "on input line ".length();
+		      try {
+		        error.setLine(Integer.parseInt(line.substring(linePos, line.indexOf('.', linePos))));
+		      } catch (Exception ignored) {
+		      }
+		    }
+
+		    StringBuffer errorMessage = new StringBuffer(line.substring(line.indexOf(':') + 1).trim());
+		    for (int i = 0; i < 5; i++) {
+		      line = in.readLine();
+		      errorView.appendLine(line);
+		      if (line.trim().equals("")) break;
+		    }
+		    error.setMessage(errorMessage.toString());
+
+		    compileError(error);
+		    line = in.readLine();
+		    errorView.appendLine(line);
+		    continue;
+		  }
+
+		  if (line.startsWith("Overfull \\hbox") || line.startsWith("Underfull \\hbox")) {
+		    error = new LatexCompileError();
+			  error.setOutputLine(errorView.getLinesCount()-2);
+		    error.setType(LatexCompileError.TYPE_OVERFULL_HBOX);
+		    String fileName = fileStack.get(fileStack.size() - 1);
+		    error.setFile(SystemUtils.newFile(file.getParentFile(), fileName), fileName);
+		    error.setMessage(line);
+
+		    while (!line.trim().equals("")) {
+		      int linePos = line.indexOf("at lines ");
+		      if (linePos != -1) {
+		        linePos += "at lines ".length();
+		        int mmPos = line.indexOf("--", linePos);
+		        try {
+		          error.setLineStart(Integer.parseInt(line.substring(linePos, mmPos)));
+		          error.setLineEnd(Integer.parseInt(line.substring(mmPos + 2)));
+		        } catch (Exception e) {
+		          continue;
+		        }
+		      }
+		      line = in.readLine();
+		      errorView.appendLine(line);
+		      if (!line.contains("/10")) break;
+		    }
+
+		    compileError(error);
+		    line = in.readLine();
+		    errorView.appendLine(line);
+		    continue;
+		  }
+
+		  // opening and closing files
+		  if ((line.contains("(") && !line.startsWith("(see")) || line.startsWith(")") ||
+		          (line.indexOf(')') != -1 && (line.startsWith("[") || line.indexOf(".tex") != 0 || line.indexOf(".sty") != 0 || line.indexOf(".bbl") != 0 || line.indexOf(".aux") != 0))) {
+		    int position = 0;
+
+		    while (position < line.length()) {
+		      int open = line.indexOf('(', position);
+		      int close = line.indexOf(')', position);
+
+		      if (close == -1 && open == -1) break;
+
+		      if (close == -1 || (open != -1 && open < close)) {
+		        String fileName = "";
+		        while (true) {
+		          int space = line.indexOf(' ', open);
+		          if (space == -1) space = line.length();
+		          close = line.indexOf(')', open);
+		          if (close != -1 && close < space) space = close;
+
+		          position = space;
+		          fileName += line.substring(open + 1, space);
+		          if (line.length() == 79 && position == line.length()) {
+		            line = in.readLine();
+		            errorView.appendLine(line);
+		            open = -1;
+		          } else break;
+		        }
+		        fileStack.add(fileName);
+		      } else {
+		        // never empty the stack... parsing bugs
+		        if (fileStack.size() > 1) fileStack.remove(fileStack.size() - 1);
+		        position = close + 1;
+		      }
+		    }
+
+		    // for debugging: print the stack of open files
+		    // for(String fileName : fileStack) System.out.print(fileName + " ");
+		    // System.out.println();
+
+		    line = in.readLine();
+		    errorView.appendLine(line);
+		    continue;
+		  }
+
+		  line = in.readLine();
+		  errorView.appendLine(line);
+		}
+	}
+
+	public void halt() {
     try {
       if (latexCompiler != null) latexCompiler.destroy();
     } catch (Exception ignore) {
