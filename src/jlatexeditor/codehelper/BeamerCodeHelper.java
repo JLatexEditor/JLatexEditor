@@ -55,7 +55,7 @@ public class BeamerCodeHelper extends PatternHelper {
 
 		return CollectionUtils.map(values, new Function1<String, CHCommand>() {
 			public CHCommand apply(String value) {
-				return new GPropertiesCodeHelper.ValueCompletion(value.substring(("beamer" + type).length()));
+				return new ValueCompletion(value.substring(("beamer" + type).length()));
 			}
 		});
 	}

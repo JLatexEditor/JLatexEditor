@@ -3,6 +3,7 @@ package jlatexeditor.gproperties;
 import de.endrullis.utils.BetterProperties2.PSet;
 import de.endrullis.utils.BetterProperties2.Range;
 import jlatexeditor.codehelper.PatternHelper;
+import jlatexeditor.codehelper.ValueCompletion;
 import sce.codehelper.CHCommand;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
@@ -113,17 +114,6 @@ public class GPropertiesCodeHelper extends PatternHelper {
       return prefix;
     }
   }
-
-  public static class ValueCompletion extends CHCommand {
-    /**
-     * Creates a command with the given name.
-     *
-     * @param name the name
-     */
-    public ValueCompletion(String name) {
-      super(name);
-    }
-	}
 
   public class KeyStrokeCreator extends JPopupMenu implements KeyListener {
     JTextField field = new JTextField("<perform your keystroke>");

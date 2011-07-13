@@ -1,5 +1,8 @@
 package util;
 
+import de.endrullis.utils.ExtIterable;
+import de.endrullis.utils.ExtIterator;
+
 import java.util.*;
 
 /**
@@ -80,6 +83,17 @@ public class TrieSet<T> implements AbstractTrie<T> {
 	  return get(chars, 0);
 	}
 
+	private TrieSet<T> getNode(String prefix) {
+		return getNode(prefix.toCharArray(), 0);
+	}
+
+	private TrieSet<T> getNode(char[] chars, int i) {
+	  if (i == chars.length) return this;
+
+	  TrieSet<T> next = map.get(chars[i]);
+	  return next != null ? next.getNode(chars, i + 1) : null;
+	}
+
 	private HashSet<T> get(char[] chars, int i) {
 	  if (i == chars.length) return objects;
 
@@ -128,6 +142,67 @@ public class TrieSet<T> implements AbstractTrie<T> {
 	  return list;
 	}
 
+	public Iterator<TrieSet<T>> getTrieSetIterator() {
+		return getTrieSetIterator("").iterator();
+	}
+
+	public ExtIterable<TrieSet<T>> getTrieSetIterator(final String prefix) {
+		return new ExtIterable<TrieSet<T>>() {
+			@Override
+			public ExtIterator<TrieSet<T>> iterator() {
+				return new TrieIterator<T>(getNode(prefix));
+			}
+		};
+	}
+
+
+	public class TrieIterator<T> extends ExtIterator<TrieSet<T>> {
+		private LinkedList<Iterator<TrieSet<T>>> nodeStack = new LinkedList<Iterator<TrieSet<T>>>();
+		private TrieSet<T> trie;
+
+		public TrieIterator(TrieSet<T> initialNode) {
+			trie = initialNode;
+			if (trie != null && !trie.map.isEmpty()) {
+				nodeStack.push(trie.map.values().iterator());
+			}
+		}
+
+		@Override
+		public boolean hasNext() {
+			if (trie != null && trie.hasObjects()) return true;
+
+			while (!nodeStack.isEmpty()) {
+				Iterator<TrieSet<T>> peek = nodeStack.peek();
+				if (peek.hasNext()) {
+					trie = peek.next();
+					if (!trie.map.isEmpty()) {
+						nodeStack.push(trie.map.values().iterator());
+					}
+					if (trie.hasObjects()) return true;
+				} else {
+					nodeStack.pop();
+				}
+			}
+
+			trie = null;
+			return false;
+		}
+
+		@Override
+		public TrieSet<T> next() {
+			if (hasNext()) {
+				TrieSet<T> ret = trie;
+				trie = null;
+				return ret;
+			}
+			return null;
+		}
+	}
+
+	private boolean hasObjects() {
+		return objects.size() > 0;
+	}
+
 	public List<T> getObjects(String prefix, int count) {
 	  // navigate to the trie node that represents the end of the prefix
 	  char[] chars = truncate(prefix).toCharArray();
@@ -147,6 +222,10 @@ public class TrieSet<T> implements AbstractTrie<T> {
 			list.add(object);
 		}
 	  return list;
+	}
+
+	public HashSet<T> getObjects() {
+		return objects;
 	}
 
 	private int addStrings(List<String> list, String prefix, int remaining) {

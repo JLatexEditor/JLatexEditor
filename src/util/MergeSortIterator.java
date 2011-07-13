@@ -5,18 +5,17 @@ import de.endrullis.utils.ExtIterator;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.PriorityQueue;
-import java.util.Queue;
 
 /**
  * Merge sort iterator.
  *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
-public class SortedMergeIterator<T> extends ExtIterator<T> {
+public class MergeSortIterator<T> extends ExtIterator<T> {
 	private Comparator<T> comparator;
 	private PriorityQueue<IteratorWrapper> queue;
 
-	public SortedMergeIterator(final Comparator<T> comparator, Iterator<T>[] iterators) {
+	public MergeSortIterator(final Comparator<T> comparator, Iterator<T>[] iterators) {
 		queue = new PriorityQueue<IteratorWrapper>(iterators.length);
 		this.comparator = comparator;
 		for (Iterator<T> iterator : iterators) {
