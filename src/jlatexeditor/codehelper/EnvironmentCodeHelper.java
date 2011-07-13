@@ -60,6 +60,7 @@ public class EnvironmentCodeHelper extends PatternHelper {
 	}
 
 	public String getMaxCommonPrefix(String search) {
+		// TODO
 	  return search;
 	}
 }
