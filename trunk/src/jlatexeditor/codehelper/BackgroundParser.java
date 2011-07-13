@@ -23,8 +23,7 @@ import java.util.regex.Pattern;
  * Parsing files in background.
  */
 public class BackgroundParser extends Thread {
-	// TODO: allow all unicode letters (enable with flags?)
-  private static final Pattern WORD_PATTERN = Pattern.compile("[a-zA-ZäöüÄÖÜß]*");
+  private static final Pattern WORD_PATTERN = Pattern.compile("\\p{L}*");
   private static final Pattern TODO_PATTERN = Pattern.compile("\\btodo\\b");
   private JLatexEditorJFrame jle;
 
