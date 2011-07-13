@@ -62,7 +62,7 @@ public class CollectionUtils {
    */
   public static String join(Iterator iterator, String start, String delimiter, String end) {
     if (iterator.hasNext()) {
-      StringBuffer s = new StringBuffer();
+	    StringBuilder s = new StringBuilder();
 
       s.append(start);
       s.append(iterator.next());
@@ -86,5 +86,14 @@ public class CollectionUtils {
 			newList.add(f.apply(t));
 		}
 		return newList;
+	}
+
+	public static <T> ArrayList<T> take(Iterable<T> iterable, int count) {
+		Iterator<T> iterator = iterable.iterator();
+		ArrayList<T> list = new ArrayList<T>();
+		for (int i=0; i<count && iterator.hasNext(); i++) {
+			list.add(iterator.next());
+		}
+		return list;
 	}
 }

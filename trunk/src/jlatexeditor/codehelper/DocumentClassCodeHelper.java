@@ -52,7 +52,7 @@ public class DocumentClassCodeHelper extends PatternHelper {
 		if (docClassNames == null) docClassNames = new ArrayList<String>();
 
 		return CollectionUtils.map(docClassNames, new Function1<String, CHCommand>() {
-			public CHCommand apply(String docClassName) { return new GPropertiesCodeHelper.ValueCompletion(docClassName); }
+			public CHCommand apply(String docClassName) { return new ValueCompletion(docClassName); }
 		});
 	}
 

@@ -52,7 +52,7 @@ public class UsePackageCodeHelper extends PatternHelper {
 		if (packageNames == null) packageNames = new ArrayList<String>();
 
 		return CollectionUtils.map(packageNames, new Function1<String, CHCommand>() {
-			public CHCommand apply(String packageName) { return new GPropertiesCodeHelper.ValueCompletion(packageName); }
+			public CHCommand apply(String packageName) { return new ValueCompletion(packageName); }
 		});
 	}
 

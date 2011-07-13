@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
-public class SortedMergeIterableTest extends TestCase {
+public class MergeSortIterableTest extends TestCase {
 	public void testClass() {
 		List<String> list1 = Arrays.asList("01", "04", "05", "12", "17");
 		List<String> list2 = Arrays.asList("02", "06", "07", "13", "15");
@@ -21,10 +21,10 @@ public class SortedMergeIterableTest extends TestCase {
 				return o1.compareTo(o2);
 			}
 		};
-		SortedMergeIterable<String> sortedMergeIterable = new SortedMergeIterable<String>(comparator, list1, list2, list3);
+		MergeSortIterable<String> mergeSortIterable = new MergeSortIterable<String>(comparator, list1, list2, list3);
 
 		StringBuilder sb = new StringBuilder();
-		for (String s : sortedMergeIterable) {
+		for (String s : mergeSortIterable) {
 			sb.append(s).append(", ");
 		}
 
