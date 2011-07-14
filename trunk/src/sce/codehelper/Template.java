@@ -295,8 +295,9 @@ public class Template {
 		}
 	}
 
-	public static Template editAsTemplate(ArrayList<CHCommandArgument> arguments, SCEDocumentPosition caretEndPosition) {
+	public static Template editAsTemplate(SCEPane pane, ArrayList<CHCommandArgument> arguments, SCEDocumentPosition caretEndPosition) {
 		Template template = new Template();
+		template.setup(pane);
 		template.templateArguments = arguments;
 		template.templateCaretPosition = caretEndPosition;
 		template.editTemplate(0);
