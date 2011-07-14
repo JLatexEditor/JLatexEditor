@@ -436,7 +436,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
   }
 
 	public void editAsTemplate(ArrayList<CHCommandArgument> arguments, SCEDocumentPosition caretEndPosition) {
-		template = Template.editAsTemplate(arguments, caretEndPosition);
+		template = Template.editAsTemplate(pane, arguments, caretEndPosition);
 	}
 
   /**
