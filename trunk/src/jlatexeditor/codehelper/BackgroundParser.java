@@ -90,6 +90,10 @@ public class BackgroundParser extends Thread {
     return stableState.commands;
   }
 
+	public Trie<Environment> getEnvironments() {
+		return stableState.environments;
+	}
+
   public Trie<FilePos> getLabelDefs() {
     return stableState.labelDefs;
   }
@@ -234,7 +238,11 @@ public class BackgroundParser extends Thread {
 	    buildingState.commandsAndFiles.add(command, file.getAbsolutePath());
 
       // newcommand
-      if (command.equals("newcommand") || command.equals("renewcommand") || command.equals("DeclareRobustCommand")) {
+      if (command.equals("newcommand") || command.equals("renewcommand") || command.equals("DeclareRobustCommand") ||
+	        command.equals("newenvironment") || command.equals("renewenvironment")) {
+
+	      boolean isCommand = command.equals("newcommand") || command.equals("renewcommand") || command.equals("DeclareRobustCommand");
+
         String name = ParseUtil.parseBalanced(tex, index+1, '}');
         index += 2 + name.length();
         // number of arguments
@@ -258,9 +266,13 @@ public class BackgroundParser extends Thread {
 					body = ParseUtil.parseBalanced(tex, index+1, '}');
 	      } catch (StringIndexOutOfBoundsException ignored) {
 	      }
-        name = name.substring(1);
-        buildingState.commands.add(name, new Command(name, fileCanonicalPath, line, numberOfArgs, optional, body));
-	      buildingState.commandsAndFiles.add(name, file.getAbsolutePath());
+	      if (isCommand) {
+          name = name.substring(1);
+		      buildingState.commands.add(name, new Command(name, fileCanonicalPath, line, numberOfArgs, optional, body));
+			    buildingState.commandsAndFiles.add(name, file.getAbsolutePath());
+	      } else {
+		      buildingState.environments.add(name, new Environment(name, fileCanonicalPath, line, numberOfArgs, optional));
+	      }
 	      // commandNames.add(name);
       // label, input, include
       } else if (command.equals("label") || command.equals("bibliography") || command.equals("input") || command.equals("include") ||
@@ -490,6 +502,7 @@ public class BackgroundParser extends Thread {
 	  Trie commandNames = new Trie();
 	  TrieSet<String> commandsAndFiles = new TrieSet<String>();
 	  Trie<Command> commands = new Trie<Command>();
+	  Trie<Environment> environments = new Trie<Environment>();
 	  Trie<FilePos> labelDefs = new Trie<FilePos>();
 		TrieSet<FilePos> labelRefs = new TrieSet<FilePos>();
 		Trie<FilePos<BibEntry>> bibKeys2bibEntries = new Trie<FilePos<BibEntry>>();
