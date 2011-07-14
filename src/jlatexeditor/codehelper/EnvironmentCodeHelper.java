@@ -3,7 +3,7 @@ package jlatexeditor.codehelper;
 import de.endrullis.utils.CollectionUtils;
 import de.endrullis.utils.ExtIterable;
 import jlatexeditor.PackagesExtractor;
-import jlatexeditor.gproperties.GPropertiesCodeHelper;
+import jlatexeditor.SCEManager;
 import sce.codehelper.CHCommand;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
@@ -11,10 +11,7 @@ import util.Function1;
 import util.MergeSortIterable;
 import util.TrieSet;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 
 /**
  * CodeHelper for \\begin{...} and \\end{...}.
@@ -37,6 +34,11 @@ public class EnvironmentCodeHelper extends PatternHelper {
 	private static final Function1<String,CHCommand> STRING_2_CHCOMMAND = new Function1<String, CHCommand>() {
 		public CHCommand apply(String packageName) {
 			return new ValueCompletion(packageName);
+		}
+	};
+	private static final Function1<Environment,String> ENVIRONMENT_2_STRING_FUNCTION = new Function1<Environment, String>() {
+		public String apply(Environment env) {
+			return env.getName();
 		}
 	};
 
@@ -71,11 +73,11 @@ public class EnvironmentCodeHelper extends PatternHelper {
 	}
 
 	public Iterable<CHCommand> getCompletions(String search) {
-		// TODO merge envs of docclasses and envs of packages
+		ExtIterable<String> userIter = SCEManager.getBackgroundParser().getEnvironments().getObjectsIterable(search).map(ENVIRONMENT_2_STRING_FUNCTION);
 		ExtIterable<String> packEnvIter = PackagesExtractor.getPackageParser().getEnvironments().getTrieSetIterator(search).map(TRIE_SET_2_STRING_FUNCTION);
 		ExtIterable<String> dcEnvIter = PackagesExtractor.getDocClassesParser().getEnvironments().getTrieSetIterator(search).map(TRIE_SET_2_STRING_FUNCTION);
 
-		ExtIterable<CHCommand> mergedIter = new MergeSortIterable<String>(STRING_COMPARATOR, packEnvIter, dcEnvIter).map(STRING_2_CHCOMMAND);
+		ExtIterable<CHCommand> mergedIter = new MergeSortIterable<String>(STRING_COMPARATOR, userIter, packEnvIter, dcEnvIter).map(STRING_2_CHCOMMAND);
 
 		return CollectionUtils.take(mergedIter, 20);
 

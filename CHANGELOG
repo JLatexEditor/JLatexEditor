@@ -9,6 +9,7 @@ New Features and other Changes in JLatexEditor
 == Coming in Version 0.2.2 ==
 
 * new features:
+  - completion of environment names after \begin and \end
   - suggestions for package imports via alt+ENTER on undefined commands or environment
   - quick help shows lists of packages and documentclasses providing command under cursor
   - option to create macro from existing LaTeX code via control+shift+M or "LaTeX"->"Extract Command"
@@ -17,6 +18,7 @@ New Features and other Changes in JLatexEditor
   - improved parsing of latex output
 * bug fixes:
   - "Replace All" button is no longer disabled if no occurrence is selected
+
 
 == Version 0.2.1 ==
 
