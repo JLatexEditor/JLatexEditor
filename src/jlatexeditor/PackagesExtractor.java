@@ -89,14 +89,16 @@ public class PackagesExtractor {
 				String name = attrList.getValue("name");
 				int argCount = Integer.parseInt(attrList.getValue("argCount"));
 				String optionalArg = attrList.getValue("optionalArg");
-				Command command = new Command(name, argCount, optionalArg, pack);
+				String usageCount = attrList.getValue("usageCount");
+				Command command = new Command(name, argCount, optionalArg, pack, usageCount);
 				commands.add(name, command);
 			} else
 			if (localName.equals("environment")) {
 				String name = attrList.getValue("name");
 				int argCount = Integer.parseInt(attrList.getValue("argCount"));
 				String optionalArg = attrList.getValue("optionalArg");
-				Environment environment = new Environment(name, argCount, optionalArg, pack);
+				String usageCount = attrList.getValue("usageCount");
+				Environment environment = new Environment(name, argCount, optionalArg, pack, usageCount);
 				environments.add(name, environment);
 			} else
 			if (localName.equals("package")) {
@@ -265,12 +267,16 @@ public class PackagesExtractor {
 		protected int argCount;
 		protected String optionalArg;
 		protected Package pack;
+		protected int usageCount;
 
-		public ComEnv(String name, int argCount, String optionalArg, Package pack) {
+		public ComEnv(String name, int argCount, String optionalArg, Package pack, String usageCount) {
 			this.name = name;
 			this.argCount = argCount;
 			this.optionalArg = optionalArg;
 			this.pack = pack;
+			if (usageCount != null) {
+				this.usageCount = Integer.parseInt(usageCount);
+			}
 		}
 
 		@Override
@@ -303,6 +309,10 @@ public class PackagesExtractor {
 			return pack;
 		}
 
+		public int getUsageCount() {
+			return usageCount;
+		}
+
 		@Override
 		public int compareTo(ComEnv that) {
 			return this.name.compareTo(that.name);
@@ -310,14 +320,14 @@ public class PackagesExtractor {
 	}
 
 	public static class Command extends ComEnv {
-		public Command(String name, int argCount, String optionalArg, Package pack) {
-			super(name, argCount, optionalArg, pack);
+		public Command(String name, int argCount, String optionalArg, Package pack, String usageCount) {
+			super(name, argCount, optionalArg, pack, usageCount);
 		}
 	}
 
 	public static class Environment extends ComEnv {
-		public Environment(String name, int argCount, String optionalArg, Package pack) {
-			super(name, argCount, optionalArg, pack);
+		public Environment(String name, int argCount, String optionalArg, Package pack, String usageCount) {
+			super(name, argCount, optionalArg, pack, usageCount);
 		}
 	}
 }

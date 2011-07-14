@@ -18,6 +18,6 @@ public class FilterIterable<T> extends ExtIterable<T> {
 
 	@Override
 	public ExtIterator<T> iterator() {
-		return new FilterIterator(iterable.iterator(), filterFunc);
+		return new FilterIterator<T>(iterable.iterator(), filterFunc);
 	}
 }

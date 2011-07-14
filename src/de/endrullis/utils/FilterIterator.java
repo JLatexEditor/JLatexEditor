@@ -31,7 +31,9 @@ public class FilterIterator<T> extends ExtIterator<T> {
 	@Override
 	public T next() {
 		if (hasNext()) {
-			return next;
+			T theNext = next;
+			next = null;
+			return theNext;
 		} else {
 			return null;
 		}
