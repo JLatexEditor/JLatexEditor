@@ -5,6 +5,7 @@ import utils.ic.InputStream._
 import java.io._
 import collection.mutable._
 import org.apache.commons.lang.StringEscapeUtils
+import com.sun.deploy.Environment
 
 /**
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
@@ -186,7 +187,9 @@ object PackageParser {
 	}
 
 	class Command(val pack: Package, val name: String, val argCount: Int, val optionalArgs: List[String] = List())
-	class Environment(val pack: Package, val name: String, val argCount: Int, val optionalArgs: List[String] = List())
+	class Environment(val pack: Package, val name: String, val argCount: Int, val optionalArgs: List[String] = List()) {
+		val usageCount = EnvironmentUsageCounter.usageCounts.get(name)
+	}
 	class Package(val file: File, val cls: Boolean, val name: String, val options: LinkedHashSet[String] = new LinkedHashSet[String],
 								val requiresPackages: HashSet[String] = new HashSet[String],
 	              val commands: LinkedHashMap[String, Command] = new LinkedHashMap[String, Command],
@@ -197,7 +200,11 @@ object PackageParser {
 			case e: FileNotFoundException => None
 		}
 		val ctanPackInfo = ctanPackInfos.get(name.toLowerCase)
-		val usageCount = PackageUsageCounter.usageCounts.get(name)
+		val usageCount = if (cls) {
+			DocumentclassUsageCounter.usageCounts.get(name)
+		} else {
+			PackageUsageCounter.usageCounts.get(name)
+		}
 	}
 	class CtanPackInfo(val title: String, val desc: String)
 	class DebPackage(val name: String, val files: MutableList[String])
