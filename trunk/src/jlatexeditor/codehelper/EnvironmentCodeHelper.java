@@ -74,12 +74,13 @@ public class EnvironmentCodeHelper extends PatternHelper {
 
 	public Iterable<CHCommand> getCompletions(String search) {
 		ExtIterable<String> userIter = SCEManager.getBackgroundParser().getEnvironments().getObjectsIterable(search).map(ENVIRONMENT_2_STRING_FUNCTION);
-		ExtIterable<String> packEnvIter = PackagesExtractor.getPackageParser().getEnvironments().getTrieSetIterator(search).map(TRIE_SET_2_STRING_FUNCTION);
-		ExtIterable<String> dcEnvIter = PackagesExtractor.getDocClassesParser().getEnvironments().getTrieSetIterator(search).map(TRIE_SET_2_STRING_FUNCTION);
+		int minUsageCount = 0;
+		ExtIterable<String> packEnvIter = PackagesExtractor.getPackageParser().getEnvironments().getTrieSetIterator(search).filter(minUsage(minUsageCount)).map(TRIE_SET_2_STRING_FUNCTION);
+		ExtIterable<String> dcEnvIter = PackagesExtractor.getDocClassesParser().getEnvironments().getTrieSetIterator(search).filter(minUsage(minUsageCount)).map(TRIE_SET_2_STRING_FUNCTION);
 
 		ExtIterable<CHCommand> mergedIter = new MergeSortIterable<String>(STRING_COMPARATOR, userIter, packEnvIter, dcEnvIter).map(STRING_2_CHCOMMAND);
 
-		return CollectionUtils.take(mergedIter, 20);
+		return mergedIter.toList(20);
 
 		/*
 		List<String> envNames = PackagesExtractor.getPackageParser().getEnvironments().getStrings(search, 20);
@@ -87,6 +88,15 @@ public class EnvironmentCodeHelper extends PatternHelper {
 
 		return CollectionUtils.map(envNames, STRING_2_CHCOMMAND);
 		*/
+	}
+
+	private Function1<TrieSet<PackagesExtractor.Environment>, Boolean> minUsage(final int minUsageCount) {
+		return new Function1<TrieSet<PackagesExtractor.Environment>, Boolean>() {
+			@Override
+			public Boolean apply(TrieSet<PackagesExtractor.Environment> trieSet) {
+				return trieSet.getObjects().iterator().next().getUsageCount() >= minUsageCount;
+			}
+		};
 	}
 
 	public String getMaxCommonPrefix(String search) {
