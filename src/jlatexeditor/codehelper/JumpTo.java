@@ -82,6 +82,13 @@ public class JumpTo implements KeyListener, MouseListener {
 						SCEManager.getInstance().open(new FileDoc(new File(filePos.getFile())), filePos.getLineNr());
 						return;
 			    }
+		    } else
+		    if (command.equals("begin")) {
+			    BackgroundParser.FilePos filePos = SCEManager.getBackgroundParser().getEnvironments().get(word.word);
+			    if (filePos != null) {
+						SCEManager.getInstance().open(new FileDoc(new File(filePos.getFile())), filePos.getLineNr());
+						return;
+			    }
 		    }
 	    }
 
