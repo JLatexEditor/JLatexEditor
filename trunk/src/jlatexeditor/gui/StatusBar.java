@@ -175,7 +175,7 @@ public class StatusBar extends JPanel implements ActionListener, MouseListener {
 					checkForUpdates_();
 
 					synchronized (this) {
-						wait(120000);
+						wait(GProperties.getInt("check_for_svn_updates.interval") * 1000);
 					}
 				}
 	    } catch (InterruptedException ignored) {}

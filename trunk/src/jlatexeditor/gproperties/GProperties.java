@@ -91,6 +91,8 @@ public class GProperties {
     properties.addEntry(new Def("ask_for_saving_files_before_closing", BOOLEAN, "true"));
 	  properties.addEntry(new Comment(" Check for svn updates in the background"));
 	  properties.addEntry(new Def("check_for_svn_updates", BOOLEAN, "true"));
+	  properties.addEntry(new Comment(" Interval in which JLE checks for svn updates (in seconds)"));
+	  properties.addEntry(new Def("check_for_svn_updates.interval", INT_GT_0, "120"));
 	  properties.addEntry(new Comment(" Show new features after upgrade"));
 	  properties.addEntry(new Def("show_new_features", BOOLEAN, "true"));
 	  properties.addEntry(new Def("last_program_version", STRING, ""));
