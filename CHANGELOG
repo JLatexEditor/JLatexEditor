@@ -17,6 +17,7 @@ New Features and other Changes in JLatexEditor
 * minor enhancements:
   - the code helper popups now allow for the use of the mouse
   - improved parsing of latex output
+  - allow to set interval for svn status checks (via check_for_svn_updates.interval in global.properties)
 * bug fixes:
   - "Replace All" button is no longer disabled if no occurrence is selected
 
