@@ -1,17 +1,14 @@
 package jlatexeditor.codehelper;
 
-import de.endrullis.utils.CollectionUtils;
-import de.endrullis.utils.ExtIterable;
+import de.endrullis.utils.collections.ExtIterable;
+import de.endrullis.utils.collections.MergeSortIterable;
 import jlatexeditor.PackagesExtractor;
 import jlatexeditor.SCEManager;
 import sce.codehelper.CHCommand;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
 import util.Function1;
-import util.MergeSortIterable;
 import util.TrieSet;
-
-import java.util.Comparator;
 
 /**
  * CodeHelper for \\begin{...} and \\end{...}.
@@ -19,6 +16,18 @@ import java.util.Comparator;
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 public class EnvironmentCodeHelper extends ExtPatternHelper {
+	protected static final Function1<TrieSet<PackagesExtractor.Environment>,String> TRIE_SET_2_STRING_FUNCTION = new Function1<TrieSet<PackagesExtractor.Environment>, String>() {
+		@Override
+		public String apply(TrieSet<PackagesExtractor.Environment> trieSet) {
+			return trieSet.getObjects().iterator().next().getName();
+		}
+	};
+	protected  static final Function1<Environment,String> ENVIRONMENT_2_STRING_FUNCTION = new Function1<Environment, String>() {
+		public String apply(Environment env) {
+			return env.getName();
+		}
+	};
+
 	protected WordWithPos word;
 
 	public EnvironmentCodeHelper() {

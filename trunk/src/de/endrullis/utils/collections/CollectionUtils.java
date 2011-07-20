@@ -1,4 +1,4 @@
-package de.endrullis.utils;
+package de.endrullis.utils.collections;
 
 import util.Function1;
 

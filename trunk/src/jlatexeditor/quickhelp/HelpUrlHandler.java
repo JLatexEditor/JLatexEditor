@@ -1,6 +1,6 @@
 package jlatexeditor.quickhelp;
 
-import de.endrullis.utils.CollectionUtils;
+import de.endrullis.utils.collections.CollectionUtils;
 import jlatexeditor.PackagesExtractor;
 import util.ConfigurableStreamHandlerFactory;
 

@@ -1,6 +1,5 @@
-package de.endrullis.utils;
+package de.endrullis.utils.collections;
 
-import com.sun.org.apache.xpath.internal.functions.Function;
 import util.Function1;
 
 import java.util.ArrayList;
@@ -33,6 +32,10 @@ public abstract class ExtIterable<T> implements Iterable<T> {
 
 	public ExtIterable<T> filter(Function1<T, Boolean> filterFunc) {
 		return new FilterIterable<T>(this, filterFunc);
+	}
+
+	public ExtIterable<T> distinct() {
+		return new DistinctIterable<T>(this);
 	}
 
 	@Override

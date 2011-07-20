@@ -1,5 +1,6 @@
 package util;
 
+import de.endrullis.utils.collections.MergeSortIterable;
 import junit.framework.TestCase;
 
 import java.util.Arrays;

@@ -1,8 +1,7 @@
 package jlatexeditor.codehelper;
 
-import de.endrullis.utils.CollectionUtils;
+import de.endrullis.utils.collections.CollectionUtils;
 import jlatexeditor.PackagesExtractor;
-import jlatexeditor.gproperties.GPropertiesCodeHelper;
 import sce.codehelper.CHCommand;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
@@ -52,7 +51,9 @@ public class UsePackageCodeHelper extends PatternHelper {
 		if (packageNames == null) packageNames = new ArrayList<String>();
 
 		return CollectionUtils.map(packageNames, new Function1<String, CHCommand>() {
-			public CHCommand apply(String packageName) { return new ValueCompletion(packageName); }
+			public CHCommand apply(String packageName) {
+				return new ValueCompletion(packageName);
+			}
 		});
 	}
 

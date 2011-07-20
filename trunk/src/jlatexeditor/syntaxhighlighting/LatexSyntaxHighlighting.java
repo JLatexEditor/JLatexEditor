@@ -218,7 +218,7 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 
 						String command = getWord(row, char_nr + 1, true);
 
-						CHCommand chCommand = commands.get("\\" + command);
+						CHCommand chCommand = commands.get(command);
 						if (chCommand != null) {
 							argumentsIterator = chCommand.getArguments().iterator();
 						}

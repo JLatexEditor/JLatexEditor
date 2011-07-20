@@ -6,6 +6,8 @@ import scala.collection.JavaConversions._
 import java.io.{File, PrintStream, FileInputStream}
 
 /**
+ * Usage counter for commands, environments, ...
+ *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 abstract class UsageCounter(val fileName: String) {
