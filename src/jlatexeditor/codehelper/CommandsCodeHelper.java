@@ -1,9 +1,13 @@
 package jlatexeditor.codehelper;
 
+import de.endrullis.utils.ExtIterable;
 import de.endrullis.utils.ExtIterator;
+import jlatexeditor.PackagesExtractor;
 import jlatexeditor.SCEManager;
 import sce.codehelper.CHCommand;
 import sce.codehelper.StaticCommandsCodeHelper;
+import util.Function1;
+import util.MergeSortIterable;
 import util.Trie;
 
 import java.util.ArrayList;
@@ -21,7 +25,18 @@ public class CommandsCodeHelper extends StaticCommandsCodeHelper {
 	}
 
 	@Override
-	public Iterable<? extends CHCommand> getCompletions(String prefix) {
+	public Iterable<CHCommand> getCompletions(String prefix) {
+		/*
+		ExtIterable<String> userIter = SCEManager.getBackgroundParser().getCommands().getObjectsIterable(search).map(COMMAND_2_STRING_FUNCTION);
+		int minUsageCount = 0;
+		ExtIterable<String> packEnvIter = PackagesExtractor.getPackageParser().getEnvironments().getTrieSetIterator(search).filter(minUsage(minUsageCount)).map(TRIE_SET_2_STRING_FUNCTION);
+		ExtIterable<String> dcEnvIter = PackagesExtractor.getDocClassesParser().getEnvironments().getTrieSetIterator(search).filter(minUsage(minUsageCount)).map(TRIE_SET_2_STRING_FUNCTION);
+
+		ExtIterable<CHCommand> mergedIter = new MergeSortIterable<String>(STRING_COMPARATOR, userIter, packEnvIter, dcEnvIter).map(STRING_2_CHCOMMAND);
+
+		return mergedIter.toList(20);
+		*/
+
 		ArrayList<CHCommand> dynamicCommands = new ArrayList<CHCommand>();
 		BackgroundParser backgroundParser = SCEManager.getBackgroundParser();
 		if (backgroundParser != null) {

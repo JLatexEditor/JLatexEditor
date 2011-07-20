@@ -18,30 +18,7 @@ import java.util.Comparator;
  *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
-public class EnvironmentCodeHelper extends PatternHelper {
-	private static final Comparator<String> STRING_COMPARATOR = new Comparator<String>() {
-		@Override
-		public int compare(String o1, String o2) {
-			return o1.compareTo(o2);
-		}
-	};
-	private static final Function1<TrieSet<PackagesExtractor.Environment>,String> TRIE_SET_2_STRING_FUNCTION = new Function1<TrieSet<PackagesExtractor.Environment>, String>() {
-		@Override
-		public String apply(TrieSet<PackagesExtractor.Environment> trieSet) {
-			return trieSet.getObjects().iterator().next().getName();
-		}
-	};
-	private static final Function1<String,CHCommand> STRING_2_CHCOMMAND = new Function1<String, CHCommand>() {
-		public CHCommand apply(String packageName) {
-			return new ValueCompletion(packageName);
-		}
-	};
-	private static final Function1<Environment,String> ENVIRONMENT_2_STRING_FUNCTION = new Function1<Environment, String>() {
-		public String apply(Environment env) {
-			return env.getName();
-		}
-	};
-
+public class EnvironmentCodeHelper extends ExtPatternHelper {
 	protected WordWithPos word;
 
 	public EnvironmentCodeHelper() {
@@ -90,7 +67,7 @@ public class EnvironmentCodeHelper extends PatternHelper {
 		*/
 	}
 
-	private Function1<TrieSet<PackagesExtractor.Environment>, Boolean> minUsage(final int minUsageCount) {
+	protected Function1<TrieSet<PackagesExtractor.Environment>, Boolean> minUsage(final int minUsageCount) {
 		return new Function1<TrieSet<PackagesExtractor.Environment>, Boolean>() {
 			@Override
 			public Boolean apply(TrieSet<PackagesExtractor.Environment> trieSet) {
