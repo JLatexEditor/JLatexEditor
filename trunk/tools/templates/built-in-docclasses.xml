@@ -1,0 +1,6 @@
+  <package name="article" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,landscape,11pt,12pt,twoside,twocolumn,draft,notitlepage,fleqn,leqno,openbib"/>
+  <package name="report" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,landscape,11pt,12pt,twoside,twocolumn,notitlepage,openright,draft,fleqn,leqno,openbib"/>
+  <package name="letter" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,landscape,11pt,12pt,twoside,draft,fleqn,leqno"/>
+  <package name="book" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,landscape,11pt,12pt,oneside,twocolumn,notitlepage,titlepage,openany,draft,fleqn,leqno"/>
+  <package name="proc" options="a4paper,letterpaper,legalpaper,landscape,11pt,12pt,draft,fleqn,leqno"/>
+  <package name="slides" options="a4paper,a5paper,b5paper,letterpaper,legalpaper,landscape,clock,notitlepage,titlepage,draft,fleqn,leqno"/>

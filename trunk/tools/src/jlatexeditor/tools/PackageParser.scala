@@ -5,9 +5,10 @@ import utils.ic.InputStream._
 import java.io._
 import collection.mutable._
 import org.apache.commons.lang.StringEscapeUtils
-import com.sun.deploy.Environment
 
 /**
+ * Parser for latex cls and sty files.
+ *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 object PackageParser {
@@ -54,8 +55,8 @@ object PackageParser {
 
 		texmfDirs.foreach(dir => parse(packs, classes, dir))
 
-		writeXmlFile("packages.xml", packs)
-		writeXmlFile("docclasses.xml", classes)
+		writeXmlFile("packages.xml", null, packs)
+		writeXmlFile("docclasses.xml", "templates/built-in-docclasses.xml", classes)
 
 		/*
 		val commandName2command = new HashMap[String, MutableList[Command]]()
@@ -72,9 +73,12 @@ object PackageParser {
 		*/
 	}
 
-	def writeXmlFile(file: String, packages: MutableList[Package]) {
+	def writeXmlFile(file: String, templateFile: String, packages: MutableList[Package]) {
 		val out = new PrintStream(file)
 		out.println("<packages>")
+		if (templateFile != null) {
+			out.println(new File(templateFile).getContent)
+		}
 		for (pack <- packages) {
 			val optionsPackString = if(pack.options.isEmpty) "" else " options=\"" + pack.options.mkString(",") + "\"";
 			val requiresPackagesString = if(pack.requiresPackages.isEmpty) "" else " requiresPackages=\"" + pack.requiresPackages.mkString(",") + "\"";
