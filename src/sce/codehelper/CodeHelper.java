@@ -43,8 +43,9 @@ public abstract class CodeHelper {
 	 * Returns a list of possible completions.
 	 *
 	 * @return list of completion suggestions.
+	 * @param level completion level
 	 */
-  public abstract Iterable<? extends CHCommand> getCompletions();
+  public abstract Iterable<? extends CHCommand> getCompletions(int level);
 
 	/**
 	 * Returns the maximal common prefix of the completion suggestions

@@ -9,9 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.font.TextAttribute;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,6 +40,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
   // the position of the code helper
   private WordWithPos wordPos = null;
+	private int level = 1;
   // the prefix
 
   private Template template;
@@ -96,6 +95,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     super.setVisible(visible);
     popup.setVisible(visible);
     if (!visible) {
+	    level = 1;
       wordPos = null;
     }
   }
@@ -139,7 +139,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     Dimension dimension = list.getPreferredSize();
 
     dimension.width = Math.min(480, dimension.width + 30);
-    dimension.height = Math.min(320, dimension.height + 5);
+    dimension.height = Math.min(320, dimension.height + 20);
 
     return dimension;
   }
@@ -165,9 +165,12 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
   /**
    * Updates the search prefix for the code helper.
+   * @param level completion level
    */
-  private void updatePrefix() {
+  private void updatePrefix(int level) {
     if (wordPos == null || codeHelper == null) return;
+
+	  status.setText("Level " + level);
 
     // get selection
     Object selectedValue = null;
@@ -177,7 +180,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     model.removeAllElements();
 
     if (codeHelper.documentChanged()) {
-      for (CHCommand command : codeHelper.getCompletions()) model.addElement(command);
+      for (CHCommand command : codeHelper.getCompletions(level)) model.addElement(command);
 	    wordPos = codeHelper.getWordToReplace();
 
       // restore selection
@@ -265,7 +268,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
       if (tabCompletion.matches()) {
         WordWithPos wordToReplace = tabCompletion.getWordToReplace();
 
-        for (CHCommand command : tabCompletion.getCompletions()) {
+        for (CHCommand command : tabCompletion.getCompletions(level)) {
           if (wordToReplace.word.equals(command.getName())) {
             SCECaret caret = pane.getCaret();
             document.remove(wordToReplace.getStartPos(), caret);
@@ -377,11 +380,15 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 	public void callCodeHelperWithCompletion() {
 		if (codeHelper.matches()) {
 		  wordPos = codeHelper.getWordToReplace();
-		  updatePrefix();
+		  updatePrefix(level);
 		  String replacement = codeHelper.getMaxCommonPrefix();
 
 		  if (replacement != null) {
-		    replace(wordPos, replacement);
+			  if (wordPos.word.equals(replacement)) {
+				  level = Math.min(level + 1, 3);
+			  } else {
+				  replace(wordPos, replacement);
+			  }
 
 			  if (!popup.isVisible()) {
 				  popItUp();
@@ -395,7 +402,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
 		if (codeHelper.matches()) {
 		  wordPos = codeHelper.getWordToReplace();
-		  updatePrefix();
+		  updatePrefix(level);
 
 			String replacement = codeHelper.getMaxCommonPrefix();
 
@@ -436,7 +443,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 	    template.documentChanged(sender, event);
     }
 
-    if (isVisible()) updatePrefix();
+    if (isVisible()) updatePrefix(level);
 	  else {
 	    if (idleThread != null) {
 	      idleThread.documentChanged(sender, event);

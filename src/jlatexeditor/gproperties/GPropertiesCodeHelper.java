@@ -53,7 +53,7 @@ public class GPropertiesCodeHelper extends PatternHelper {
   }
 
   @Override
-  public Iterable<? extends CHCommand> getCompletions() {
+  public Iterable<? extends CHCommand> getCompletions(int level) {
     return getCompletions(key, value.word);
   }
 

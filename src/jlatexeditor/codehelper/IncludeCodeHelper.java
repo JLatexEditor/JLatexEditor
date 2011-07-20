@@ -56,7 +56,7 @@ public class IncludeCodeHelper extends PatternHelper {
   }
 
   @Override
-  public Iterable<? extends CHCommand> getCompletions() {
+  public Iterable<? extends CHCommand> getCompletions(int level) {
     return getCompletions(path, fileName.word);
   }
 

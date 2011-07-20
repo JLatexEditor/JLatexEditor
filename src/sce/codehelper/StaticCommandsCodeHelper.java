@@ -44,7 +44,7 @@ public class StaticCommandsCodeHelper extends PatternHelper {
   }
 
   @Override
-  public Iterable<? extends CHCommand> getCompletions() {
+  public Iterable<? extends CHCommand> getCompletions(int level) {
     return getCompletions(command.word);
   }
 

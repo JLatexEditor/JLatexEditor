@@ -12,8 +12,6 @@ import de.endrullis.utils.collections.MergeSortIterable;
 import util.Trie;
 import util.TrieSet;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -56,7 +54,7 @@ public class CommandsCodeHelper extends ExtPatternHelper {
 	}
 
 	@Override
-	public Iterable<? extends CHCommand> getCompletions() {
+	public Iterable<? extends CHCommand> getCompletions(int level) {
 	  return getCompletions(word.word);
 	}
 
