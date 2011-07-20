@@ -1,8 +1,7 @@
 package jlatexeditor.codehelper;
 
-import de.endrullis.utils.CollectionUtils;
+import de.endrullis.utils.collections.CollectionUtils;
 import jlatexeditor.PackagesExtractor;
-import jlatexeditor.gproperties.GPropertiesCodeHelper;
 import sce.codehelper.CHCommand;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;

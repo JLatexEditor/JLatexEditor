@@ -1,5 +1,7 @@
 package de.endrullis.utils;
 
+import de.endrullis.utils.collections.CollectionUtils;
+
 import javax.swing.*;
 import java.io.*;
 import java.util.*;

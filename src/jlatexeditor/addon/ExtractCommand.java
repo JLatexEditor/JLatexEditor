@@ -1,13 +1,12 @@
 package jlatexeditor.addon;
 
-import de.endrullis.utils.ExtIterable;
+import de.endrullis.utils.collections.ExtIterable;
 import jlatexeditor.Doc;
 import jlatexeditor.JLatexEditorJFrame;
 import jlatexeditor.SCEManager;
 import jlatexeditor.codehelper.BackgroundParser;
 import jlatexeditor.codehelper.Command;
 import sce.component.*;
-import sun.security.provider.ParameterCache;
 
 import javax.swing.*;
 import java.io.File;

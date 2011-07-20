@@ -9,7 +9,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.font.TextAttribute;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,6 +63,8 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     list.setForeground(Color.BLACK);
     list.setSelectionBackground(new Color(0, 82, 164));
     list.setSelectionForeground(Color.WHITE);
+	  //list.setFont(pane.getFont().deriveFont(pane.getFont().getStyle() | Font.BOLD));
+	  list.setFont(pane.getFont());
 
     // put us first in the listner list
     MouseListener[] listeners = list.getMouseListeners();

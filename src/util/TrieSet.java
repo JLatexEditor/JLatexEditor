@@ -1,7 +1,7 @@
 package util;
 
-import de.endrullis.utils.ExtIterable;
-import de.endrullis.utils.ExtIterator;
+import de.endrullis.utils.collections.ExtIterable;
+import de.endrullis.utils.collections.ExtIterator;
 
 import java.util.*;
 

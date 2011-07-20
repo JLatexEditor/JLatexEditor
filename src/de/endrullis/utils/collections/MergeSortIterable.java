@@ -1,12 +1,11 @@
-package util;
-
-import de.endrullis.utils.ExtIterable;
-import de.endrullis.utils.ExtIterator;
+package de.endrullis.utils.collections;
 
 import java.util.Comparator;
 import java.util.Iterator;
 
 /**
+ * Merge sort iterable.
+ *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 public class MergeSortIterable<T> extends ExtIterable<T> {
@@ -24,6 +23,6 @@ public class MergeSortIterable<T> extends ExtIterable<T> {
 		for (int i = 0; i < iterators.length; i++) {
 			iterators[i] = iterables[i].iterator();
 		}
-		return new SortedMergeIterator<T>(comparator, iterators);
+		return new MergeSortIterator<T>(comparator, iterators);
 	}
 }

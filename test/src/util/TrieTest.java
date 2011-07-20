@@ -1,6 +1,6 @@
 package util;
 
-import de.endrullis.utils.CollectionUtils;
+import de.endrullis.utils.collections.CollectionUtils;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
