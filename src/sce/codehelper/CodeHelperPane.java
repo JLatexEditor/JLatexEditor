@@ -30,6 +30,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
   // the popup
   protected JPopupMenu popup = null;
+	JMenuItem status = new JMenuItem();
 
   // the model
   private JList list = null;
@@ -51,6 +52,9 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     this.pane = pane;
     document = pane.getDocument();
     caret = pane.getCaret();
+
+	  status.setFont(new Font("Serif", Font.PLAIN, 9));
+	  status.setText("Level X");
 
     // create the list
     list = new JList();
@@ -79,6 +83,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
     // popup menu
     popup = new JPopupMenu();
+	  popup.add(status);
     popup.add(this);
     popup.setFocusable(false);
 
@@ -370,8 +375,6 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
   }
 
 	public void callCodeHelperWithCompletion() {
-		if (popup.isVisible()) return;
-
 		if (codeHelper.matches()) {
 		  wordPos = codeHelper.getWordToReplace();
 		  updatePrefix();
@@ -380,7 +383,9 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 		  if (replacement != null) {
 		    replace(wordPos, replacement);
 
-			  popItUp();
+			  if (!popup.isVisible()) {
+				  popItUp();
+			  }
 		  }
 		}
 	}
