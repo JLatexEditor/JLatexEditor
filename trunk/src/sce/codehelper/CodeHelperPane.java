@@ -4,6 +4,8 @@ import de.endrullis.utils.KeyUtils;
 import sce.component.*;
 
 import javax.swing.*;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -19,7 +21,7 @@ import java.util.regex.Pattern;
  * @author Jörg Endrullis
  * @author Stefan Endrullis
  */
-public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocumentListener, MouseListener {
+public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocumentListener, MouseListener, PopupMenuListener {
   // the source code pane
   protected SCEPane pane = null;
   protected SCEDocument document = null;
@@ -85,6 +87,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 	  popup.add(status);
     popup.add(this);
     popup.setFocusable(false);
+	  popup.addPopupMenuListener(this);
 
     // add listeners
     pane.addKeyListener(this);
@@ -385,7 +388,10 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
 		  if (replacement != null) {
 			  if (wordPos.word.equals(replacement)) {
-				  level = Math.min(level + 1, 3);
+				  if (popup.isVisible()) {
+						level = Math.min(level + 1, 3);
+						updatePrefix(level);
+				  }
 			  } else {
 				  replace(wordPos, replacement);
 			  }
@@ -478,8 +484,22 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
   public void mouseExited(MouseEvent e) {
   }
 
+	@Override
+	public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+	}
 
-  // inner classes
+	@Override
+	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+		level = 1;
+	}
+
+	@Override
+	public void popupMenuCanceled(PopupMenuEvent e) {
+		level = 1;
+	}
+
+
+	// inner classes
 
   public static class SCEListCellRenderer extends DefaultListCellRenderer {
     public static final Color BACKGROUND = new Color(219, 224, 253);
