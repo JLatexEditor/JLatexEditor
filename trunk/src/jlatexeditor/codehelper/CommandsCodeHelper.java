@@ -6,10 +6,16 @@ import jlatexeditor.SCEManager;
 import sce.codehelper.CHCommand;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
+import util.AbstractTrie;
 import util.Function1;
 import de.endrullis.utils.collections.MergeSortIterable;
 import util.Trie;
 import util.TrieSet;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Code helper for all LaTeX commands (static, user defined, and used ones).
@@ -107,8 +113,40 @@ public class CommandsCodeHelper extends ExtPatternHelper {
 	}
 
 	public String getMaxCommonPrefix(String search) {
-		// TODO
-	  return search;
+		List<AbstractTrie<? extends Object>> tries = Arrays.asList(
+			SCEManager.getBackgroundParser().getCommands(),
+			SCEManager.getLatexCommands().getCommands(),
+			PackagesExtractor.getPackageParser().getCommands(),
+			PackagesExtractor.getDocClassesParser().getCommands()
+		);
+
+		String maxPrefix = null;
+		for (AbstractTrie<? extends Object> trie : tries) {
+			String maxCommonPrefix = trie.getMaxCommonPrefix(search);
+			if (maxCommonPrefix.length() >= search.length()) {
+				if (maxPrefix == null) {
+					maxPrefix = maxCommonPrefix;
+				} else {
+					maxPrefix = maxCommonPrefix(maxPrefix, maxCommonPrefix);
+				}
+			}
+		}
+
+		return maxPrefix;
+	}
+
+	private String maxCommonPrefix(String prefix1, String prefix2) {
+		char[] chars1 = prefix1.toCharArray();
+		char[] chars2 = prefix2.toCharArray();
+
+		int i;
+		for (i = 0; i < chars1.length && i < chars2.length; i++) {
+			if (chars1[i] != chars2[i]) {
+				return prefix1.substring(0, i);
+			}
+		}
+
+		return prefix1.substring(0, i);
 	}
 
 	/*
