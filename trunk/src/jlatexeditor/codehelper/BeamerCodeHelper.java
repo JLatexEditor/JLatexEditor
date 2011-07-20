@@ -39,7 +39,7 @@ public class BeamerCodeHelper extends PatternHelper {
 	}
 
 	@Override
-	public Iterable<? extends CHCommand> getCompletions() {
+	public Iterable<? extends CHCommand> getCompletions(int level) {
 	  return getCompletions(word.word);
 	}
 

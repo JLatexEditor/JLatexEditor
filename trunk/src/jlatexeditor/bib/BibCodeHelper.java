@@ -74,7 +74,7 @@ public class BibCodeHelper extends PatternHelper {
     return name;
   }
 
-  public Iterable<? extends CHCommand> getCompletions() {
+  public Iterable<? extends CHCommand> getCompletions(int level) {
     return getCompletions(name.word);
   }
 

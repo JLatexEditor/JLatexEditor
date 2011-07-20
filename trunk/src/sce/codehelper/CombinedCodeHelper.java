@@ -39,8 +39,8 @@ public class CombinedCodeHelper extends PatternHelper {
   }
 
   @Override
-  public Iterable<? extends CHCommand> getCompletions() {
-    return currentPatternHelper.getCompletions();
+  public Iterable<? extends CHCommand> getCompletions(int level) {
+    return currentPatternHelper.getCompletions(level);
   }
 
   @Override

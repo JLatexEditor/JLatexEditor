@@ -30,7 +30,7 @@ public class GenericCodeHelper extends PatternHelper {
     return label;
   }
 
-  public Iterable<? extends CHCommand> getCompletions() {
+  public Iterable<? extends CHCommand> getCompletions(int level) {
     AbstractTrie<?> trie = getCompletionTrie.apply();
 
     ArrayList<CHCommand> commands = new ArrayList<CHCommand>();
