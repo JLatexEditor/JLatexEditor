@@ -69,16 +69,7 @@ public class EnvironmentCodeHelper extends ExtPatternHelper {
 		ExtIterable<String> packEnvIter = PackagesExtractor.getPackageParser().getEnvironments().getTrieSetIterator(search).filter(filterFunc).map(TRIE_SET_2_STRING_FUNCTION);
 		ExtIterable<String> dcEnvIter = PackagesExtractor.getDocClassesParser().getEnvironments().getTrieSetIterator(search).filter(filterFunc).map(TRIE_SET_2_STRING_FUNCTION);
 
-		ExtIterable<CHCommand> mergedIter = new MergeSortIterable<String>(STRING_COMPARATOR, userIter, packEnvIter, dcEnvIter).distinct().map(STRING_2_CHCOMMAND);
-
-		return mergedIter.toList(20);
-
-		/*
-		List<String> envNames = PackagesExtractor.getPackageParser().getEnvironments().getStrings(search, 20);
-		if (envNames == null) envNames = new ArrayList<String>();
-
-		return CollectionUtils.map(envNames, STRING_2_CHCOMMAND);
-		*/
+		return new MergeSortIterable<String>(STRING_COMPARATOR, userIter, packEnvIter, dcEnvIter).distinct().map(STRING_2_CHCOMMAND).toList(20);
 	}
 
 	protected Function1<TrieSet<PackagesExtractor.Environment>, Boolean> minUsage(final int minUsageCount) {
