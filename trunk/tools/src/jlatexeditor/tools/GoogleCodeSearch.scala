@@ -11,7 +11,7 @@ import sun.management.snmp.jvminstr.JvmThreadInstanceEntryImpl.ThreadStateMap
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 object GoogleCodeSearch {
-	val CODE_SEARCH_FEEDS_URL = "https://www.google.com/codesearch/feeds/search?"
+	val CODE_SEARCH_FEEDS_URL = "http://www.google.com/codesearch/feeds/search?"
 	val codeSearchService = new CodeSearchService("gdata-sample-codesearch")
 
 	def determineUsageCountForLatexCode(code: String): Int = {

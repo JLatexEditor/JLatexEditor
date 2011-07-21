@@ -91,8 +91,9 @@ object PackageParser {
 				out.println("    <command name=\"" + command.name + "\" argCount=\"" + command.argCount + "\"" + optArgString + " />")
 			}
 			for (env <- pack.environments.values) {
+				val usageCountString = env.usageCount.map( count => " usageCount=\"" + count + "\"").getOrElse("")
 				val optArgString = if (env.optionalArgs.isEmpty) "" else " optionalArg=\"" + escape(env.optionalArgs(0)) + "\""
-				out.println("    <environment name=\"" + env.name + "\" argCount=\"" + env.argCount + "\"" + optArgString + " />")
+				out.println("    <environment name=\"" + env.name + "\" argCount=\"" + env.argCount + "\"" + optArgString + usageCountString + " />")
 			}
 			out.println("  </package>")
 		}
