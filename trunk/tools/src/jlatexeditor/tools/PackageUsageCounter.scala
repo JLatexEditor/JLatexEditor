@@ -9,6 +9,6 @@ import java.io.{PrintStream}
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 object PackageUsageCounter extends UsageCounter("packageUsageCounts.properties") {
-	val names = (XML.loadFile("packages.xml") \ "package").map(node => (node \ "@name").text).sortBy(x => x).distinct
+	lazy val names = (XML.loadFile("packages.xml") \ "package").map(node => (node \ "@name").text).sortBy(x => x).distinct
 	def getCode(name: String) = "\\\\usepackage\\{" + name + "\\}"
 }

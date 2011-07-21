@@ -12,13 +12,13 @@ import org.apache.commons.lang.StringEscapeUtils
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 object PackageParser {
-	val DeclareOption = ".*\\\\DeclareOption\\s*\\{([^\\}]+)}".r
-	val RequirePackage = ".*\\\\RequirePackage\\s*\\{([^\\}]+)}".r
+	val DeclareOption = ".*\\\\DeclareOption\\s*\\{([^\\}]+)}.*".r
+	val RequirePackage = ".*\\\\RequirePackage\\s*\\{([^\\}]+)}.*".r
 	val Def = ".*\\\\def\\s*\\\\(\\w+)([#\\[\\]\\d]*)\\s*\\{.*".r
 	val DefArgCount = "#+".r
 	val NewCommand = ".*\\\\newcommand\\{?\\\\(\\w+)\\}?(?:\\[(\\d+)\\])?(?:\\[([^\\]]+)\\])?.*".r
 	val NewEnvironment = ".*\\\\newenvironment\\{(\\w+)\\}(?:\\[(\\d+)\\])?(?:\\[([^\\]]+)\\])?.*".r
-	val Input = ".*\\\\input\\{([^}]+)\\}".r
+	val Input = ".*\\\\input\\s*\\{([^}]+)\\}.*".r
 	val DpkgResult = "([\\w\\.-]+): .*".r
 	val CtanPackSplit = "([^=]+)=(.*)".r
 
@@ -35,8 +35,13 @@ object PackageParser {
 	}
 
 	def main(args: Array[String]) {
-		//parseFile(new File("/usr/share/texmf-texlive/tex/latex/algorithms/algorithmic.sty"))
 		/*
+		val pack = new Package(new File("."), true, "report")
+		parseFile(pack, new File("/usr/share/texmf-texlive/tex/latex/base/report.cls"))
+		for (opt <- pack.options) {
+			println(opt)
+		}
+
 		val p = findDebPackage(findFile("tikz.sty").getAbsolutePath)
 		println(p.name)
 		for (f <- p.files) {
@@ -56,7 +61,7 @@ object PackageParser {
 		texmfDirs.foreach(dir => parse(packs, classes, dir))
 
 		writeXmlFile("packages.xml", null, packs)
-		writeXmlFile("docclasses.xml", "templates/built-in-docclasses.xml", classes)
+		writeXmlFile("docclasses.xml", null, classes)
 
 		/*
 		val commandName2command = new HashMap[String, MutableList[Command]]()
@@ -80,7 +85,7 @@ object PackageParser {
 			out.println(new File(templateFile).getContent)
 		}
 		for (pack <- packages) {
-			val optionsPackString = if(pack.options.isEmpty) "" else " options=\"" + pack.options.mkString(",") + "\"";
+			val optionsPackString = if(pack.options.isEmpty) "" else " options=\"" + pack.options.map(escape(_)).mkString(",") + "\"";
 			val requiresPackagesString = if(pack.requiresPackages.isEmpty) "" else " requiresPackages=\"" + pack.requiresPackages.mkString(",") + "\"";
 			val ctanPackString = pack.ctanPackInfo.map( pack => " title=\"" + escape(pack.title) + "\" description=\"" + escape(pack.desc) + "\"").getOrElse("")
 			val debPackageString = pack.debPackage.map( pack => " debPackage=\"" + pack.name + "\"").getOrElse("")
