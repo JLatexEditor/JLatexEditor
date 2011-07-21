@@ -37,16 +37,6 @@ public class DocumentClassCodeHelper extends ExtPatternHelper<PackagesExtractor.
 	  return false;
 	}
 
-	@Override
-	public WordWithPos getWordToReplace() {
-	  return word;
-	}
-
-	@Override
-	public String getMaxCommonPrefix() {
-	  return getMaxCommonPrefix(word.word);
-	}
-
 	public Iterable<CHCommand> getCompletions(String search, Function1<PackagesExtractor.Package, Boolean> filterFun) {
 		List<String> docClassNames = PackagesExtractor.getDocClassesParser().getPackages().getObjectsIterable(search).filter(filterFun).map(PACKAGE_2_NAME_FUNCTION).toList(20);
 		if (docClassNames == null) docClassNames = new ArrayList<String>();
@@ -66,6 +56,10 @@ public class DocumentClassCodeHelper extends ExtPatternHelper<PackagesExtractor.
 	}
 
 	public String getMaxCommonPrefix(String search) {
-	  return search;
+		String maxCommonPrefix = PackagesExtractor.getPackageParser().getPackages().getMaxCommonPrefix(search);
+		if (maxCommonPrefix.length() > search.length()) {
+			return maxCommonPrefix;
+		}
+		return search;
 	}
 }

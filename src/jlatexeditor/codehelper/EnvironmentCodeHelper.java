@@ -7,8 +7,12 @@ import jlatexeditor.SCEManager;
 import sce.codehelper.CHCommand;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
+import util.AbstractTrie;
 import util.Function1;
 import util.TrieSet;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * CodeHelper for \\begin{...} and \\end{...}.
@@ -42,16 +46,6 @@ public class EnvironmentCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtr
 	  return false;
 	}
 
-	@Override
-	public WordWithPos getWordToReplace() {
-	  return word;
-	}
-
-	@Override
-	public String getMaxCommonPrefix() {
-	  return getMaxCommonPrefix(word.word);
-	}
-
 	public Iterable<CHCommand> getCompletions(String search, Function1<TrieSet<PackagesExtractor.Environment>, Boolean> filterFunc) {
 		ExtIterable<String> userIter = SCEManager.getBackgroundParser().getEnvironments().getObjectsIterable(search).map(ENVIRONMENT_2_STRING_FUNCTION);
 		ExtIterable<String> packEnvIter = PackagesExtractor.getPackageParser().getEnvironments().getTrieSetIterator(search).filter(filterFunc).map(TRIE_SET_2_STRING_FUNCTION);
@@ -70,7 +64,24 @@ public class EnvironmentCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtr
 	}
 
 	public String getMaxCommonPrefix(String search) {
-		// TODO
-	  return search;
+		List<AbstractTrie<? extends Object>> tries = Arrays.asList(
+			SCEManager.getBackgroundParser().getEnvironments(),
+			PackagesExtractor.getPackageParser().getEnvironments(),
+			PackagesExtractor.getDocClassesParser().getEnvironments()
+		);
+
+		String maxPrefix = null;
+		for (AbstractTrie<? extends Object> trie : tries) {
+			String maxCommonPrefix = trie.getMaxCommonPrefix(search);
+			if (maxCommonPrefix.length() >= search.length()) {
+				if (maxPrefix == null) {
+					maxPrefix = maxCommonPrefix;
+				} else {
+					maxPrefix = maxCommonPrefix(maxPrefix, maxCommonPrefix);
+				}
+			}
+		}
+
+		return maxPrefix;
 	}
 }

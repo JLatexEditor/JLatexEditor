@@ -52,16 +52,6 @@ public class CommandsCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtract
 	  return false;
 	}
 
-	@Override
-	public WordWithPos getWordToReplace() {
-	  return word;
-	}
-
-	@Override
-	public String getMaxCommonPrefix() {
-	  return getMaxCommonPrefix(word.word);
-	}
-
 	public Iterable<CHCommand> getCompletions(String search, Function1<TrieSet<PackagesExtractor.Command>, Boolean> filterFunc) {
 		final Trie<Command> userCommands = SCEManager.getBackgroundParser().getCommands();
 		final Trie<CHCommand> standardCommands = SCEManager.getLatexCommands().getCommands();
