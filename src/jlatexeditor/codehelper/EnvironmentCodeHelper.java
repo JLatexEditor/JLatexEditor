@@ -52,8 +52,9 @@ public class EnvironmentCodeHelper extends ExtPatternHelper {
 	public Iterable<? extends CHCommand> getCompletions(int level) {
 		int minUsageCount = 0;
 		switch (level) {
-			case 1:  minUsageCount = 0; break;
-			default: minUsageCount = 0; break;
+			case 1:  minUsageCount = 50; break;
+			case 2:  minUsageCount =  1; break;
+			default: minUsageCount = -1; break;
 		}
 	  return getCompletions(word.word, minUsage(minUsageCount));
 	}
@@ -68,7 +69,7 @@ public class EnvironmentCodeHelper extends ExtPatternHelper {
 		ExtIterable<String> packEnvIter = PackagesExtractor.getPackageParser().getEnvironments().getTrieSetIterator(search).filter(filterFunc).map(TRIE_SET_2_STRING_FUNCTION);
 		ExtIterable<String> dcEnvIter = PackagesExtractor.getDocClassesParser().getEnvironments().getTrieSetIterator(search).filter(filterFunc).map(TRIE_SET_2_STRING_FUNCTION);
 
-		ExtIterable<CHCommand> mergedIter = new MergeSortIterable<String>(STRING_COMPARATOR, userIter, packEnvIter, dcEnvIter).map(STRING_2_CHCOMMAND);
+		ExtIterable<CHCommand> mergedIter = new MergeSortIterable<String>(STRING_COMPARATOR, userIter, packEnvIter, dcEnvIter).distinct().map(STRING_2_CHCOMMAND);
 
 		return mergedIter.toList(20);
 
