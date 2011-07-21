@@ -15,7 +15,7 @@ import util.TrieSet;
  *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
-public class EnvironmentCodeHelper extends ExtPatternHelper {
+public class EnvironmentCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtractor.Environment>> {
 	protected static final Function1<TrieSet<PackagesExtractor.Environment>,String> TRIE_SET_2_STRING_FUNCTION = new Function1<TrieSet<PackagesExtractor.Environment>, String>() {
 		@Override
 		public String apply(TrieSet<PackagesExtractor.Environment> trieSet) {
@@ -28,9 +28,8 @@ public class EnvironmentCodeHelper extends ExtPatternHelper {
 		}
 	};
 
-	protected WordWithPos word;
-
 	public EnvironmentCodeHelper() {
+		super("environments");
 	  pattern = new PatternPair("\\\\(?:begin|end)\\s*\\{([^{}]*)");
   }
 
@@ -49,22 +48,11 @@ public class EnvironmentCodeHelper extends ExtPatternHelper {
 	}
 
 	@Override
-	public Iterable<? extends CHCommand> getCompletions(int level) {
-		int minUsageCount = 0;
-		switch (level) {
-			case 1:  minUsageCount = 50; break;
-			case 2:  minUsageCount =  1; break;
-			default: minUsageCount = -1; break;
-		}
-	  return getCompletions(word.word, minUsage(minUsageCount));
-	}
-
-	@Override
 	public String getMaxCommonPrefix() {
 	  return getMaxCommonPrefix(word.word);
 	}
 
-	public Iterable<CHCommand> getCompletions(String search, Function1 filterFunc) {
+	public Iterable<CHCommand> getCompletions(String search, Function1<TrieSet<PackagesExtractor.Environment>, Boolean> filterFunc) {
 		ExtIterable<String> userIter = SCEManager.getBackgroundParser().getEnvironments().getObjectsIterable(search).map(ENVIRONMENT_2_STRING_FUNCTION);
 		ExtIterable<String> packEnvIter = PackagesExtractor.getPackageParser().getEnvironments().getTrieSetIterator(search).filter(filterFunc).map(TRIE_SET_2_STRING_FUNCTION);
 		ExtIterable<String> dcEnvIter = PackagesExtractor.getDocClassesParser().getEnvironments().getTrieSetIterator(search).filter(filterFunc).map(TRIE_SET_2_STRING_FUNCTION);
