@@ -77,6 +77,8 @@ public class CommandsCodeHelper extends ExtPatternHelper {
 		ExtIterable<String> packEnvIter = PackagesExtractor.getPackageParser().getCommands().getTrieSetIterator(search).filter(minUsage(minUsageCount)).map(TRIE_SET_2_STRING_FUNCTION);
 		ExtIterable<String> dcEnvIter = PackagesExtractor.getDocClassesParser().getCommands().getTrieSetIterator(search).filter(minUsage(minUsageCount)).map(TRIE_SET_2_STRING_FUNCTION);
 
+
+
 		ExtIterable<CHCommand> mergedIter = new MergeSortIterable<String>(STRING_COMPARATOR, userIter, standardIter, packEnvIter, dcEnvIter).distinct().map(new Function1<String, CHCommand>() {
 			@Override
 			public CHCommand apply(String cmd) {
