@@ -18,8 +18,7 @@ import java.util.List;
  *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
-public class UsePackageCodeHelper extends PatternHelper {
-	protected WordWithPos word;
+public class UsePackageCodeHelper extends ExtPatternHelper<PackagesExtractor.Package> {
 	private static final Function1<PackagesExtractor.Package,CHCommand> PACKAGE_2_CHCOMMAND = new Function1<PackagesExtractor.Package, CHCommand>() {
 		@Override
 		public CHCommand apply(PackagesExtractor.Package a1) {
@@ -28,6 +27,7 @@ public class UsePackageCodeHelper extends PatternHelper {
 	};
 
 	public UsePackageCodeHelper() {
+		super("packages");
 		pattern = new PatternPair("\\\\usepackage(?:\\[[^\\]]*\\])?\\{([^{},]+,)*([^{},]*)");
 	}
 
@@ -43,17 +43,6 @@ public class UsePackageCodeHelper extends PatternHelper {
 	@Override
 	public WordWithPos getWordToReplace() {
 	  return word;
-	}
-
-	@Override
-	public Iterable<? extends CHCommand> getCompletions(int level) {
-		int minUsageCount = 0;
-		switch (level) {
-			case 1:  minUsageCount = 50; break;
-			case 2:  minUsageCount = 1; break;
-			default: minUsageCount = 0; break;
-		}
-	  return getCompletions(word.word, minUsage(minUsageCount));
 	}
 
 	@Override

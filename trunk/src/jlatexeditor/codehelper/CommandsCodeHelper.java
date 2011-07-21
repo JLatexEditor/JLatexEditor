@@ -20,7 +20,7 @@ import java.util.List;
  *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
-public class CommandsCodeHelper extends ExtPatternHelper {
+public class CommandsCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtractor.Command>> {
 	protected static final Function1<TrieSet<PackagesExtractor.Command>,String> TRIE_SET_2_STRING_FUNCTION = new Function1<TrieSet<PackagesExtractor.Command>, String>() {
 		@Override
 		public String apply(TrieSet<PackagesExtractor.Command> trieSet) {
@@ -38,9 +38,8 @@ public class CommandsCodeHelper extends ExtPatternHelper {
 		}
 	};
 
-	protected WordWithPos word;
-
 	public CommandsCodeHelper() {
+		super("commands");
 	  pattern = new PatternPair("\\\\(\\p{L}*)");
   }
 
@@ -59,24 +58,18 @@ public class CommandsCodeHelper extends ExtPatternHelper {
 	}
 
 	@Override
-	public Iterable<? extends CHCommand> getCompletions(int level) {
-	  return getCompletions(word.word);
-	}
-
-	@Override
 	public String getMaxCommonPrefix() {
 	  return getMaxCommonPrefix(word.word);
 	}
 
-	public Iterable<CHCommand> getCompletions(String search) {
+	public Iterable<CHCommand> getCompletions(String search, Function1<TrieSet<PackagesExtractor.Command>, Boolean> filterFunc) {
 		final Trie<Command> userCommands = SCEManager.getBackgroundParser().getCommands();
 		final Trie<CHCommand> standardCommands = SCEManager.getLatexCommands().getCommands();
 
 		ExtIterable<String> userIter = userCommands.getObjectsIterable(search).map(COMMAND_2_STRING_FUNCTION);
 		ExtIterable<String> standardIter = standardCommands.getObjectsIterable(search).map(CHCOMMAND_2_STING_FUNCTION);
-		int minUsageCount = 0;
-		ExtIterable<String> packEnvIter = PackagesExtractor.getPackageParser().getCommands().getTrieSetIterator(search).filter(minUsage(minUsageCount)).map(TRIE_SET_2_STRING_FUNCTION);
-		ExtIterable<String> dcEnvIter = PackagesExtractor.getDocClassesParser().getCommands().getTrieSetIterator(search).filter(minUsage(minUsageCount)).map(TRIE_SET_2_STRING_FUNCTION);
+		ExtIterable<String> packEnvIter = PackagesExtractor.getPackageParser().getCommands().getTrieSetIterator(search).filter(filterFunc).map(TRIE_SET_2_STRING_FUNCTION);
+		ExtIterable<String> dcEnvIter = PackagesExtractor.getDocClassesParser().getCommands().getTrieSetIterator(search).filter(filterFunc).map(TRIE_SET_2_STRING_FUNCTION);
 
 		return new MergeSortIterable<String>(STRING_COMPARATOR, userIter, standardIter, packEnvIter, dcEnvIter).distinct().map(new Function1<String, CHCommand>() {
 			@Override
@@ -125,120 +118,4 @@ public class CommandsCodeHelper extends ExtPatternHelper {
 
 		return maxPrefix;
 	}
-
-	private String maxCommonPrefix(String prefix1, String prefix2) {
-		char[] chars1 = prefix1.toCharArray();
-		char[] chars2 = prefix2.toCharArray();
-
-		int i;
-		for (i = 0; i < chars1.length && i < chars2.length; i++) {
-			if (chars1[i] != chars2[i]) {
-				return prefix1.substring(0, i);
-			}
-		}
-
-		return prefix1.substring(0, i);
-	}
-
-	/*
-	public CommandsCodeHelper() {
-		super("\\\\(\\p{L}*)", SCEManager.getLatexCommands());
-	}
-
-	@Override
-	public Iterable<CHCommand> getCompletions(String prefix) {
-		ArrayList<CHCommand> dynamicCommands = new ArrayList<CHCommand>();
-		BackgroundParser backgroundParser = SCEManager.getBackgroundParser();
-		if (backgroundParser != null) {
-			List<String> commandNames = backgroundParser.getCommandNames().getStrings(prefix.substring(1), 10);
-			Trie<Command> userCommands = backgroundParser.getCommands();
-			if (commandNames != null) {
-				for (String commandName : commandNames) {
-					Command userCommand = userCommands.get(commandName);
-					if (userCommand != null) {
-						dynamicCommands.add(userCommand.toCHCommand());
-					} else {
-						dynamicCommands.add(new CHCommand("\\" + commandName));
-					}
-				}
-			}
-		}
-		Iterator<CHCommand> dynamicCommandsIter = dynamicCommands.iterator();
-		ExtIterator<CHCommand> staticCommandsIter = commands.getObjectsIterable(prefix).iterator();
-
-		ArrayList<CHCommand> list = new ArrayList<CHCommand>();
-
-		CHCommand dynamicCommand = dynamicCommandsIter.hasNext() ? dynamicCommandsIter.next() : null;
-		CHCommand staticCommand = staticCommandsIter.next();
-		while (dynamicCommand != null && staticCommand != null) {
-			int comp = staticCommand.compareTo(dynamicCommand);
-			if (comp <= 0) {
-				list.add(staticCommand);
-				staticCommand = staticCommandsIter.next();
-				if (comp == 0) {
-					dynamicCommand = dynamicCommandsIter.hasNext() ? dynamicCommandsIter.next() : null;
-				}
-			} else {
-				list.add(dynamicCommand);
-				dynamicCommand = dynamicCommandsIter.hasNext() ? dynamicCommandsIter.next() : null;
-			}
-		}
-		if (dynamicCommand != null) {
-			list.add(dynamicCommand);
-			while (dynamicCommandsIter.hasNext()) {
-				list.add(dynamicCommandsIter.next());
-			}
-		}
-		if (staticCommand != null) {
-			list.add(staticCommand);
-			while ((staticCommand = staticCommandsIter.next()) != null) {
-				list.add(staticCommand);
-			}
-		}
-
-		return list;
-	}
-		*/
-
-	/**
-	 * Searches for the best completion of the prefix.
-	 *
-	 * @param prefix the prefix
-	 * @return the completion suggestion (without the prefix)
-	 */
-	/*
-	@Override
-	public String getMaxCommonPrefix(String prefix) {
-		String maxCommonPrefix = commands.getMaxCommonPrefix(prefix);
-		if (maxCommonPrefix.length() < prefix.length()) {
-			maxCommonPrefix = null;
-		}
-
-		BackgroundParser backgroundParser = SCEManager.getBackgroundParser();
-		if (backgroundParser != null) {
-			String dynMaxCommonPrefix = "\\" + backgroundParser.getCommandNames().getMaxCommonPrefix(prefix.substring(1));
-			if (dynMaxCommonPrefix.length() < prefix.length()) {
-				dynMaxCommonPrefix = null;
-			}
-
-			if (maxCommonPrefix == null) {
-				return dynMaxCommonPrefix;
-			} else
-			if (dynMaxCommonPrefix == null) {
-				return maxCommonPrefix;
-			} else {
-				int length = Math.min(maxCommonPrefix.length(), dynMaxCommonPrefix.length());
-				int i;
-				for (i=0; i<length; i++) {
-					if (maxCommonPrefix.charAt(i) != dynMaxCommonPrefix.charAt(i)) {
-						break;
-					}
-				}
-				return maxCommonPrefix.substring(0, i);
-			}
-		}
-
-		return maxCommonPrefix;
-	}
-	*/
 }
