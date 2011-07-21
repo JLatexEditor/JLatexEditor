@@ -34,10 +34,22 @@ public abstract class ExtPatternHelper<T> extends PatternHelper {
 	}
 
 	@Override
+	public WordWithPos getWordToReplace() {
+	  return word;
+	}
+
+	@Override
 	public Iterable<? extends CHCommand> getCompletions(int level) {
 		int minUsageCount = GProperties.getInt("editor.completion." + type + ".filter.level" + level);
 	  return getCompletions(word.word, minUsage(minUsageCount));
 	}
+
+	@Override
+	public String getMaxCommonPrefix() {
+		return getMaxCommonPrefix(word.word);
+	}
+
+	protected abstract String getMaxCommonPrefix(String search);
 
 	protected abstract Iterable<CHCommand> getCompletions(String search, Function1<T, Boolean> filterFunc);
 

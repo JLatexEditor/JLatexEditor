@@ -40,16 +40,6 @@ public class UsePackageCodeHelper extends ExtPatternHelper<PackagesExtractor.Pac
 	  return false;
 	}
 
-	@Override
-	public WordWithPos getWordToReplace() {
-	  return word;
-	}
-
-	@Override
-	public String getMaxCommonPrefix() {
-	  return getMaxCommonPrefix(word.word);
-	}
-
 	public Iterable<CHCommand> getCompletions(String search, Function1<PackagesExtractor.Package, Boolean> filterFunc) {
 		ExtIterable<PackagesExtractor.Package> packIter = PackagesExtractor.getPackageParser().getPackages().getObjectsIterable(search);
 		if (packIter == null) return new ArrayList<CHCommand>();
@@ -67,6 +57,10 @@ public class UsePackageCodeHelper extends ExtPatternHelper<PackagesExtractor.Pac
 	}
 
 	public String getMaxCommonPrefix(String search) {
+		String maxCommonPrefix = PackagesExtractor.getPackageParser().getPackages().getMaxCommonPrefix(search);
+		if (maxCommonPrefix.length() > search.length()) {
+			return maxCommonPrefix;
+		}
 	  return search;
 	}
 }
