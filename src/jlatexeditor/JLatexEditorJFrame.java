@@ -1023,7 +1023,11 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 		} else
 		// close
 		if (action.equals("close")) {
-			closeTab(tabbedPane.getSelectedIndex());
+			if (getActiveEditor().isDiffView()) {
+				getActiveEditor().closeDiffView();
+			} else {
+				closeTab(tabbedPane.getSelectedIndex());
+			}
 		} else
 		// exit
 		if (action.equals("exit")) {

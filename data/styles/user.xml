@@ -18,6 +18,7 @@
   <element name="math" style="plain" foreground="00a000"/>
   <element name="math_command" style="plain" foreground="606000"/>
   <element name="todo" style="bold,italic" foreground="0000ff"/>
+  <element name="parser_stop" style="bold,italic" foreground="db8717"/>
   <element name="error" style="plain" foreground="ff0000"/>
   <element name="begin" style="bold" foreground="000080"/>
   <element name="section" style="bold" foreground="f00000"/>

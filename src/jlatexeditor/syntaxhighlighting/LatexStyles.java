@@ -24,8 +24,9 @@ public class LatexStyles {
   public static final byte MATH_COMMAND = 6;
 
   public static final byte TODO = 7;
+	public static final byte PARSER_STOP = 8;
 
-  public static final byte ERROR = 8;
+  public static final byte ERROR = 9;
 
   public static final byte USER = 50;
 
@@ -51,6 +52,7 @@ public class LatexStyles {
     name2Id.put("number", NUMBER);
     name2Id.put("math", MATH);
     name2Id.put("math_command", MATH_COMMAND);
+    name2Id.put("parser_stop", PARSER_STOP);
     name2Id.put("todo", TODO);
     name2Id.put("error", ERROR);
     name2Id.put("user", USER);
