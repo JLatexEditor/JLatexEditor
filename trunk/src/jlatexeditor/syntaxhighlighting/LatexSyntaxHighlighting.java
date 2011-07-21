@@ -5,6 +5,7 @@
 package jlatexeditor.syntaxhighlighting;
 
 import jlatexeditor.codehelper.BackgroundParser;
+import jlatexeditor.syntaxhighlighting.states.DontParse;
 import jlatexeditor.syntaxhighlighting.states.Env;
 import jlatexeditor.syntaxhighlighting.states.MathMode;
 import jlatexeditor.syntaxhighlighting.states.RootState;
@@ -152,35 +153,47 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 
       final SCEDocumentChar chars[] = row.chars;
 
-	    // check if row has been added during an svn merge
-	    boolean svnRow = false;
-	    if (row.length >= 7) {
-		    char c = chars[0].character;
-		    switch (c) {
-			    case '<':
-				  case '>':
-					case '=':
-				    svnRow = true;
-				    for (int i = 1; i < 7; i++) {
-					    if (chars[i].character != c) svnRow = false;
-				    }
-				    if (svnRow) {
-					    if (c == '=') {
-						    svnRow = row.length == 7;
-					    }
-					    else
-						    svnRow = row.length >= 8 && chars[7].character == ' ';
-				    }
-				    if (svnRow) {
-					    for (SCEDocumentChar aChar : chars) {
-						    aChar.style = state.getStyles()[LatexStyles.ERROR];
-						    //aChar.overlayStyle = 0;
-					    }
-				    }
+	    boolean rowWasParsed = false;
+
+	    // test for "%###" row (stop parsing)
+	    if (state instanceof DontParse) {
+		    if (row.length < 4 || !row.toString().startsWith("%###")) {
+			    byte style = state.getStyles()[LatexStyles.TEXT];
+			    for (int i=0; i < row.length; i++) chars[i].style = style;
+			    rowWasParsed = true;
 		    }
 	    }
 
-	    if (!svnRow) {
+	    if (!rowWasParsed) {
+				// check if row has been added during an svn merge
+				if (row.length >= 7) {
+					char c = chars[0].character;
+					switch (c) {
+						case '<':
+						case '>':
+						case '=':
+							rowWasParsed = true;
+							for (int i = 1; i < 7; i++) {
+								if (chars[i].character != c) rowWasParsed = false;
+							}
+							if (rowWasParsed) {
+								if (c == '=') {
+									rowWasParsed = row.length == 7;
+								}
+								else
+									rowWasParsed = row.length >= 8 && chars[7].character == ' ';
+							}
+							if (rowWasParsed) {
+								for (SCEDocumentChar aChar : chars) {
+									aChar.style = state.getStyles()[LatexStyles.ERROR];
+									//aChar.overlayStyle = 0;
+								}
+							}
+					}
+				}
+	    }
+
+	    if (!rowWasParsed) {
 				// parse the latex row
 				for (int char_nr = 0; char_nr < row.length; char_nr++) {
 					SCEDocumentChar sce_char = chars[char_nr];
@@ -336,14 +349,28 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 					// search for '%' (comment)
 					if (c == '%') {
 						byte commentStyle = stateStyles[LatexStyles.COMMENT];
-						Matcher matcher = TODO_PATTERN.matcher(row.toString().substring(char_nr).toLowerCase());
-						if (matcher.find()) {
-							int todoIndex = char_nr + matcher.start();
-							while (char_nr < todoIndex) chars[char_nr++].style = commentStyle;
-							byte todoStyle = stateStyles[LatexStyles.TODO];
-							while (char_nr < row.length) chars[char_nr++].style = todoStyle;
-						} else {
+						String restOfRow = row.toString().substring(char_nr+1);
+						if (restOfRow.startsWith("###")) {
+							chars[char_nr++].style = commentStyle;
+							byte todoStyle = stateStyles[LatexStyles.PARSER_STOP];
+							for (int i=0; i<3; i++) chars[char_nr++].style = todoStyle;
 							while (char_nr < row.length) chars[char_nr++].style = commentStyle;
+							if (state instanceof DontParse) {
+								stateStack.pop();
+								state = stateStack.peek();
+							} else {
+								stateStack.push(state = new DontParse(state));
+							}
+						} else {
+							Matcher matcher = TODO_PATTERN.matcher(restOfRow.toLowerCase());
+							if (matcher.find()) {
+								int todoIndex = char_nr + matcher.start()-1;
+								while (char_nr < todoIndex) chars[char_nr++].style = commentStyle;
+								byte todoStyle = stateStyles[LatexStyles.TODO];
+								while (char_nr < row.length) chars[char_nr++].style = todoStyle;
+							} else {
+								while (char_nr < row.length) chars[char_nr++].style = commentStyle;
+							}
 						}
 						continue;
 					}
