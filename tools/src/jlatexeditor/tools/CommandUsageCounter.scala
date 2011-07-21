@@ -9,6 +9,6 @@ import java.io.PrintStream
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 object CommandUsageCounter extends UsageCounter("commandUsageCounts.properties") {
-	val names = ((XML.loadFile("packages.xml") ++ XML.loadFile("docclasses.xml")) \ "package" \ "command").map(node => (node \ "@name").text).sortBy(x => x).distinct
+	lazy val names = ((XML.loadFile("packages.xml") ++ XML.loadFile("docclasses.xml")) \ "package" \ "command").map(node => (node \ "@name").text).sortBy(x => x).distinct
 	def getCode(name: String) = "\\\\" + name + "\\b"
 }
