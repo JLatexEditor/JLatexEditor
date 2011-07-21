@@ -32,6 +32,11 @@ public class CommandsCodeHelper extends ExtPatternHelper {
 			return env.getName();
 		}
 	};
+	private static final Function1<CHCommand,String> CHCOMMAND_2_STING_FUNCTION = new Function1<CHCommand, String>() {
+		public String apply(CHCommand a1) {
+			return a1.getName();
+		}
+	};
 
 	protected WordWithPos word;
 
@@ -67,16 +72,12 @@ public class CommandsCodeHelper extends ExtPatternHelper {
 		final Trie<Command> userCommands = SCEManager.getBackgroundParser().getCommands();
 		final Trie<CHCommand> standardCommands = SCEManager.getLatexCommands().getCommands();
 		ExtIterable<String> userIter = userCommands.getObjectsIterable(search).map(COMMAND_2_STRING_FUNCTION);
-		standardCommands.getObjectsIterable(search).map(new Function1<CHCommand, Object>() {
-			public Object apply(CHCommand a1) {
-				return a1.getName();
-			}
-		});
+		ExtIterable<String> standardIter = standardCommands.getObjectsIterable(search).map(CHCOMMAND_2_STING_FUNCTION);
 		int minUsageCount = 0;
 		ExtIterable<String> packEnvIter = PackagesExtractor.getPackageParser().getCommands().getTrieSetIterator(search).filter(minUsage(minUsageCount)).map(TRIE_SET_2_STRING_FUNCTION);
 		ExtIterable<String> dcEnvIter = PackagesExtractor.getDocClassesParser().getCommands().getTrieSetIterator(search).filter(minUsage(minUsageCount)).map(TRIE_SET_2_STRING_FUNCTION);
 
-		ExtIterable<CHCommand> mergedIter = new MergeSortIterable<String>(STRING_COMPARATOR, userIter, packEnvIter, dcEnvIter).distinct().map(new Function1<String, CHCommand>() {
+		ExtIterable<CHCommand> mergedIter = new MergeSortIterable<String>(STRING_COMPARATOR, userIter, standardIter, packEnvIter, dcEnvIter).distinct().map(new Function1<String, CHCommand>() {
 			@Override
 			public CHCommand apply(String cmd) {
 				Command command = userCommands.get(cmd);
