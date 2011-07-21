@@ -92,8 +92,9 @@ object PackageParser {
 			val usageCountString = pack.usageCount.map( count => " usageCount=\"" + count + "\"").getOrElse("")
 			out.println("  <package name=\"" + pack.name + "\"" + optionsPackString + requiresPackagesString + ctanPackString + debPackageString + usageCountString + ">")
 			for (command <- pack.commands.values) {
+				val usageCountString = command.usageCount.map( count => " usageCount=\"" + count + "\"").getOrElse("")
 				val optArgString = if (command.optionalArgs.isEmpty) "" else " optionalArg=\"" + escape(command.optionalArgs(0)) + "\""
-				out.println("    <command name=\"" + command.name + "\" argCount=\"" + command.argCount + "\"" + optArgString + " />")
+				out.println("    <command name=\"" + command.name + "\" argCount=\"" + command.argCount + "\"" + optArgString + usageCountString + " />")
 			}
 			for (env <- pack.environments.values) {
 				val usageCountString = env.usageCount.map( count => " usageCount=\"" + count + "\"").getOrElse("")
@@ -196,7 +197,9 @@ object PackageParser {
 		new DebPackage(name, files)
 	}
 
-	class Command(val pack: Package, val name: String, val argCount: Int, val optionalArgs: List[String] = List())
+	class Command(val pack: Package, val name: String, val argCount: Int, val optionalArgs: List[String] = List()) {
+		val usageCount = CommandUsageCounter.usageCounts.get(name)
+	}
 	class Environment(val pack: Package, val name: String, val argCount: Int, val optionalArgs: List[String] = List()) {
 		val usageCount = EnvironmentUsageCounter.usageCounts.get(name)
 	}
