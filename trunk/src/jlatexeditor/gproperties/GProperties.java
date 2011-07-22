@@ -118,8 +118,8 @@ public class GProperties {
     properties.addEntry(new Def(EDITOR_FONT_ANTIALIASING, new PSet(TEXT_ANTIALIAS_KEYS), "On"));
     properties.addEntry(new Def("editor.columns_per_row", INT_GT_0, "0"));
 	  properties.addEntry(new Comment(" Code completion"));
-	  properties.addEntry(new Def("editor.completion.commands.filter.level1", INT, "-1"));
-	  properties.addEntry(new Def("editor.completion.commands.filter.level2", INT, "-1"));
+	  properties.addEntry(new Def("editor.completion.commands.filter.level1", INT, "1000"));
+	  properties.addEntry(new Def("editor.completion.commands.filter.level2", INT, "10"));
 	  properties.addEntry(new Def("editor.completion.commands.filter.level3", INT, "-1"));
 	  properties.addEntry(new Def("editor.completion.environments.filter.level1", INT, "100"));
 	  properties.addEntry(new Def("editor.completion.environments.filter.level2", INT, "1"));
