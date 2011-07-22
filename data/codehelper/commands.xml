@@ -132,7 +132,7 @@
   </command>
 
 	<command name="bibliography" usage="\bibliography{@file@}" hint="set bibliography file">
-		<argument name="file" type="file|defaultExtension=bib" value="" completion="true" hint="filename of the bibliography file"/>
+		<argument name="file" type="file|defaultExtension=bib|extensions=bib" value="" completion="true" hint="filename of the bibliography file"/>
 	</command>
 
 	<command name="bibliographystyle" usage="\bibliographystyle{@style@}" hint="sets the bibliography style">
@@ -300,7 +300,7 @@
   </command>
 
   <command name="include" usage="\include{@file@}" hint="selective inclusion of files">
-    <argument name="file" type="file|defaultExtension=tex" value="" completion="true"/>
+    <argument name="file" type="file|defaultExtension=tex|extensions=tex" value="" completion="true"/>
   </command>
 
   <command name="includeonly" usage="\includeonly{@file_list@}"
