@@ -10,7 +10,7 @@ New Features and other Changes in JLatexEditor
 
 * new features:
   - completion of environment names after \begin and \end
-  - multi-level completion for environments, documentclasses, packages, and files
+  - multi-level completion for commands, environments, documentclasses, packages, and files
   - jump to environment definition
   - suggestions for package imports via alt+ENTER on undefined commands or environment
   - quick help shows lists of packages and documentclasses providing command under cursor
