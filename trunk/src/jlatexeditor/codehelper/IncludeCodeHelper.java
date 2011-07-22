@@ -57,7 +57,7 @@ public class IncludeCodeHelper extends PatternHelper {
 				ArrayList<CHCommandArgument> arguments = SCEManager.getLatexCommands().getCommands().get(params.get(0).word).getArguments();
 				for (CHCommandArgument argument : arguments) {
 					if (!argument.isOptional()) {
-						filePattern = Pattern.compile(".*(" + argument.getType().getProperty("extensions").replaceAll(",", "|") + ")");
+						filePattern = Pattern.compile("\\.(" + argument.getType().getProperty("extensions").replaceAll(",", "|") + ")$");
 					}
 				}
 	    } catch (Exception ignored) {}
