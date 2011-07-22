@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
+ * Live template expasion.
+ *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 public class Template {
@@ -95,10 +97,11 @@ public class Template {
 
 		for (CHCommandArgument argument : arguments) {
 			if (!argument.getName().equals(argument.getValue())) {
-				SCEDocumentRange range = argument.getOccurrences().get(0);
-				SCEPosition start = range.getStartPosition().relative(0, 1);
-				SCEDocumentPosition end = range.getEndPosition();
-				template.document.replace(start, end, argument.getValue());
+				for (SCEDocumentRange range : argument.getOccurrences()) {
+					SCEPosition start = range.getStartPosition().relative(0, 1);
+					SCEDocumentPosition end = range.getEndPosition();
+					template.document.replace(start, end, argument.getValue());
+				}
 			}
 		}
 
