@@ -3,6 +3,8 @@ package jlatexeditor;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
+import sce.codehelper.CHCommand;
+import sce.codehelper.CHCommandArgument;
 import util.StreamUtils;
 import util.Trie;
 import util.TrieSet;
@@ -322,6 +324,21 @@ public class PackagesExtractor {
 	public static class Command extends ComEnv {
 		public Command(String name, int argCount, String optionalArg, Package pack, String usageCount) {
 			super(name, argCount, optionalArg, pack, usageCount);
+		}
+
+		public CHCommand toCHCommand() {
+			CHCommand chCommand = new CHCommand("<html><body><b>" + name + "</b>");
+			String template = "\\" + name;
+			if (optionalArg != null) {
+				template += "[@opt@]";
+				chCommand.addArgument(new CHCommandArgument("opt", optionalArg, true));
+			}
+			for (int i=1; i<=argCount; i++) {
+				template += "{@arg" + i + "@}";
+				chCommand.addArgument(new CHCommandArgument("arg" + i, "", false));
+			}
+			chCommand.setUsage(template);
+			return chCommand;
 		}
 	}
 

@@ -97,7 +97,7 @@ public class HelpUrlHandler extends URLStreamHandler {
 				if (cmd.getPack().getDescription() != null) {
 					hintString = " - " + cmd.getPack().getDescription();
 				}
-				packs.add("<li>" + cmd.getPack().getName() + hintString + "</li>");
+				packs.add("<li>" + cmd.getPack().getName() + hintString + " (<a href='texdoc:" + cmd.getPack().getName() + "'>doc</a>)</li>");
 			}
 			Collections.sort(packs);
 			return "<ul>" + CollectionUtils.join(packs, "") + "</ul>";
@@ -117,6 +117,7 @@ public class HelpUrlHandler extends URLStreamHandler {
 
 	public static void register() {
 		ConfigurableStreamHandlerFactory.register("help", new HelpUrlHandler());
+		ConfigurableStreamHandlerFactory.register("texdoc", new TexDocHandler());
 	}
 
 	public static void main(String[] args) {

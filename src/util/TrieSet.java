@@ -83,6 +83,14 @@ public class TrieSet<T> implements AbstractTrie<T> {
 	  return get(chars, 0);
 	}
 
+	public HashSet<T> getOrEmpty(String cmd) {
+		HashSet<T> ts = get(cmd);
+		if (ts == null) {
+			return new HashSet<T>();
+		}
+		return ts;
+	}
+
 	private TrieSet<T> getNode(String prefix) {
 		return getNode(prefix.toCharArray(), 0);
 	}

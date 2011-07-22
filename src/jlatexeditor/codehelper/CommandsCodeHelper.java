@@ -4,6 +4,7 @@ import de.endrullis.utils.collections.ExtIterable;
 import jlatexeditor.PackagesExtractor;
 import jlatexeditor.SCEManager;
 import sce.codehelper.CHCommand;
+import sce.codehelper.CHCommandArgument;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
 import util.AbstractTrie;
@@ -12,7 +13,9 @@ import de.endrullis.utils.collections.MergeSortIterable;
 import util.Trie;
 import util.TrieSet;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -40,7 +43,7 @@ public class CommandsCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtract
 
 	public CommandsCodeHelper() {
 		super("commands");
-	  pattern = new PatternPair("\\\\(\\p{L}*)");
+	  pattern = new PatternPair("(\\\\\\p{L}*)");
   }
 
 	@Override
@@ -52,7 +55,8 @@ public class CommandsCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtract
 	  return false;
 	}
 
-	public Iterable<CHCommand> getCompletions(String search, Function1<TrieSet<PackagesExtractor.Command>, Boolean> filterFunc) {
+	public Iterable<CHCommand> getCompletions(String _search, Function1<TrieSet<PackagesExtractor.Command>, Boolean> filterFunc) {
+		String search = _search.substring(1);
 		final Trie<Command> userCommands = SCEManager.getBackgroundParser().getCommands();
 		final Trie<CHCommand> standardCommands = SCEManager.getLatexCommands().getCommands();
 
@@ -72,7 +76,8 @@ public class CommandsCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtract
 				if (chCommand != null) {
 					return chCommand;
 				}
-				return new ValueCompletion(cmd);
+
+				return new LazyCHCommand(cmd);
 			}
 		}).toList(20);
 	}
@@ -86,7 +91,9 @@ public class CommandsCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtract
 		};
 	}
 
-	public String getMaxCommonPrefix(String search) {
+	public String getMaxCommonPrefix(String _search) {
+		String search = _search.substring(1);
+
 		List<AbstractTrie<? extends Object>> tries = Arrays.asList(
 			SCEManager.getBackgroundParser().getCommands(),
 			SCEManager.getLatexCommands().getCommands(),
@@ -94,7 +101,7 @@ public class CommandsCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtract
 			PackagesExtractor.getDocClassesParser().getCommands()
 		);
 
-		String maxPrefix = null;
+		String maxPrefix = search;
 		for (AbstractTrie<? extends Object> trie : tries) {
 			String maxCommonPrefix = trie.getMaxCommonPrefix(search);
 			if (maxCommonPrefix.length() >= search.length()) {
@@ -106,6 +113,53 @@ public class CommandsCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtract
 			}
 		}
 
-		return maxPrefix;
+		return "\\" + maxPrefix;
+	}
+
+	private class LazyCHCommand extends CHCommand {
+		private CHCommand lazyCHCommand;
+		private final String cmd;
+
+		public LazyCHCommand(String cmd) {
+			super(cmd);
+			this.cmd = cmd;
+		}
+
+		private CHCommand getLazyCHCommand() {
+			if (lazyCHCommand == null) {
+				HashSet<PackagesExtractor.Command> commands = new HashSet<PackagesExtractor.Command>();
+				commands.addAll(PackagesExtractor.getPackageParser().getCommands().getOrEmpty(cmd));
+				commands.addAll(PackagesExtractor.getDocClassesParser().getCommands().getOrEmpty(cmd));
+
+				PackagesExtractor.Command shortestCommand = null;
+				for (PackagesExtractor.Command command1 : commands) {
+					if (shortestCommand == null) {
+						shortestCommand = command1;
+					} else if (shortestCommand.getArgCount() > command1.getArgCount()) {
+						shortestCommand = command1;
+					}
+				}
+
+				assert shortestCommand != null;
+				lazyCHCommand = shortestCommand.toCHCommand();
+			}
+
+			return lazyCHCommand;
+		}
+
+		@Override
+		public String getUsage() {
+			return getLazyCHCommand().getUsage();
+		}
+
+		@Override
+		public String getHint() {
+			return getLazyCHCommand().getHint();
+		}
+
+		@Override
+		public ArrayList<CHCommandArgument> getArguments() {
+			return getLazyCHCommand().getArguments();
+		}
 	}
 }

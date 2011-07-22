@@ -109,8 +109,7 @@
 		<argument name="args" hint="1 to 9 denoting the number of arguments"/>
 		<argument name="def" hint="the text to be substituted for every occurrence of cmd"/>
 	</command>
-	<command name="env" usage="\begin{@env@}@opt@&nl;  @|@&nl;\end{@env@}" hint="tabular environment">
-		<argument name="env"/>
-		<argument name="opt" value=""/>
+	<command name="env" usage="\begin{@env@}@|@&nl;\end{@env@}" hint="tabular environment">
+		<argument name="env" value="" completion="true"/>
 	</command>
 </commandList>

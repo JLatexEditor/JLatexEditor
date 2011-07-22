@@ -24,6 +24,7 @@ import util.*;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.URL;
 
 /**
  * Managing the creation of SourceCodeEditors.

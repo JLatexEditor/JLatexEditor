@@ -435,6 +435,10 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
 		SwingUtilities.replaceUIInputMap(pane, JComponent.WHEN_IN_FOCUSED_WINDOW, null);
 	}
 
+	public QuickHelpPane getQuickHelpPane() {
+		return quickHelpPane;
+	}
+
 	public static class Actions extends UIAction {
 		public static final String MOVE_VIEW_UP             = "move view up";
 		public static final String MOVE_VIEW_UP_SHIFT       = "move view up shift";

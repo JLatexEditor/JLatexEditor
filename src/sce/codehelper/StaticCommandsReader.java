@@ -94,7 +94,11 @@ public class StaticCommandsReader {
 
 		// create the command and set usage + hint
 		CHCommand command = new CHCommand(commandName);
-		command.setUsage(decode(commandXML.getAttribute("usage")));
+		String usage = decode(commandXML.getAttribute("usage"));
+		command.setUsage(usage);
+		if (usage == null) {
+			command.setUsage("\\" + command);
+		}
 		command.setStyle(decode(commandXML.getAttribute("style")));
 		command.setHint(decode(commandXML.getAttribute("hint")));
 
