@@ -310,14 +310,14 @@
 
   <command name="includegraphics" usage="\includegraphics[@opt@]{@file@}" hint="includes a graphic; requires package 'graphicx'">
 	  <argument name="opt"/>
-	  <argument name="file" type="file|defaultExtension=png" value="" completion="true"/>
+	  <argument name="file" type="file|defaultExtension=png|extensions=eps,ps,png,pdf" value="" completion="true"/>
   </command>
 
   <command name="indent" hint="produces a horizontal space whose width equals the width of the paragraph indentation">
   </command>
 
   <command name="input" usage="\input{@file@}" hint="causes the indicated file to be read and processed">
-    <argument name="file" type="file|defaultExtension=tex" value="" completion="true"/>
+    <argument name="file" type="file|defaultExtension=tex|extensions=tex" value="" completion="true"/>
   </command>
 
   <command name="it" usage="\{\it @|@}" hint="italics typeface">
