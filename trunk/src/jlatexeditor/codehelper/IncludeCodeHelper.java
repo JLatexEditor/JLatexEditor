@@ -1,17 +1,24 @@
 package jlatexeditor.codehelper;
 
 import jlatexeditor.Doc;
+import jlatexeditor.SCEManager;
 import sce.codehelper.CHCommand;
+import sce.codehelper.CHCommandArgument;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
 import sce.component.AbstractResource;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.regex.Pattern;
 
 public class IncludeCodeHelper extends PatternHelper {
-  protected File path;
+	protected final Pattern defaultFilePattern = Pattern.compile(".*");
+  protected Pattern filePattern = null;
+	protected File path;
   protected WordWithPos fileName;
 
   public IncludeCodeHelper() {
@@ -44,7 +51,18 @@ public class IncludeCodeHelper extends PatternHelper {
       // do not complete if the dir does not exists
       if (!path.isDirectory()) return false;
 
-      fileName = params.get(2);
+	    // determine file extensions
+	    filePattern = defaultFilePattern;
+	    try {
+				ArrayList<CHCommandArgument> arguments = SCEManager.getLatexCommands().getCommands().get(params.get(0).word).getArguments();
+				for (CHCommandArgument argument : arguments) {
+					if (!argument.isOptional()) {
+						filePattern = Pattern.compile(".*(" + argument.getType().getProperty("extensions").replaceAll(",", "|") + ")");
+					}
+				}
+	    } catch (Exception ignored) {}
+
+	    fileName = params.get(2);
       return true;
     }
     return false;
@@ -57,7 +75,13 @@ public class IncludeCodeHelper extends PatternHelper {
 
   @Override
   public Iterable<? extends CHCommand> getCompletions(int level) {
-    return getCompletions(path, fileName.word);
+	  Pattern filePattern;
+	  switch (level) {
+		  case 1:  filePattern = this.filePattern;
+			  break;
+			default: filePattern = defaultFilePattern;
+	  }
+    return getCompletions(path, fileName.word, filePattern);
   }
 
   @Override
@@ -65,18 +89,21 @@ public class IncludeCodeHelper extends PatternHelper {
     return getMaxCommonPrefix(path, fileName.word);
   }
 
-  public Iterable<FileCompletion> getCompletions(File path, final String fileName) {
+  public Iterable<FileCompletion> getCompletions(File path, final String fileName, final Pattern filePattern) {
     ArrayList<FileCompletion> list = new ArrayList<FileCompletion>();
 
     if ("..".startsWith(fileName)) {
       list.add(new FileCompletion("../"));
     }
 
-    File[] fileList = path.listFiles(new FilenameFilter() {
-      public boolean accept(File dir, String name) {
-        return name.startsWith(fileName);
-      }
+    File[] fileList = path.listFiles(new FileFilter() {
+	    public boolean accept(File file) {
+		    String name = file.getName();
+		    return name.startsWith(fileName) && (file.isDirectory() || filePattern.matcher(name).find());
+	    }
     });
+
+	  Arrays.sort(fileList);
 
     for (File file : fileList) {
       list.add(new FileCompletion(file.getName() + (file.isDirectory() ? "/" : "")));
@@ -96,7 +123,7 @@ public class IncludeCodeHelper extends PatternHelper {
     int prefixLength = fileName.length();
     String completion = null;
 
-    for (CHCommand command : getCompletions(path, fileName)) {
+    for (CHCommand command : getCompletions(path, fileName, defaultFilePattern)) {
       String commandName = command.getName();
       if (commandName.startsWith(fileName)) {
         if (completion == null) {
