@@ -20,7 +20,9 @@ abstract class UsageCounter(val fileName: String) {
 			val properties = new Properties()
 			properties.load(new FileInputStream(fileName))
 			for (entry <- properties.entrySet()) {
-				lastValue += entry.getKey.toString -> entry.getValue.toString
+				if (!(entry.getValue.toString == "-1")) {
+					lastValue += entry.getKey.toString -> entry.getValue.toString
+				}
 			}
 		}
 		lastValue
