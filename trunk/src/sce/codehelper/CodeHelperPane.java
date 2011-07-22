@@ -6,11 +6,9 @@ import sce.component.*;
 import javax.swing.*;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,7 +19,7 @@ import java.util.regex.Pattern;
  * @author Jörg Endrullis
  * @author Stefan Endrullis
  */
-public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocumentListener, MouseListener, PopupMenuListener {
+public class CodeHelperPane extends JPanel implements KeyListener, SCEDocumentListener, MouseListener, PopupMenuListener {
   // the source code pane
   protected SCEPane pane = null;
   protected SCEDocument document = null;
@@ -30,7 +28,8 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
   // the popup
   protected JPopupMenu popup = null;
-	JMenuItem status = new JMenuItem();
+	protected JScrollPane scrollPane = new JScrollPane();
+	protected JLabel status = new JLabel();
 
   // the model
   private JList list = null;
@@ -56,6 +55,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
 	  status.setFont(new Font("Serif", Font.PLAIN, 9));
 	  status.setText("Level X");
+	  status.setEnabled(true);
 
     // create the list
     list = new JList();
@@ -80,11 +80,14 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
     // add the component to the viewport
     JViewport viewPort = new JViewport();
     viewPort.add(list);
-    setViewport(viewPort);
+    scrollPane.setViewport(viewPort);
+
+	  setLayout(new BorderLayout());
+	  add(status, BorderLayout.NORTH);
+	  add(scrollPane, BorderLayout.CENTER);
 
     // popup menu
     popup = new JPopupMenu();
-	  popup.add(status);
     popup.add(this);
     popup.setFocusable(false);
 	  popup.addPopupMenuListener(this);
@@ -141,8 +144,12 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
   public Dimension getPreferredSize() {
     Dimension dimension = list.getPreferredSize();
 
-    dimension.width = Math.min(480, dimension.width + 30);
-    dimension.height = Math.min(320, dimension.height + 20);
+    dimension.width = Math.min(480, Math.max(dimension.width + 30, status.getPreferredSize().width + 5));
+	  int height = dimension.height + status.getPreferredSize().height + 4;
+	  if (!model.isEmpty()) {
+		  height += 4;
+	  }
+	  dimension.height = Math.min(320, height);
 
     return dimension;
   }
@@ -184,6 +191,9 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
 
     if (codeHelper.documentChanged()) {
       for (CHCommand command : codeHelper.getCompletions(level)) model.addElement(command);
+	    if (model.isEmpty()) {
+		    status.setText(status.getText() + " - no suggestions");
+	    }
 	    wordPos = codeHelper.getWordToReplace();
 
       // restore selection
@@ -191,7 +201,7 @@ public class CodeHelperPane extends JScrollPane implements KeyListener, SCEDocum
       if (selectedValue == null || !model.contains(selectedValue)) list.setSelectedIndex(0);
 
       Dimension size = getPreferredSize();
-      size = new Dimension((int) (size.width * 1.2 + 50), size.height + 3);
+      //size = new Dimension((int) (size.width * 1.2 + 50), size.height + 3);
       setPreferredSize(size);
       popup.setPreferredSize(size);
       popup.pack();
