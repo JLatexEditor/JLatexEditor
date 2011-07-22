@@ -180,8 +180,6 @@ public class CodeHelperPane extends JPanel implements KeyListener, SCEDocumentLi
   private void updatePrefix(int level) {
     if (wordPos == null || codeHelper == null) return;
 
-	  status.setText("Level " + level);
-
     // get selection
     Object selectedValue = null;
     if (model.size() > 0) selectedValue = list.getSelectedValue();
@@ -190,7 +188,17 @@ public class CodeHelperPane extends JPanel implements KeyListener, SCEDocumentLi
     model.removeAllElements();
 
     if (codeHelper.documentChanged()) {
-      for (CHCommand command : codeHelper.getCompletions(level)) model.addElement(command);
+	    while (model.isEmpty()) {
+		    for (CHCommand command : codeHelper.getCompletions(level)) model.addElement(command);
+		    if (model.isEmpty()) {
+			    if (level >= 3) {
+				    break;
+			    }
+			    level++;
+		    }
+	    }
+
+	    status.setText("Level " + level);
 	    if (model.isEmpty()) {
 		    status.setText(status.getText() + " - no suggestions");
 	    }

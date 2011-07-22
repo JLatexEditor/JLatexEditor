@@ -101,7 +101,7 @@ public class CommandsCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtract
 			PackagesExtractor.getDocClassesParser().getCommands()
 		);
 
-		String maxPrefix = search;
+		String maxPrefix = null;
 		for (AbstractTrie<? extends Object> trie : tries) {
 			String maxCommonPrefix = trie.getMaxCommonPrefix(search);
 			if (maxCommonPrefix.length() >= search.length()) {
@@ -111,6 +111,9 @@ public class CommandsCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtract
 					maxPrefix = maxCommonPrefix(maxPrefix, maxCommonPrefix);
 				}
 			}
+		}
+		if (maxPrefix == null) {
+			maxPrefix = search;
 		}
 
 		return "\\" + maxPrefix;
