@@ -70,7 +70,7 @@ public class EnvironmentCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtr
 			PackagesExtractor.getDocClassesParser().getEnvironments()
 		);
 
-		String maxPrefix = search;
+		String maxPrefix = null;
 		for (AbstractTrie<? extends Object> trie : tries) {
 			String maxCommonPrefix = trie.getMaxCommonPrefix(search);
 			if (maxCommonPrefix.length() >= search.length()) {
@@ -80,6 +80,9 @@ public class EnvironmentCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtr
 					maxPrefix = maxCommonPrefix(maxPrefix, maxCommonPrefix);
 				}
 			}
+		}
+		if (maxPrefix == null) {
+			maxPrefix = search;
 		}
 
 		return maxPrefix;
