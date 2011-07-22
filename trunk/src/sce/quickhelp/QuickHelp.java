@@ -2,6 +2,8 @@ package sce.quickhelp;
 
 import sce.component.SCEDocument;
 
+import java.net.URL;
+
 /**
  * Quick help interface.
  *

@@ -49,7 +49,7 @@ public class Command extends BackgroundParser.FilePos {
 
 	public CHCommand toCHCommand() {
 		CHCommand chCommand = new CHCommand("<html><body><b>" + name + "</b>");
-		String template = name;
+		String template = "\\" + name;
 		if (optional != null) {
 			template += "[@opt@]";
 			chCommand.addArgument(new CHCommandArgument("opt", optional, true));

@@ -4,12 +4,11 @@ import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
 import sce.component.SCEDocument;
 import sce.quickhelp.QuickHelp;
+import util.ProcessUtil;
 import util.StreamUtils;
+import util.SystemUtils;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Hashtable;

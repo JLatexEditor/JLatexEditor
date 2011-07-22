@@ -14,6 +14,7 @@ import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Window showing the help information for commands.
@@ -27,14 +28,10 @@ public class QuickHelpPane extends JScrollPane implements HyperlinkListener, Key
   SCEDocument document = null;
   SCECaret caret = null;
 
-  /**
-   * Window like component showing the help information.
-   */
+  /** Window like component showing the help information. */
   JPopupMenu popup = null;
   JEditorPane htmlPane = null;
-  /**
-   * Quick help.
-   */
+  /** Quick help. */
   QuickHelp quickHelp;
 
   public QuickHelpPane(SCEPane pane) {
@@ -72,6 +69,7 @@ public class QuickHelpPane extends JScrollPane implements HyperlinkListener, Key
   public void hyperlinkUpdate(HyperlinkEvent e) {
     try {
       if (e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) htmlPane.setPage(e.getURL());
+    } catch (NullPointerException ignored) {
     } catch (IOException ignored) {
     }
   }
