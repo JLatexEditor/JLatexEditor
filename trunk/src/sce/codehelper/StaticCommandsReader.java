@@ -14,13 +14,13 @@ import java.util.HashMap;
  */
 public class StaticCommandsReader {
 	/** The command reference. */
-	protected Trie<CHCommand> commands = null;
+	protected Trie<CHCommand> commands = new Trie<CHCommand>();
+	/** The environment reference. */
+	protected Trie<CHCommand> environments = new Trie<CHCommand>();
 	/** Maps an environment name to a list of commands. */
-	protected HashMap<String,ArrayList<CHCommand>> environments = new HashMap<String, ArrayList<CHCommand>>();
+	protected HashMap<String,ArrayList<CHCommand>> scopes = new HashMap<String, ArrayList<CHCommand>>();
 
 	public StaticCommandsReader(String filename) {
-    commands = new Trie<CHCommand>();
-
 		readCommands(filename, false);
 	}
 
@@ -50,7 +50,7 @@ public class StaticCommandsReader {
 
 	    if (commandXML.getName().equals("command")) {
 		    // extract command form XML element
-		    CHCommand command = getCommand(commandXML);
+		    CHCommand command = getComEnv(commandXML, false);
 		    if (command == null) continue;
 
         // user defined command?
@@ -61,6 +61,18 @@ public class StaticCommandsReader {
 	    } else
 
 	    if (commandXML.getName().equals("environment")) {
+		    // extract command form XML element
+		    CHCommand env = getComEnv(commandXML, true);
+		    if (env == null) continue;
+
+        // user defined command?
+        env.setUserDefined(true);
+
+		    // add the command to the commands list
+		    environments.add(env.getName(), env);
+	    } else
+
+	    if (commandXML.getName().equals("scope")) {
 		    String envName = decode(commandXML.getAttribute("name"));
 		    if (envName == null) {
 		      System.out.println("Error in commands.xml: environment must have a name");
@@ -70,13 +82,13 @@ public class StaticCommandsReader {
 		    ArrayList<CHCommand> envCommands = new ArrayList<CHCommand>();
 		    for (XMLElement element : commandXML.getChildElements()) {
 			    // extract command form XML element
-			    CHCommand command = getCommand(element);
+			    CHCommand command = getComEnv(element, false);
 			    if (command == null) continue;
 
 			    // add the command to the commands list
 			    envCommands.add(command);
 		    }
-		    environments.put(envName, envCommands);
+		    scopes.put(envName, envCommands);
 	    } else {
 		    System.out.println("Error in commands.xml: expected element 'command' or 'environment' instead of element '" + commandXML.getName() + "'");
 	    }
@@ -85,7 +97,7 @@ public class StaticCommandsReader {
 	  //Collections.sort(commands);
 	}
 
-	private CHCommand getCommand(XMLElement commandXML) {
+	private CHCommand getComEnv(XMLElement commandXML, boolean env) {
 		String commandName = decode(commandXML.getAttribute("name"));
 		if (commandName == null) {
 			System.out.println("Error in commands.xml: command must have a name");
@@ -97,7 +109,11 @@ public class StaticCommandsReader {
 		String usage = decode(commandXML.getAttribute("usage"));
 		command.setUsage(usage);
 		if (usage == null) {
-			command.setUsage("\\" + command);
+			if (!env) {
+				command.setUsage("\\" + command);
+			} else {
+				command.setUsage("\\begin{" + command + "}@|@\n\\end{" + command + "}");
+			}
 		}
 		command.setStyle(decode(commandXML.getAttribute("style")));
 		command.setHint(decode(commandXML.getAttribute("hint")));
@@ -188,7 +204,11 @@ public class StaticCommandsReader {
 		return commands;
 	}
 
-	public HashMap<String, ArrayList<CHCommand>> getEnvironments() {
+	public Trie<CHCommand> getEnvironments() {
 		return environments;
+	}
+
+	public HashMap<String, ArrayList<CHCommand>> getScopes() {
+		return scopes;
 	}
 }

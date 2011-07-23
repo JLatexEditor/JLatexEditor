@@ -31,6 +31,11 @@ public class EnvironmentCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtr
 			return env.getName();
 		}
 	};
+	private static final Function1<CHCommand,String> CHCOMMAND_2_STING_FUNCTION = new Function1<CHCommand, String>() {
+		public String apply(CHCommand a1) {
+			return a1.getName();
+		}
+	};
 
 	public EnvironmentCodeHelper() {
 		super("environments");
@@ -48,10 +53,11 @@ public class EnvironmentCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtr
 
 	public Iterable<CHCommand> getCompletions(String search, Function1<TrieSet<PackagesExtractor.Environment>, Boolean> filterFunc) {
 		ExtIterable<String> userIter = SCEManager.getBackgroundParser().getEnvironments().getObjectsIterable(search).map(ENVIRONMENT_2_STRING_FUNCTION);
+		ExtIterable<String> standardIter = SCEManager.getLatexCommands().getEnvironments().getObjectsIterable(search).map(CHCOMMAND_2_STING_FUNCTION);
 		ExtIterable<String> packEnvIter = PackagesExtractor.getPackageParser().getEnvironments().getTrieSetIterator(search).filter(filterFunc).map(TRIE_SET_2_STRING_FUNCTION);
 		ExtIterable<String> dcEnvIter = PackagesExtractor.getDocClassesParser().getEnvironments().getTrieSetIterator(search).filter(filterFunc).map(TRIE_SET_2_STRING_FUNCTION);
 
-		return new MergeSortIterable<String>(STRING_COMPARATOR, userIter, packEnvIter, dcEnvIter).distinct().map(STRING_2_CHCOMMAND).toList(20);
+		return new MergeSortIterable<String>(STRING_COMPARATOR, userIter, standardIter, packEnvIter, dcEnvIter).distinct().map(STRING_2_CHCOMMAND).toList(20);
 	}
 
 	protected Function1<TrieSet<PackagesExtractor.Environment>, Boolean> minUsage(final int minUsageCount) {
@@ -66,6 +72,7 @@ public class EnvironmentCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtr
 	public String getMaxCommonPrefix(String search) {
 		List<AbstractTrie<? extends Object>> tries = Arrays.asList(
 			SCEManager.getBackgroundParser().getEnvironments(),
+			SCEManager.getLatexCommands().getEnvironments(),
 			PackagesExtractor.getPackageParser().getEnvironments(),
 			PackagesExtractor.getDocClassesParser().getEnvironments()
 		);
