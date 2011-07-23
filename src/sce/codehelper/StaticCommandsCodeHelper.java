@@ -26,7 +26,7 @@ public class StaticCommandsCodeHelper extends PatternHelper {
   public StaticCommandsCodeHelper(String patternString, StaticCommandsReader commandsReader) {
     pattern = new PatternPair(patternString);
 	  commands = commandsReader.getCommands();
-	  environments = commandsReader.getEnvironments();
+	  environments = commandsReader.getScopes();
   }
 
 	@Override

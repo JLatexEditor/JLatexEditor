@@ -1,14 +1,20 @@
 <!DOCTYPE commandList [
-		<!ELEMENT commandList (environment|command)+>
+		<!ELEMENT commandList (scope|command,environment)+>
 
-		<!ELEMENT environment (command)*>
-		<!ATTLIST environment name CDATA #REQUIRED>
+		<!ELEMENT scope (command)*>
+		<!ATTLIST scope name CDATA #REQUIRED>
 
 		<!ELEMENT command (argument)*>
 		<!ATTLIST command name CDATA #REQUIRED
 				              usage CDATA #IMPLIED
 				              hint CDATA #IMPLIED
 				              style CDATA #IMPLIED>
+
+		<!ELEMENT environment (argument)*>
+		<!ATTLIST environment name CDATA #REQUIRED
+				                  usage CDATA #IMPLIED
+				                  hint CDATA #IMPLIED
+				                  style CDATA #IMPLIED>
 
 		<!ELEMENT argument (argumentValue)*>
 		<!ATTLIST argument name CDATA #REQUIRED
@@ -927,42 +933,41 @@
   </command>
 
   <command name="begin" usage="\begin{@environment@}@|@&nl;\end{@environment@}" hint="paragraph-making environments" style="begin">
-    <argument name="environment" type="opening_env" value="" completion="true">
-      <argumentValue value="abstract"/>
-      <argumentValue value="array"/>
-      <argumentValue value="center"/>
-      <argumentValue value="description"/>
-      <argumentValue value="displaymath"/>
-      <argumentValue value="enumerate"/>
-      <argumentValue value="eqnarray"/>
-      <argumentValue value="equation"/>
-      <argumentValue value="figure"/>
-      <argumentValue value="flushleft"/>
-      <argumentValue value="flushright"/>
-      <argumentValue value="itemize"/>
-      <argumentValue value="list"/>
-      <argumentValue value="math"/>
-      <argumentValue value="minipage"/>
-      <argumentValue value="picture"/>
-      <argumentValue value="quotation"/>
-      <argumentValue value="quote"/>
-      <argumentValue value="tabbing"/>
-      <argumentValue value="table"/>
-      <argumentValue value="tabular"/>
-      <argumentValue value="thebibliography"/>
-      <argumentValue value="theorem"/>
-      <argumentValue value="titlepage"/>
-      <argumentValue value="trivlist"/>
-      <argumentValue value="verbatim"/>
-      <argumentValue value="verse"/>
-    </argument>
+    <argument name="environment" type="opening_env" value="" completion="true"/>
   </command>
 
 	<command name="end" usage="\end{@environment@}" hint="closing environment" style="begin">
 	  <argument name="environment" type="closing_env"/>
 	</command>
 
-  <environment name="picture">
+	<environment name="array" hint="array in math environment"/>
+	<environment name="description" hint="labeled list of items"/>
+	<environment name="displaymath" hint="display formulas without numbering"/>
+	<environment name="enumerate" hint="list of numbered items"/>
+	<environment name="eqnarray" hint="aligned math formulas"/>
+	<environment name="equation" hint="aligned math formula"/>
+	<environment name="figure" hint="figure with caption"/>
+	<environment name="flushleft" hint="align lines on the left"/>
+	<environment name="flushright" hint="align lines on the right"/>
+	<environment name="itemize" hint="list of unnumbered items"/>
+	<environment name="list" hint="general list of items"/>
+	<environment name="math" hint="math environment"/>
+	<environment name="minipage" hint="small page inside the page"/>
+	<environment name="picture"/>
+	<environment name="quotation"/>
+	<environment name="quote"/>
+	<environment name="tabbing" hint=""/>
+	<environment name="table" hint=""/>
+	<environment name="tabular" hint=""/>
+	<environment name="tabularx" hint=""/>
+	<environment name="thebibliography" hint=""/>
+	<environment name="theorem" hint=""/>
+	<environment name="titlepage" hint=""/>
+	<environment name="trivlist" hint=""/>
+	<environment name="verbatim" hint=""/>
+	<environment name="verse" hint=""/>
+
+  <scope name="picture">
     <command name="line" usage="\line(@x-slope@,@y-slope@){@length@}"
              hint="draws a line of the specified length and slope">
       <argument name="x-slope" hint="the x-coordinate of the slope">
@@ -1010,9 +1015,9 @@
       <argument name="object">
       </argument>
     </command>
-  </environment>
+  </scope>
 
-  <environment name="math">
+  <scope name="math">
     <command name="mathcal" usage="\mathcal{@cal@}" hint="calligraphic letter (LaTeX2e)">
       <argument name="cal" hint="the letter">
       </argument>
@@ -1029,9 +1034,9 @@
       <argument name="equation">
       </argument>
     </command>
-  </environment>
+  </scope>
 
-	<environment name="array &amp; table">
+	<scope name="array &amp; table">
     <command name="multicolumn" usage="\multicolumn{@cols@}{@pos@}{@text@}"
              hint="used to make an entry that spans several columns">
       <argument name="cols" hint="the number of columns to span">
@@ -1044,10 +1049,10 @@
       <argument name="text" hint="the text">
       </argument>
     </command>
-  </environment>
+  </scope>
 
-  <environment name="paragraph">
+  <scope name="paragraph">
     <command name="newline" hint="breaks the line right where it is">
     </command>
-  </environment>
+  </scope>
 </commandList>
