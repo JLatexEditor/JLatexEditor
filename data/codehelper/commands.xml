@@ -1,5 +1,5 @@
 <!DOCTYPE commandList [
-		<!ELEMENT commandList (scope|command,environment)+>
+		<!ELEMENT commandList (scope|command|environment)+>
 
 		<!ELEMENT scope (command)*>
 		<!ATTLIST scope name CDATA #REQUIRED>
@@ -964,7 +964,7 @@
 	<environment name="theorem" hint=""/>
 	<environment name="titlepage" hint=""/>
 	<environment name="trivlist" hint=""/>
-	<environment name="verbatim" hint=""/>
+	<environment name="verbatim" usage="%###&nl;\begin{verbatim}&nl;@|@&nl;\end{verbatim}&nl;%###" hint=""/>
 	<environment name="verse" hint=""/>
 
   <scope name="picture">
