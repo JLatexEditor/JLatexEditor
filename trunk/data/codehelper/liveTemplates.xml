@@ -52,7 +52,7 @@
   <command name="eqn" usage="\begin{eqnarray@*@}&nl;  @|@&nl;\end{eqnarray@*@}" hint="eqnarray environment">
 	  <argument name="*"/>
   </command>
-  <command name="verb" usage="\begin{verbatim}&nl;  @|@&nl;\end{verbatim}" hint="verbatim environment">
+  <command name="verb" usage="%###&nl;\begin{verbatim}&nl;@|@&nl;\end{verbatim}&nl;%###" hint="verbatim environment">
   </command>
   <command name="sec" usage="\section{@name@}\label{sec:@label@}&nl;@|@" hint="section">
     <argument name="name">
