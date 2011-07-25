@@ -1,0 +1,42 @@
+<!DOCTYPE styles [
+		<!ELEMENT styles (element)+>
+
+		<!ELEMENT element EMPTY>
+		<!ATTLIST element name CDATA #REQUIRED
+		                  style CDATA #REQUIRED
+		                  foreground CDATA #IMPLIED
+		                  background CDATA #IMPLIED>
+]>
+<styles>
+  <element name="text" style="plain" foreground="000000"/>
+  <element name="italic" style="italic" foreground="000000"/>
+  <element name="bold" style="bold" foreground="000000"/>
+  <element name="command" style="plain" foreground="0000ff"/>
+  <element name="comment" style="italic" foreground="808080"/>
+  <element name="bracket" style="bold" foreground="2fbf53"/>
+  <element name="number" style="plain" foreground="000000"/>
+  <element name="math" style="plain" foreground="00a000"/>
+  <element name="math_command" style="plain" foreground="606000"/>
+  <element name="todo" style="bold,italic" foreground="0000ff"/>
+  <element name="parser_stop" style="bold,italic" foreground="db8717"/>
+  <element name="error" style="plain" foreground="ff0000"/>
+  <element name="begin" style="bold" foreground="000080"/>
+  <element name="section" style="bold" foreground="f00000"/>
+  <element name="important_command" style="plain" foreground="f00000"/>
+
+  <element name="title" style="bold" foreground="000000"/>
+
+  <element name="label_exists" style="plain" foreground="800080"/>
+  <element name="label_not_found" style="plain" foreground="ff0000"/>
+  <element name="label_not_referenced" style="plain" background="fdffc5"/>
+  <element name="label_duplicate" style="plain" foreground="ff0000"/>
+
+  <element name="file_exists" style="plain" foreground="800080"/>
+  <element name="file_not_found" style="plain" foreground="ff0000"/>
+
+  <element name="cite_exists" style="plain" foreground="800080"/>
+  <element name="cite_not_found" style="plain" foreground="ff0000"/>
+
+	<element name="env_name" style="plain" foreground="0000FF"/>
+
+</styles>
