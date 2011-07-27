@@ -1,5 +1,6 @@
 package sce.component;
 
+import jlatexeditor.gproperties.GProperties;
 import sce.codehelper.CodeHelper;
 import sce.codehelper.CodeHelperPane;
 import sce.codehelper.LineBreakListener;
@@ -177,7 +178,7 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
   public void keyPressed(KeyEvent e) {
     if (e.isConsumed()) return;
 
-    if(mouseIsVisible) {
+    if(mouseIsVisible && GProperties.getBoolean("editor.hide_mouse_during_typing")) {
       pane.setCursor(invisibleCursor);
       mouseIsVisible = false;
     }
