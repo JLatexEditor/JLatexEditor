@@ -15,6 +15,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,12 +46,10 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
   // last mouse click
   long lastMouseClick = 0;
 
-  // some characters
-  private String allowedChars = "abcdefghijklmnopqrstuvwxyz" +
-          "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-          "äöüÄÖÜß" +
-          "1234567890" +
-          "^<>|+*~'#,;.:-_!\"§$%&/()=?`´\\{[]}@ ";
+  // transparent image for hiding mouse cursor
+  private Cursor defaultCursor;
+  private Cursor invisibleCursor;
+  private boolean mouseIsVisible = true;
 
   public SCEPaneUI(SCEPane pane) {
     this.pane = pane;
@@ -68,6 +67,13 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
     // MouseListener
     pane.addMouseListener(this);
     pane.addMouseMotionListener(this);
+
+    // hiding mouse cursor
+    defaultCursor = pane.getCursor(); {
+      Dimension dim = Toolkit.getDefaultToolkit().getBestCursorSize(0,0);
+      BufferedImage image = new BufferedImage(dim.width, dim.height, BufferedImage.TYPE_INT_ARGB);
+      invisibleCursor = Toolkit.getDefaultToolkit().createCustomCursor(image, new Point(0, 0), "InvisibleCursor");
+    }
 
 	  installUI(pane);
   }
@@ -170,6 +176,11 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
 
   public void keyPressed(KeyEvent e) {
     if (e.isConsumed()) return;
+
+    if(mouseIsVisible) {
+      pane.setCursor(invisibleCursor);
+      mouseIsVisible = false;
+    }
 
 	  int keyCode = e.getKeyCode();
 
@@ -682,6 +693,10 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
   }
 
   public void mouseMoved(MouseEvent e) {
+    if(!mouseIsVisible) {
+      pane.setCursor(defaultCursor);
+      mouseIsVisible = true;
+    }
   }
 
 	public CodeHelperPane getCodeHelperPane() {
