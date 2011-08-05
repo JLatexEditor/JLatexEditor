@@ -8,6 +8,8 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
+ * Allows to merge sorted Iterators.
+ *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 public class MergeSortIterableTest extends TestCase {
