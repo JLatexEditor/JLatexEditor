@@ -354,13 +354,13 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 
   private void ensureSelection() {
     if (document.getSelectedText() == null) {
-      document.setSelectionRange(new SCEDocumentPosition(caret.getRow(), 0), new SCEDocumentPosition(caret.getRow() + 1, 0));
+      document.setSelectionRange(new SCEDocumentPosition(caret.getRow(), 0), new SCEDocumentPosition(caret.getRow() + 1, 0), true);
       repaint();
     }
   }
 
   public void clearSelection() {
-    document.setSelectionRange(null, null);
+    document.setSelectionRange(null, null, true);
     caret.removeSelectionMark();
   }
 
@@ -399,7 +399,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
       endCol = endCol == 0 ? endCol : endCol + 2;
       endSel = new SCEDocumentPosition(endSel.getRow(), endCol);
       caret.moveTo(endSel.getRow(), endCol, false);
-      document.setSelectionRange(startSel, endSel);
+      document.setSelectionRange(startSel, endSel, true);
     }
   }
 
@@ -434,7 +434,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
       if (moveCaret) {
         caret.moveTo(endSel.getRow(), endCol, false);
       }
-      document.setSelectionRange(startSel, endSel);
+      document.setSelectionRange(startSel, endSel, true);
     }
   }
 

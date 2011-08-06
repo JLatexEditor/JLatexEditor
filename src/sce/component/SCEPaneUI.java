@@ -346,7 +346,7 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
         }
         endSel = new SCEDocumentPosition(endSel.getRow(), endCol);
         caret.moveTo(endSel.getRow(), endCol, false);
-        document.setSelectionRange(startSel, endSel);
+        document.setSelectionRange(startSel, endSel, true);
       }
       e.consume();
       return;
@@ -643,9 +643,9 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
           if (caret.getRow() >= rowsModel.getRowsCount() - 1) {
             endPosition = document.createDocumentPosition(caret.getRow(), rowsModel.getRowLength(caret.getRow()));
           }
-          document.setSelectionRange(startPosition, endPosition);
+          document.setSelectionRange(startPosition, endPosition, true);
         } else {
-          document.setSelectionRange(leftPosition, rightPosition);
+          document.setSelectionRange(leftPosition, rightPosition, true);
         }
         pane.repaint();
 

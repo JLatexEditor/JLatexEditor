@@ -6,6 +6,12 @@ New Features and other Changes in JLatexEditor
 # set "show_new_features" in global properties to "false".
 
 
+== Coming in Version 0.2.3 ==
+
+* minor enhancements
+  - search is automatically limited to selection range if selection is spanning at least one line
+
+
 == Version 0.2.2 ==
 
 * new features:

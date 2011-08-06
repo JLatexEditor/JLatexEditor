@@ -155,7 +155,7 @@ public class SCECaret implements SCEPosition, Comparable, ActionListener {
 
 	  if (keepSelection) {
 			// update the documents selection range
-			document.setSelectionRange(position, selectionMark);
+			document.setSelectionRange(position, selectionMark, true);
 	  } else {
 		  // remove selection
 		  if (document.hasSelection()) {
@@ -186,7 +186,7 @@ public class SCECaret implements SCEPosition, Comparable, ActionListener {
    */
   public void removeSelectionMark() {
     selectionMark = null;
-    document.setSelectionRange(null, null);
+    document.setSelectionRange(null, null, true);
   }
 
   /**

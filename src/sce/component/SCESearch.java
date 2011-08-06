@@ -299,7 +299,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 
     editor.moveTo(start.getRow(), start.getColumn());
     SCEDocument document = editor.getTextPane().getDocument();
-    document.setSelectionRange(start, end);
+    document.setSelectionRange(start, end, false);
     editor.getTextPane().repaint();
   }
 
@@ -658,7 +658,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
         document.clearSelection();
       } else {
         // set the selection
-        if(selectionRange != null && setSelection) document.setSelectionRange(selectionRange);
+        if(selectionRange != null && setSelection) document.setSelectionRange(selectionRange, false);
 
         if (move && moveCaret) next(true, true);
       }

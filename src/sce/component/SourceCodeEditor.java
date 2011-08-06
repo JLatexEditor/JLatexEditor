@@ -9,6 +9,7 @@ import sce.syntaxhighlighting.BracketHighlighting;
 import util.StreamUtils;
 
 import javax.swing.*;
+import javax.swing.text.Document;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -264,6 +265,14 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
 	  if (search.hasFocus()) {
 		  textPane.requestFocusInWindow();
 	  } else {
+		  SCEDocument document = textPane.getDocument();
+
+		  if (!search.isVisible()) {
+				// automatically check "selection only" if user has selected text
+
+				search.getSelectionOnly().setSelected(document.isUserTriggeredSelection() && document.hasMultiLineSelection());
+		  }
+
 			add(search, BorderLayout.NORTH);
 			search.setVisible(true);
 			validate();
