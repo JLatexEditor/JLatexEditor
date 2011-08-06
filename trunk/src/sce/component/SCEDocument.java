@@ -27,6 +27,7 @@ public class SCEDocument {
   // selection range
   private SCEDocumentPosition selectionStart = null;
   private SCEDocumentPosition selectionEnd = null;
+	private boolean userTriggeredSelection;
 
   // editable?
   private boolean editable = true;
@@ -43,7 +44,7 @@ public class SCEDocument {
 
 	private Clipboard selectionClipboard = Toolkit.getDefaultToolkit().getSystemSelection();
 
-  /**
+	/**
    * Creates a SCEDocument (the model SCEPane).
    */
   public SCEDocument() {
@@ -173,8 +174,8 @@ public class SCEDocument {
    *
    * @param range selection range
    */
-  public void setSelectionRange(SCERange range) {
-    setSelectionRange(range.getStartPos(), range.getEndPos());
+  public void setSelectionRange(SCERange range, boolean userTriggeredSelection) {
+    setSelectionRange(range.getStartPos(), range.getEndPos(), userTriggeredSelection);
   }
 
   /**
@@ -183,8 +184,9 @@ public class SCEDocument {
    * @param start the selection start
    * @param end   the selection end
    */
-  public void setSelectionRange(@Nullable SCEDocumentPosition start, @Nullable SCEDocumentPosition end) {
-    if (start == null || end == null) {
+  public void setSelectionRange(@Nullable SCEDocumentPosition start, @Nullable SCEDocumentPosition end, boolean userTriggeredSelection) {
+	  this.userTriggeredSelection = userTriggeredSelection;
+	  if (start == null || end == null) {
       selectionStart = null;
       selectionEnd = null;
       selectionChanged();
@@ -205,7 +207,7 @@ public class SCEDocument {
    * Clears the selection.
    */
   public void clearSelection() {
-    setSelectionRange(null, null);
+    setSelectionRange(null, null, true);
   }
 
   /**
@@ -216,6 +218,10 @@ public class SCEDocument {
   public boolean hasSelection() {
     return selectionStart != null && selectionEnd != null;
   }
+
+	public boolean hasMultiLineSelection() {
+		return hasSelection() && selectionStart.getRow() != selectionEnd.getRow();
+	}
 
   /**
    * Returns the start of the selection.
@@ -245,7 +251,16 @@ public class SCEDocument {
     return getText(selectionStart, selectionEnd);
   }
 
-  /**
+	/**
+	 * Returns true if the selection was triggered by the user.
+	 *
+	 * @return true if the selection was triggered by the user
+	 */
+	public boolean isUserTriggeredSelection() {
+		return userTriggeredSelection;
+	}
+
+	/**
    * Sets a limited edit range for the document.
    *
    * @param start the edit range start

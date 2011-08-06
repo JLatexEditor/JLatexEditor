@@ -1078,13 +1078,13 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 		if (action.equals("select all")) {
       SCEPane pane = getActiveEditor().getTextPane();
       SCEDocument document = pane.getDocument();
-      document.setSelectionRange(document.createDocumentPosition(0,0), document.createDocumentPosition(document.getRowsModel().getRowsCount()-1, 0));
+      document.setSelectionRange(document.createDocumentPosition(0,0), document.createDocumentPosition(document.getRowsModel().getRowsCount()-1, 0), true);
 		  pane.repaint();
     } else
     if (action.equals("select none")) {
       SCEPane pane = getActiveEditor().getTextPane();
       SCEDocument document = pane.getDocument();
-      document.setSelectionRange(null, null);
+      document.setSelectionRange(null, null, true);
       pane.getCaret().setSelectionMark();
       pane.repaint();
     } else
