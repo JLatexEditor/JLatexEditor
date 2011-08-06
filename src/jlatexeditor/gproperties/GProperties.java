@@ -144,6 +144,8 @@ public class GProperties {
 	  properties.addEntry(new Def("editor.auto_indentation.after_opening_brace", BOOLEAN, "true"));
 	  properties.addEntry(new Comment(" Clear selection"));
 	  properties.addEntry(new Def("editor.clear_selection_when_closing_search", BOOLEAN, "true"));
+    properties.addEntry(new Comment(" Bracket matching"));
+    properties.addEntry(new Def("editor.bracket_matching.depth", new PSet("1", "2", "3", "4", "5", "6"), "2"));
 
     properties.addEntry(new Comment("\n## Shortcuts"));
     properties.addEntry(new Comment(" File menu"));

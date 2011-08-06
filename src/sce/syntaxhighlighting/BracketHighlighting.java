@@ -1,5 +1,6 @@
 package sce.syntaxhighlighting;
 
+import jlatexeditor.gproperties.GProperties;
 import sce.component.*;
 
 import java.awt.*;
@@ -60,86 +61,131 @@ public class BracketHighlighting implements SCECaretListener {
     for (SCETextHighlight highlight : highlights) pane.removeTextHighlight(highlight);
     highlights.clear();
 
-    int coloursCount = colors.length;
-
     SCEDocument document = pane.getDocument();
     String line = document.getRowsModel().getRowAsString(row);
-    if (column > 0 && (line.charAt(column - 1) == '}' || line.charAt(column - 1) == ')')) {
+
+    if (column > 0) {
       // search backwards
       char open = line.charAt(column - 1);
-      char close = line.charAt(column - 1) == '}' ? '{' : '(';
-
-      int level = 0;
-      for (int srow = row; srow >= Math.max(0, row - 40); srow--) {
-        line = document.getRowsModel().getRowAsString(srow);
-        int startColumn = srow == row ? column - 1 : line.length() - 1;
-        for (int scolumn = startColumn; scolumn >= 0; scolumn--) {
-          char c = line.charAt(scolumn);
-          if (c == open) {
-            if (level < coloursCount) {
-              highlights.add(new SCETextHighlight(
-                      pane,
-                      document.createDocumentPosition(srow, scolumn),
-                      document.createDocumentPosition(srow, scolumn + 1),
-                      colors[level]));
-            }
-            level++;
-          } else if (level == 0) {
-            srow = -1;
-            break;
-          }
-          if (c == close) {
-            level--;
-            if (level < coloursCount) {
-              highlights.add(new SCETextHighlight(
-                      pane,
-                      document.createDocumentPosition(srow, scolumn),
-                      document.createDocumentPosition(srow, scolumn + 1),
-                      colors[level]));
-            }
-          }
-        }
+      if(getDirection(open) == -1) {
+        char close = getClosingChar(open);
+        hightlight(document, pane, row, column, open, close, -1, Math.max(-1, row - 40));
       }
     }
+
     if (column < line.length() && (line.charAt(column) == '{' || line.charAt(column) == '(')) {
       // search backwards
       char open = line.charAt(column);
-      char close = line.charAt(column) == '{' ? '}' : ')';
-
-      int level = 0;
-      for (int srow = row; srow <= Math.min(document.getRowsModel().getRowsCount() - 1, row + 40); srow++) {
-        line = document.getRowsModel().getRowAsString(srow);
-        int startColumn = srow == row ? column : 0;
-        for (int scolumn = startColumn; scolumn < line.length(); scolumn++) {
-          char c = line.charAt(scolumn);
-          if (c == open) {
-            if (level < coloursCount) {
-              highlights.add(new SCETextHighlight(
-                      pane,
-                      document.createDocumentPosition(srow, scolumn),
-                      document.createDocumentPosition(srow, scolumn + 1),
-                      colors[level]));
-            }
-            level++;
-          } else if (level == 0) {
-            srow = document.getRowsModel().getRowsCount();
-            break;
-          }
-          if (c == close) {
-            level--;
-            if (level < coloursCount) {
-              highlights.add(new SCETextHighlight(
-                      pane,
-                      document.createDocumentPosition(srow, scolumn),
-                      document.createDocumentPosition(srow, scolumn + 1),
-                      colors[level]));
-            }
-          }
-        }
+      if(getDirection(open) == 1) {
+        char close = getClosingChar(open);
+        hightlight(document, pane, row, column, open, close, 1, Math.min(document.getRowsModel().getRowsCount(), row + 40));
       }
     }
 
     for (SCETextHighlight highlight : highlights) pane.addTextHighlight(highlight);
+  }
+
+  private void hightlight(SCEDocument document, SCEPane pane, final int row, final int column, final char open, final char close, final int direction, final int endRow) {
+    final int coloursCount = Math.min(colors.length, GProperties.getInt("editor.bracket_matching.depth"));
+
+    int level = 0;
+    for (int srow = row; srow != endRow; srow += direction) {
+      String line = document.getRowsModel().getRowAsString(srow);
+
+      final int startColumn, endColumn;
+      if(direction == -1) {
+        startColumn = srow == row ? column - 1 : line.length() - 1;
+        endColumn = -1;
+      } else {
+        startColumn = srow == row ? column : 0;
+        endColumn = line.length();
+      }
+
+      for (int scolumn = startColumn; scolumn != endColumn; scolumn += direction) {
+        char c = line.charAt(scolumn);
+        if (c == open) {
+          if (level < coloursCount) {
+            highlights.add(new SCETextHighlight(
+                    pane,
+                    document.createDocumentPosition(srow, scolumn),
+                    document.createDocumentPosition(srow, scolumn + 1),
+                    colors[level]));
+          }
+          level++;
+        } else if (level == 0) {
+          srow = endRow - direction;
+          break;
+        }
+        if (c == close) {
+          level--;
+          if (level < coloursCount) {
+            highlights.add(new SCETextHighlight(
+                    pane,
+                    document.createDocumentPosition(srow, scolumn),
+                    document.createDocumentPosition(srow, scolumn + 1),
+                    colors[level]));
+          }
+        }
+      }
+    }
+  }
+
+  public static int getDirection(char open) {
+    switch (open) {
+      case '}' : return -1;
+      case ')' : return -1;
+      case ']' : return -1;
+      case '{' : return 1;
+      case '(' : return 1;
+      case '[' : return 1;
+      default: return 0;
+    }
+  }
+
+  public static char getClosingChar(char open) {
+    switch (open) {
+      case '}' : return '{';
+      case ')' : return '(';
+      case ']' : return '[';
+      case '{' : return '}';
+      case '(' : return ')';
+      case '[' : return ']';
+      default: return ' ';
+    }
+  }
+
+  /**
+   * Returns the position of the matching closing bracket or null.
+   */
+  public static SCEDocumentPosition getClosingBracket(SCEDocument document, final int row, final int column, final char open, final char close, final int direction) {
+    final int endRow = direction == -1 ? -1 : document.getRowsModel().getRowsCount();
+
+    int level = 0;
+    for (int srow = row; srow != endRow; srow += direction) {
+      String line = document.getRowsModel().getRowAsString(srow);
+
+      final int startColumn, endColumn;
+      if(direction == -1) {
+        startColumn = srow == row ? column : line.length() - 1;
+        endColumn = -1;
+      } else {
+        startColumn = srow == row ? column : 0;
+        endColumn = line.length();
+      }
+
+      for (int scolumn = startColumn; scolumn != endColumn; scolumn += direction) {
+        char c = line.charAt(scolumn);
+        if (c == open) {
+          level++;
+        } else
+        if (c == close) {
+          level--;
+          if(level == 0) return new SCEDocumentPosition(srow, scolumn);
+        }
+      }
+    }
+
+    return null;
   }
 
   public void caretMoved(int row, int column, int lastRow, int lastColumn) {
