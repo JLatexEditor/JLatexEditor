@@ -33,6 +33,7 @@ public class GProperties {
 
   private static BetterProperties2 properties = new BetterProperties2();
   private static HashMap<String, Set<PropertyChangeListener>> changeListeners = new HashMap<String, Set<PropertyChangeListener>>();
+	private static boolean loadedSuccessfully = false;
 
   // properties
   private static Font editorFont;
@@ -52,7 +53,7 @@ public class GProperties {
   private static final String EDITOR_FONT_SIZE = "editor.font.size";
   private static final String EDITOR_FONT_ANTIALIASING = "editor.font.antialiasing";
 
-  static {
+	static {
     // text anti-aliasing
     TEXT_ANTIALIAS_KEYS = new String[]{"On", "Off", "GASP", "LCD HBGR", "LCD HRGB", "LCD VBGR", "LCD VRGB"};
 
@@ -272,7 +273,7 @@ public class GProperties {
     properties.addEntry(new Def("hunspell.lang", new PSet(hunspellDicts), getFromList(hunspellDicts, "en_GB")));
 
     load();
-    save();
+    autoSave();
   }
 
 	private static String getFromList(String[] dicts, String default_) {
@@ -295,14 +296,16 @@ public class GProperties {
     return properties.getDefMap().get(key).getRange();
   }
 
-  public static void load() {
+  public static synchronized void load() {
     Hashtable<Object, Object> oldMap = (Hashtable<Object, Object>) properties.clone();
 
     if (CONFIG_FILE.exists()) {
       try {
         properties.load(new FileReader(CONFIG_FILE));
+	      loadedSuccessfully = true;
       } catch (IOException e) {
         properties.loadDefaults();
+	      loadedSuccessfully = false;
         e.printStackTrace();
       }
     } else {
@@ -333,7 +336,13 @@ public class GProperties {
     }
   }
 
-  public static void save() {
+	private static void autoSave() {
+		if (loadedSuccessfully) {
+			save();
+		}
+	}
+
+  public static synchronized void save() {
     CONFIG_FILE.getParentFile().mkdirs();
     try {
       properties.store(new FileOutputStream(CONFIG_FILE),
