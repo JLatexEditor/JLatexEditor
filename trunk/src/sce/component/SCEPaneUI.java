@@ -626,18 +626,26 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
 
     // mouse button 1
     if ((e.getModifiers() & MouseEvent.BUTTON1_MASK) != 0) {
-      if (caret.getRow() != position.getRow() || caret.getColumn() != position.getColumn()) {
+      boolean unselect = e.getClickCount() == 1;
+      boolean select_word = e.getClickCount() == 2;
+      boolean select_line = e.getClickCount() == 3;
+
+      if (unselect || caret.getRow() != position.getRow() || caret.getColumn() != position.getColumn()) {
         caret.moveTo(position.getRow(), position.getColumn(), e.isShiftDown());
-      } else {
-        // select the word or line
+      }
+
+      // select the word or line
+      if(select_line || select_word) {
         int left = pane.findSplitterInRow(caret.getRow(), caret.getColumn(), -1);
         int right = pane.findSplitterInRow(caret.getRow(), caret.getColumn(), 1);
         SCEDocumentPosition leftPosition = document.createDocumentPosition(caret.getRow(), left);
         SCEDocumentPosition rightPosition = document.createDocumentPosition(caret.getRow(), right);
 
-        boolean select_line = document.hasSelection() && left == document.getSelectionStart().getColumn() && right == document.getSelectionEnd().getColumn();
+        if(select_word) {
+          document.setSelectionRange(leftPosition, rightPosition, true);
+        }
 
-        if (select_line && lastMouseClick + 500 > System.currentTimeMillis()) {
+        if(select_line) {
           SCEDocumentPosition startPosition = document.createDocumentPosition(caret.getRow(), 0);
           SCEDocumentPosition endPosition = document.createDocumentPosition(caret.getRow() + 1, 0);
           if (caret.getRow() >= rowsModel.getRowsCount() - 1) {
