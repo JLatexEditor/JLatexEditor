@@ -507,6 +507,19 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   }
 
   /**
+   * Converts a position on the screen into model coordinates.
+   *
+   * @param x the x coordinate
+   * @param y the y coordinate
+   * @return the model coordinates
+   */
+  public SCEDocumentPosition viewToModelRoundOff(int x, int y) {
+    int row = y / lineHeight;
+    int column = Math.max((x - lineNumberSpacer - SPACE_LEFT) / characterWidth, 0);
+    return new SCEDocumentPosition(row, column);
+  }
+
+  /**
    * Returns the character width.
    *
    * @return character width

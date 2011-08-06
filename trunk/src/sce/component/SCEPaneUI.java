@@ -6,6 +6,7 @@ import sce.codehelper.CodeHelperPane;
 import sce.codehelper.LineBreakListener;
 import sce.quickhelp.QuickHelp;
 import sce.quickhelp.QuickHelpPane;
+import sce.syntaxhighlighting.BracketHighlighting;
 import sun.swing.DefaultLookup;
 import sun.swing.UIAction;
 
@@ -642,6 +643,32 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
         SCEDocumentPosition rightPosition = document.createDocumentPosition(caret.getRow(), right);
 
         if(select_word) {
+          { // selecting content of brackets
+            SCEDocumentPosition pos = pane.viewToModelRoundOff(e.getX(), e.getY());
+
+            String line = document.getRowsModel().getRowAsString(pos.getRow());
+            char open = pos.getColumn() < line.length() ? line.charAt(pos.getColumn()) : ' ';
+
+            int direction = BracketHighlighting.getDirection(open);
+            if(direction != 0) {
+              char close = BracketHighlighting.getClosingChar(open);
+
+              SCEDocumentPosition closePos = BracketHighlighting.getClosingBracket(document, pos.getRow(), pos.getColumn(), open, close, direction);
+              if(closePos != null) {
+                if(direction < 0) {
+                  leftPosition = closePos;
+                  rightPosition = new SCEDocumentPosition(pos.getRow(), pos.getColumn()+1);
+                }
+                if(direction > 0) {
+                  leftPosition = pos;
+                  rightPosition = new SCEDocumentPosition(closePos.getRow(), closePos.getColumn()+1);
+                }
+              }
+            }
+          }
+
+
+
           document.setSelectionRange(leftPosition, rightPosition, true);
         }
 

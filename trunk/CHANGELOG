@@ -10,6 +10,8 @@ New Features and other Changes in JLatexEditor
 
 * minor enhancements
   - search is automatically limited to selection range if selection is spanning at least one line
+  - the depth of the awesome deep bracket matching can now be configured (editor.bracket_matching.depth)
+  - double click on a bracket now selects the whole block
 * bug fixes:
   - some minor bugs
 
