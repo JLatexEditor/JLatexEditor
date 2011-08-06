@@ -10,6 +10,8 @@ New Features and other Changes in JLatexEditor
 
 * minor enhancements
   - search is automatically limited to selection range if selection is spanning at least one line
+* bug fixes:
+  - some minor bugs
 
 
 == Version 0.2.2 ==

@@ -496,9 +496,9 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
       menuItem.setMnemonic(mnemonic);
     }
 	  // set shortcut
-    String shorcutString = GProperties.getString("shortcut." + command);
-    if (shorcutString != null && !shorcutString.equals("")) {
-      menuItem.setAccelerator(KeyStroke.getKeyStroke(shorcutString));
+    String shortcutString = GProperties.getString("shortcut." + command);
+    if (shortcutString != null && !shortcutString.equals("")) {
+      menuItem.setAccelerator(KeyStroke.getKeyStroke(shortcutString));
     }
 		// set icon
 		try {

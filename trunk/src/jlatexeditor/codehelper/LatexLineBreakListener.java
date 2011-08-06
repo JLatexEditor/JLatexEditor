@@ -80,7 +80,8 @@ public class LatexLineBreakListener implements LineBreakListener {
 			if (closeEnv) {
 				SCEPosition oldPos = new SCEDocumentPosition(caret.getRow(), caret.getColumn());
 				String currLine = doc.getRowsModel().getRowAsString(rowNr);
-				String nextIndentation = currLine.substring(0, Math.max(0, currLine.length() - 2));
+				// String restOfLine = currLine.substring(caret.getColumn());
+				String nextIndentation = currLine.substring(0, Math.max(0, caret.getColumn()-2));
 				pane.insert("\n" + nextIndentation + "\\end{" + envName + '}');
 				caret.moveTo(oldPos, false);
 			}
