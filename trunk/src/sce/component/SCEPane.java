@@ -478,15 +478,15 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 			CHCommandArgument argument = new CHCommandArgument("", "", false);
 			ArrayList<SCEDocumentRange> occurrences = new ArrayList<SCEDocumentRange>();
 			for (WordWithPos word : wordGroup) {
-				SCEDocumentPosition occurrenceStart = document.createDocumentPosition(word.startRow, word.startCol - 1);
-				SCEDocumentPosition occurrenceEnd = document.createDocumentPosition(word.endRow, word.endCol, 0);
+				SCEPosition occurrenceStart = document.createDocumentPosition(word.startPos.getRow(), word.startPos.getColumn() - 1);
+				SCEPosition occurrenceEnd = document.createDocumentPosition(word.endPos.getRow(), word.endPos.getColumn(), 0);
 				occurrences.add(new SCEDocumentRange(occurrenceStart, occurrenceEnd));
 			}
 			argument.setOccurrences(occurrences);
 			arguments.add(argument);
 		}
 
-		SCEDocumentPosition caretEndPosition = arguments.get(arguments.size() - 1).getOccurrences().get(0).getEndPosition();
+		SCEPosition caretEndPosition = arguments.get(arguments.size() - 1).getOccurrences().get(0).getEndPos();
 		ui.codeHelperPane.editAsTemplate(arguments, caretEndPosition);
 	}
 

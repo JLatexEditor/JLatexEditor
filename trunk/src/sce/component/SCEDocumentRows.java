@@ -195,7 +195,7 @@ public class SCEDocumentRows {
    * @param start the edit range start
    * @param end   the edit range end
    */
-  public SCEDocumentEvent setEditRange(SCEDocumentPosition start, SCEDocumentPosition end, boolean undo) {
+  public SCEDocumentEvent setEditRange(SCEPosition start, SCEPosition end, boolean undo) {
     SCEDocumentEvent event = new SCEDocumentEvent();
     event.setEventType(SCEDocumentEvent.EVENT_EDITRANGE | (undo ? SCEDocumentEvent.EVENT_UNDO : 0));
 
@@ -528,7 +528,7 @@ public class SCEDocumentRows {
    * @param startPosition the start position
    * @param endPosition   the end position
    */
-  public void setStyle(byte style, SCEDocumentPosition startPosition, SCEDocumentPosition endPosition) {
+  public void setStyle(byte style, SCEPosition startPosition, SCEPosition endPosition) {
     int rowStart = startPosition.getRow();
     int columnStart = startPosition.getColumn();
     int rowEnd = endPosition.getRow();

@@ -6,27 +6,32 @@ package sce.component;
 
 public class SCEDocumentRange {
   // start and end position
-  private SCEDocumentPosition startPosition = null;
-  private SCEDocumentPosition endPosition = null;
+  protected SCEPosition startPos = null;
+  protected SCEPosition endPos = null;
 
   /**
    * Creates a document range with the given start and end positions.
    *
-   * @param startPosition the beginning of the range
-   * @param endPosition   the end of the range
+   * @param startPos the beginning of the range
+   * @param endPos   the end of the range
    */
-  public SCEDocumentRange(SCEDocumentPosition startPosition, SCEDocumentPosition endPosition) {
-    this.startPosition = startPosition;
-    this.endPosition = endPosition;
+  public SCEDocumentRange(SCEPosition startPos, SCEPosition endPos) {
+    this.startPos = startPos;
+    this.endPos = endPos;
   }
 
-  /**
+	public SCEDocumentRange(int startRow, int startCol, int endRow, int endCol) {
+		this.startPos = new SCEDocumentPosition(startRow, startCol);
+		this.endPos   = new SCEDocumentPosition(endRow, endCol);
+	}
+
+	/**
    * Returns the start position of the range.
    *
    * @return start position
    */
-  public SCEDocumentPosition getStartPosition() {
-    return startPosition;
+  public SCEPosition getStartPos() {
+    return startPos;
   }
 
   /**
@@ -34,7 +39,23 @@ public class SCEDocumentRange {
    *
    * @return end position
    */
-  public SCEDocumentPosition getEndPosition() {
-    return endPosition;
+  public SCEPosition getEndPos() {
+    return endPos;
   }
+
+	public int getStartRow() {
+		return startPos.getRow();
+	}
+
+	public int getStartCol() {
+		return startPos.getColumn();
+	}
+
+	public int getEndRow() {
+		return endPos.getRow();
+	}
+
+	public int getEndCol() {
+		return endPos.getColumn();
+	}
 }

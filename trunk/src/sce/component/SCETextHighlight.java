@@ -8,8 +8,8 @@ import java.awt.*;
 
 public class SCETextHighlight {
   // the start and end position of the highlight
-  private SCEDocumentPosition startPosition;
-  private SCEDocumentPosition endPosition;
+  private SCEPosition startPosition;
+  private SCEPosition endPosition;
   private Color color;
 
   /**
@@ -20,7 +20,7 @@ public class SCETextHighlight {
    * @param endPosition   the end position
    * @param color         the color
    */
-  public SCETextHighlight(SCEPane pane, SCEDocumentPosition startPosition, SCEDocumentPosition endPosition, Color color) {
+  public SCETextHighlight(SCEPane pane, SCEPosition startPosition, SCEPosition endPosition, Color color) {
     this.startPosition = startPosition;
     this.endPosition = endPosition;
     this.color = color;
@@ -31,7 +31,7 @@ public class SCETextHighlight {
    *
    * @return the start position
    */
-  public SCEDocumentPosition getStartPosition() {
+  public SCEPosition getStartPosition() {
     return startPosition;
   }
 
@@ -40,7 +40,7 @@ public class SCETextHighlight {
    *
    * @return the end position
    */
-  public SCEDocumentPosition getEndPosition() {
+  public SCEPosition getEndPosition() {
     return endPosition;
   }
 
@@ -71,7 +71,7 @@ public class SCETextHighlight {
    * @param start the start position
    * @param end   the end position
    */
-  public void paint(Graphics2D g2D, SCEPane pane, SCEDocumentPosition start, SCEDocumentPosition end) {
+  public void paint(Graphics2D g2D, SCEPane pane, SCEPosition start, SCEPosition end) {
     g2D.setColor(getColor());
     Point startPos = pane.modelToView(start.getRow(), start.getColumn());
     Point endPos = pane.modelToView(end.getRow(), end.getColumn());

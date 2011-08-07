@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @author Jörg Endrullis
  * @author Stefan Endrullis
  */
-public class SCECaret implements SCEPosition, Comparable, ActionListener {
+public class SCECaret extends SCEPosition implements ActionListener {
   private SCEPane pane = null;
   private SCEDocument document = null;
 

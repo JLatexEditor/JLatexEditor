@@ -252,10 +252,10 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
       SCEDocumentPosition endDocPos = new SCEDocumentPosition(rows, 0);
 
       if(selectionOnly) {
-        pane.addTextHighlight(new SCETextHighlight(pane, new SCEDocumentPosition(0, 0), selection.getStartPosition(), SCEPane.nonSelectionHighlightColor));
-        pane.addTextHighlight(new SCETextHighlight(pane, selection.getEndPosition(), endDocPos, SCEPane.nonSelectionHighlightColor));
+        pane.addTextHighlight(new SCETextHighlight(pane, new SCEDocumentPosition(0, 0), selection.getStartPos(), SCEPane.nonSelectionHighlightColor));
+        pane.addTextHighlight(new SCETextHighlight(pane, selection.getEndPos(), endDocPos, SCEPane.nonSelectionHighlightColor));
       } else {
-        pane.addTextHighlight(new SCETextHighlight(pane, selection.getStartPosition(), selection.getEndPosition(), SCEPane.selectionHighlightColorLight));
+        pane.addTextHighlight(new SCETextHighlight(pane, selection.getStartPos(), selection.getEndPos(), SCEPane.selectionHighlightColorLight));
       }
     }
   }
@@ -298,8 +298,8 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
   }
 
   private void moveTo(SCEDocumentRange range) {
-    SCEDocumentPosition start = range.getStartPosition();
-    SCEDocumentPosition end = range.getEndPosition();
+    SCEPosition start = range.getStartPos();
+    SCEPosition end = range.getEndPos();
 
     editor.moveTo(start.getRow(), start.getColumn());
     SCEDocument document = editor.getTextPane().getDocument();
@@ -311,7 +311,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     SCECaret caret = editor.getTextPane().getCaret();
     SCEDocumentRange last = null;
     for (SCEDocumentRange result : results) {
-      SCEDocumentPosition start = result.getStartPosition();
+      SCEPosition start = result.getStartPos();
       if (start.getRow() > caret.getRow() || (start.getRow() == caret.getRow() && start.getColumn() >= caret.getColumn()))
         break;
       last = result;
@@ -323,7 +323,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
   public void next(boolean includeCurrentPos, boolean jumpToLast) {
     SCECaret caret = editor.getTextPane().getCaret();
     for (SCEDocumentRange result : results) {
-      SCEDocumentPosition start = result.getStartPosition();
+      SCEPosition start = result.getStartPos();
       if (start.getRow() < caret.getRow()) continue;
       if (start.getRow() == caret.getRow()) {
         if (start.getColumn() < caret.getColumn()) continue;
@@ -343,7 +343,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     if (results.size() > 0) moveTo(results.get(results.size() - 1));
   }
 
-  private void replace(SCEDocumentPosition start, SCEDocumentPosition end) {
+  private void replace(SCEPosition start, SCEPosition end) {
     SCEDocument document = editor.getTextPane().getDocument();
     String text = document.getText(start, end);
 
@@ -409,7 +409,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
       ArrayList<SCEDocumentRange> matches = results;
       for (int matchNr = matches.size() - 1; matchNr >= 0; matchNr--) {
         SCEDocumentRange match = matches.get(matchNr);
-        replace(match.getStartPosition(), match.getEndPosition());
+        replace(match.getStartPos(), match.getEndPos());
       }
     }
   }
@@ -498,8 +498,8 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     }
 
     for (SCEDocumentRange result : results) {
-      SCEDocumentPosition rstart = result.getStartPosition();
-      SCEDocumentPosition rend = result.getEndPosition();
+      SCEPosition rstart = result.getStartPos();
+      SCEPosition rend = result.getEndPos();
 
       if (start.equals(rstart) && end.equals(rend)) {
         replaceEnabled(true, results.size() > 0);
@@ -612,7 +612,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
       String search = input.getText();
       int length = search.length();
 
-      SCERange selectionRange = null;
+      SCEDocumentRange selectionRange = null;
 
       if (length != 0) {
         if (!regExp.isSelected()) {
@@ -671,7 +671,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
       pane.repaint();
     }
 
-		private SCERange processOccurrence(ArrayList<SCEDocumentRange> resultsTemp, SCEDocument document, SCEMarkerBar markerBar, SCEPane pane, SCECaret caret, SCERange selectionRange, int rowStart, int columnStart, int rowEnd, int columnEnd) {
+		private SCEDocumentRange processOccurrence(ArrayList<SCEDocumentRange> resultsTemp, SCEDocument document, SCEMarkerBar markerBar, SCEPane pane, SCECaret caret, SCEDocumentRange selectionRange, int rowStart, int columnStart, int rowEnd, int columnEnd) {
 			SCEDocumentPosition start = document.createDocumentPosition(rowStart, columnStart);
 			SCEDocumentPosition end = document.createDocumentPosition(rowEnd, columnEnd);
 
@@ -681,7 +681,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 				markerBar.addMarker(new SCEMarkerBar.Marker(SCEMarkerBar.TYPE_SEARCH, rowStart, columnStart, ""));
 
 				if (caret.getRow() == rowStart && caret.getColumn() == columnStart) {
-					selectionRange = new SCERange(rowStart, columnStart, rowEnd, columnEnd);
+					selectionRange = new SCEDocumentRange(new SCEDocumentPosition(rowStart, columnStart), new SCEDocumentPosition(rowEnd, columnEnd));
 				}
 			}
 			return selectionRange;
@@ -689,8 +689,8 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 
 		private boolean filter(SCEDocumentPosition start, SCEDocumentPosition end) {
       if (!selectionOnly.isSelected() || selection == null) return true;
-      if (start.compareTo(selection.getStartPosition()) < 0) return false;
-      if (end.compareTo(selection.getEndPosition()) > 0) return false;
+      if (start.compareTo(selection.getStartPos()) < 0) return false;
+      if (end.compareTo(selection.getEndPos()) > 0) return false;
       return true;
     }
 
