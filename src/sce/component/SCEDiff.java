@@ -456,8 +456,37 @@ public class SCEDiff extends JPanel implements ComponentListener, PropertyChange
         g.fillPolygon(xpoints, ypoints, 8);
 
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
         g.setColor(Color.GRAY);
         g.drawPolygon(xpoints, ypoints, 8);
+
+        Stroke stroke = g.getStroke();
+        g.setStroke(new BasicStroke(2));
+        switch (modification.getType()) {
+          case Modification.TYPE_ADD: {
+            g.setColor(COLOR_ADD.darker());
+            int x = xpoints[0] + 16;
+            int y = ypoints[0] + SCEDiff.this.left.getLineHeight()/2;
+            g.drawLine(x-4,y-4,x+4,y+4);
+            g.drawLine(x-4,y+4,x+4,y-4);
+            break;
+          }
+          case Modification.TYPE_REMOVE: {
+            g.setColor(COLOR_REMOVE.darker());
+            int x = xpoints[3] - 17;
+            int y = ypoints[3] + SCEDiff.this.left.getLineHeight()/2;
+            g.drawLine(x+6,y,x-4,y);
+            g.drawLine(x,y+4,x-4,y);
+            g.drawLine(x,y-4,x-4,y);
+            break;
+          }
+          case Modification.TYPE_CHANGED: {
+            g.setColor(COLOR_CHANGE.darker());
+            break;
+          }
+        }
+        g.setStroke(stroke);
+
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
       }
     }

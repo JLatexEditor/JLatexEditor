@@ -690,13 +690,6 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 	    if (ct != getCharTypeAt(text, position)) break;
 	    position += direction;
 	  }
-	  /** todo: remove if you are satisfied with the new solution
-    boolean splitter = splitterChars.indexOf(text.charAt(position)) != -1;
-    while (position >= 0 && position < document.getRowLength(row)) {
-      if (splitter != (splitterChars.indexOf(text.charAt(position)) != -1)) break;
-      position += direction;
-    }
-	  */
     if (direction == -1) position++;
 
     return position;
