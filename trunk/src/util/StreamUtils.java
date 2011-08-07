@@ -1,7 +1,7 @@
 /** StreamUtils
  *
- * @author Jörg Endrullis
- * @version 1.0
+ * @author Jörg Endrullis, Stefan Endrullis
+ * @version 1.1
  */
 
 package util;
@@ -13,10 +13,14 @@ import java.util.ArrayList;
 
 public class StreamUtils {
   /** Size of the temporary buffer for reading. */
-  private static int temporary_buffer_size = 64 * 1024;
+  private static final int TEMP_BUFFER_SIZE = 64 * 1024;
 
   /**
-   * Reads an InputStream and returns it as byte array.
+   * Reads an InputStream and returns its content as byte array.
+   *
+   * @param stream input stream
+   * @return content of input stream as byte array
+   * @throws java.io.IOException if an I/O error occurs
    */
   public static byte[] readBytesFromInputStream(InputStream stream) throws IOException {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -109,7 +113,7 @@ public class StreamUtils {
    * @throws IOException thrown if reading or writing has failed
    */
   public static void copyStream(InputStream in, OutputStream out) throws IOException {
-    byte[] bytes = new byte[temporary_buffer_size];
+    byte[] bytes = new byte[TEMP_BUFFER_SIZE];
     int len;
     while ((len = in.read(bytes)) != -1) out.write(bytes, 0, len);
   }
@@ -133,7 +137,7 @@ public class StreamUtils {
     String encoding = "UTF-8";
     int length = Math.min(outputStream.size(), 100);
     String beginning = new String(outputStream.toByteArray(), 0, length);
-    if (beginning.indexOf("encoding=\"") != -1) {
+    if (beginning.contains("encoding=\"")) {
       int encodingStart = beginning.indexOf("encoding=\"") + 10;
       int encodingEnd = beginning.indexOf('"', encodingStart);
       if (encodingStart < encodingEnd) encoding = beginning.substring(encodingStart, encodingEnd);
