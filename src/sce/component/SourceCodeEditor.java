@@ -132,7 +132,7 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
       diff.getDiffPane().setText(text);
       diff.updateDiff();
     }
-    diff.updateLayout();
+    diff.updateLayout(true);
     markerBar.repaint();
     validate();
   }

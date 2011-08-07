@@ -17,8 +17,8 @@ import java.util.List;
 /**
  * Diff component.
  */
-public class SCEDiff extends JPanel implements ComponentListener {
-  private static final int WIDTH = 70;
+public class SCEDiff extends JPanel implements ComponentListener, PropertyChangeListener {
+  private static final int WIDTH = 90;
 
   public static Color COLOR_ADD = new Color(189, 238, 192);
   public static Color COLOR_REMOVE = new Color(191, 190, 239);
@@ -73,6 +73,7 @@ public class SCEDiff extends JPanel implements ComponentListener {
     scrollPane = new SCEDiff.SCEDiffScrollPane(splitPane);
     add(scrollPane, BorderLayout.CENTER);
     addComponentListener(this);
+    splitPane.addPropertyChangeListener(this);
 
     header = new DiffHeader();
     splitPane.addPropertyChangeListener(header);
@@ -120,9 +121,15 @@ public class SCEDiff extends JPanel implements ComponentListener {
       }
     });
 
+    left.setAddToPreferredSize(new Dimension(2560,0));
+    right.setAddToPreferredSize(new Dimension(2560, 0));
+
+    left.setTransparentTextBackground(true);
+    right.setTransparentTextBackground(true);
+
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
-        updateLayout();
+        updateLayout(true);
       }
     });
   }
@@ -171,24 +178,44 @@ public class SCEDiff extends JPanel implements ComponentListener {
     }
   }
 
-  public void updateLayout() {
+  public void updateLayout(boolean setDividerLocation) {
     final Rectangle visibleRect = scrollPane.getVisibleRect();
 
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        splitPane.setDividerLocation((visibleRect.width - WIDTH) / 2);
-        splitPane.setDividerSize(WIDTH);
-      }
-    });
+    if(setDividerLocation) {
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          splitPane.setDividerLocation((visibleRect.width - WIDTH) / 2);
+          splitPane.setDividerSize(WIDTH);
+        }
+      });
+    }
 
     int visibleWidthLeft = splitPane.getDividerLocation();
     int visibleWidthRight = visibleRect.width - visibleWidthLeft - WIDTH;
-    double overLeft = Math.max(1, left.getPreferredSize().width - visibleWidthLeft) / (double) visibleWidthLeft;
-    double overRight = Math.max(1, right.getPreferredSize().width - visibleWidthRight) / (double) visibleWidthRight;
+    double overLeft = Math.max(1, left.getPreferredSize().width - left.getAddToPreferredSize().width - visibleWidthLeft) / (double) visibleWidthLeft;
+    double overRight = Math.max(1, right.getPreferredSize().width - right.getAddToPreferredSize().width - visibleWidthRight) / (double) visibleWidthRight;
 
     preferredWidthFactor = 1 + Math.max(0, Math.max(overLeft, overRight));
     preferredSize.width = (int) (visibleRect.width * preferredWidthFactor);
     preferredSize.height = preferredLines * left.getLineHeight() + 30;
+
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        validate();
+      }
+    });
+  }
+
+  private boolean firstInvalidate = true;
+  public void invalidate() {
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        updateLayout(firstInvalidate);
+        firstInvalidate = false;
+      }
+    });
+
+    super.invalidate();
   }
 
   public void jumpToNextSourceModification() {
@@ -282,16 +309,20 @@ public class SCEDiff extends JPanel implements ComponentListener {
       int sourceStart = modification.getSourceStartIndex();
       int sourceEnd = sourceStart + modification.getSourceLength();
       for (int line = sourceStart; line < sourceEnd; line++) {
-        right.addRowHighlight(new SCERowHighlight(right, line, color, false));
+        right.addRowHighlight(new SCERowHighlight(right, line, color, false, line == sourceStart, line == sourceEnd-1));
       }
-      if (sourceEnd == sourceStart) right.addRowHighlight(new SCERowHighlight(right, sourceStart, color, true));
+      if (sourceEnd == sourceStart) {
+        right.addRowHighlight(new SCERowHighlight(right, sourceStart, color, true, true, true));
+      }
 
       int targetStart = modification.getTargetStartIndex();
       int targetEnd = targetStart + modification.getTargetLength();
       for (int line = targetStart; line < targetEnd; line++) {
-        left.addRowHighlight(new SCERowHighlight(left, line, color, false));
+        left.addRowHighlight(new SCERowHighlight(left, line, color, false, line == targetStart, line == targetEnd-1));
       }
-      if (targetEnd == targetStart) left.addRowHighlight(new SCERowHighlight(left, targetStart, color, true));
+      if (targetEnd == targetStart) {
+        left.addRowHighlight(new SCERowHighlight(left, targetStart, color, true, true, true));
+      }
     }
 
     invalidate();
@@ -319,22 +350,35 @@ public class SCEDiff extends JPanel implements ComponentListener {
     super.paint(g);
   }
 
+  /**
+   * ComponentListener.
+   */
   public void componentResized(ComponentEvent e) {
-    updateLayout();
+    updateLayout(false);
   }
 
   public void componentMoved(ComponentEvent e) {
   }
 
   public void componentShown(ComponentEvent e) {
-    updateLayout();
+    updateLayout(true);
   }
 
   public void componentHidden(ComponentEvent e) {
   }
 
+  /**
+   * ActionListener: close button.
+   */
   public void actionPerformed(ActionEvent e) {
     close();
+  }
+
+  /**
+   * PropertyChangeListener: moving of the divider.
+   */
+  public void propertyChange(PropertyChangeEvent evt) {
+    updateLayout(false);
   }
 
   private class SCEDiffUI extends BasicSplitPaneUI {
@@ -352,8 +396,10 @@ public class SCEDiff extends JPanel implements ComponentListener {
       super(basicSplitPaneUI);
     }
 
-    public void paint(Graphics g) {
-      super.paint(g);
+    public void paint(Graphics graphics) {
+      super.paint(graphics);
+
+      Graphics2D g = (Graphics2D) graphics;
       if (modifications == null) return;
 
       int left = 0;
@@ -365,7 +411,7 @@ public class SCEDiff extends JPanel implements ComponentListener {
       int diffFirstRow = SCEDiff.this.right.viewToModel(0, diffOffsetY).getRow();
       int visibleRows = SCEDiff.this.left.getVisibleRowsCount() + 1;
 
-      int[] xpoints = new int[]{left, left + 15, right - 15, right, right, right - 15, left + 15, left};
+      int[] xpoints = new int[]{left-5, left + 20, right - 20, right+5, right+5, right - 20, left + 20, left-5};
       int[] ypoints = new int[8];
       for (Modification modification : modifications) {
         int sourceStart = modification.getSourceStartIndex();
@@ -387,14 +433,14 @@ public class SCEDiff extends JPanel implements ComponentListener {
           diffYStart--;
           diffYEnd += 2;
         }
-        ypoints[0] = paneYStart;
-        ypoints[1] = paneYStart;
-        ypoints[2] = diffYStart;
-        ypoints[3] = diffYStart;
-        ypoints[4] = diffYEnd;
-        ypoints[5] = diffYEnd;
-        ypoints[6] = paneYEnd;
-        ypoints[7] = paneYEnd;
+        ypoints[0] = paneYStart-1;
+        ypoints[1] = paneYStart-1;
+        ypoints[2] = diffYStart-1;
+        ypoints[3] = diffYStart-1;
+        ypoints[4] = diffYEnd-2;
+        ypoints[5] = diffYEnd-2;
+        ypoints[6] = paneYEnd-2;
+        ypoints[7] = paneYEnd-2;
 
         switch (modification.getType()) {
           case Modification.TYPE_ADD:
@@ -408,18 +454,12 @@ public class SCEDiff extends JPanel implements ComponentListener {
             break;
         }
         g.fillPolygon(xpoints, ypoints, 8);
-      }
 
-      /*
-      for(int rowNr = 0; rowNr < pane.getVisibleRowsCount() + 1; rowNr++) {
-        int paneRow = paneFirstRow + rowNr;
-        if(paneRow >= linesMapPaneDiff.length) break;
-        int diffRow = (int) linesMapPaneDiff[paneRow];
-        int paneY = pane.modelToView(paneRow, 0).y + (lineHeight / 2);
-        int diffY = diff.modelToView(diffRow, 0).y + (int) (lineHeight * (linesMapPaneDiff[paneRow] - diffRow));
-        g.drawLine(left, paneY - paneOffsetY, right, diffY - diffOffsetY);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setColor(Color.GRAY);
+        g.drawPolygon(xpoints, ypoints, 8);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
       }
-      */
     }
   }
 
@@ -435,6 +475,12 @@ public class SCEDiff extends JPanel implements ComponentListener {
     rightViewport.setView(null);
     splitPane.setLeftComponent(null);
     splitPane.setRightComponent(null);
+
+    left.setAddToPreferredSize(new Dimension(0,0));
+    right.setAddToPreferredSize(new Dimension(0,0));
+
+    left.setTransparentTextBackground(false);
+    right.setTransparentTextBackground(false);
   }
 
   private class SCEDiffSplitPane extends JSplitPane {
@@ -463,10 +509,6 @@ public class SCEDiff extends JPanel implements ComponentListener {
       int rx = (int) (x / preferredWidthFactor);
       leftViewport.setViewPosition(new Point(-rx, (int) (paneLine * lineHeight) - yCorrection));
       rightViewport.setViewPosition(new Point(-rx, (int) (diffLine * lineHeight) - yCorrection));
-
-      int viewWidth = Math.max(leftViewport.getWidth() - rx, rightViewport.getWidth() - rx);
-      left.setSize(viewWidth, left.getHeight());
-      right.setSize(viewWidth, right.getHeight());
 
       repaint();
     }

@@ -218,7 +218,7 @@ public class SCECaret implements SCEPosition, Comparable, ActionListener {
    */
   private Rectangle getCaretRectangle() {
     Point position = pane.modelToView(getRow(), getColumn());
-    return new Rectangle(position.x, position.y, 2, pane.getLineHeight());
+    return new Rectangle(position.x, position.y-1, 2, pane.getLineHeight());
   }
 
   /**
