@@ -67,7 +67,7 @@ public class ColumnRealigner extends AddOn {
 				}
 			}
 
-			doc.setSelectionRange(new SCERange(env.openWord.getStartRow()+1, 0, env.closeWord.getEndRow(), 0), false);
+			doc.setSelectionRange(new SCEDocumentRange(env.openWord.getStartRow()+1, 0, env.closeWord.getEndRow(), 0), false);
 
 //			JOptionPane.showMessageDialog(jle, "Before using this function you have to select the lines that shall be realigned.");
 		}

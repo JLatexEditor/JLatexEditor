@@ -6,7 +6,6 @@ import sce.component.*;
 import javax.swing.*;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -475,7 +474,7 @@ public class CodeHelperPane extends JPanel implements KeyListener, SCEDocumentLi
     }
   }
 
-	public void editAsTemplate(ArrayList<CHCommandArgument> arguments, SCEDocumentPosition caretEndPosition) {
+	public void editAsTemplate(ArrayList<CHCommandArgument> arguments, SCEPosition caretEndPosition) {
 		template = Template.editAsTemplate(pane, arguments, caretEndPosition);
 	}
 

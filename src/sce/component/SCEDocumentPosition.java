@@ -4,7 +4,7 @@
 
 package sce.component;
 
-public class SCEDocumentPosition implements SCEPosition {
+public class SCEDocumentPosition extends SCEPosition {
   // dynamic position
   private SCEDocumentChar character = null;
   private SCEDocumentRow row = null;
@@ -132,8 +132,4 @@ public class SCEDocumentPosition implements SCEPosition {
   public String toString() {
     return getRow() + ", " + getColumn();
   }
-
-	public SCEPosition relative(int relativeRow, int relativeColumn) {
-		return new SCEDocumentPosition(getRow() + relativeRow, getColumn() + relativeColumn);
-	}
 }

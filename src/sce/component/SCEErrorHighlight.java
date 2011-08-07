@@ -33,8 +33,8 @@ public class SCEErrorHighlight extends SCETextHighlight {
   public void paint(Graphics2D g2D, SCEPane pane) {
     Rectangle bounds = g2D.getClipBounds();
 
-    SCEDocumentPosition startPosition = getStartPosition();
-    SCEDocumentPosition endPosition = getEndPosition();
+    SCEPosition startPosition = getStartPosition();
+    SCEPosition endPosition = getEndPosition();
     g2D.setColor(getColor());
     Point startPos = pane.modelToView(startPosition.getRow(), startPosition.getColumn());
     Point endPos = pane.modelToView(endPosition.getRow(), endPosition.getColumn());

@@ -17,7 +17,7 @@ public class Template {
 	private SCECaret caret;
 	private SCEDocument document;
 	private String template = null;
-	private SCEDocumentPosition templateCaretPosition = null;
+	private SCEPosition templateCaretPosition = null;
 	// template argument values
 	private ArrayList<CHCommandArgument> templateArguments = null;
 	private int templateArgumentNr = -1;
@@ -98,8 +98,8 @@ public class Template {
 		for (CHCommandArgument argument : arguments) {
 			if (!argument.getName().equals(argument.getValue())) {
 				for (SCEDocumentRange range : argument.getOccurrences()) {
-					SCEPosition start = range.getStartPosition().relative(0, 1);
-					SCEDocumentPosition end = range.getEndPosition();
+					SCEPosition start = range.getStartPos().relative(0, 1);
+					SCEPosition end = range.getEndPos();
 					template.document.replace(start, end, argument.getValue());
 				}
 			}
@@ -187,16 +187,16 @@ public class Template {
 
 			if (oldArgument.isOptional()) {
 				SCEDocumentRange range = oldArgument.getOccurrences().get(0);
-				SCEPosition start = range.getStartPosition().relative(0, 1);
-				SCEDocumentPosition end = range.getEndPosition();
+				SCEPosition start = range.getStartPos().relative(0, 1);
+				SCEPosition end = range.getEndPos();
 				String value = document.getText(start, end);
 
 				if (value.equals("") || value.equals(oldArgument.getInitialValue())) {
 					for (SCEDocumentRange argumentRange : oldArgument.getOccurrences()) {
 						// check if char before range and after range is [ or ], respectively
-						int colBefore = argumentRange.getStartPosition().getColumn();
-						int colAfter  = argumentRange.getEndPosition().getColumn();
-						int rowNr = argumentRange.getStartPosition().getRow();
+						int colBefore = argumentRange.getStartPos().getColumn();
+						int colAfter  = argumentRange.getEndPos().getColumn();
+						int rowNr = argumentRange.getStartPos().getRow();
 						SCEDocumentRow row = document.getRowsModel().getRow(rowNr);
 						if (colBefore >= 0 && colAfter < row.length &&
 								row.chars[colBefore].character == '[' && row.chars[colAfter].character == ']') {
@@ -226,9 +226,9 @@ public class Template {
 		if (argument.isOptional()) {
 			for (SCEDocumentRange argumentRange : argument.getOccurrences()) {
 				// check if char before range and after range is [ or ], respectively
-				int colBefore = argumentRange.getStartPosition().getColumn();
-				int colAfter  = argumentRange.getEndPosition().getColumn();
-				int rowNr = argumentRange.getStartPosition().getRow();
+				int colBefore = argumentRange.getStartPos().getColumn();
+				int colAfter  = argumentRange.getEndPos().getColumn();
+				int rowNr = argumentRange.getStartPos().getRow();
 				SCEDocumentRow row = document.getRowsModel().getRow(rowNr);
 				if (colBefore >= 0 && colAfter < row.length &&
 						row.chars[colBefore].character != '[' || row.chars[colAfter].character != ']') {
@@ -238,8 +238,8 @@ public class Template {
 		}
 
 	  SCEDocumentRange argumentRange = argument.getOccurrences().get(0);
-	  SCEDocumentPosition start = new SCEDocumentPosition(argumentRange.getStartPosition().getRow(), argumentRange.getStartPosition().getColumn() + 1);
-	  SCEDocumentPosition end = argumentRange.getEndPosition();
+	  SCEPosition start = new SCEDocumentPosition(argumentRange.getStartRow(), argumentRange.getStartCol() + 1);
+	  SCEPosition end = argumentRange.getEndPos();
 	  document.setEditRange(start, end, false);
 
 	  // select the argument value
@@ -287,8 +287,8 @@ public class Template {
 	}
 
 	private void setArgumentValue(SCEDocumentRange argumentRange, String argumentValue) {
-		SCEDocumentPosition start = new SCEDocumentPosition(argumentRange.getStartPosition().getRow(), argumentRange.getStartPosition().getColumn() + 1);
-		SCEDocumentPosition end = argumentRange.getEndPosition();
+		SCEPosition start = new SCEDocumentPosition(argumentRange.getStartPos().getRow(), argumentRange.getStartPos().getColumn() + 1);
+		SCEPosition end = argumentRange.getEndPos();
 
 		if (!document.getText(start, end).equals(argumentValue)) {
 			pane.setFreezeCaret(true);
@@ -298,7 +298,7 @@ public class Template {
 		}
 	}
 
-	public static Template editAsTemplate(SCEPane pane, ArrayList<CHCommandArgument> arguments, SCEDocumentPosition caretEndPosition) {
+	public static Template editAsTemplate(SCEPane pane, ArrayList<CHCommandArgument> arguments, SCEPosition caretEndPosition) {
 		Template template = new Template();
 		template.setup(pane);
 		template.templateArguments = arguments;

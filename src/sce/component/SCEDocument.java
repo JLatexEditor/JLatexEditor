@@ -173,8 +173,9 @@ public class SCEDocument {
    * Updates the selection range of the document.
    *
    * @param range selection range
+   * @param userTriggeredSelection whether user has triggered the selection
    */
-  public void setSelectionRange(SCERange range, boolean userTriggeredSelection) {
+  public void setSelectionRange(SCEDocumentRange range, boolean userTriggeredSelection) {
     setSelectionRange(range.getStartPos(), range.getEndPos(), userTriggeredSelection);
   }
 
@@ -183,8 +184,9 @@ public class SCEDocument {
    *
    * @param start the selection start
    * @param end   the selection end
+   * @param userTriggeredSelection whether user has triggered the selection
    */
-  public void setSelectionRange(@Nullable SCEDocumentPosition start, @Nullable SCEDocumentPosition end, boolean userTriggeredSelection) {
+  public void setSelectionRange(@Nullable SCEPosition start, @Nullable SCEPosition end, boolean userTriggeredSelection) {
 	  this.userTriggeredSelection = userTriggeredSelection;
 	  if (start == null || end == null) {
       selectionStart = null;
@@ -266,7 +268,7 @@ public class SCEDocument {
    * @param start the edit range start
    * @param end   the edit range end
    */
-  public void setEditRange(SCEDocumentPosition start, SCEDocumentPosition end, boolean undo) {
+  public void setEditRange(SCEPosition start, SCEPosition end, boolean undo) {
     documentChanged(rows.setEditRange(start, end, undo));
   }
 
@@ -452,8 +454,8 @@ public class SCEDocument {
     insert(text, startRow, startColumn);
   }
 
-  public void remove(SCERange range) {
-    remove(range.getStartRow(), range.getStartCol(), range.getEndRow(), range.getEndCol());
+  public void remove(SCEDocumentRange range) {
+    remove(range.getStartPos(), range.getEndPos());
   }
 
   /**
