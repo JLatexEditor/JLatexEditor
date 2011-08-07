@@ -11,7 +11,7 @@ import java.io.*;
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 public class LatexCompilerTest extends TestCase {
-	public void testCompilerOutput() throws IOException {
+	public void testCompilerOutput() throws Exception {
 		File dir = new File("test/resources/latex_output");
 		File[] latexOuts = dir.listFiles(new FilenameFilter() {
 			@Override
@@ -27,11 +27,16 @@ public class LatexCompilerTest extends TestCase {
 		}
 	}
 
-	private void compareParseOutput(File latexOut, File parseOut) throws IOException {
+	private void compareParseOutput(File latexOut, File parseOut) throws Exception {
 		ErrorView errorView = new ErrorView(null);
 		LatexCompiler compiler = LatexCompiler.createInstance(LatexCompiler.Type.pdf, null, errorView);
 
-		compiler.parseLatexOutput(new File("."), new BufferedReader(new InputStreamReader(new FileInputStream(latexOut))));
+		try {
+			compiler.parseLatexOutput(new File("."), new BufferedReader(new InputStreamReader(new FileInputStream(latexOut))));
+		} catch (Exception e) {
+			System.out.println(errorView.getText());
+			throw e;
+		}
 
 		StringBuilder sb = new StringBuilder();
 		for (LatexCompileError latexCompileError : errorView.getErrors()) {

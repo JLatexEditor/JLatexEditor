@@ -314,10 +314,7 @@ public final class Hunspell implements SpellChecker {
 	  // abbreviate to language names
 	  Set<String> dicts = new HashSet<String>();
 	  for (String fullDict : fullDicts) {
-		  String abbrName = StringUtils.stringAfter(fullDict, "/", 'l');
-		  if (abbrName == null) {
-			  abbrName = fullDict;
-		  }
+		  String abbrName = StringUtils.stringAfter(fullDict, "/", 'l').getOrElse(fullDict);
 		  dicts.add(abbrName);
 	  }
 

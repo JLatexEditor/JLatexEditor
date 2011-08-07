@@ -328,7 +328,14 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
         g.setColor(SELECTION_BACKGROUND);
         g.fillRect(0, 0, getWidth(), getHeight());
       }
+	    Graphics2D g2d = (Graphics2D) g;
+	    if (error.isFollowUpError()) {
+		    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.5f));
+	    }
       super.paint(g);
+	    if (error.isFollowUpError()) {
+		    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+	    }
 
       if (isSelected) {
         g.setColor(SELECTION_BORDER);

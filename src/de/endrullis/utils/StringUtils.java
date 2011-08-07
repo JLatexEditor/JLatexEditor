@@ -6,15 +6,15 @@ import java.util.ArrayList;
  * Utilities for Strings.
  *
  * @author Jörg Endrullis und Stefan Endrullis
- * @version 1.2
+ * @version 1.3
  */
 public class StringUtils{
-  public static String stringBefore(String inStr, String delimiterStr){
+  public static Option<String> stringBefore(String inStr, String delimiterStr){
     int pos = inStr.indexOf(delimiterStr);
     if(pos == -1)
-      return null;
+      return new None<String>();
     else
-      return inStr.substring(0, pos);
+      return new Some<String>(inStr.substring(0, pos));
   }
 
   /**
@@ -25,25 +25,25 @@ public class StringUtils{
    * @param nr 'f' for first, 'l' for last
    * @return string before a delimiter string
    */
-  public static String stringBefore(String inStr, String delimiterStr, char nr){
+  public static Option<String> stringBefore(String inStr, String delimiterStr, char nr){
     if(nr == 'f') {
       return stringBefore(inStr, delimiterStr);
     }
     else {
       int pos = inStr.lastIndexOf(delimiterStr);
       if(pos == -1)
-        return null;
+        return new None<String>();
       else
-        return inStr.substring(0, pos);
+        return new Some<String>(inStr.substring(0, pos));
     }
   }
 
-  public static String stringAfter(String inStr, String delimiterStr){
+  public static Option<String> stringAfter(String inStr, String delimiterStr){
     int pos = inStr.indexOf(delimiterStr);
     if(pos == -1)
-      return null;
+      return new None<String>();
     else
-      return inStr.substring(pos + delimiterStr.length(), inStr.length());
+      return new Some<String>(inStr.substring(pos + delimiterStr.length(), inStr.length()));
   }
 
   /**
@@ -54,29 +54,29 @@ public class StringUtils{
    * @param nr 'f' for first, 'l' for last
    * @return string after a delimiter string
    */
-  public static String stringAfter(String inStr, String delimiterStr, char nr){
+  public static Option<String> stringAfter(String inStr, String delimiterStr, char nr){
     if(nr == 'f') {
       return stringAfter(inStr, delimiterStr);
     }
     else {
       int pos = inStr.lastIndexOf(delimiterStr);
       if(pos == -1)
-        return null;
+        return new None<String>();
       else
-        return inStr.substring(pos + delimiterStr.length(), inStr.length());
+        return new Some<String>(inStr.substring(pos + delimiterStr.length(), inStr.length()));
     }
   }
 
   public static String[] stringSplitter(String inStr, String delimiterStr){
     ArrayList<String> stringVector = new ArrayList<String>();
-    String beforeStr;
-    while((beforeStr = stringBefore(inStr, delimiterStr)) != null){
-      stringVector.add(beforeStr);
-      inStr = stringAfter(inStr, delimiterStr);
+    Option<String> beforeStr;
+    while(!(beforeStr = stringBefore(inStr, delimiterStr)).isNone()){
+      stringVector.add(beforeStr.get());
+      inStr = stringAfter(inStr, delimiterStr).get();
     }
     stringVector.add(inStr);
 
-    return stringVector.toArray(new String[]{});
+    return stringVector.toArray(new String[stringVector.size()]);
   }
 
 	/**

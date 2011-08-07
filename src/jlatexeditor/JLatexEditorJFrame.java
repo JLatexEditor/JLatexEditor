@@ -642,7 +642,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 		}
 
 		// load the document properties for this file format
-		String extension = StringUtils.stringAfter(doc.getName(), ".", 'l');
+		String extension = StringUtils.stringAfter(doc.getName(), ".", 'l').getOrElse("tex");
 		Properties docProperties = new Properties();
 		try {
 			InputStream in = StreamUtils.getInputStream("data/docproperties/" + extension + ".properties");
