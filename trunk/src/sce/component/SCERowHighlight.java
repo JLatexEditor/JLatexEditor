@@ -11,6 +11,7 @@ public class SCERowHighlight {
   private SCEDocumentPosition position;
   private Color color;
   private boolean top;
+  private boolean frameTop, frameBottom;
 
   /**
    * Creates a row highlight.
@@ -20,9 +21,15 @@ public class SCERowHighlight {
    * @param color the color
    */
   public SCERowHighlight(SCEPane pane, int row, Color color, boolean top) {
+    this(pane, row, color, top, false, false);
+  }
+
+  public SCERowHighlight(SCEPane pane, int row, Color color, boolean top, boolean frameTop, boolean frameBottom) {
     position = pane.getDocument().createDocumentPosition(row, 0);
     this.color = color;
     this.top = top;
+    this.frameTop = frameTop;
+    this.frameBottom = frameBottom;
   }
 
   /**
@@ -52,10 +59,26 @@ public class SCERowHighlight {
   public void paint(Graphics2D g2D, SCEPane pane) {
     g2D.setColor(getColor());
     Point highlightPos = pane.modelToView(position.getRow(), 0);
+
+    final int x,y,width,height;
     if (top) {
-      g2D.fillRect(0, highlightPos.y - 1, pane.getWidth(), 3);
+      x = 0;
+      y = highlightPos.y - 2;
+      width = pane.getWidth();
+      height = 3;
     } else {
-      g2D.fillRect(0, highlightPos.y, pane.getWidth(), pane.getLineHeight());
+      x = 0;
+      y = highlightPos.y - 1;
+      width = pane.getWidth();
+      height = pane.getLineHeight();
     }
+
+    g2D.fillRect(x, y, width, height);
+
+    g2D.setColor(Color.GRAY);
+    g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    if(frameTop) g2D.drawLine(x, y, x + width, y);
+    if(frameBottom) g2D.drawLine(x, y+height-1, x + width, y+height-1);
+    g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
   }
 }

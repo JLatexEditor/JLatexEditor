@@ -11,6 +11,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.font.TextAttribute;
 import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,11 +83,14 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   private ArrayList<SCERowHighlight> rowHighlights = new ArrayList<SCERowHighlight>();
   private ArrayList<SCETextHighlight> textHighlights = new ArrayList<SCETextHighlight>();
 
+  private boolean transparentTextBackground = false;
+
   // get focus back if lost
   private boolean focusBack = false;
 
   // the preferred size
-  Dimension preferredSize = new Dimension(240, 320);
+  private Dimension addToPreferredSize = new Dimension(0,0);
+  private Dimension preferredSize = new Dimension(240, 320);
 
   // some characters
   private String splitterChars = ",;.:!\"§$%&/()=?{[]}\\'´`+-*^°";
@@ -213,6 +217,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
         rowHighlight.paint(g2D, this);
       }
     }
+    g.setColor(Color.WHITE);
 
     // draw text highlights
     synchronized (textHighlights) {
@@ -234,6 +239,9 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
       if (attributedString == null) continue;
       int posx = lineNumberSpacer + SPACE_LEFT + startCol * charWidth;
       int posy = line * lineHeight + lineAscent - 1;
+      if(transparentTextBackground) {
+        attributedString.addAttribute(TextAttribute.BACKGROUND, null);
+      }
       g2D.drawString(attributedString.getIterator(), posx, posy);
     }
 
@@ -269,6 +277,15 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    */
   public Dimension getPreferredSize() {
     return preferredSize;
+  }
+
+  public Dimension getAddToPreferredSize() {
+    return addToPreferredSize;
+  }
+
+  public void setAddToPreferredSize(Dimension addToPreferredSize) {
+    this.addToPreferredSize = addToPreferredSize;
+    updateComponentSize();
   }
 
   /**
@@ -787,6 +804,17 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     }
   }
 
+  /**
+   * Transparent background for the text.
+   */
+  public boolean isTransparentTextBackground() {
+    return transparentTextBackground;
+  }
+
+  public void setTransparentTextBackground(boolean transparentTextBackground) {
+    this.transparentTextBackground = transparentTextBackground;
+  }
+
   // sce.component.SCEDocumentListener methods
 
   public void documentChanged(SCEDocument sender, SCEDocumentEvent event) {
@@ -817,6 +845,10 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 		    dimension.width = Math.max(row.length * characterWidth + lineNumberSpacer + 30, dimension.width);
 		  }
 		  dimension.height = rows.length * lineHeight + 30;
+
+      dimension.width += addToPreferredSize.width;
+      dimension.height += addToPreferredSize.height;
+
 		  preferredSize = dimension;
 		  getParent().doLayout();
 		}
