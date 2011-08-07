@@ -82,14 +82,18 @@ public class LatexErrorHighlighting implements LatexCompileListener {
         if (before != null) errorColumn = row.indexOf(before) + before.length();
 
         SCEDocumentPosition start, end;
-        if (error.getCommand() != null) {
-          errorColumn = row.lastIndexOf(error.getCommand(), errorColumn);
+	      /*
+        if (error.getCause() != null) {
+          errorColumn = row.lastIndexOf(error.getCause(), errorColumn);
           start = document.createDocumentPosition(errorRow, errorColumn);
-          end = document.createDocumentPosition(errorRow, errorColumn + error.getCommand().length());
+          end = document.createDocumentPosition(errorRow, errorColumn + error.getCause().length());
         } else {
           start = document.createDocumentPosition(errorRow, Math.max(0, errorColumn - 5));
           end = document.createDocumentPosition(errorRow, errorColumn);
         }
+        */
+	      start = document.createDocumentPosition(errorRow, Math.max(0, errorColumn - 5));
+	      end = document.createDocumentPosition(errorRow, errorColumn);
 
         SCEErrorHighlight errorHighlight = new SCEErrorHighlight(pane, start, end, new Color(255, 0, 0));
 

@@ -1,5 +1,6 @@
 package jlatexeditor.errorhighlighting;
 
+import de.endrullis.utils.StringUtils;
 import jlatexeditor.Doc;
 import jlatexeditor.ErrorView;
 import jlatexeditor.gproperties.GProperties;
@@ -8,10 +9,7 @@ import sce.component.SourceCodeEditor;
 import util.ProcessUtil;
 import util.SystemUtils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -163,10 +161,20 @@ public class LatexCompiler extends Thread {
 		      if (!fileStack.get(fileStack.size() - 1).equals(fileName)) fileStack.add(fileName);
 		    }
 
+			  ArrayList<String> linesBeforeLineNumber = new ArrayList<String>();
+			  boolean discoveredEmptyLine = false;
 		    while (line != null && !line.startsWith("l.")) {
+			    /*
 		      if (line.startsWith("<argument>")) {
 		        error.setCommand(line.substring("<argument>".length()).trim());
 		      }
+		      */
+			    if (line.equals("")) {
+				    discoveredEmptyLine = true;
+			    }
+			    if (!discoveredEmptyLine) {
+				    linesBeforeLineNumber.add(line);
+			    }
 		      line = in.readLine();
 		      errorView.appendLine(line);
 		    }
@@ -185,6 +193,51 @@ public class LatexCompiler extends Thread {
 		      } catch (Exception e) {
 		        continue;
 		      }
+
+			    if (linesBeforeLineNumber.size() >= 2) {
+				    // take the last 2 lines and check whether they mark an error
+				    int size = linesBeforeLineNumber.size();
+				    String firstLine  = linesBeforeLineNumber.get(size - 2);
+				    String secondLine = linesBeforeLineNumber.get(size - 1);
+				    if (firstLine.length() > 0 && secondLine.length() >= firstLine.length()
+					    && secondLine.substring(0, firstLine.length()).matches("^\\s+$")) {
+					    LatexCompileError cause = error.clone();
+
+					    String before = firstLine;
+					    if (before.startsWith("<")) {
+						    before = StringUtils.stringAfter(before, "> ").getOrElse(before);
+					    }
+					    before = StringUtils.stringAfter(before, "...").getOrElse(before);
+					    before = before.substring(0, before.length() - 1);
+					    String after = secondLine.substring(firstLine.length());
+					    after  = StringUtils.stringBefore(after, "...", 'l').getOrElse(after);
+
+					    // search for the corresponding line in the source file
+					    if (cause.getFile().exists()) {
+						    String searchString = before + after;
+
+						    ArrayList<String> fileLines = new ArrayList<String>();
+						    BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(cause.getFile())));
+						    String fileLine = null;
+						    for (int fileLineNr=0; fileLineNr<cause.getLineStart() && (fileLine = r.readLine()) != null; fileLineNr++) {
+							    fileLines.add(fileLine);
+						    }
+						    for (int fileLineNr = fileLines.size()-1; fileLineNr >= 0; fileLineNr--) {
+							    if (fileLines.get(fileLineNr).contains(searchString)) {
+								    cause.setLine(fileLineNr + 1);
+								    break;
+							    }
+						    }
+					    }
+
+					    cause.setTextBefore(before);
+					    cause.setTextAfter(after);
+					    compileError(cause);
+
+					    error.setFollowUpError(true);
+					    error.setMessage("Follow-up error of \"" + error.getMessage() + "\"");
+				    }
+			    }
 
 		      String before = line.substring(space + 1);
 		      if (before.startsWith("...")) before = before.substring(3);

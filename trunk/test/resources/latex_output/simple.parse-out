@@ -1,0 +1,15 @@
+error:
+<font color="#000000">./main.tex</font><font color="gray">: 17</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \asdfasd<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./main.tex</font><font color="gray">: 19</font>
+  <font color="#9a6634">LaTeX Error: Environment asdfadsfasdf undefined.</font>
+  \begin{asdfadsfasdf}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./main.tex</font><font color="gray">: 20</font>
+  <font color="#9a6634">LaTeX Error: \begin{document} ended by \end{asdfadsfasdf}.</font>
+  \end{asdfadsfasdf}<font color="red">[ERROR]</font>
+

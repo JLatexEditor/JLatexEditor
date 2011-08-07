@@ -36,10 +36,7 @@ public class FileCreationSuggester implements CodeAssistant, SCEPopup.ItemHandle
 				String filename = word.word;
 
 				// add .tex if no extension given
-				String lastPart = StringUtils.stringAfter(filename, "/", 'l');
-				if (lastPart == null) {
-					lastPart = filename;
-				}
+				String lastPart = StringUtils.stringAfter(filename, "/", 'l').getOrElse(filename);
 				if (!lastPart.contains(".")) {
 					filename += ".tex";
 				}
