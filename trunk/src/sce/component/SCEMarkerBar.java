@@ -140,8 +140,9 @@ public class SCEMarkerBar extends JPanel implements SCEDocumentListener, MouseMo
 
     for (int type = 0; type < TYPES_COUNT; type++) {
       for (Marker marker : markers.get(type)) {
-        int y = getPosition(marker.getRowStart());
-        if (mx >= 1 && mx < getWidth() - 1 && my >= y && my <= y + 2) {
+        int yTop = getPosition(marker.getRowStart());
+        int yBottom = getPosition(marker.getRowEnd());
+        if (mx >= 1 && mx < getWidth() - 1 && my >= yTop && my <= yBottom) {
           setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
           Object message = marker.getMessage();
@@ -172,8 +173,9 @@ public class SCEMarkerBar extends JPanel implements SCEDocumentListener, MouseMo
 
     for (int type = 0; type < TYPES_COUNT; type++) {
       for (Marker marker : markers.get(type)) {
-        int y = getPosition(marker.getRowStart());
-        if (mx >= 1 && mx < getWidth() - 1 && my >= y && my <= y + 2) {
+        int yTop = getPosition(marker.getRowStart());
+        int yBottom = getPosition(marker.getRowEnd());
+        if (mx >= 1 && mx < getWidth() - 1 && my >= yTop && my <= yBottom) {
           Runnable action = marker.getAction();
           if (action == null) {
             editor.moveTo(marker.getRowStart(), 0);
