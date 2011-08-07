@@ -820,12 +820,10 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 	  // update the caret position
     if (event.isInsert() && !freezeCaret) {
       caret.moveTo(end.getRow(), end.getColumn(), false);
-	    // TODO: repaint here is new. hopefully correct
 	    repaint();
     }
     if (event.isRemove() && !freezeCaret) {
       caret.moveTo(start.getRow(), start.getColumn(), false);
-	    // TODO: repaint here is new. hopefully correct
 	    repaint();
     }
   }

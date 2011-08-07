@@ -350,18 +350,7 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
         document.setSelectionRange(startSel, endSel, true);
       }
       e.consume();
-      return;
     }
-
-	  // TODO: remove
-	  /*
-    // selection
-    if (e.isShiftDown()) {
-      if (caret.getSelectionMark() == null) caret.setSelectionMark();
-    } else {
-      if (caret.getSelectionMark() != null && e.isActionKey()) clearSelection();
-    }
-    */
   }
 
   private void keyAltDown(KeyEvent e) {
