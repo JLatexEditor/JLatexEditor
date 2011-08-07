@@ -778,9 +778,23 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
           pane.add(actionComponent);
           actionComponent.setSize(size);
           actionComponent.setLocation(viewPos);
+          toVisibleRect(actionComponent, pane);
         }
       }
     }
+  }
+
+  private void toVisibleRect(JComponent component, JComponent parent) {
+    Rectangle visible = parent.getVisibleRect();
+
+    int x = component.getX();
+    int y = component.getY();
+    x = Math.max(x ,visible.x);
+    y = Math.max(y ,visible.y);
+    x = Math.min(x ,visible.x + visible.width - component.getWidth());
+    y = Math.min(y ,visible.y + visible.height - component.getHeight());
+
+    component.setLocation(x,y);
   }
 
 	public CodeHelperPane getCodeHelperPane() {
