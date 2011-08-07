@@ -170,7 +170,7 @@ public class SCEDocumentRows {
     synchronized (row) {
       if (column_nr <= 0) return new SCEDocumentPosition(row, column_nr);
       if (column_nr >= row.length) {
-        return new SCEDocumentPosition(row, column_nr - row.length + 1);
+        return new SCEDocumentPosition(row.chars[Math.max(0,row.length-1)], 0, 1);
       }
 
       return new SCEDocumentPosition(row.chars[column_nr], 0, rel_column);

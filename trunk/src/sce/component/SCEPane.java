@@ -14,6 +14,7 @@ import java.awt.event.FocusListener;
 import java.awt.font.TextAttribute;
 import java.text.AttributedString;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ import java.util.List;
  */
 public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretListener, FocusListener {
 	/** Character type. */
-	enum CT { space, special, letter }
+	public enum CT { space, special, letter }
 	
   SourceCodeEditor sourceCodeEditor;
   /** Document. */
@@ -93,7 +94,10 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   private Dimension preferredSize = new Dimension(240, 320);
 
   // some characters
-  private String splitterChars = ",;.:!\"§$%&/()=?{[]}\\'´`+-*^°";
+  public static final String splitterCharsString = ",;.:!\"§$%&/()=?{[]}\\'´`+-*^°";
+  public static final HashSet<Character> splitterChars = new HashSet<Character>() {{
+    for(char c : splitterCharsString.toCharArray()) add(c);
+  }};
 
   /**
    * Code assistants that are informed about alt+enter events.
@@ -268,6 +272,9 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 
     // draw the caret
     if (hasFocus()) caret.paint(g);
+
+    // paint children
+    paintChildren(g);
   }
 
   /**
@@ -703,11 +710,14 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 	 * @return character type
 	 */
 	private CT getCharTypeAt(String text, int position) {
-		char c = text.charAt(position);
-		if (c == ' ') return CT.space;
-		if ((splitterChars.indexOf(text.charAt(position)) != -1)) return CT.special;
-		return CT.letter;
+		return getCharType(text.charAt(position));
 	}
+
+  public static CT getCharType(char c) {
+    if (c == ' ') return CT.space;
+    if ((splitterChars.contains(c))) return CT.special;
+    return CT.letter;
+  }
 
   /**
    * Finds the next splitter in the given direction.
@@ -795,6 +805,11 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     synchronized (textHighlights) {
       textHighlights.clear();
     }
+    removeAll();
+  }
+
+  public ArrayList<SCETextHighlight> getTextHighlights() {
+    return textHighlights;
   }
 
   /**

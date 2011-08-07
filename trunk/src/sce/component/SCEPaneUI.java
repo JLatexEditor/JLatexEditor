@@ -18,6 +18,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageFilter;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,6 +53,9 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
   private Cursor defaultCursor;
   private Cursor invisibleCursor;
   private boolean mouseIsVisible = true;
+
+  // text highlight
+  private SCETextHighlight overHighlight = null;
 
   public SCEPaneUI(SCEPane pane) {
     this.pane = pane;
@@ -722,12 +726,66 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
       pane.setCursor(defaultCursor);
       mouseIsVisible = true;
     }
+
+    SCEDocumentPosition position = pane.viewToModelRoundOff(e.getX(), e.getY());
+
+    SCETextHighlight currentOverHighlight = null; {
+      ArrayList<SCETextHighlight> highlights = pane.getTextHighlights();
+      synchronized (highlights) {
+        for(SCETextHighlight highlight : highlights) {
+          boolean over =
+            highlight.getStartPosition().compareTo(position) <= 0 &&
+            highlight.getEndPosition().compareTo(position) > 0;
+
+          if(over) {
+            currentOverHighlight = highlight;
+            break;
+          }
+        }
+      }
+    }
+
+    if(currentOverHighlight != overHighlight) {
+      if(overHighlight != null &&
+              (currentOverHighlight != null
+              || overHighlight.getStartPosition().getRow()-1 > position.getRow()
+              || overHighlight.getEndPosition().getRow()+1 < position.getRow()))
+      {
+        JComponent actionComponent = overHighlight.getActionComponent();
+        if(actionComponent != null) pane.remove(actionComponent);
+        overHighlight = null;
+      }
+
+      if(currentOverHighlight != null) {
+        overHighlight = currentOverHighlight;
+
+        JComponent actionComponent = overHighlight.getActionComponent();
+        if(actionComponent != null) {
+          Dimension size = actionComponent.getPreferredSize();
+
+
+          Point viewPos;
+          if(!overHighlight.isActionComponentAtEnd()) {
+            SCEPosition start = overHighlight.getStartPosition();
+            viewPos = pane.modelToView(start.getRow(), start.getColumn());
+            viewPos.x -= size.width;
+          } else {
+            SCEPosition end = overHighlight.getEndPosition();
+            viewPos = pane.modelToView(end.getRow(), end.getColumn());
+          }
+          viewPos.y -= (size.height - pane.getLineHeight()) / 2 + 1;
+
+          pane.add(actionComponent);
+          actionComponent.setSize(size);
+          actionComponent.setLocation(viewPos);
+        }
+      }
+    }
   }
 
 	public CodeHelperPane getCodeHelperPane() {
 		return codeHelperPane;
 	}
-
 
 	private static final ArrayList<WeakReference<SCEPane>> allPanes = new ArrayList<WeakReference<SCEPane>>();
 	private static final HashMap<KeyStroke, String> keyStrokeMap = new HashMap<KeyStroke, String>();

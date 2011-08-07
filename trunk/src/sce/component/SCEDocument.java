@@ -146,6 +146,10 @@ public class SCEDocument {
 		return rows.createDocumentPosition(row_nr, column_nr);
 	}
 
+  public SCEDocumentPosition createDocumentPosition(SCEPosition pos) {
+    return rows.createDocumentPosition(pos.getRow(), pos.getColumn());
+  }
+
   /**
    * Returns a document position.
    *
@@ -156,6 +160,10 @@ public class SCEDocument {
    */
   public SCEDocumentPosition createDocumentPosition(int row_nr, int column_nr, int rel_column) {
     return rows.createDocumentPosition(row_nr, column_nr, rel_column);
+  }
+
+  public SCEDocumentPosition createDocumentPosition(SCEPosition pos, int rel_column) {
+    return rows.createDocumentPosition(pos.getRow(), pos.getColumn(), rel_column);
   }
 
   /**

@@ -235,6 +235,8 @@ public class SCECaret extends SCEPosition implements ActionListener {
 
     Rectangle caretRect = getCaretRectangle();
     g.fillRect(caretRect.x, caretRect.y, caretRect.width, caretRect.height);
+
+    g.setPaintMode();
   }
 
   // ActionListener methods
