@@ -4,6 +4,7 @@
 
 package sce.component;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class SCETextHighlight {
@@ -11,6 +12,9 @@ public class SCETextHighlight {
   private SCEPosition startPosition;
   private SCEPosition endPosition;
   private Color color;
+
+  private JComponent actionComponent;
+  private boolean actionComponentAtEnd;
 
   /**
    * Creates a text highlight.
@@ -21,9 +25,15 @@ public class SCETextHighlight {
    * @param color         the color
    */
   public SCETextHighlight(SCEPane pane, SCEPosition startPosition, SCEPosition endPosition, Color color) {
+    this(pane, startPosition, endPosition, color, null, false);
+  }
+
+  public SCETextHighlight(SCEPane pane, SCEPosition startPosition, SCEPosition endPosition, Color color, JComponent actionComponent, boolean actionComponentAtEnd) {
     this.startPosition = startPosition;
     this.endPosition = endPosition;
     this.color = color;
+    this.actionComponent = actionComponent;
+    this.actionComponentAtEnd = actionComponentAtEnd;
   }
 
   /**
@@ -51,6 +61,25 @@ public class SCETextHighlight {
    */
   public Color getColor() {
     return color;
+  }
+
+  /**
+   * Action component.
+   */
+  public JComponent getActionComponent() {
+    return actionComponent;
+  }
+
+  public void setActionComponent(JComponent actionComponent) {
+    this.actionComponent = actionComponent;
+  }
+
+  public boolean isActionComponentAtEnd() {
+    return actionComponentAtEnd;
+  }
+
+  public void setActionComponentAtEnd(boolean actionComponentAtEnd) {
+    this.actionComponentAtEnd = actionComponentAtEnd;
   }
 
   /**

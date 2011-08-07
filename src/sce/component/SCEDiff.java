@@ -1,6 +1,7 @@
 package sce.component;
 
 import jlatexeditor.SCEManager;
+import sce.codehelper.WordWithPos;
 import util.diff.Diff;
 import util.diff.levenstein.Modification;
 import util.diff.levenstein.TokenList;
@@ -12,6 +13,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,7 +24,8 @@ public class SCEDiff extends JPanel implements ComponentListener, PropertyChange
 
   public static Color COLOR_ADD = new Color(189, 238, 192);
   public static Color COLOR_REMOVE = new Color(191, 190, 239);
-  public static Color COLOR_CHANGE = new Color(237, 191, 188);
+  public static Color COLOR_CHANGE = new Color(237, 171, 164); // new Color(237, 191, 188);
+  public static Color COLOR_CHANGE_BRIGHT = new Color(247, 226, 224);
 
   private Point location = new Point();
 
@@ -52,6 +55,9 @@ public class SCEDiff extends JPanel implements ComponentListener, PropertyChange
   private List<Modification<String>> modifications = null;
   private double[] line2Pane;
   private double[] line2Diff;
+
+  private Updater updater;
+  private Timer updateTimer;
 
   public SCEDiff(String leftTitle, final SCEPane left, String rightTitle, String rightText, SCEMarkerBar markerBar) {
     setLayout(new BorderLayout());
@@ -132,6 +138,36 @@ public class SCEDiff extends JPanel implements ComponentListener, PropertyChange
         updateLayout(true);
       }
     });
+
+    updater = new Updater();
+    left.getDocument().addSCEDocumentListener(updater);
+    right.getDocument().addSCEDocumentListener(updater);
+    updateTimer = new Timer(500, updater);
+    updateTimer.start();
+  }
+
+  private class Updater implements ActionListener, SCEDocumentListener {
+    private boolean needsUpdate = false;
+    private boolean changed = false;
+
+    public void actionPerformed(ActionEvent e) {
+      if(changed) {
+        needsUpdate = true;
+        changed = false;
+      } else {
+        if(needsUpdate) {
+          updateDiff();
+          needsUpdate = false;
+        }
+      }
+    }
+
+    /**
+     * DocumentListener.
+     */
+    public void documentChanged(SCEDocument sender, SCEDocumentEvent event) {
+      changed = true;
+    }
   }
 
   public int getVirtualLines() {
@@ -299,12 +335,14 @@ public class SCEDiff extends JPanel implements ComponentListener, PropertyChange
     }
 
     left.removeAllRowHighlights();
+    left.removeAllTextHighlights();
     right.removeAllRowHighlights();
+    right.removeAllTextHighlights();
     for (Modification modification : modifications) {
       Color color = null;
       if (modification.getType() == Modification.TYPE_ADD) color = COLOR_ADD;
       if (modification.getType() == Modification.TYPE_REMOVE) color = COLOR_REMOVE;
-      if (modification.getType() == Modification.TYPE_CHANGED) color = COLOR_CHANGE;
+      if (modification.getType() == Modification.TYPE_CHANGED) color = COLOR_CHANGE_BRIGHT;
 
       int sourceStart = modification.getSourceStartIndex();
       int sourceEnd = sourceStart + modification.getSourceLength();
@@ -323,9 +361,121 @@ public class SCEDiff extends JPanel implements ComponentListener, PropertyChange
       if (targetEnd == targetStart) {
         left.addRowHighlight(new SCERowHighlight(left, targetStart, color, true, true, true));
       }
+
+      // detailed comparison for changes
+      if (modification.getType() == Modification.TYPE_CHANGED) {
+        ArrayList<WordWithPos> rightWords = getWords(right.getDocument(), sourceStart, sourceEnd);
+        ArrayList<WordWithPos> leftWords = getWords(left.getDocument(), targetStart, targetEnd);
+
+        List<Modification<String>> detailedMods = Diff.diff(words2string(rightWords), words2string(leftWords));
+        for (Modification mod : detailedMods) {
+          int type = 0;
+          switch (mod.getType()) {
+            case Modification.TYPE_ADD :
+              color = COLOR_ADD;
+              type = ActionComponent.TYPE_CROSS;
+              break;
+            case Modification.TYPE_REMOVE :
+              color = COLOR_REMOVE;
+              type = ActionComponent.TYPE_LEFT;
+              break;
+            case Modification.TYPE_CHANGED :
+              color = COLOR_CHANGE;
+              type = ActionComponent.TYPE_LEFT;
+              break;
+          }
+
+          SCEDocumentRange leftRange = getRange(left.getDocument(), leftWords, mod.getTargetStartIndex(), mod.getTargetLength());
+          SCEDocumentRange rightRange = getRange(right.getDocument(), rightWords, mod.getSourceStartIndex(), mod.getSourceLength());
+
+          if(mod.getSourceLength() > 0) {
+            right.addTextHighlight(new SCETextHighlight(
+                    right, rightRange.getStartPos(), rightRange.getEndPos(), color,
+                    new ActionComponent(type, new Color(173,206,249), new Color(64,64,64), this, right, rightRange, left, leftRange), false));
+          }
+
+          if(mod.getTargetLength() > 0) {
+            if(type == ActionComponent.TYPE_LEFT) type = ActionComponent.TYPE_RIGHT;
+
+            left.addTextHighlight(new SCETextHighlight(
+                    left, leftRange.getStartPos(), leftRange.getEndPos(), color,
+                    new ActionComponent(type, new Color(173,206,249), new Color(64,64,64), this, left, leftRange, right, rightRange), true));
+          }
+        }
+      }
     }
 
     invalidate();
+    repaint();
+  }
+
+  private ArrayList<WordWithPos> getWords(SCEDocument document, int startRow, int endRow) {
+    ArrayList<WordWithPos> words = new ArrayList<WordWithPos>();
+
+    for(int rowNr = startRow; rowNr < endRow; rowNr++) {
+      getWords(document.getRowsModel().getRows()[rowNr], words);
+    }
+
+    return words;
+  }
+
+  private static final String STRING_NL = "\n";
+  private void getWords(SCEDocumentRow row, ArrayList<WordWithPos> words) {
+    synchronized (row) {
+      String rowString = row.toString();
+
+      if(row.length > 0) {
+        int startIndex = 0;
+        SCEPane.CT charType = SCEPane.getCharType(rowString.charAt(0));
+
+        for(int charNr = 1; charNr < row.length; charNr++) {
+          char c = rowString.charAt(charNr);
+          SCEPane.CT type = SCEPane.getCharType(c);
+          if(type != SCEPane.CT.letter || charType != type) {
+            words.add(new WordWithPos(rowString.substring(startIndex, charNr), row.row_nr, startIndex));
+            startIndex = charNr;
+            charType = type;
+          }
+        }
+        words.add(new WordWithPos(rowString.substring(startIndex), row.row_nr, startIndex));
+      }
+
+      words.add(new WordWithPos(STRING_NL, row.row_nr, row.length));
+    }
+  }
+
+  private String[] words2string(ArrayList<WordWithPos> words) {
+    String[] lines = new String[words.size()];
+    for(int wordNr = 0; wordNr < words.size(); wordNr++) {
+      String w = words.get(wordNr).word;
+      lines[wordNr] = w == STRING_NL ? "LINE_BREAK" : w;
+    }
+    return lines;
+  }
+
+  private SCEDocumentRange getRange(SCEDocument doc, ArrayList<WordWithPos> words, int start, int length) {
+    SCEDocumentPosition posStart;
+    if(start < words.size()) {
+      posStart = doc.createDocumentPosition(words.get(start).getStartPos());
+    } else {
+      if(words.size() != 0) {
+        posStart = doc.createDocumentPosition(words.get(words.size()-1).getEndPos(), 1);
+      } else {
+        posStart = doc.createDocumentPosition(0,0);
+      }
+    }
+
+    SCEDocumentPosition posEnd = posStart;
+    if(length > 0) {
+      WordWithPos word = words.get(start+length-1);
+      if(word.word == STRING_NL) {
+        posEnd = doc.createDocumentPosition(word.getEndPos().getRow()+1, 0);
+      } else {
+        posEnd = doc.createDocumentPosition(word.getEndPos());
+      }
+    }
+
+    return new SCEDocumentRange(posStart, posEnd);
   }
 
   public SCEPane getTextPane() {
@@ -391,9 +541,14 @@ public class SCEDiff extends JPanel implements ComponentListener, PropertyChange
     }
   }
 
-  private class SCEDiffDivider extends BasicSplitPaneDivider {
+  private class SCEDiffDivider extends BasicSplitPaneDivider implements MouseListener, MouseMotionListener {
+    private ArrayList<ActionComponent> actions = new ArrayList<ActionComponent>();
+
     public SCEDiffDivider(BasicSplitPaneUI basicSplitPaneUI) {
       super(basicSplitPaneUI);
+
+      addMouseListener(this);
+      addMouseMotionListener(this);
     }
 
     public void paint(Graphics graphics) {
@@ -411,6 +566,7 @@ public class SCEDiff extends JPanel implements ComponentListener, PropertyChange
       int diffFirstRow = SCEDiff.this.right.viewToModel(0, diffOffsetY).getRow();
       int visibleRows = SCEDiff.this.left.getVisibleRowsCount() + 1;
 
+      actions.clear();
       int[] xpoints = new int[]{left-5, left + 20, right - 20, right+5, right+5, right - 20, left + 20, left-5};
       int[] ypoints = new int[8];
       for (Modification modification : modifications) {
@@ -442,17 +598,19 @@ public class SCEDiff extends JPanel implements ComponentListener, PropertyChange
         ypoints[6] = paneYEnd-2;
         ypoints[7] = paneYEnd-2;
 
+        Color color = Color.WHITE;
         switch (modification.getType()) {
           case Modification.TYPE_ADD:
-            g.setColor(COLOR_ADD);
+            color = COLOR_ADD;
             break;
           case Modification.TYPE_REMOVE:
-            g.setColor(COLOR_REMOVE);
+            color = COLOR_REMOVE;
             break;
           case Modification.TYPE_CHANGED:
-            g.setColor(COLOR_CHANGE);
+            color = COLOR_CHANGE;
             break;
         }
+        g.setColor(color);
         g.fillPolygon(xpoints, ypoints, 8);
 
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -460,35 +618,246 @@ public class SCEDiff extends JPanel implements ComponentListener, PropertyChange
         g.setColor(Color.GRAY);
         g.drawPolygon(xpoints, ypoints, 8);
 
-        Stroke stroke = g.getStroke();
-        g.setStroke(new BasicStroke(2));
+        SCEPane leftPane = SCEDiff.this.left;
+        SCEPane rightPane = SCEDiff.this.right;
+        SCEDocument leftDoc = leftPane.getDocument();
+        SCEDocument rightDoc = rightPane.getDocument();
+        SCEDocumentRange leftRange = new SCEDocumentRange(
+                leftDoc.createDocumentPosition(targetStart, 0),
+                leftDoc.createDocumentPosition(targetStart+targetLength, 0)
+        );
+        SCEDocumentRange rightRange = new SCEDocumentRange(
+                leftDoc.createDocumentPosition(sourceStart, 0),
+                leftDoc.createDocumentPosition(sourceStart+sourceLength, 0)
+        );
+
         switch (modification.getType()) {
           case Modification.TYPE_ADD: {
-            g.setColor(COLOR_ADD.darker());
-            int x = xpoints[0] + 16;
-            int y = ypoints[0] + SCEDiff.this.left.getLineHeight()/2;
-            g.drawLine(x-4,y-4,x+4,y+4);
-            g.drawLine(x-4,y+4,x+4,y-4);
+            ActionComponent component = new ActionComponent(ActionComponent.TYPE_CROSS, null, color.darker(), SCEDiff.this, leftPane, leftRange, rightPane, rightRange);
+            component.setLocation(xpoints[0] + 7, ypoints[0] - 1);
+            component.drawAtLocation(g);
+            actions.add(component);
             break;
           }
           case Modification.TYPE_REMOVE: {
-            g.setColor(COLOR_REMOVE.darker());
-            int x = xpoints[3] - 17;
-            int y = ypoints[3] + SCEDiff.this.left.getLineHeight()/2;
-            g.drawLine(x+6,y,x-4,y);
-            g.drawLine(x,y+4,x-4,y);
-            g.drawLine(x,y-4,x-4,y);
+            ActionComponent component = new ActionComponent(ActionComponent.TYPE_LEFT, null, color.darker(), SCEDiff.this, rightPane, rightRange, leftPane, leftRange);
+            component.setLocation(xpoints[3] - 25, ypoints[3]);
+            component.drawAtLocation(g);
+            actions.add(component);
             break;
           }
           case Modification.TYPE_CHANGED: {
-            g.setColor(COLOR_CHANGE.darker());
+            ActionComponent component = new ActionComponent(ActionComponent.TYPE_LEFT, null, color.darker(), SCEDiff.this, rightPane, rightRange, leftPane, leftRange);
+            component.setLocation(xpoints[3] - 25, ypoints[3]);
+            component.drawAtLocation(g);
+            actions.add(component);
+
+            component = new ActionComponent(ActionComponent.TYPE_RIGHT, null, color.darker(), SCEDiff.this, leftPane, leftRange, rightPane, rightRange);
+            component.setLocation(xpoints[0] + 7, ypoints[0]-1);
+            component.drawAtLocation(g);
+            actions.add(component);
             break;
           }
         }
-        g.setStroke(stroke);
 
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
       }
+    }
+
+    /**
+     * MouseListener.
+     */
+    public void mouseClicked(MouseEvent e) {
+    }
+
+    public void mousePressed(MouseEvent e) {
+      Point p = e.getPoint();
+      for(ActionComponent component : actions) {
+        if(component.contains(p.x - component.getX(), p.y - component.getY())) {
+          component.mousePressed(e);
+        }
+      }
+    }
+
+    public void mouseReleased(MouseEvent e) {
+    }
+
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    public void mouseExited(MouseEvent e) {
+    }
+
+    /**
+     * MouseMotionListener.
+     */
+    public void mouseDragged(MouseEvent e) {
+    }
+
+    public void mouseMoved(MouseEvent e) {
+      Point p = e.getPoint();
+      for(ActionComponent component : actions) {
+        if(component.contains(p.x - component.getX(), p.y - component.getY())) {
+          setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+          return;
+        }
+      }
+      setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
+    }
+  }
+
+  public static class ActionComponent extends JPanel implements MouseMotionListener, MouseListener {
+    public static final int TYPE_LEFT = 0;
+    public static final int TYPE_RIGHT = 1;
+    public static final int TYPE_CROSS = 2;
+
+    private Dimension preferredSize;
+    private int type;
+    private Color background;
+    private Color foreground;
+
+    private SCEDiff diff;
+    private SCEPane from;
+    private SCEDocumentRange fromRange;
+    private SCEPane to;
+    private SCEDocumentRange toRange;
+
+    public ActionComponent(int type, Color background, Color foreground, SCEDiff diff, SCEPane from, SCEDocumentRange fromRange, SCEPane to, SCEDocumentRange toRange) {
+      this.type = type;
+      this.diff = diff;
+      this.from = from;
+      this.fromRange = fromRange;
+      this.to = to;
+      this.toRange = toRange;
+
+      this.background = background;
+      this.foreground = foreground;
+
+      preferredSize = new Dimension(17,17);
+      setSize(preferredSize);
+
+      addMouseMotionListener(this);
+      addMouseListener(this);
+    }
+
+    public Dimension getPreferredSize() {
+      return preferredSize;
+    }
+
+    public void paint(Graphics graphics) {
+      Graphics2D g = (Graphics2D) graphics;
+
+      g.setColor(background);
+      g.fillRect(0,0,getWidth(),getHeight());
+      g.setColor(Color.GRAY);
+      g.drawRect(0,0,getWidth()-1,getHeight()-1);
+
+      drawAt(g, getWidth()/2, getHeight()/2);
+    }
+
+    public void drawAtLocation(Graphics2D g) {
+      drawAt(g, getX() + getWidth()/2, getY() + getHeight()/2);
+    }
+
+    public void drawAt(Graphics2D g, int x, int y) {
+      switch (type) {
+        case TYPE_LEFT : drawArrowLeft(g, foreground, x, y); break;
+        case TYPE_RIGHT : drawArrowRight(g, foreground, x, y); break;
+        case TYPE_CROSS : drawCross(g, foreground, x, y); break;
+      }
+    }
+
+    public static void drawArrowLeft(Graphics2D g, Color color, int x, int y) {
+      g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      g.setColor(color);
+
+      Stroke stroke = g.getStroke();
+      g.setStroke(new BasicStroke(2));
+
+      g.drawLine(x+6,y,x-4,y);
+      g.drawLine(x,y+4,x-4,y);
+      g.drawLine(x,y-4,x-4,y);
+
+      g.setStroke(stroke);
+
+      g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+    }
+
+    public static void drawArrowRight(Graphics2D g, Color color, int x, int y) {
+      g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      g.setColor(color);
+
+      Stroke stroke = g.getStroke();
+      g.setStroke(new BasicStroke(2));
+
+      g.drawLine(x-6,y,x+4,y);
+      g.drawLine(x,y-4,x+4,y);
+      g.drawLine(x,y+4,x+4,y);
+
+      g.setStroke(stroke);
+
+      g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+    }
+
+    public static void drawCross(Graphics2D g, Color color, int x, int y) {
+      g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      g.setColor(color);
+
+      Stroke stroke = g.getStroke();
+      g.setStroke(new BasicStroke(2));
+
+      g.drawLine(x-4,y-4,x+4,y+4);
+      g.drawLine(x-4,y+4,x+4,y-4);
+
+      g.setStroke(stroke);
+
+      g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+    }
+
+    /**
+     * MouseMotionListener.
+     */
+    public void mouseDragged(MouseEvent e) {
+    }
+
+    public void mouseMoved(MouseEvent e) {
+      e.consume();
+    }
+
+    /**
+     * MouseListener.
+     */
+    public void mouseClicked(MouseEvent e) {
+    }
+
+    public void mousePressed(MouseEvent e) {
+      if(type != TYPE_CROSS) {
+        String string = from.getDocument().getText(fromRange.getStartPos(), fromRange.getEndPos());
+
+        SCEDocument toDoc = to.getDocument();
+        boolean editable = toDoc.isEditable();
+        toDoc.setEditable(true);
+        toDoc.replace(toRange.getStartPos(), toRange.getEndPos(), string);
+        toDoc.setEditable(editable);
+      } else {
+        from.getDocument().remove(fromRange);
+      }
+      setVisible(false);
+
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          diff.updateDiff();
+        }
+      });
+    }
+
+    public void mouseReleased(MouseEvent e) {
+    }
+
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    public void mouseExited(MouseEvent e) {
     }
   }
 
@@ -499,6 +868,10 @@ public class SCEDiff extends JPanel implements ComponentListener, PropertyChange
     left.removeKeyListener(paneKeyListener);
     right.removeKeyListener(diffKeyListener);
     removeComponentListener(this);
+
+    updateTimer.stop();
+    left.getDocument().removeSCEDocumentListener(updater);
+    right.getDocument().removeSCEDocumentListener(updater);
 
     leftViewport.setView(null);
     rightViewport.setView(null);

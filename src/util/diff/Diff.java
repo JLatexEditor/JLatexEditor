@@ -21,6 +21,10 @@ public class Diff {
     String[] lines1 = ArrayUtil.toArray(lines(text1));
     String[] lines2 = ArrayUtil.toArray(lines(text2));
 
+    return diffPlain(lines1, lines2);
+  }
+
+  public static String diffPlain(String[] lines1, String[] lines2) {
     GnuDiff diff = new GnuDiff(lines1, lines2);
     GnuDiff.change changeScript = diff.diff_2(false);
     DiffPrint.Base printer = new DiffPrint.NormalPrint(lines1,lines2);
@@ -33,6 +37,10 @@ public class Diff {
 
   public static List<Modification<String>> diff(String text1, String text2) {
     return SystemDiff.parse(lines(diffPlain(text1,text2)));
+  }
+
+  public static List<Modification<String>> diff(String[] lines1, String[] lines2) {
+    return SystemDiff.parse(lines(diffPlain(lines1,lines2)));
   }
 
   public static ArrayList<String> lines(String text) {
