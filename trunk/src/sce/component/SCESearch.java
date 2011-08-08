@@ -286,10 +286,10 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
       results.clear();
 	    searchPositions.clear();
 	    if (GProperties.getBoolean("editor.clear_selection_when_closing_search")) {
-	      document.clearSelection();
+	      pane.clearSelection();
 	    } else {
-        // TODO: SCERange not compatible with SCEDocumentRange
-        // if(selection != null) document.setSelectionRange(selection, false);
+         // TODO: SCERange not compatible with SCEDocumentRange
+        if(selection != null) document.setSelectionRange(selection, true);
         pane.repaint();
       }
     }
