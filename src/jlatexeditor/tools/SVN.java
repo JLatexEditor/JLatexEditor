@@ -118,7 +118,7 @@ public class SVN {
     while ((line = in.readLine()) != null) {
       char c = line.charAt(0);
       if (line.charAt(1) == ' ') {
-        int serverStatus = line.charAt(7) == '*' ? StatusResult.SERVER_OUTDATED : StatusResult.SERVER_UP_TO_DATE;
+        int serverStatus = line.substring(0,10).indexOf('*') >= 0 ? StatusResult.SERVER_OUTDATED : StatusResult.SERVER_UP_TO_DATE;
 
         String revisionAndFile = line.substring(8).trim();
         int spaceIndex = revisionAndFile.indexOf(' ');
