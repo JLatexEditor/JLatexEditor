@@ -159,7 +159,7 @@ public class SCECaret extends SCEPosition implements ActionListener {
 	  } else {
 		  // remove selection
 		  if (document.hasSelection()) {
-				document.clearSelection();
+				pane.clearSelection();
 				pane.repaint();
 		  }
 		  setSelectionMark();

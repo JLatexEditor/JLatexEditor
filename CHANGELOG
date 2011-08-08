@@ -8,12 +8,15 @@ New Features and other Changes in JLatexEditor
 
 == Coming in Version 0.2.3 ==
 
+* new features
+  - take over / reject changes in diff view
 * minor enhancements
   - search is automatically limited to selection range if selection is spanning at least one line
   - the depth of the awesome deep bracket matching can now be configured (editor.bracket_matching.depth)
   - double click on a bracket now selects the whole block
   - improved latex output parser (recognition of nested errors)
 * bug fixes:
+	- fixed broken notification of available svn updates
   - some minor bugs
 
 
