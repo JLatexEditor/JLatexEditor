@@ -1216,6 +1216,8 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 			checkExternalModification(false);
 			statusBar.showMessage("SVN update", builder.toString());
 			statusBar.setUpdatesAvailableVisible(false);
+
+
 		} else
 		// svn commit
 		if (action.equals("svn commit")) {

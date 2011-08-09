@@ -9,7 +9,6 @@ import sce.syntaxhighlighting.BracketHighlighting;
 import util.StreamUtils;
 
 import javax.swing.*;
-import javax.swing.text.Document;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -101,6 +100,8 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
     textPane.getCaret().moveTo(0, 0, false);
     textPane.getUndoManager().clear();
     textPane.getDocument().setModified(false);
+
+    openDiffIfConflicts();
   }
 
   public File getFile() {
@@ -111,6 +112,8 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
     String text = makeEditorConform(resource.getContent());
     textPane.setText(text);
     textPane.getDocument().setModified(false);
+
+    openDiffIfConflicts();
   }
 
   public boolean isDiffView() {
@@ -135,6 +138,52 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
     diff.updateLayout(true);
     markerBar.repaint();
     validate();
+  }
+
+  /**
+   * Opens the diff view if SVN conflicts are found.
+   */
+  public void openDiffIfConflicts() {
+    // check for conflict
+    SCEDocumentRows rows = getTextPane().getDocument().getRowsModel();
+
+    boolean hasOpening = false, hasMiddle = false, hasClosing = false;
+    for(int rowNr = 0; rowNr < rows.getRowsCount(); rowNr++) {
+      String prefix = rows.getRowAsString(rowNr, 0, 8);
+      if(!hasOpening) if(prefix.equals("<<<<<<< ")) { hasOpening = true; } else continue;
+      if(!hasMiddle) if(prefix.equals("=======")) { hasMiddle = true; } else continue;
+      if(prefix.equals(">>>>>>> ")) { hasClosing = true; break; }
+    }
+
+    if(!hasOpening || !hasMiddle || !hasClosing) return;
+
+    boolean inLeft = true; // outside of conflict or in left part
+    boolean inRight = true; // outside of conflict or in right part
+    boolean firstLeft = true;
+    boolean firstRight = true;
+    StringBuilder left = new StringBuilder();
+    StringBuilder right = new StringBuilder();
+    for(int rowNr = 0; rowNr < rows.getRowsCount(); rowNr++) {
+      String line = rows.getRowAsString(rowNr);
+      if(inLeft && inRight && line.startsWith("<<<<<<< ")) { inRight = false; continue; }
+      if(!inRight && line.equals("=======")) { inLeft = false; inRight = true; continue; }
+      if(!inLeft && line.startsWith(">>>>>>> ")) { inLeft = true; continue; }
+
+      if(inLeft) {
+        if(!firstLeft) left.append("\n");
+        firstLeft = false;
+        left.append(line);
+      }
+
+      if(inRight) {
+        if(!firstRight) right.append("\n");
+        firstRight = false;
+        right.append(line);
+      }
+    }
+
+    setText(left.toString());
+    diffView("Remote Version with Conflicts", right.toString());
   }
 
   public void closeDiffView() {
