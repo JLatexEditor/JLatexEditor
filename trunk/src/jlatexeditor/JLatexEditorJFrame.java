@@ -30,7 +30,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.plaf.PanelUI;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.awt.event.*;
@@ -292,7 +291,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
       }
     }};
     settingsMenu.add(forwardSearch);
-    // settingsMenu.add(createMenuItem("Template Editor", "template editor", 'T'));
+    settingsMenu.add(createMenuItem("Template Editor", "template editor", 'T'));
 		// TODO
     // settingsMenu.add(createMenuItem("Quick Setup Wizard", "wizard", 'W'));
     settingsMenu.add(createMenuItem("Global Settings", "global settings", 'G'));
