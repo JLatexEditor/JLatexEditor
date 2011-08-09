@@ -9,7 +9,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class TemplateEditor extends JDialog {
+public class TemplateEditorOld extends JDialog {
   private ArrayList<CHCommand> commands;
 
   private DefaultListModel commandListModel = new DefaultListModel();
@@ -19,7 +19,7 @@ public class TemplateEditor extends JDialog {
   private DefaultTableModel attributesTableModel = new DefaultTableModel();
   private JTable attributesTable = new JTable(attributesTableModel);
 
-  public TemplateEditor(JFrame owner) {
+  public TemplateEditorOld(JFrame owner) {
     super(owner, "Template Editor");
 
     Container cp = getContentPane();
