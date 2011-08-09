@@ -16,6 +16,8 @@
 \usetikzlibrary{arrows,automata,backgrounds,calc,chains,fadings,folding,decorations.fractals,decorations.pathreplacing,fit,patterns,positioning,mindmap,shadows,shapes.geometric,shapes.symbols,through,trees,plotmarks}
 
 \definecolor{mblue}{RGB}{163,201,247}
+\definecolor{mgreen}{RGB}{163,247,201}
+\definecolor{mred}{RGB}{247,181,163}
 \definecolor{background}{RGB}{238,238,238}
 
 \newcommand{\button}[1]{
