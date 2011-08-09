@@ -10,5 +10,6 @@ public interface SCEManagerInteraction {
   public SourceCodeEditor<Doc> getMainEditor();
 
   public SourceCodeEditor<Doc> open(Doc doc);
+	public SourceCodeEditor<Doc> open(Doc doc, boolean selectTab);
   public SourceCodeEditor<Doc> open(Doc doc, int lineNr);
 }

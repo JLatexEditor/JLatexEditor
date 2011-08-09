@@ -4,9 +4,7 @@ import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
 import sce.component.SCEDocument;
 import sce.quickhelp.QuickHelp;
-import util.ProcessUtil;
 import util.StreamUtils;
-import util.SystemUtils;
 
 import java.io.*;
 import java.net.URL;
@@ -33,11 +31,12 @@ public class LatexQuickHelp implements QuickHelp {
   /**
    * Regular expression to extract commands from HTML pages.
    */
-  static final Pattern htmlCommandsPattern = Pattern.compile("<li>.*<a href=\"([^\"]+)\">(.*)</a>.*</li>");
+  static final Pattern htmlComEnvPattern = Pattern.compile("<li>.*<a href=\"([^\"]+)\">(.*)</a>.*</li>");
 	/**
 	 * PatternPair to find command under cursor.
 	 */
   static final PatternPair commandPattern = new PatternPair("(\\\\\\w*)", "(\\w*)");
+  static final PatternPair envPattern = new PatternPair("\\\\begin\\{(\\w*)", "(\\w*)\\}");
 
   /**
    * Source code.
@@ -51,7 +50,7 @@ public class LatexQuickHelp implements QuickHelp {
   /**
    * Quick help commands -> html file.
    */
-  Hashtable<String, String> commands = new Hashtable<String, String>();
+  Hashtable<String, String> comEnvs = new Hashtable<String, String>();
 
   public LatexQuickHelp(String directory) {
     this.directory = directory;
@@ -61,7 +60,7 @@ public class LatexQuickHelp implements QuickHelp {
 	  // Open the table of contents
     String toc_file = directory + "ltx-2.html";
 
-	  commands.put("<empty>", "empty.html");
+	  comEnvs.put("<empty>", "empty.html");
 
     BufferedReader reader;
     try {
@@ -75,7 +74,7 @@ public class LatexQuickHelp implements QuickHelp {
     try {
       String line;
       while ((line = reader.readLine()) != null) {
-        Matcher matcher = htmlCommandsPattern.matcher(line);
+        Matcher matcher = htmlComEnvPattern.matcher(line);
         if (matcher.find()) {
           String file = matcher.group(1);
           String command = matcher.group(2);
@@ -83,7 +82,7 @@ public class LatexQuickHelp implements QuickHelp {
           // exclude some non commands
           if (!command.toLowerCase().equals(command)) continue;
 
-          commands.put(command, file);
+          comEnvs.put(command, file);
         }
       }
     } catch (IOException e) {
@@ -111,27 +110,32 @@ public class LatexQuickHelp implements QuickHelp {
   }
 
   /**
-   * Returns the path for the help file.
+   * Returns the path to the help file.
    *
-   * @param command the command
-   * @return the help file
+   * @param element element to help on
+   * @return help file
    */
-  public String getHelpUrl(String command) {
-	  if (command == null) return null;
+  public String getHelpUrl(Element element) {
+	  if (element == null) return null;
 
-    String fileName = commands.get(command);
-    if (fileName == null) fileName = commands.get("<empty>");
+	  String fileName = null;
+	  switch (element.type) {
+		  case command:
+			  fileName = comEnvs.get(element.name);
+				break;
+	  }
+    if (fileName == null) fileName = comEnvs.get("<empty>");
 	  // if (fileName == null) return null;
 
     URL url = StreamUtils.getURL(directory + fileName);
     if (url == null) return null;
 
-    return "help:" + url.toString() + "#" + command;
+    return "help:" + url.toString() + "#" + element.name;
   }
 
   public String getHelpUrlAt(int row, int column) {
     String command = findCommand(row, column);
-    return getHelpUrl(command);
+    return getHelpUrl(new Element(Element.Type.command, command));
   }
 
 	public void setDocument(SCEDocument document) {
@@ -139,9 +143,21 @@ public class LatexQuickHelp implements QuickHelp {
   }
 
   /**
-   * Returns a enumeration for all commands.
+   * Returns an enumeration with all command and environment names extracted from the help pages.
    */
-  public Enumeration<String> getCommands() {
-    return commands.keys();
+  public Enumeration<String> getComEnvs() {
+    return comEnvs.keys();
   }
+
+	public static class Element {
+		enum Type { command, environment, docclass, pack }
+
+		public Type type;
+		public String name;
+
+		public Element(Type type, String name) {
+			this.type = type;
+			this.name = name;
+		}
+	}
 }

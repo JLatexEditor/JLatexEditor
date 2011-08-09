@@ -11,8 +11,6 @@ import java.net.URL;
  * @author Stefan Endrullis
  */
 public interface QuickHelp {
-  public String getHelpUrl(String command);
-
   public String getHelpUrlAt(int row, int column);
 
   public void setDocument(SCEDocument document);
