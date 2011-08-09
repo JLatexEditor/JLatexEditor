@@ -142,8 +142,8 @@ public class GProperties {
 	  properties.addEntry(new Def("editor.auto_indentation.after_begin", BOOLEAN, "true"));
 	  properties.addEntry(new Def("editor.auto_indentation.after_item", BOOLEAN, "true"));
 	  properties.addEntry(new Def("editor.auto_indentation.after_opening_brace", BOOLEAN, "true"));
-	  properties.addEntry(new Comment(" Clear selection"));
-	  properties.addEntry(new Def("editor.clear_selection_when_closing_search", BOOLEAN, "true"));
+	  properties.addEntry(new Comment(" Clear, reset, or keep selection when closing search"));
+	  properties.addEntry(new Def("editor.when_closing_search", new PSet("keep selection", "reset selection", "clear selection"), "reset selection"));
     properties.addEntry(new Comment(" Bracket matching"));
     properties.addEntry(new Def("editor.bracket_matching.depth", new PSet("1", "2", "3", "4", "5", "6"), "2"));
 
