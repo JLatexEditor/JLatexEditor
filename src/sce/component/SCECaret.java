@@ -129,15 +129,25 @@ public class SCECaret extends SCEPosition implements ActionListener {
    */
   private void moveToVirt(int row, int column, boolean keepSelection, boolean updateVirtualColumn) {
     // remember the last position
-    int lastRow = getRow();
+    int lastRow    = getRow();
     int lastColumn = getColumn();
 
     showCursor(false);
 
 	  // set new position
-    int new_row = Math.max(Math.min(row, document.getRowsModel().getRowsCount() - 1), 0);
-    int new_column = Math.max(Math.min(column, document.getRowsModel().getRowLength(new_row)), 0);
-    position.setPosition(new_row, new_column);
+    int newRow    = row;
+	  int newColumn = column;
+	  if (newRow < 0) {
+		  newRow = 0;
+		  newColumn = 0;
+	  } else
+	  if (newRow >= document.getRowsModel().getRowsCount()) {
+		  newRow = document.getRowsModel().getRowsCount() - 1;
+		  newColumn = document.getRowsModel().getRowLength(newRow);
+	  } else {
+		  newColumn = Math.max(Math.min(newColumn, document.getRowsModel().getRowLength(newRow)), 0);
+	  }
+    position.setPosition(newRow, newColumn);
 
 	  // ensure we stay within edit range
 	  if (document.hasEditRange()) {
