@@ -150,8 +150,6 @@ public class PackageImportSuggester implements CodeAssistant, SCEPopup.ItemHandl
 		SourceCodeEditor<Doc> editor = jle.open(new Doc.FileDoc(new File(lastPackagePos.getFile())), false);
 		SCEPane pane = editor.getTextPane();
 
-		SourceCodeEditor<Doc> activeEditor = jle.getActiveEditor();
-
 		String usePackageString = "\\usepackage{" + packageName + "}\n";
 
 		pane.getDocument().insert(usePackageString, lastPackagePos.getLineNr() + 1, 0);
