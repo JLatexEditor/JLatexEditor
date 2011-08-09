@@ -280,6 +280,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
         selection = null;
       } else {
         selection = new SCEDocumentRange(selectionStart, selectionEnd);
+        pane.getCaret().moveTo(selectionStart, false);
         document.clearSelection();
       }
     } else {
@@ -613,7 +614,6 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
       input.setBackground(Color.WHITE);
 
       SCECaret caret = editor.getTextPane().getCaret();
-      boolean moveCaret = true;
 
       String search = input.getText();
       int length = search.length();
@@ -654,9 +654,6 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 	          selectionRange = processOccurrence(resultsTemp, document, markerBar, pane, caret, selectionRange, rowStart, columnStart, rowEnd, columnEnd);
           }
         }
-	      if (selection != null) {
-		      moveCaret = false;
-	      }
       } else {
         document.clearSelection();
       }
@@ -670,7 +667,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
         // set the selection
         if(selectionRange != null && setSelection) document.setSelectionRange(selectionRange, false);
 
-        if (move && moveCaret) next(true, true);
+        if (move) next(true, true);
       }
 
       markerBar.repaint();
