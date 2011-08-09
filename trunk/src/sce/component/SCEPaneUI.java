@@ -18,7 +18,6 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageFilter;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -371,12 +370,6 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
     }
   }
 
-  private void clearSelection() {
-    caret.removeSelectionMark();
-	  caret.setSelectionMark();
-    //pane.repaint();
-  }
-
   private void removeIndentation(int row) {
     String rowString = document.getRowsModel().getRowAsString(row);
     if (rowString.startsWith("  ")) {
@@ -587,12 +580,12 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
 
 	public void removeWordBeforeCaret() {
 		document.remove(pane.findSplitterPosition(caret.getRow(), caret.getColumn(), -1), caret);
-		clearSelection();
+		pane.clearSelection();
 	}
 
 	public void removeWordBehindCaret() {
 		document.remove(caret, pane.findSplitterPosition(caret.getRow(), caret.getColumn(), 1));
-		clearSelection();
+		pane.clearSelection();
 	}
 
 	public void complete() {

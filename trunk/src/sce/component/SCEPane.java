@@ -386,6 +386,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   public void clearSelection() {
     document.setSelectionRange(null, null, true);
     caret.removeSelectionMark();
+	  caret.setSelectionMark();
   }
 
   /**
