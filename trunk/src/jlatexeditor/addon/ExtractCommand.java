@@ -60,7 +60,7 @@ public class ExtractCommand extends AddOn {
 	}
 
 	private void declareCommand(JLatexEditorJFrame jle, BackgroundParser.FilePos lastCommandPos, String commandName, String templateText) {
-		SourceCodeEditor<Doc> editor = jle.getEditor(new Doc.FileDoc(new File(lastCommandPos.getFile())));
+		SourceCodeEditor<Doc> editor = jle.open(new Doc.FileDoc(new File(lastCommandPos.getFile())), false);
 		SCEPane pane = editor.getTextPane();
 
 		SourceCodeEditor<Doc> activeEditor = jle.getActiveEditor();
