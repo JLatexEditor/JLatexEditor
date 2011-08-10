@@ -15,9 +15,11 @@ New Features and other Changes in JLatexEditor
   - the depth of the awesome deep bracket matching can now be configured (editor.bracket_matching.depth)
   - double click on a bracket now selects the whole block
   - improved latex output parser (recognition of nested errors)
+  - general font size can be increased via main_window.font_scale_factor in global settings
 * bug fixes:
-	- fixed broken notification of available svn updates
-  - some minor bugs
+  - fixed broken notification of available svn updates
+  - fixed broken quick help in stable version
+  - some minor bug fixes
 
 
 == Version 0.2.2 ==
@@ -34,7 +36,7 @@ New Features and other Changes in JLatexEditor
 * minor enhancements:
   - code completion popups can be used by mouse
   - improved parsing of latex output
-  - allow to set interval for svn status checks (via check_for_svn_updates.interval in global.properties)
+  - allow to set interval for svn status checks (via check_for_svn_updates.interval in global settings)
 * bug fixes:
   - "Replace All" button is no longer disabled if no occurrence is selected
 
@@ -44,7 +46,7 @@ New Features and other Changes in JLatexEditor
 * minor enhancements:
   - colored highlighting of LaTeX errors and warnings in corresponding lists
   - continuous comments
-  - shortcut for completion (control+space) can be configure in global.settings
+  - shortcut for completion (control+space) can be configure in global settings
 * bug fixes:
   - fixed error in deb package which caused exceptions in open dialog
 
