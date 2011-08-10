@@ -13,6 +13,8 @@ public class SCETabbedPaneUI extends BasicTabbedPaneUI implements MouseListener,
   public static Color BORDER = new Color(90, 110, 133);
 
   private int BORDER_HEIGHT = 4;
+  private int TAB_HEIGHT = 0;
+  private boolean tabHeightScaled = false;
 
   private ImageIcon image_active_left;
   private ImageIcon image_active;
@@ -63,6 +65,8 @@ public class SCETabbedPaneUI extends BasicTabbedPaneUI implements MouseListener,
       e.printStackTrace();
     }
 
+    TAB_HEIGHT = image_active.getIconHeight() + BORDER_HEIGHT;
+
     tabbedPane.addMouseListener(this);
     tabbedPane.addMouseMotionListener(this);
 
@@ -74,7 +78,11 @@ public class SCETabbedPaneUI extends BasicTabbedPaneUI implements MouseListener,
   }
 
   protected int calculateTabHeight(int tabPlacement, int tabIndex, int fontHeight) {
-    return image_active.getIconHeight() + BORDER_HEIGHT;
+    // adjust height of tabs for large fonts
+    int height = fontHeight + 5 + BORDER_HEIGHT;
+    if(height > TAB_HEIGHT) { TAB_HEIGHT = height; tabHeightScaled = true; }
+
+    return TAB_HEIGHT;
   }
 
   protected int calculateTabWidth(int tabPlacement, int tabIndex, FontMetrics metrics) {
@@ -107,7 +115,14 @@ public class SCETabbedPaneUI extends BasicTabbedPaneUI implements MouseListener,
 
   protected void paintTabBackground(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h, boolean selected) {
     Rectangle area = new Rectangle(x, y, w, h);
+    if(tabHeightScaled) {
+      Graphics2D g2D = (Graphics2D) g;
+      g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      g2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+      g2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
+    }
 
+    int tabHeight = TAB_HEIGHT - BORDER_HEIGHT;
     // background
     {
       ImageIcon image = selected ? image_active : image_inactive;
@@ -115,22 +130,23 @@ public class SCETabbedPaneUI extends BasicTabbedPaneUI implements MouseListener,
     }
     // left
     if (tabIndex == 0) {
-      g.drawImage((selected ? image_active_left : image_inactive_left).getImage(), area.x, area.y, null);
+      ImageIcon image = selected ? image_active_left : image_inactive_left;
+      g.drawImage(image.getImage(), area.x, area.y, image.getIconWidth(), tabHeight, null);
     } else {
       boolean left_isSelected = tabbedPane.getSelectedIndex() == tabIndex - 1;
       ImageIcon image = selected ? image_inactive_active : (left_isSelected ? image_active_inactive : image_inactive_inactive);
       int hw = image.getIconWidth() / 2;
-      g.drawImage(image.getImage(), area.x, area.y, area.x + hw, area.y + image.getIconHeight(), hw, 0, 2 * hw, image.getIconHeight(), null);
+      g.drawImage(image.getImage(), area.x, area.y, area.x + hw, area.y + tabHeight, hw, 0, 2 * hw, image.getIconHeight(), null);
     }
     // right
     if (tabIndex == tabbedPane.getTabCount() - 1) {
       ImageIcon image = selected ? image_active_right : image_inactive_right;
-      g.drawImage(image.getImage(), area.x + area.width - image.getIconWidth(), area.y, null);
+      g.drawImage(image.getImage(), area.x + area.width - image.getIconWidth(), area.y, image.getIconWidth(), tabHeight, null);
     } else {
       boolean right_isSelected = tabbedPane.getSelectedIndex() == tabIndex + 1;
       ImageIcon image = selected ? image_active_inactive : (right_isSelected ? image_inactive_active : image_inactive_inactive);
       int hw = image.getIconWidth() / 2;
-      g.drawImage(image.getImage(), area.x + area.width - hw, area.y, area.x + area.width, area.y + image.getIconHeight(), 0, 0, hw, image.getIconHeight(), null);
+      g.drawImage(image.getImage(), area.x + area.width - hw, area.y, area.x + area.width, area.y + tabHeight, 0, 0, hw, image.getIconHeight(), null);
     }
 
     if(displayCloseIcons) {
