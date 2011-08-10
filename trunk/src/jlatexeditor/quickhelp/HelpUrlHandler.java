@@ -56,7 +56,7 @@ public class HelpUrlHandler extends URLStreamHandler {
 
 		if (urlConnection != null) {
 			try {
-				BufferedInputStream in = (BufferedInputStream) urlConnection.getContent();
+				BufferedInputStream in = new BufferedInputStream((InputStream) urlConnection.getContent());
 				content = readContent(in);
 			} catch (IOException e) {
 				e.printStackTrace();
