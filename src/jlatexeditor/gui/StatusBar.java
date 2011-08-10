@@ -16,16 +16,14 @@ import java.util.ArrayList;
 /**
  * StatusBar.
  */
-public class StatusBar extends JPanel implements ActionListener, MouseListener {
+public class StatusBar extends JPanel implements MouseListener {
   private JLatexEditorJFrame jLatexEditor;
 
   private JPanel right = new JPanel();
   private JPanel center = new JPanel();
   private JPanel left = new JPanel();
 
-  private boolean hadException = false;
   private JLabel updatesAvailable = new JLabel("SVN updates are available.");
-  private CheckForUpdates updateChecker = new CheckForUpdates();
 
   private ArrayList<String> messages = new ArrayList<String>();
 
@@ -50,10 +48,6 @@ public class StatusBar extends JPanel implements ActionListener, MouseListener {
 
     right.add(new MemoryUsage());
     setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-
-	  if (GProperties.getBoolean("check_for_svn_updates")) {
-      updateChecker.start();
-	  }
   }
 
   public synchronized void showMessage(String shortMessage, String message) {
@@ -61,37 +55,8 @@ public class StatusBar extends JPanel implements ActionListener, MouseListener {
     new MessagePopup(new Color(0, 192, 0), message, jLatexEditor);
   }
 
-  public void checkForUpdates() {
-    updateChecker.check();
-  }
-
-  private synchronized void checkForUpdates_() {
-    boolean hasUpdates = false;
-
-    File file = jLatexEditor.getActiveEditor().getFile();
-    if (!file.exists()) return;
-    File dir = file.getParentFile();
-    if (!new File(dir, ".svn").exists()) return;
-
-    try {
-      ArrayList<SVN.StatusResult> results = SVN.getInstance().status(dir);
-      for (SVN.StatusResult result : results) {
-        if (result.getServerStatus() == SVN.StatusResult.SERVER_OUTDATED) hasUpdates = true;
-      }
-    } catch (Exception e) {
-      if (!hadException) e.printStackTrace();
-      hadException = true;
-    }
-
-    setUpdatesAvailableVisible(hasUpdates);
-  }
-
   public void setUpdatesAvailableVisible(boolean v) {
     updatesAvailable.setVisible(v);
-  }
-
-  public void actionPerformed(ActionEvent e) {
-    checkForUpdates();
   }
 
   public void mouseClicked(MouseEvent e) {
@@ -155,30 +120,6 @@ public class StatusBar extends JPanel implements ActionListener, MouseListener {
 
     public void actionPerformed(ActionEvent e) {
       repaint();
-    }
-  }
-
-  private class CheckForUpdates extends Thread {
-    private CheckForUpdates() {
-	    super("CheckForUpdates");
-	    setDaemon(true);
-      setPriority(Thread.MIN_PRIORITY);
-    }
-
-    public synchronized void check() {
-      notifyAll();
-    }
-
-    public void run() {
-	    try {
-				while (!isInterrupted()) {
-					checkForUpdates_();
-
-					synchronized (this) {
-						wait(GProperties.getInt("check_for_svn_updates.interval") * 1000);
-					}
-				}
-	    } catch (InterruptedException ignored) {}
     }
   }
 }

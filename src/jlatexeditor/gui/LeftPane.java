@@ -13,10 +13,12 @@ public class LeftPane extends JPanel implements ActionListener {
   private JPanel leftPanel;
   private ImageButton buttonSymbols;
   private ImageButton buttonStructure;
+  private ImageButton buttonSVN;
 
   private JComponent main;
   private JComponent symbolsPanel;
   private JComponent structureView;
+  private JComponent svnView;
 
   private JSplitPane splitPane;
 
@@ -24,10 +26,11 @@ public class LeftPane extends JPanel implements ActionListener {
   private JComponent view = null;
   private int dividerLocation = GProperties.getInt("main_window.symbols_panel.width");
 
-  public LeftPane(JComponent main, JComponent symbolsPanel, JComponent structureView) {
+  public LeftPane(JComponent main, JComponent symbolsPanel, JComponent structureView, JComponent svnView) {
     this.main = main;
     this.symbolsPanel = symbolsPanel;
     this.structureView = structureView;
+    this.svnView = svnView;
 
     setLayout(new BorderLayout());
 
@@ -56,6 +59,8 @@ public class LeftPane extends JPanel implements ActionListener {
     buttonSymbols.addActionListener(this);
     buttonStructure = new ImageButton(new ImageIcon(getClass().getResource("/images/leftPane/structure.png")));
     buttonStructure.addActionListener(this);
+    buttonSVN = new ImageButton(new ImageIcon(getClass().getResource("/images/leftPane/svn.png")));
+    buttonSVN.addActionListener(this);
 
     GroupLayout layout = new GroupLayout(leftPanel);
     leftPanel.setLayout(layout);
@@ -64,17 +69,20 @@ public class LeftPane extends JPanel implements ActionListener {
 
     leftPanel.add(buttonSymbols);
     leftPanel.add(buttonStructure);
+    leftPanel.add(buttonSVN);
 
     GroupLayout.Group groupHorizontal =
             layout.createParallelGroup()
                     .addComponent(buttonSymbols)
-                    .addComponent(buttonStructure);
+                    .addComponent(buttonStructure)
+                    .addComponent(buttonSVN);
 
     GroupLayout.Group groupVertical =
             layout.createSequentialGroup()
                     .addGap(5)
                     .addComponent(buttonSymbols)
                     .addComponent(buttonStructure)
+                    .addComponent(buttonSVN)
                     .addGap(5);
 
     layout.setHorizontalGroup(groupHorizontal);
@@ -84,6 +92,7 @@ public class LeftPane extends JPanel implements ActionListener {
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == buttonSymbols) changeView(symbolsPanel);
     if (e.getSource() == buttonStructure) changeView(structureView);
+    if (e.getSource() == buttonSVN) changeView(svnView);
   }
 
   public void changeView(JComponent nview) {
@@ -110,6 +119,5 @@ public class LeftPane extends JPanel implements ActionListener {
     invalidate();
     revalidate();
     view = nview;
-
   }
 }

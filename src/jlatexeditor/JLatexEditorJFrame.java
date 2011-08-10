@@ -17,6 +17,7 @@ import jlatexeditor.remote.FileLineNr;
 import jlatexeditor.remote.NetworkNode;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.tools.SVN;
+import jlatexeditor.tools.SVNView;
 import jlatexeditor.tools.ThreadInfoWindow;
 import sce.component.*;
 import util.*;
@@ -84,6 +85,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
   private LeftPane leftPane = null;
   private SymbolsPanel symbolsPanel = null;
   private JTree structureTree = null;
+  private SVNView svnView = null;
 
   private StatusBar statusBar = null;
 
@@ -381,8 +383,10 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
     // structure view
     structureTree = new JTree();
     structureTree.getSelectionModel().addTreeSelectionListener(this);
+    // svn view
+    svnView = new SVNView(this, statusBar);
 
-    leftPane = new LeftPane(tabbedPane, symbolsPanel, new JScrollPane(structureTree));
+    leftPane = new LeftPane(tabbedPane, symbolsPanel, new JScrollPane(structureTree), svnView);
 
     textToolsSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, leftPane, toolsTab);
     textToolsSplit.setOneTouchExpandable(true);
@@ -1464,7 +1468,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 		tabbedPane.getTabComponentAt(mainEditorTab).setForeground(Color.RED);
 
 		SCEManager.getBackgroundParser().parse();
-		statusBar.checkForUpdates();
+		svnView.checkForUpdates();
 	}
 
 	private void moveTabToLeft() {
