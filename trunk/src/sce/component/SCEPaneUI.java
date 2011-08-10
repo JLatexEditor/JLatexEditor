@@ -8,7 +8,6 @@ import sce.quickhelp.QuickHelp;
 import sce.quickhelp.QuickHelpPane;
 import sce.syntaxhighlighting.BracketHighlighting;
 import sun.swing.DefaultLookup;
-import sun.swing.UIAction;
 
 import javax.swing.*;
 import javax.swing.plaf.ComponentUI;
@@ -422,7 +421,7 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
 			return (InputMap) DefaultLookup.get(pane, this, "SCEPane.ancestorInputMap");
 		}
 		else if (condition == JComponent.WHEN_FOCUSED) {
-			return (InputMap)DefaultLookup.get(pane, this, "SCEPane.focusInputMap");
+			return (InputMap) DefaultLookup.get(pane, this, "SCEPane.focusInputMap");
 		}
 		return null;
 	}
@@ -438,7 +437,7 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
 		return quickHelpPane;
 	}
 
-	public static class Actions extends UIAction {
+	public static class Actions extends AbstractAction {
 		public static final String MOVE_VIEW_UP             = "move view up";
 		public static final String MOVE_VIEW_UP_SHIFT       = "move view up shift";
 		public static final String MOVE_VIEW_DOWN           = "move view down";
@@ -458,12 +457,13 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
 		public static final String REMOVE_WORD_BEHIND_CARET = "remove word behind caret";
 		public static final String COMPLETE                 = "complete";
 
+		private String key;
+
 		Actions(String key) {
-			super(key);
+			this.key = key;
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			String key = getName();
 			SCEPane pane = (SCEPane) e.getSource();
 			SCEPaneUI ui = pane.getPaneUI();
 

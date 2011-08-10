@@ -2,7 +2,6 @@ package sce.component;
 
 import de.endrullis.utils.KeyUtils;
 import jlatexeditor.gproperties.GProperties;
-import sun.swing.UIAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -192,7 +191,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 	  for (KeyStroke stopKeyStroke : KeyUtils.stopKeyStrokes) {
 		  getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(stopKeyStroke, "close search");
 	  }
-	  getActionMap().put("close search", new UIAction("close search") {
+	  getActionMap().put("close search", new AbstractAction("close search") {
 		  @Override
 		  public void actionPerformed(ActionEvent e) {
 			  setVisible(false);
