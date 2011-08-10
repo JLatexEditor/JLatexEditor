@@ -30,6 +30,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
 import java.awt.event.*;
@@ -130,6 +131,25 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
     System.setProperty("apple.laf.useScreenMenuBar", "true");
 		UIManager.put("TabbedPaneUI", "util.gui.SCETabbedPaneUI");
     UIManager.put("List.timeFactor", 200L);
+
+		// scale all fonts if scale factor is not 1.0
+		float fontScaleFactor = (float) GProperties.getDouble("main_window.font_scale_factor");
+		if (Math.abs(fontScaleFactor - 1.0) > 0.001) {
+			Enumeration<Object> keys = UIManager.getDefaults().keys();
+			while (keys.hasMoreElements()) {
+				Object o =  keys.nextElement();
+				String key = o.toString();
+
+				if (key.endsWith(".font")) {
+					Object font = UIManager.get(key);
+					if (font instanceof FontUIResource) {
+						FontUIResource fontResource = (FontUIResource) font;
+						float newSize = fontResource.getSize2D() * fontScaleFactor;
+						UIManager.put(o, fontResource.deriveFont(newSize));
+					}
+				}
+			}
+		}
 
     new AboutDialog(null).showAndAutoHideAfter(5000);
 

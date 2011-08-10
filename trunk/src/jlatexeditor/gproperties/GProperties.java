@@ -10,6 +10,7 @@ import util.Aspell;
 import util.Hunspell;
 
 import javax.swing.*;
+import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
@@ -111,6 +112,8 @@ public class GProperties {
 	  properties.addEntry(new Def("main_window.tools_panel.height", DOUBLE_0_TO_1, "0.15"));
 	  properties.addEntry(new Comment(" Number of parent directories of the open file shown in the window title"));
 	  properties.addEntry(new Def("main_window.title.number_of_parent_dirs_shown", INT_GT_0, "2"));
+		properties.addEntry(new Comment(" Increase this value if you think the GUI fonts are to small (requires program restart)"));
+	  properties.addEntry(new Def("main_window.font_scale_factor", DOUBLE, "1.0"));
 
 	  properties.addEntry(new Comment("\n## Editor properties"));
     properties.addEntry(new Comment(" Font settings"));
