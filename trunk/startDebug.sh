@@ -35,4 +35,10 @@ do
    LIB="$LIB:lib/$file"
 done
 
-java -Xmx200M "-Djlatexeditor.working_dir=$USER_PWD" -cp build/classes/$LIB jlatexeditor.JLatexEditorJFrame "$@" > debug.log 2> error.log &
+MAC=""
+if [ `uname` = "Darwin" ]
+then
+  MAC="-Xdock:name=JLatexEditor -Xdock:icon=src/images/icon_32.png"
+fi
+
+java -Xmx200M $MAC "-Djlatexeditor.working_dir=$USER_PWD" -cp build/classes/$LIB jlatexeditor.JLatexEditorJFrame "$@" > debug.log 2> error.log &
