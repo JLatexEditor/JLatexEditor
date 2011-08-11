@@ -16,7 +16,7 @@ public class MacUtil {
 
   // The call to new Linker() installs the native methods
   static {
-    if(OSUtil.getOS() == OSUtil.OS_MAC) {
+    if(SystemUtils.isMacOS()) {
       try {
         jnidirect.Linker.link(MacUtil.class, new String[] { "Carbon" });
       } catch(Throwable e) {}
