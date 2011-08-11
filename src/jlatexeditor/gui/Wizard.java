@@ -2,8 +2,9 @@ package jlatexeditor.gui;
 
 import de.endrullis.utils.BetterProperties2;
 import jlatexeditor.gproperties.GProperties;
-import util.OSUtil;
+import sun.plugin2.util.SystemUtil;
 import util.StreamUtils;
+import util.SystemUtils;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -38,15 +39,15 @@ public class Wizard extends JDialog implements WindowListener {
     toolLocations.put("ps2pdf" , new ArrayList<File>());
     toolLocations.put("bibtex" , new ArrayList<File>());
 
-    if(OSUtil.getOS() == OSUtil.OS_LINUX) {
+    if(SystemUtils.isLinuxOS()) {
       toolLocations.put("xdvi" , new ArrayList<File>());
       toolLocations.put("kdvi" , new ArrayList<File>());
       toolLocations.put("okular" , new ArrayList<File>());
     } else
-    if(OSUtil.getOS() == OSUtil.OS_MAC) {
+    if(SystemUtils.isMacOS()) {
       toolLocations.put("Skim.app/Contents/SharedSupport/displayline" , new ArrayList<File>());
     } else
-    if(OSUtil.getOS() == OSUtil.OS_WINDOWS) {
+    if(SystemUtils.isLinuxOS()) {
       toolLocations.put("SumatraPDF" , new ArrayList<File>());
     }
   }}
@@ -160,15 +161,15 @@ public class Wizard extends JDialog implements WindowListener {
     main.add(new ProgramPanel("BibTex", "compiler.bibtex.executable", bibtex,
             "The program 'bibtex' is required for managing references."), gbc);
 
-    if(OSUtil.getOS() == OSUtil.OS_LINUX) {
+    if(SystemUtils.isLinuxOS()) {
       toolLocations.put("xdvi" , new ArrayList<File>());
       toolLocations.put("kdvi" , new ArrayList<File>());
       toolLocations.put("okular" , new ArrayList<File>());
     } else
-    if(OSUtil.getOS() == OSUtil.OS_MAC) {
+    if(SystemUtils.isMacOS()) {
       toolLocations.put("Skim" , new ArrayList<File>());
     } else
-    if(OSUtil.getOS() == OSUtil.OS_WINDOWS) {
+    if(SystemUtils.isWinOS()) {
       toolLocations.put("SumatraPDF" , new ArrayList<File>());
     }
 
@@ -202,8 +203,8 @@ public class Wizard extends JDialog implements WindowListener {
 
     // guessing suitable properties file
     if(!GProperties.hasChanges()) {
-      if(OSUtil.getOS() == OSUtil.OS_MAC) keyStrokesList.setSelectedIndex(1);
-      if(OSUtil.getOS() == OSUtil.OS_WINDOWS) keyStrokesList.setSelectedIndex(3);
+      if(SystemUtils.isMacOS()) keyStrokesList.setSelectedIndex(1);
+      if(SystemUtils.isWinOS()) keyStrokesList.setSelectedIndex(3);
     }
 
     // search for tools
@@ -228,7 +229,7 @@ public class Wizard extends JDialog implements WindowListener {
 
     public ProgramPanel(String title, String gproperty, JComboBox fileBox, String message, boolean layout) {
       this.programName = title.toLowerCase();
-      if(OSUtil.getOS() == OSUtil.OS_WINDOWS) programName = programName + ".exe";
+      if(SystemUtils.isWinOS()) programName = programName + ".exe";
       this.gproperty = gproperty;
       this.fileBox = fileBox;
 
@@ -242,7 +243,7 @@ public class Wizard extends JDialog implements WindowListener {
       fileBox.setModel(model);
 
       String file = GProperties.getString(gproperty);
-      if(OSUtil.getOS() == OSUtil.OS_WINDOWS && !file.toLowerCase().endsWith(".exe")) {
+      if(SystemUtils.isWinOS() && !file.toLowerCase().endsWith(".exe")) {
         file = file + ".exe";
         GProperties.set(gproperty, file);
       }

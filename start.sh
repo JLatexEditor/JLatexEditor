@@ -31,7 +31,7 @@ ant compile
 MAC=""
 if [ `uname` = "Darwin" ]
 then
-  MAC="-Xdock:name=JLatexEditor -Xdock:icon=src/images/icon_32.png"
+  MAC="-Xdock:name=JLatexEditor -Xdock:icon=dev/tex-cookie.png"
 fi
 
 java -Xmx200M $MAC "-Djlatexeditor.working_dir=$USER_PWD" -cp build/classes/$LIB jlatexeditor.JLatexEditorJFrame "$@"

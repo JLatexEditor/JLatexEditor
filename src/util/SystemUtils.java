@@ -15,7 +15,7 @@ public class SystemUtils {
    * @return name of the operating system
    */
   public static String getOSName() {
-    return System.getProperty("os.name");
+    return System.getProperty("os.name").toLowerCase();
   }
 
   /**
@@ -24,7 +24,25 @@ public class SystemUtils {
    * @return true if os is windows
    */
   public static boolean isWinOS() {
-    return System.getProperty("os.name").toLowerCase().startsWith("win");
+    return getOSName().startsWith("win") || getOSName().indexOf("windows") >= 0;
+  }
+
+  /**
+   * Returns if the operating system is a mac osx.
+   *
+   * @return true if os is mac
+   */
+  public static boolean isMacOS() {
+    return getOSName().indexOf("mac") >= 0;
+  }
+
+  /**
+   * Returns if the operating system is linux.
+   *
+   * @return true if os is linux
+   */
+  public static boolean isLinuxOS() {
+    return !isWinOS() && !isMacOS();
   }
 
   /**
