@@ -2,7 +2,6 @@ package jlatexeditor.gui;
 
 import de.endrullis.utils.BetterProperties2;
 import jlatexeditor.gproperties.GProperties;
-import sun.plugin2.util.SystemUtil;
 import util.StreamUtils;
 import util.SystemUtils;
 
