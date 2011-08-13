@@ -188,6 +188,14 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 			GProperties.set("last_program_version", version);
 		}
 
+    // restore executable flags after update of the start-up script
+    if(SystemUtils.isLinuxOS() || SystemUtils.isMacOS()) {
+      try {
+        ProcessUtil.exec(new String[] {"chmod", "+x", "jlatexeditor"}, null);
+      } catch(Throwable e) { }
+    }
+
+
     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     addWindowListener(this);
     Runtime.getRuntime().addShutdownHook(new ShutdownHook(this));

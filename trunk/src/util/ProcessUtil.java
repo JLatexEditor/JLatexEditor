@@ -22,7 +22,9 @@ public class ProcessUtil {
     String[] envArray = new String[env.size()];
     env.toArray(envArray);
 
-    process = Runtime.getRuntime().exec(command, envArray, dir);
+    process = dir != null ?
+                Runtime.getRuntime().exec(command, envArray, dir) :
+                Runtime.getRuntime().exec(command, envArray);
 
     return process;
   }
