@@ -78,7 +78,9 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   private SCETextHighlight selectionHighlight = new SCETextHighlight(this, null, null, selectionHighlightColor);
 
   public static Color editRangeHighlightColor = new Color(155, 0, 0);
-  private SCETextHighlight editRangeHighlight = new SCEEditRangeHighlight(this, null, null, editRangeHighlightColor);
+  private SCETextHighlight editRangeHighlight = new SCEEditRangeHighlight(this, null, null, editRangeHighlightColor) {{
+    setOutline(true);
+  }};
 
   // highlights
   private ArrayList<SCERowHighlight> rowHighlights = new ArrayList<SCERowHighlight>();

@@ -16,6 +16,9 @@ public class SCETextHighlight {
   private JComponent actionComponent;
   private boolean actionComponentAtEnd;
 
+  // draw outline only
+  private boolean outline = false;
+
   /**
    * Creates a text highlight.
    *
@@ -83,6 +86,17 @@ public class SCETextHighlight {
   }
 
   /**
+   * Draw outline or fill?
+   */
+  public boolean isOutline() {
+    return outline;
+  }
+
+  public void setOutline(boolean outline) {
+    this.outline = outline;
+  }
+
+  /**
    * Draws the highlight.
    *
    * @param g2D  the graphics object
@@ -106,12 +120,20 @@ public class SCETextHighlight {
     Point endPos = pane.modelToView(end.getRow(), end.getColumn());
 
     if (start.getRow() == end.getRow()) {
-      g2D.fillRect(startPos.x, startPos.y, endPos.x - startPos.x, pane.getLineHeight());
+      drawRect(g2D, startPos.x, startPos.y, endPos.x - startPos.x, pane.getLineHeight());
     } else {
       int marginLeft = pane.getMargin(SCEPane.MARGIN_LEFT);
-      g2D.fillRect(startPos.x, startPos.y, pane.getWidth(), pane.getLineHeight());
-      g2D.fillRect(marginLeft, startPos.y + pane.getLineHeight(), pane.getWidth(), endPos.y - startPos.y - pane.getLineHeight());
-      g2D.fillRect(marginLeft, endPos.y, endPos.x - marginLeft, pane.getLineHeight());
+      drawRect(g2D, startPos.x, startPos.y, pane.getWidth(), pane.getLineHeight());
+      drawRect(g2D, marginLeft, startPos.y + pane.getLineHeight(), pane.getWidth(), endPos.y - startPos.y - pane.getLineHeight());
+      drawRect(g2D, marginLeft, endPos.y, endPos.x - marginLeft, pane.getLineHeight());
+    }
+  }
+
+  private void drawRect(Graphics2D g2D, int x, int y, int width, int height) {
+    if(outline) {
+      g2D.drawRect(x-1, y-2, width+2, height+1);
+    } else {
+      g2D.fillRect(x, y, width, height);
     }
   }
 }
