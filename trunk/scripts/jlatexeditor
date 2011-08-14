@@ -16,12 +16,16 @@ if [ $# == 1 ]; then
 	fi
 fi
 
+if echo "$1" | grep -q "^-psn"; then
+	shift 1
+fi
+
 cd `dirname $0`
 
 MAC=""
 if [ `uname` = "Darwin" ]
 then
-  MAC="-Xdock:name=JLatexEditor -Xdock:icon=src/images/icon_32.png"
+  MAC="-Xdock:name=JLatexEditor -Xdock:icon=tex-cookie.png"
 fi
 
 action=start
