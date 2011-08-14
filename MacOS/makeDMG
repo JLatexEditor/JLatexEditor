@@ -1,0 +1,15 @@
+#!/bin/bash
+cp pack.temp.dmg temp.dmg
+
+export device=$(hdiutil attach -readwrite -noverify -noautoopen "temp.dmg" | egrep '^/dev/' | sed 1q | awk '{print $1}')
+
+read
+
+chmod -Rf go-w /Volumes/JLatexEditor/
+sync
+sync
+hdiutil detach ${device}
+rm JLatexEditor.dmg
+hdiutil convert "temp.dmg" -format UDZO -imagekey zlib-level=9 -o "JLatexEditor.dmg"
+
+rm -f temp.dmg
