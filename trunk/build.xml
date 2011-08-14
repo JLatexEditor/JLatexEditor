@@ -247,7 +247,8 @@
 		<copy todir="${linux.runtime.dir}/lib">
 			<fileset dir="dist/JLatexEditor_prepare/lib"/>
 		</copy>
-		<copy file="dev/images/icon/5_object_128.png" tofile="${linux.runtime.dir}/images/icon_128.png"/>
+<!--		<copy file="dev/images/jle-icon/5_object_128.png" tofile="${linux.runtime.dir}/images/icon_128.png"/>-->
+		<copy file="dev/images/cookie-icon/tex-cookie_128.png" tofile="${linux.runtime.dir}/images/icon_128.png"/>
 		<echo file="${linux.runtime.dir}/updateDisabled.txt"/>
 		<chmod perm="+x" file="${linux.runtime.dir}/${program.cname}.sh"/>
 		<chmod perm="+x" file="${linux.runtime.dir}/${program.cname}"/>
