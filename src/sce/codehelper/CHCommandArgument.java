@@ -8,7 +8,7 @@ import sce.component.SCEDocumentRange;
 
 import java.util.ArrayList;
 
-public class CHCommandArgument {
+public class CHCommandArgument implements Cloneable {
   // the name
   private String name = null;
   private boolean optional = false;
@@ -63,13 +63,22 @@ public class CHCommandArgument {
 	/**
    * Returns the name of the argument.
    *
-   * @return the name
+   * @return argument name
    */
   public String getName() {
     return name;
   }
 
-  /**
+	/**
+	 * Sets the name of the argument.
+	 *
+	 * @param name new argument name
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
    * Returns true if this argument is optional.
    *
    * @return true if optional
@@ -77,6 +86,15 @@ public class CHCommandArgument {
   public boolean isOptional() {
     return optional;
   }
+
+	/**
+	 * Sets whether this argument is optional or not.
+	 *
+	 * @param optional whether this argument is optional or not
+	 */
+	public void setOptional(boolean optional) {
+		this.optional = optional;
+	}
 
 	/**
 	 * Returns true if the argument is second optional.
@@ -94,6 +112,15 @@ public class CHCommandArgument {
 	 */
 	public boolean isCompletion() {
 		return completion;
+	}
+
+	/**
+	 * Sets whether the auto-completion shall be used for this argument.
+	 *
+	 * @param completion whether auto-completion shall be used for this argument
+	 */
+	public void setCompletion(boolean completion) {
+		this.completion = completion;
 	}
 
 	/**
@@ -179,6 +206,15 @@ public class CHCommandArgument {
   }
 
 	/**
+   * Sets the value of the argument.
+   *
+   * @param value the value
+   */
+  public void setValue(String value) {
+    this.value = value;
+  }
+
+	/**
 	 * Returns the initial value (used as default value for optional parameters).
 	 *
 	 * @return initial value
@@ -188,15 +224,15 @@ public class CHCommandArgument {
 	}
 
 	/**
-   * Sets the value of the argument.
-   *
-   * @param value the value
-   */
-  public void setValue(String value) {
-    this.value = value;
-  }
+	 * Sets the initial value of this argument.
+	 *
+	 * @param initialValue initial value of this argument
+	 */
+	public void setInitialValue(String initialValue) {
+		this.initialValue = initialValue;
+	}
 
-  /**
+	/**
    * Returns the occurrences (SCEDocumentRange[]) of the argument.
    *
    * @return occurrences of the argument
@@ -213,4 +249,17 @@ public class CHCommandArgument {
   public void setOccurrences(ArrayList<SCEDocumentRange> occurrences) {
     this.occurrences = occurrences;
   }
+
+	@Override
+	public CHCommandArgument clone() {
+		CHCommandArgument argument = new CHCommandArgument(name, initialValue, optional, secondOptional, completion);
+		argument.setHint(hint);
+		for (String value : values) {
+			argument.addValue(value);
+		}
+		for (CHArgumentGenerator generator : generators) {
+			argument.addGenerator(generator.getArgument().getName(), generator.getFunctionName());
+		}
+		return argument;
+	}
 }

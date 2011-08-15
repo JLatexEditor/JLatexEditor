@@ -7,7 +7,13 @@ package sce.codehelper;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class CHCommand implements Comparable {
+/**
+ * Command.
+ *
+ * @author Jörg Endrullis
+ * @author Stefan Endrullis
+ */
+public class CHCommand implements Comparable, Cloneable {
   // the name
   private String name = null;
   // the usage string
@@ -17,7 +23,7 @@ public class CHCommand implements Comparable {
   // the hint and arguments
   private String hint = null;
 	/** Arguments. */
-  private ArrayList<CHCommandArgument> arguments = new ArrayList<CHCommandArgument>();
+  private ArgumentsHashMap argumentsHashMap = new ArgumentsHashMap();
 
   /** User defined? */
   private boolean isUserDefined = false;
@@ -55,6 +61,15 @@ public class CHCommand implements Comparable {
   }
 
 	/**
+   * Sets the usage string of this command.
+   *
+   * @param usage the usage string
+   */
+  public void setUsage(String usage) {
+    this.usage = usage;
+  }
+
+	/**
 	 * Returns the command style.
 	 *
 	 * @return command style
@@ -71,15 +86,6 @@ public class CHCommand implements Comparable {
 	public void setStyle(String style) {
 		this.style = style;
 	}
-
-	/**
-   * Sets the usage string of this command.
-   *
-   * @param usage the usage string
-   */
-  public void setUsage(String usage) {
-    this.usage = usage;
-  }
 
   /**
    * Returns the hint for this command.
@@ -105,7 +111,7 @@ public class CHCommand implements Comparable {
    * @param argument the argument
    */
   public void addArgument(CHCommandArgument argument) {
-    arguments.add(argument);
+    argumentsHashMap.put(argument.getName(), argument);
   }
 
   /**
@@ -113,11 +119,24 @@ public class CHCommand implements Comparable {
    *
    * @return the arguments of the command
    */
-  public ArrayList<CHCommandArgument> getArguments() {
-    return arguments;
+  public ArgumentsHashMap getArgumentsHashMap() {
+    return argumentsHashMap;
   }
 
   /**
+   * Returns the arguments of the command as a new list.
+   *
+   * @return the arguments of the command as a new list
+   */
+  public ArrayList<CHCommandArgument> getArguments() {
+    return argumentsHashMap.getList();
+  }
+
+	public boolean hasArgument(String argument) {
+		return argumentsHashMap.containsKey(argument);
+	}
+
+	/**
    * Returns true if the command is defined or changed by the user.
    *
    * @return true if user defined
@@ -160,7 +179,7 @@ public class CHCommand implements Comparable {
             || !equalsNull(style, o.style)
             || !equalsNull(hint, o.hint)) return false;
 
-    if(arguments.size() != o.arguments.size()) return false;
+    if(argumentsHashMap.size() != o.argumentsHashMap.size()) return false;
     /* TODO: comparison of arguments
     for(int argNr = 0; argNr < arguments.size(); argNr++) {
       if(!arguments.get(argNr).equals(o.arguments.get(argNr))) return false;
@@ -176,16 +195,71 @@ public class CHCommand implements Comparable {
   }
 
 	public void finalizeArguments() {
-		// create map from argument name to argument
-		HashMap<String, CHCommandArgument> argName2arg = new HashMap<String, CHCommandArgument>();
-		for (CHCommandArgument argument : arguments) {
-			argName2arg.put(argument.getName(), argument);
-		}
 		// assign arguments where generators reference argument names
-		for (CHCommandArgument argument : arguments) {
+		for (CHCommandArgument argument : getArguments()) {
 			for (CHArgumentGenerator generator : argument.getGenerators()) {
-				generator.setArgument(argName2arg.get(generator.getArgumentName()));
+				generator.setArgument(argumentsHashMap.get(generator.getArgumentName()));
 			}
+		}
+	}
+
+	@Override
+	public CHCommand clone() {
+		CHCommand c = new CHCommand(name);
+		c.setUsage(usage);
+		c.setStyle(style);
+		c.setHint(hint);
+		for (CHCommandArgument argument : getArguments()) {
+			c.addArgument(argument.clone());
+		}
+		c.finalizeArguments();
+		return c;
+	}
+
+	public static class ArgumentsHashMap extends HashMap<String, CHCommandArgument> {
+		private ArrayList<CHCommandArgument> list = new ArrayList<CHCommandArgument>();
+
+		@Override
+		public CHCommandArgument put(String key, CHCommandArgument value) {
+			list.add(value);
+			return super.put(key, value);
+		}
+
+		@Override
+		public CHCommandArgument remove(Object key) {
+			list.remove(get(key));
+			return super.remove(key);
+		}
+
+		public void renameArg(CHCommandArgument arg, String newName) {
+			String oldName = arg.getName();
+			remove(oldName);
+			arg.setName(newName);
+			put(newName, arg);
+		}
+
+		public void moveArgUp(CHCommandArgument arg) {
+			int index = list.indexOf(arg);
+			if (index > 0) {
+				swapArgs(index - 1, index);
+			}
+		}
+
+		public void moveArgDown(CHCommandArgument arg) {
+			int index = list.indexOf(arg);
+			if (index < list.size() - 1) {
+				swapArgs(index, index + 1);
+			}
+		}
+
+		private void swapArgs(int i1, int i2) {
+			CHCommandArgument firstArg = list.get(i1);
+			list.set(i1, list.get(i2));
+			list.set(i2, firstArg);
+		}
+
+		public ArrayList<CHCommandArgument> getList() {
+			return list;
 		}
 	}
 }

@@ -9,13 +9,12 @@ import jlatexeditor.gproperties.GProperties;
 import jlatexeditor.gproperties.GPropertiesCodeHelper;
 import jlatexeditor.gproperties.GPropertiesStyles;
 import jlatexeditor.gproperties.GPropertiesSyntaxHighlighting;
+import jlatexeditor.gui.TemplateEditor;
 import jlatexeditor.quickhelp.LatexQuickHelp;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
-import sce.codehelper.CombinedCodeAssistant;
-import sce.codehelper.CombinedCodeHelper;
-import sce.codehelper.StaticCommandsCodeHelper;
-import sce.codehelper.StaticCommandsReader;
+import jlatexeditor.syntaxhighlighting.TemplateSyntaxHighlighting;
+import sce.codehelper.*;
 import sce.component.SCEDocument;
 import sce.component.SCEPane;
 import sce.component.SourceCodeEditor;
@@ -34,7 +33,8 @@ public class SCEManager {
 
   private static BackgroundParser backgroundParser = null;
   private static StaticCommandsReader latexCommands = new StaticCommandsReader("data/codehelper/commands.xml");
-  private static StaticCommandsReader tabCompletions = new StaticCommandsReader("data/codehelper/liveTemplates.xml");
+  private static StaticCommandsReader systemTabCompletion = new StaticCommandsReader("data/codehelper/liveTemplates.xml");
+  private static StaticCommandsReader tabCompletion = new StaticCommandsReader("data/codehelper/liveTemplates.xml");
 
   public static SCEManagerInteraction getInstance() {
     return instance;
@@ -56,8 +56,12 @@ public class SCEManager {
     return latexCommands;
   }
 
-  public static StaticCommandsReader getTabCompletions() {
-    return tabCompletions;
+	public static Trie<CHCommand> getSystemTabCompletion() {
+		return systemTabCompletion.getCommands();
+	}
+
+	public static Trie<CHCommand> getTabCompletion() {
+    return tabCompletion.getCommands();
   }
 
   public static SourceCodeEditor<Doc> createLatexSourceCodeEditor() {
@@ -69,12 +73,9 @@ public class SCEManager {
     return editor;
   }
 
-  public static void setupLatexSCEPane(SCEPane scePane) {
-    setPaneProperties(scePane);
-    SCEDocument document = scePane.getDocument();
-
-    // add some styles to the document
-    LatexStyles.addStyles(document);
+  public static SourceCodeEditor<Doc> createTemplateSourceCodeEditor(TemplateEditor templateEditor) {
+    SourceCodeEditor<Doc> editor = new SourceCodeEditor<Doc>(null);
+    SCEPane scePane = editor.getTextPane();
 
 	  SpellChecker spellChecker = null;
 	  try {
@@ -82,11 +83,40 @@ public class SCEManager {
 	  } catch (Exception ignored) {}
 
     // syntax highlighting
-    SyntaxHighlighting syntaxHighlighting = new LatexSyntaxHighlighting(scePane, spellChecker, latexCommands.getCommands(), backgroundParser);
+    SyntaxHighlighting syntaxHighlighting = new TemplateSyntaxHighlighting(scePane, spellChecker, latexCommands.getCommands(), backgroundParser, templateEditor);
+	  CombinedCodeHelper codeHelper = new CombinedCodeHelper();
+	  CombinedCodeAssistant codeAssistant = new CombinedCodeAssistant();
+	  codeAssistant.addAssistant(new TemplateArgumentSuggester(templateEditor));
+
+	  setupLatexSCEPane(scePane, syntaxHighlighting, codeHelper, codeAssistant);
+
+    return editor;
+  }
+
+	public static void setupLatexSCEPane(SCEPane scePane) {
+		SpellChecker spellChecker = null;
+		try {
+			spellChecker = createSpellChecker();
+		} catch (Exception ignored) {}
+
+	  // syntax highlighting
+	  SyntaxHighlighting syntaxHighlighting = new LatexSyntaxHighlighting(scePane, spellChecker, latexCommands.getCommands(), backgroundParser);
+		CombinedCodeHelper codeHelper = new CombinedCodeHelper();
+		CombinedCodeAssistant codeAssistant = new CombinedCodeAssistant();
+
+		setupLatexSCEPane(scePane, syntaxHighlighting, codeHelper, codeAssistant);
+	}
+
+  private static void setupLatexSCEPane(SCEPane scePane, SyntaxHighlighting syntaxHighlighting, CombinedCodeHelper codeHelper, CombinedCodeAssistant codeAssistant) {
+    setPaneProperties(scePane);
+    SCEDocument document = scePane.getDocument();
+
+    // add some styles to the document
+    LatexStyles.addStyles(document);
+
     syntaxHighlighting.start();
 
     // code completion and quick help
-    CombinedCodeHelper codeHelper = new CombinedCodeHelper();
 	  if (backgroundParser != null) {
 			codeHelper.addPatternHelper(new CiteHelper(backgroundParser));
 		  // add completion for \ref and \eqref
@@ -115,11 +145,10 @@ public class SCEManager {
 	  codeHelper.setAutoCompletionMinLetters(GProperties.getInt("editor.auto_completion.min_number_of_letters"));
 	  codeHelper.setAutoCompletionDelay(GProperties.getInt("editor.auto_completion.delay"));
     scePane.setCodeHelper(codeHelper);
-    scePane.setTabCompletion(new StaticCommandsCodeHelper("(\\p{L}*)", tabCompletions));
+    scePane.setTabCompletion(new StaticCommandsCodeHelper("(\\p{L}*)", tabCompletion));
     scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
     scePane.setLineBreakListener(new LatexLineBreakListener());
 
-	  CombinedCodeAssistant codeAssistant = new CombinedCodeAssistant();
     try {
 	    codeAssistant.addAssistant(new FileCreationSuggester());
       codeAssistant.addAssistant(new PackageImportSuggester(instance));
@@ -178,7 +207,7 @@ public class SCEManager {
 		codeHelper.setAutoCompletionMinLetters(GProperties.getInt("editor.auto_completion.min_number_of_letters"));
 		codeHelper.setAutoCompletionDelay(GProperties.getInt("editor.auto_completion.delay"));
 		scePane.setCodeHelper(codeHelper);
-		scePane.setTabCompletion(new StaticCommandsCodeHelper("(\\p{L}*)", tabCompletions));
+		scePane.setTabCompletion(new StaticCommandsCodeHelper("(\\p{L}*)", tabCompletion));
 		scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
 
 		CombinedCodeAssistant codeAssistant = new CombinedCodeAssistant();

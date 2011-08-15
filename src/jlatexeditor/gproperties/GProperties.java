@@ -26,7 +26,8 @@ import java.util.List;
  * Global properties for the editor.
  */
 public class GProperties {
-  public static final File CONFIG_FILE = new File(System.getProperty("user.home") + "/.jlatexeditor/global.properties");
+	public static final String SETTINGS_DIR = System.getProperty("user.home") + "/.jlatexeditor";
+	public static final File CONFIG_FILE = new File(SETTINGS_DIR + "/global.properties");
   public static HashMap<String, Object> TEXT_ANTIALIAS_MAP = new HashMap<String, Object>();
   public static String[] TEXT_ANTIALIAS_KEYS;
 

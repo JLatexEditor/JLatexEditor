@@ -1,11 +1,9 @@
-/**
- * @author Jörg Endrullis
- */
-
 package sce.component;
 
 import jlatexeditor.gproperties.GProperties;
+import jlatexeditor.syntaxhighlighting.states.RootState;
 import org.jetbrains.annotations.Nullable;
+import sce.syntaxhighlighting.ParserStateStack;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -17,6 +15,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+/**
+ * The document of an SCEPane.
+ *
+ * @author Jörg Endrullis
+ * @author Stefan Endrullis
+ */
 public class SCEDocument {
   // text data
   private SCEDocumentRows rows;
@@ -496,6 +500,23 @@ public class SCEDocument {
       }
     }
   }
+
+	public void invalidateSyntaxHighlighting() {
+    // get the actual document rows
+    SCEDocumentRow rows[] = getRowsModel().getRows();
+
+    // reset all states states and mark rows as modified
+    for (SCEDocumentRow row : rows) {
+      row.modified = true;
+      row.parserStateStack = null;
+    }
+
+    // initialize the first row with states state
+    rows[0].parserStateStack = new ParserStateStack();
+    rows[0].parserStateStack.push(new RootState());
+
+		documentChanged(new SCEDocumentEvent());
+	}
 
   /**
    * Informs the listeners about the document change.

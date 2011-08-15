@@ -2,112 +2,204 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="jlatexeditor.gui.TemplateEditor">
   <grid id="27dc6" binding="mainPanel" layout-manager="GridBagLayout">
     <constraints>
-      <xy x="20" y="20" width="500" height="400"/>
+      <xy x="20" y="20" width="635" height="464"/>
     </constraints>
     <properties/>
     <border type="none"/>
     <children>
-      <grid id="4ba60" layout-manager="GridBagLayout">
+      <splitpane id="f4385">
         <constraints>
-          <grid row="0" column="0" row-span="2" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-          <gridbag weightx="0.4" weighty="1.0"/>
-        </constraints>
-        <properties/>
-        <border type="none" title="Template Name"/>
-        <children>
-          <component id="22879" class="javax.swing.JButton" binding="deleteTemplateButton">
-            <constraints>
-              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-              <gridbag top="0" left="4" bottom="4" right="4" weightx="1.0" weighty="0.0"/>
-            </constraints>
-            <properties>
-              <text value="&amp;Delete"/>
-            </properties>
-          </component>
-          <component id="fb51c" class="javax.swing.JList" binding="templateList">
-            <constraints>
-              <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                <preferred-size width="150" height="50"/>
-              </grid>
-              <gridbag top="0" left="4" bottom="4" right="4" weightx="1.0" weighty="1.0"/>
-            </constraints>
-            <properties>
-              <selectionMode value="0"/>
-            </properties>
-          </component>
-          <component id="f1d01" class="javax.swing.JButton" binding="addTemplateButton">
-            <constraints>
-              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-              <gridbag top="0" left="4" bottom="4" right="0" weightx="1.0" weighty="0.0"/>
-            </constraints>
-            <properties>
-              <text value="&amp;Add"/>
-            </properties>
-          </component>
-        </children>
-      </grid>
-      <grid id="4da4f" layout-manager="GridBagLayout">
-        <constraints>
-          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="200" height="200"/>
+          </grid>
           <gridbag weightx="1.0" weighty="1.0"/>
         </constraints>
         <properties>
-          <minimumSize width="100" height="57"/>
-          <preferredSize width="120" height="57"/>
+          <dividerLocation value="244"/>
         </properties>
-        <border type="none" title="Template Code"/>
+        <border type="none"/>
         <children>
-          <component id="ebc65" class="sce.component.SourceCodeEditor" binding="editor" custom-create="true">
+          <grid id="4ba60" layout-manager="GridBagLayout">
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-              <gridbag top="0" left="4" bottom="4" right="4" weightx="1.0" weighty="1.0"/>
+              <splitpane position="left"/>
             </constraints>
             <properties/>
-          </component>
-        </children>
-      </grid>
-      <grid id="4168a" layout-manager="GridBagLayout">
-        <constraints>
-          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-          <gridbag weightx="1.0" weighty="0.0"/>
-        </constraints>
-        <properties/>
-        <border type="none" title="Attributes"/>
-        <children>
-          <component id="dd633" class="javax.swing.JCheckBox" binding="enabledCheckBox">
+            <border type="none" title="Template Name"/>
+            <children>
+              <component id="fb51c" class="javax.swing.JList" binding="templateList">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="50"/>
+                  </grid>
+                  <gridbag top="0" left="4" bottom="4" right="4" weightx="1.0" weighty="1.0"/>
+                </constraints>
+                <properties>
+                  <selectionMode value="0"/>
+                </properties>
+              </component>
+              <component id="f1d01" class="javax.swing.JButton" binding="addTemplateButton">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag top="0" left="4" bottom="4" right="4" weightx="1.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <text value="&amp;Add"/>
+                </properties>
+              </component>
+              <component id="bef4" class="javax.swing.JButton" binding="copyTemplateButton">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag top="0" left="0" bottom="4" right="4" weightx="1.2" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <text value="C&amp;opy"/>
+                </properties>
+              </component>
+              <component id="d4dcc" class="javax.swing.JButton" binding="renameTemplateButton">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag top="0" left="4" bottom="4" right="4" weightx="1.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <text value="&amp;Rename"/>
+                </properties>
+              </component>
+              <component id="22879" class="javax.swing.JButton" binding="deleteTemplateButton">
+                <constraints>
+                  <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag top="0" left="0" bottom="4" right="4" weightx="1.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <text value="&amp;Delete"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="999f0" layout-manager="GridBagLayout">
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-              <gridbag top="0" left="4" bottom="4" right="4" weightx="0.0" weighty="0.0"/>
-            </constraints>
-            <properties>
-              <text value="&amp;Enabled"/>
-            </properties>
-          </component>
-          <component id="9f9c3" class="javax.swing.JButton" binding="restoreDefaultButton">
-            <constraints>
-              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-              <gridbag top="0" left="4" bottom="4" right="4" weightx="0.0" weighty="0.0"/>
-            </constraints>
-            <properties>
-              <text value="&amp;Restore system template"/>
-            </properties>
-          </component>
-          <scrollpane id="93cc6">
-            <constraints>
-              <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-              <gridbag top="0" left="4" bottom="4" right="4" weightx="1.0" weighty="1.0"/>
+              <splitpane position="right"/>
             </constraints>
             <properties/>
             <border type="none"/>
             <children>
-              <component id="7a6f5" class="javax.swing.JTable" binding="attributesTable">
-                <constraints/>
+              <grid id="4da4f" layout-manager="GridBagLayout">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="1.0" weighty="1.0"/>
+                </constraints>
+                <properties>
+                  <minimumSize width="200" height="200"/>
+                  <preferredSize width="200" height="200"/>
+                </properties>
+                <border type="none" title="Template Code"/>
+                <children>
+                  <component id="ebc65" class="sce.component.SourceCodeEditor" binding="editor" custom-create="true">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <gridbag top="0" left="4" bottom="4" right="4" weightx="1.0" weighty="1.0"/>
+                    </constraints>
+                    <properties/>
+                  </component>
+                </children>
+              </grid>
+              <grid id="4168a" layout-manager="GridBagLayout">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
                 <properties/>
-              </component>
+                <border type="none" title="Arguments"/>
+                <children>
+                  <scrollpane id="93cc6">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <gridbag top="0" left="4" bottom="4" right="4" weightx="1.0" weighty="0.0"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="a819c" class="jlatexeditor.gui.TemplateEditor$MinimalTable" binding="argumentsTable">
+                        <constraints/>
+                        <properties/>
+                      </component>
+                    </children>
+                  </scrollpane>
+                </children>
+              </grid>
+              <grid id="ecc9d" binding="generatePanel" layout-manager="GridBagLayout">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties/>
+                <border type="none" title="Derived argument values"/>
+                <children>
+                  <scrollpane id="55390">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <gridbag top="0" left="4" bottom="4" right="4" weightx="1.0" weighty="0.0"/>
+                    </constraints>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="12ec5" class="jlatexeditor.gui.TemplateEditor$MinimalTable" binding="generateTable">
+                        <constraints/>
+                        <properties/>
+                      </component>
+                    </children>
+                  </scrollpane>
+                </children>
+              </grid>
+              <grid id="5a046" layout-manager="GridBagLayout">
+                <constraints>
+                  <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="ede79" class="javax.swing.JButton" binding="saveButton">
+                    <constraints>
+                      <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="0" left="4" bottom="4" right="4" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="&amp;Save"/>
+                    </properties>
+                  </component>
+                  <component id="3490a" class="javax.swing.JButton" binding="cancelButton" default-binding="true">
+                    <constraints>
+                      <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag top="0" left="0" bottom="4" right="4" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="&amp;Cancel"/>
+                    </properties>
+                  </component>
+                  <component id="dd633" class="javax.swing.JCheckBox" binding="enabledCheckBox">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="0" left="4" bottom="4" right="4" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="&amp;Enabled"/>
+                    </properties>
+                  </component>
+                  <component id="9f9c3" class="javax.swing.JButton" binding="restoreSystemTemplateButton">
+                    <constraints>
+                      <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="0" left="4" bottom="4" right="4" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="Restore system template"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
             </children>
-          </scrollpane>
+          </grid>
         </children>
-      </grid>
+      </splitpane>
     </children>
   </grid>
 </form>

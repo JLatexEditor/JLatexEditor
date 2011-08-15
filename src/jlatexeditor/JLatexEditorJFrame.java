@@ -46,8 +46,8 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction, ActionListener, WindowListener, ChangeListener, MouseMotionListener, TreeSelectionListener, SearchChangeListener, SCETabbedPane.CloseListener {
-  public static final File FILE_LAST_SESSION = new File(System.getProperty("user.home") + "/.jlatexeditor/last.session");
-  public static final File FILE_RECENT = new File(System.getProperty("user.home") + "/.jlatexeditor/recent");
+  public static final File FILE_LAST_SESSION = new File(GProperties.SETTINGS_DIR + "/last.session");
+  public static final File FILE_RECENT = new File(GProperties.SETTINGS_DIR + "/recent");
   public static final File CHANGELOG = new File("CHANGELOG");
 
 	/** Logger. */

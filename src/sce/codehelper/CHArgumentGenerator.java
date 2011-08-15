@@ -3,6 +3,8 @@ package sce.codehelper;
 import util.Function1;
 
 /**
+ * Argument generation.
+ *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 public class CHArgumentGenerator {
@@ -20,7 +22,7 @@ public class CHArgumentGenerator {
 	}
 
 	public String getArgumentName() {
-		return argumentName;
+		return argument != null ? argument.getName() : argumentName;
 	}
 
 	public CHCommandArgument getArgument() {
@@ -29,5 +31,13 @@ public class CHArgumentGenerator {
 
 	public Function1<String, String> getFunction() {
 		return function;
+	}
+
+	public void setFunction(Function1<String, String> function) {
+		this.function = function;
+	}
+
+	public String getFunctionName() {
+		return CHFunctions.getName(function);
 	}
 }

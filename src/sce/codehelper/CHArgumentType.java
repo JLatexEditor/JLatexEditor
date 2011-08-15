@@ -8,6 +8,9 @@ import java.util.HashMap;
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 public class CHArgumentType {
+	public static final String NO_TYPE = "<no type>";
+	public static final String[] TYPES = {NO_TYPE, "file", "title", "italic", "bold", "label_def", "label_ref", "cite_key_list", "opening_env", "closing_env"};
+
 	private String name;
 	private HashMap<String, String> properties = new HashMap<String, String>();
 
