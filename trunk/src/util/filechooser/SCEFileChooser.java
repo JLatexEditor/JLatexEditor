@@ -537,7 +537,7 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
   public void keyReleased(KeyEvent keyEvent) {
   }
 
-  private class NamedEntry {
+  public static class NamedEntry {
     private String name;
     private Object object;
 
@@ -559,7 +559,7 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
     }
   }
 
-  private class FileEntry extends NamedEntry {
+  public static class FileEntry extends NamedEntry {
     private boolean isDirectory;
     private boolean isTexFile;
 
@@ -583,7 +583,7 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
     }
   }
 
-  private class FileEntryComparator implements Comparator<FileEntry> {
+  public static class FileEntryComparator implements Comparator<FileEntry> {
     public int compare(FileEntry entry1, FileEntry entry2) {
       if(entry1.isDirectory && !entry2.isDirectory()) return -1;
       if(!entry1.isDirectory && entry2.isDirectory()) return 1;

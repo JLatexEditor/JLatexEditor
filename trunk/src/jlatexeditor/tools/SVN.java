@@ -102,12 +102,14 @@ public class SVN {
     return new Tuple<Boolean, String>(success, builder.toString());
   }
 
-  public synchronized ArrayList<StatusResult> status(File dir) throws Exception {
+  public synchronized ArrayList<StatusResult> status(File dir, boolean remote) throws Exception {
     ArrayList<StatusResult> results = new ArrayList<StatusResult>();
 
     Process svn;
     try {
-      svn = ProcessUtil.exec(new String[]{"svn", "--non-interactive", "--show-updates", "status"}, dir);
+      svn = remote ?
+              ProcessUtil.exec(new String[]{"svn", "--non-interactive", "--show-updates", "status"}, dir) :
+              ProcessUtil.exec(new String[]{"svn", "--non-interactive", "status"}, dir);
     } catch (Exception e) {
       e.printStackTrace();
       throw new Exception("SVN status failed!", e);
@@ -118,33 +120,50 @@ public class SVN {
     while ((line = in.readLine()) != null) {
       char c = line.charAt(0);
       if (line.charAt(1) == ' ') {
-        int serverStatus = line.substring(0,10).indexOf('*') >= 0 ? StatusResult.SERVER_OUTDATED : StatusResult.SERVER_UP_TO_DATE;
+        int cutColumn = remote ? 10 : 8;
+        int serverStatus =
+                line.substring(0,cutColumn).indexOf('*') >= 0
+                        || line.substring(0,cutColumn).indexOf('!') >= 0 ?
+                        StatusResult.SERVER_OUTDATED : StatusResult.SERVER_UP_TO_DATE;
 
-        String revisionAndFile = line.substring(8).trim();
+        String revisionAndFile = line.substring(cutColumn).trim();
         int spaceIndex = revisionAndFile.indexOf(' ');
         String fileName = spaceIndex == -1 ? revisionAndFile : revisionAndFile.substring(spaceIndex).trim();
         File file = new File(dir, fileName);
         switch (c) {
           case ('A'):
-            results.add(new StatusResult(file, StatusResult.LOCAL_ADD, serverStatus));
+            results.add(new StatusResult(file, fileName, StatusResult.LOCAL_ADD, serverStatus));
             break;
           case ('D'):
-            results.add(new StatusResult(file, StatusResult.LOCAL_DELETE, serverStatus));
+            results.add(new StatusResult(file, fileName, StatusResult.LOCAL_DELETE, serverStatus));
             break;
           case ('M'):
-            results.add(new StatusResult(file, StatusResult.LOCAL_MODIFIED, serverStatus));
+            results.add(new StatusResult(file, fileName, StatusResult.LOCAL_MODIFIED, serverStatus));
             break;
           case ('C'):
-            results.add(new StatusResult(file, StatusResult.LOCAL_CONFLICT, serverStatus));
+            results.add(new StatusResult(file, fileName, StatusResult.LOCAL_CONFLICT, serverStatus));
             break;
           case ('?'):
-            results.add(new StatusResult(file, StatusResult.LOCAL_NOT_SVN, serverStatus));
+            results.add(new StatusResult(file, fileName, StatusResult.LOCAL_NOT_SVN, serverStatus));
             break;
           case (' '):
-            results.add(new StatusResult(file, StatusResult.LOCAL_UNCHANGED, serverStatus));
+            results.add(new StatusResult(file, fileName, StatusResult.LOCAL_UNCHANGED, serverStatus));
             break;
         }
       }
+    }
+
+    // in case of errors, try without remove status
+    if(remote && results.size() == 0) {
+      try {
+        BufferedReader errIn = new BufferedReader(new InputStreamReader(svn.getErrorStream()), 100000);
+        String err = errIn.readLine();
+        errIn.close();
+
+        if(err != null && err.startsWith("svn: ")) {
+          return status(dir, false);
+        }
+      } catch (Throwable e) { /* ignore */ }
     }
 
     return results;
@@ -208,17 +227,23 @@ public class SVN {
     public static final int SERVER_OUTDATED = 1;
 
     private File file;
+    private String relativePath;
     private int localStatus;
     private int serverStatus;
 
-    public StatusResult(File file, int localStatus, int serverStatus) {
+    public StatusResult(File file, String relativePath, int localStatus, int serverStatus) {
       this.file = file;
+      this.relativePath = relativePath;
       this.localStatus = localStatus;
       this.serverStatus = serverStatus;
     }
 
     public File getFile() {
       return file;
+    }
+
+    public String getRelativePath() {
+      return relativePath;
     }
 
     public int getLocalStatus() {

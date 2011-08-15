@@ -386,6 +386,8 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
     } catch (IOException ignored) {
     }
 
+    statusBar = new StatusBar(this);
+
     // symbols panel
     symbolsPanel = new SymbolsPanel(this);
     // structure view
@@ -404,8 +406,6 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
         toolsTab.setVisible(true);
       }
     });
-
-    statusBar = new StatusBar(this);
 
     cp.add(textToolsSplit, BorderLayout.CENTER);
     cp.add(statusBar, BorderLayout.SOUTH);
