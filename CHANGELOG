@@ -10,7 +10,7 @@ New Features and other Changes in JLatexEditor
 
 * new features
 	- diff view shows changes within lines and allows you to take over or reject particular changes
-	- template editor and user defined templates
+	- TODO: template editor and user defined templates
 * minor enhancements
   - search is automatically limited to selection range if selection is spanning at least one line
   - the depth of the awesome deep bracket matching can now be configured (editor.bracket_matching.depth)
