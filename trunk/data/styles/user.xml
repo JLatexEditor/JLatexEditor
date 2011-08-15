@@ -39,4 +39,6 @@
 
 	<element name="env_name" style="plain" foreground="0000FF"/>
 
+	<element name="template_argument_defined" style="italic" foreground="9F0D79"/>
+	<element name="template_argument_not_defined" style="plain" background="fdffc5"/>
 </styles>

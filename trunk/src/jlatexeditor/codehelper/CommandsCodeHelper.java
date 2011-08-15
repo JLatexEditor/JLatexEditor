@@ -6,17 +6,13 @@ import jlatexeditor.SCEManager;
 import sce.codehelper.CHCommand;
 import sce.codehelper.CHCommandArgument;
 import sce.codehelper.PatternPair;
-import sce.codehelper.WordWithPos;
 import util.AbstractTrie;
 import util.Function1;
 import de.endrullis.utils.collections.MergeSortIterable;
 import util.Trie;
 import util.TrieSet;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * Code helper for all LaTeX commands (static, user defined, and used ones).

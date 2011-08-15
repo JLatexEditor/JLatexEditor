@@ -10,7 +10,6 @@ import sce.component.AbstractResource;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Pattern;

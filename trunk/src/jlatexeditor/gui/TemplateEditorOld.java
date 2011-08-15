@@ -44,7 +44,7 @@ public class TemplateEditorOld extends JDialog {
     attributesTableModel.setColumnIdentifiers(new String[] {"Name", "Value", "Values", "Optional", "Type", "Completion", "Hint"});
 
     // populate commandList
-    commands = SCEManager.getTabCompletions().getCommands().getObjectsIterable("").toList();
+    commands = SCEManager.getTabCompletion().getObjectsIterable("").toList();
     for(CHCommand command : commands) {
       commandListModel.addElement(command);
     }
