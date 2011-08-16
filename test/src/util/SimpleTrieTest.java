@@ -29,6 +29,12 @@ public class SimpleTrieTest extends TestCase {
     assertEquals("", root.getMaxCommonPrefix("bla"));
     assertEquals("as", root.getMaxCommonPrefix("asbla"));
     assertEquals(true, root.remove("asdf"));
+	  assertEquals(1, root.add("asdf", 123));
+	  assertEquals(Arrays.asList(123), root.getObjects("", 100));
+	  assertEquals(Arrays.asList(123), root.getObjects("asd", 100));
+	  assertEquals(Arrays.asList(123), root.getObjects("asdf", 100));
+	  assertEquals(Arrays.asList(), root.getObjects("asdff", 100));
+    assertEquals(true, root.remove("asdf"));
     assertEquals(1, root.add("asdf"));
     assertEquals(1, root.add("aaa"));
     assertEquals(2, root.add("aaa"));
