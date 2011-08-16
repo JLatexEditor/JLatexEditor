@@ -174,7 +174,7 @@ public class SVNView extends JPanel implements ActionListener {
 
   private boolean nameFilter(String name) {
     if(name.startsWith(".")) return false;
-    if(disallowedExtension.contains(name.substring(name.length()-4))) return false;
+    if(name.length() < 4 || disallowedExtension.contains(name.substring(name.length()-4))) return false;
     if(name.contains(".synctex.gz")) return false;
 
     return true;
