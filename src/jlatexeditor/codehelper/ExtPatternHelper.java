@@ -4,6 +4,7 @@ import jlatexeditor.gproperties.GProperties;
 import sce.codehelper.CHCommand;
 import sce.codehelper.WordWithPos;
 import util.Function1;
+import util.SimpleMergedTrie;
 
 import java.util.Comparator;
 
@@ -52,17 +53,7 @@ public abstract class ExtPatternHelper<T> extends PatternHelper {
 
 	protected abstract Function1<T, Boolean> minUsage(final int minUsageCount);
 
-	protected String maxCommonPrefix(String prefix1, String prefix2) {
-		char[] chars1 = prefix1.toCharArray();
-		char[] chars2 = prefix2.toCharArray();
-
-		int i;
-		for (i = 0; i < chars1.length && i < chars2.length; i++) {
-			if (chars1[i] != chars2[i]) {
-				return prefix1.substring(0, i);
-			}
-		}
-
-		return prefix1.substring(0, i);
+	public static String maxCommonPrefix(String prefix1, String prefix2) {
+		return SimpleMergedTrie.maxCommonPrefix(prefix1, prefix2);
 	}
 }
