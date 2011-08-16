@@ -121,10 +121,10 @@ public class SVN {
       char c = line.charAt(0);
       if (line.charAt(1) == ' ') {
         int cutColumn = remote ? 10 : 8;
-        int serverStatus =
+        StatusResult.Server serverStatus =
                 line.substring(0,cutColumn).indexOf('*') >= 0
                         || line.substring(0,cutColumn).indexOf('!') >= 0 ?
-                        StatusResult.SERVER_OUTDATED : StatusResult.SERVER_UP_TO_DATE;
+                        StatusResult.Server.outdated : StatusResult.Server.upToDate;
 
         String revisionAndFile = line.substring(cutColumn).trim();
         int spaceIndex = revisionAndFile.indexOf(' ');
@@ -132,22 +132,22 @@ public class SVN {
         File file = new File(dir, fileName);
         switch (c) {
           case ('A'):
-            results.add(new StatusResult(file, fileName, StatusResult.LOCAL_ADD, serverStatus));
+            results.add(new StatusResult(file, fileName, StatusResult.Local.add, serverStatus));
             break;
           case ('D'):
-            results.add(new StatusResult(file, fileName, StatusResult.LOCAL_DELETE, serverStatus));
+            results.add(new StatusResult(file, fileName, StatusResult.Local.delete, serverStatus));
             break;
           case ('M'):
-            results.add(new StatusResult(file, fileName, StatusResult.LOCAL_MODIFIED, serverStatus));
+            results.add(new StatusResult(file, fileName, StatusResult.Local.modified, serverStatus));
             break;
           case ('C'):
-            results.add(new StatusResult(file, fileName, StatusResult.LOCAL_CONFLICT, serverStatus));
+            results.add(new StatusResult(file, fileName, StatusResult.Local.conflict, serverStatus));
             break;
           case ('?'):
-            results.add(new StatusResult(file, fileName, StatusResult.LOCAL_NOT_SVN, serverStatus));
+            results.add(new StatusResult(file, fileName, StatusResult.Local.notInSvn, serverStatus));
             break;
           case (' '):
-            results.add(new StatusResult(file, fileName, StatusResult.LOCAL_UNCHANGED, serverStatus));
+            results.add(new StatusResult(file, fileName, StatusResult.Local.unchanged, serverStatus));
             break;
         }
       }
@@ -212,22 +212,15 @@ public class SVN {
   }
 
   public static class StatusResult {
-    public static final int LOCAL_ADD = 0;
-    public static final int LOCAL_DELETE = 1;
-    public static final int LOCAL_MODIFIED = 2;
-    public static final int LOCAL_CONFLICT = 3;
-    public static final int LOCAL_UNCHANGED = 4;
-    public static final int LOCAL_NOT_SVN = 5;
-
-    public static final int SERVER_UP_TO_DATE = 0;
-    public static final int SERVER_OUTDATED = 1;
+	  public enum Local { add, delete, modified, conflict, unchanged, notInSvn }
+	  public enum Server { upToDate, outdated }
 
     private File file;
     private String relativePath;
-    private int localStatus;
-    private int serverStatus;
+    private Local localStatus;
+    private Server serverStatus;
 
-    public StatusResult(File file, String relativePath, int localStatus, int serverStatus) {
+    public StatusResult(File file, String relativePath, Local localStatus, Server serverStatus) {
       this.file = file;
       this.relativePath = relativePath;
       this.localStatus = localStatus;
@@ -242,11 +235,11 @@ public class SVN {
       return relativePath;
     }
 
-    public int getLocalStatus() {
+    public Local getLocalStatus() {
       return localStatus;
     }
 
-    public int getServerStatus() {
+    public Server getServerStatus() {
       return serverStatus;
     }
   }
