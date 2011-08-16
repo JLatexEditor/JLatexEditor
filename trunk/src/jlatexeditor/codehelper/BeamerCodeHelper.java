@@ -50,7 +50,6 @@ public class BeamerCodeHelper extends PatternHelper {
 
 	public Iterable<CHCommand> getCompletions(String search) {
 		List<String> values = PackagesExtractor.getPackageParser().getPackages().getStrings("beamer" + type + search, 20);
-		if (values == null) values = new ArrayList<String>();
 
 		return CollectionUtils.map(values, new Function1<String, CHCommand>() {
 			public CHCommand apply(String value) {

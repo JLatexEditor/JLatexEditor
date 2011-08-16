@@ -10,7 +10,7 @@ import java.util.*;
  *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
-public class SimpleTrie<T> implements Trie<T>, Iterable<T> {
+public class SimpleTrie<T> extends AbstractSimpleTrie<T> {
   private int count = 0;
   private TreeMap<Character, SimpleTrie<T>> map = new TreeMap<Character, SimpleTrie<T>>();
 
@@ -127,7 +127,7 @@ public class SimpleTrie<T> implements Trie<T>, Iterable<T> {
     for (char aChar : chars) {
       t = t.map.get(aChar);
       if (t == null) {
-        return null;
+        return new ArrayList<String>();
       }
     }
 
@@ -164,11 +164,6 @@ public class SimpleTrie<T> implements Trie<T>, Iterable<T> {
 				});
 			}
 		};
-	}
-
-	@Override
-	public Iterator<T> iterator() {
-		return getObjectsIterable("").iterator();
 	}
 
 	public class TrieIterator<T> extends ExtIterator<SimpleTrie<T>> {

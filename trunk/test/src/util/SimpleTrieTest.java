@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
-public class TrieTest extends TestCase {
+public class SimpleTrieTest extends TestCase {
   public void testTrie() {
     SimpleTrie<Object> root = new SimpleTrie<Object>();
     assertEquals(1, root.add("asdf"));
@@ -20,6 +20,12 @@ public class TrieTest extends TestCase {
     assertEquals("asdf", root.getMaxCommonPrefix("a"));
     assertEquals("asdf", root.getMaxCommonPrefix("asd"));
     assertEquals("asdf", root.getMaxCommonPrefix("asdf"));
+    assertEquals("asdf", root.getMaxCommonPrefix("asdff"));
+    assertEquals(Arrays.asList("asdf"), root.getStrings("", 1));
+    assertEquals(Arrays.asList("asdf"), root.getStrings("", 100));
+    assertEquals(Arrays.asList("asdf"), root.getStrings("asd", 100));
+    assertEquals(Arrays.asList("asdf"), root.getStrings("asdf", 100));
+    assertEquals(Arrays.asList(), root.getStrings("asdff", 100));
     assertEquals("", root.getMaxCommonPrefix("bla"));
     assertEquals("as", root.getMaxCommonPrefix("asbla"));
     assertEquals(true, root.remove("asdf"));
