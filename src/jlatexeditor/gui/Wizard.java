@@ -1,6 +1,7 @@
 package jlatexeditor.gui;
 
 import de.endrullis.utils.BetterProperties2;
+import jlatexeditor.SCEManager;
 import jlatexeditor.gproperties.GProperties;
 import util.StreamUtils;
 import util.SystemUtils;
@@ -82,6 +83,8 @@ public class Wizard extends JDialog implements WindowListener {
 
   public Wizard(JFrame owner) {
     super(owner, "Quick Setup Wizard");
+
+	  SCEManager.setWindowIcon(this);
 
     JPanel main = new JPanel();
     JScrollPane scrollPane = new JScrollPane(main);

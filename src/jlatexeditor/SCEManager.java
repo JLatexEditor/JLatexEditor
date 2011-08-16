@@ -28,6 +28,7 @@ import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Properties;
 
 /**
@@ -47,6 +48,13 @@ public class SCEManager {
 		} catch (IOException ignored) {}
 	}};
 
+	private static ArrayList<Image> WINDOW_ICONS = new ArrayList<Image>() {{
+		try {
+			for (int size : new int[]{16, 32, 64}) {
+				add(getDirectImageIcon("images/tex-cookie_" + size + ".png").getImage());
+			}
+		} catch (Exception ignored) {}
+	}};
 
   public static SCEManagerInteraction getInstance() {
     return instance;
@@ -300,5 +308,14 @@ public class SCEManager {
 	 */
 	public static ImageIcon getMappedImageIcon(String key) throws IOException {
 		return getDirectImageIcon(iconMap.getProperty(key));
+	}
+
+	public static void setWindowIcon(Window window) {
+		// set icons
+		try {
+			window.setIconImages(WINDOW_ICONS);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
