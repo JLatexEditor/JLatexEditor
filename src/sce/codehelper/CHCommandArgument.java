@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public class CHCommandArgument implements Cloneable {
   // the name
   private String name = null;
+	private String initialValue = null;
   private boolean optional = false;
 	private boolean secondOptional = false;
 	private boolean completion;
@@ -25,7 +26,6 @@ public class CHCommandArgument implements Cloneable {
 
   // while editing (for templates)
   private String value = null;
-  private String initialValue = null;
   private ArrayList<SCEDocumentRange> occurrences = null;
 
 	/**
@@ -249,6 +249,32 @@ public class CHCommandArgument implements Cloneable {
   public void setOccurrences(ArrayList<SCEDocumentRange> occurrences) {
     this.occurrences = occurrences;
   }
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof CHCommandArgument) {
+			CHCommandArgument that = (CHCommandArgument) obj;
+			return
+				this.name.equals(that.name) &&
+				this.initialValue.equals(that.initialValue) &&
+				this.optional == that.optional &&
+				this.secondOptional == that.secondOptional &&
+				this.completion == that.completion &&
+				equalsNull(this.type, that.type) &&
+				equalsNull(this.hint, that.hint) &&
+				this.values.equals(that.values) &&
+				this.generators.equals(that.generators);
+		} else {
+			return false;
+		}
+	}
+
+	private boolean equalsNull(Object o1, Object o2) {
+	  if (o1 == null || o2 == null) {
+		  return o1 == o2;
+	  }
+	  return o1.equals(o2);
+	}
 
 	@Override
 	public CHCommandArgument clone() {

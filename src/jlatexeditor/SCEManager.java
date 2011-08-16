@@ -21,9 +21,14 @@ import sce.component.SourceCodeEditor;
 import sce.syntaxhighlighting.SyntaxHighlighting;
 import util.*;
 
+import javax.swing.*;
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
+import java.util.Properties;
 
 /**
  * Managing the creation of SourceCodeEditors.
@@ -35,6 +40,13 @@ public class SCEManager {
   private static StaticCommandsReader latexCommands = new StaticCommandsReader("data/codehelper/commands.xml");
   private static StaticCommandsReader systemTabCompletion = new StaticCommandsReader("data/codehelper/liveTemplates.xml");
   private static StaticCommandsReader tabCompletion = new StaticCommandsReader("data/codehelper/liveTemplates.xml");
+
+	private static Properties iconMap = new Properties() {{
+		try {
+			load(StreamUtils.getInputStream("data/icons/icon_map.properties"));
+		} catch (IOException ignored) {}
+	}};
+
 
   public static SCEManagerInteraction getInstance() {
     return instance;
@@ -267,4 +279,12 @@ public class SCEManager {
       }
     });
   }
+
+	public static ImageIcon getDirectImageIcon(String filename) throws IOException {
+		return new ImageIcon(StreamUtils.readBytesFromInputStream(StreamUtils.getInputStream(filename)));
+	}
+
+	public static ImageIcon getMappedImageIcon(String key) throws IOException {
+		return getDirectImageIcon(iconMap.getProperty(key));
+	}
 }

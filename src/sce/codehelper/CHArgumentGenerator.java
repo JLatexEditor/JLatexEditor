@@ -40,4 +40,14 @@ public class CHArgumentGenerator {
 	public String getFunctionName() {
 		return CHFunctions.getName(function);
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof CHArgumentGenerator) {
+			CHArgumentGenerator that = (CHArgumentGenerator) obj;
+			return this.argument.getName().equals(that.argument.getName()) && this.function.equals(that.function);
+		} else {
+			return false;
+		}
+	}
 }

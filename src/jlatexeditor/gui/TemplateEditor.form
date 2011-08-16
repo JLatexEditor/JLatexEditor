@@ -112,7 +112,7 @@
                 <children>
                   <scrollpane id="93cc6">
                     <constraints>
-                      <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <grid row="0" column="0" row-span="3" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                       <gridbag top="0" left="4" bottom="4" right="4" weightx="1.0" weighty="0.0"/>
                     </constraints>
                     <properties/>
@@ -124,9 +124,36 @@
                       </component>
                     </children>
                   </scrollpane>
+                  <component id="6576b" class="javax.swing.JButton" binding="moveArgumentUpButton">
+                    <constraints>
+                      <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="Move up"/>
+                    </properties>
+                  </component>
+                  <component id="c47b6" class="javax.swing.JButton" binding="moveArgumentDownButton">
+                    <constraints>
+                      <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="Move down"/>
+                    </properties>
+                  </component>
+                  <component id="3cbc5" class="javax.swing.JButton" binding="deleteArgumentButton">
+                    <constraints>
+                      <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="Delete"/>
+                    </properties>
+                  </component>
                 </children>
               </grid>
-              <grid id="ecc9d" binding="generatePanel" layout-manager="GridBagLayout">
+              <grid id="ecc9d" binding="generatorPanel" layout-manager="GridBagLayout">
                 <constraints>
                   <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                   <gridbag weightx="0.0" weighty="0.0"/>
@@ -142,12 +169,21 @@
                     <properties/>
                     <border type="none"/>
                     <children>
-                      <component id="12ec5" class="jlatexeditor.gui.TemplateEditor$MinimalTable" binding="generateTable">
+                      <component id="12ec5" class="jlatexeditor.gui.TemplateEditor$MinimalTable" binding="generatorTable">
                         <constraints/>
                         <properties/>
                       </component>
                     </children>
                   </scrollpane>
+                  <component id="9a1c6" class="javax.swing.JButton" binding="deleteGeneratorButton">
+                    <constraints>
+                      <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <gridbag weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="Delete"/>
+                    </properties>
+                  </component>
                 </children>
               </grid>
               <grid id="5a046" layout-manager="GridBagLayout">
@@ -182,6 +218,7 @@
                       <gridbag top="0" left="4" bottom="4" right="4" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
+                      <enabled value="false"/>
                       <text value="&amp;Enabled"/>
                     </properties>
                   </component>

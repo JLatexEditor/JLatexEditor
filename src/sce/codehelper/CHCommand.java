@@ -170,6 +170,13 @@ public class CHCommand implements Comparable, Cloneable {
     return getName();
   }
 
+	/**
+	 * Simple equals method that does not compare the arguments but only command properties and the number of arguments.
+	 * Use @{deepEquals} if you want the arguments also be compared.
+	 *
+	 * @param obj other commands object
+	 * @return true if both commands are equal on the surface
+	 */
   public boolean equals(Object obj) {
     if(!(obj instanceof CHCommand)) return false;
     CHCommand o = (CHCommand) obj;
@@ -179,18 +186,15 @@ public class CHCommand implements Comparable, Cloneable {
             || !equalsNull(style, o.style)
             || !equalsNull(hint, o.hint)) return false;
 
-    if(argumentsHashMap.size() != o.argumentsHashMap.size()) return false;
-    /* TODO: comparison of arguments
-    for(int argNr = 0; argNr < arguments.size(); argNr++) {
-      if(!arguments.get(argNr).equals(o.arguments.get(argNr))) return false;
-    }
-    */
-
-    return true;
+	  return argumentsHashMap.size() == o.argumentsHashMap.size();
   }
 
+	public boolean deepEquals(CHCommand that) {
+		return this.equals(that) && this.argumentsHashMap.equals(that.argumentsHashMap);
+	}
+
   private boolean equalsNull(Object o1, Object o2) {
-    if(o1 == null || o2 == null) return o1 != o2;
+    if (o1 == null || o2 == null) return o1 == o2;
     return o1.equals(o2);
   }
 
@@ -260,6 +264,20 @@ public class CHCommand implements Comparable, Cloneable {
 
 		public ArrayList<CHCommandArgument> getList() {
 			return list;
+		}
+
+		protected boolean hasMapEquals(Object o) {
+			return super.equals(o);
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (o instanceof ArgumentsHashMap) {
+				ArgumentsHashMap that = (ArgumentsHashMap) o;
+				return this.list.equals(that.list) && this.hasMapEquals(that);
+			} else {
+				return false;
+			}
 		}
 	}
 }

@@ -70,11 +70,6 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
     windowTitleSuffix = "JLatexEditor " + version;
   }
 
-	private Properties iconMap = new Properties() {{
-		try {
-			load(StreamUtils.getInputStream("data/icons/icon_map.properties"));
-		} catch (IOException ignored) {}
-	}};
   private JMenuBar menuBar = null;
 	private JMenu recentFilesMenu;
 	private SizeLimitedStack<String> recentFiles = new SizeLimitedStack<String>(20);
@@ -192,7 +187,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
     if(SystemUtils.isLinuxOS() || SystemUtils.isMacOS()) {
       try {
         ProcessUtil.exec(new String[] {"chmod", "+x", "jlatexeditor"}, null);
-      } catch(Throwable e) { }
+      } catch(Throwable ignored) { }
     }
 
 
@@ -204,7 +199,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 
 		// set icon
 		try {
-			setIconImage(new ImageIcon(StreamUtils.readBytesFromInputStream(StreamUtils.getInputStream("images/icon_32.png"))).getImage());
+			setIconImage(SCEManager.getDirectImageIcon("images/icon_32.png").getImage());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -533,8 +528,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
     }
 		// set icon
 		try {
-			String filename = iconMap.getProperty(command);
-			menuItem.setIcon(new ImageIcon(StreamUtils.readBytesFromInputStream(StreamUtils.getInputStream(filename))));
+			menuItem.setIcon(SCEManager.getMappedImageIcon(command));
 		} catch (Exception ignored) {
 		}
     menuItem.addActionListener(this);
