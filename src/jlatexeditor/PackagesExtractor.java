@@ -5,9 +5,9 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 import sce.codehelper.CHCommand;
 import sce.codehelper.CHCommandArgument;
+import util.SetTrie;
+import util.SimpleTrie;
 import util.StreamUtils;
-import util.Trie;
-import util.TrieSet;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -66,9 +66,9 @@ public class PackagesExtractor {
 	public static class PackageParser extends DefaultHandler implements ContentHandler {
 		private Package pack;
 		private String debPack;
-		private Trie<Package> packages = new Trie<Package>();
-		private TrieSet<Command> commands = new TrieSet<Command>();
-		private TrieSet<Environment> environments = new TrieSet<Environment>();
+		private SimpleTrie<Package> packages = new SimpleTrie<Package>();
+		private SetTrie<Command> commands = new SetTrie<Command>();
+		private SetTrie<Environment> environments = new SetTrie<Environment>();
 
 		public PackageParser(String fileName) {
 			parse(fileName);
@@ -121,15 +121,15 @@ public class PackagesExtractor {
 			super.fatalError(e);
 		}
 
-		public Trie<Package> getPackages() {
+		public SimpleTrie<Package> getPackages() {
 			return packages;
 		}
 
-		public TrieSet<Command> getCommands() {
+		public SetTrie<Command> getCommands() {
 			return commands;
 		}
 
-		public TrieSet<Environment> getEnvironments() {
+		public SetTrie<Environment> getEnvironments() {
 			return environments;
 		}
 

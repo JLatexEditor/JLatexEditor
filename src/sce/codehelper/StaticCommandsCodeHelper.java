@@ -1,7 +1,7 @@
 package sce.codehelper;
 
 import jlatexeditor.codehelper.PatternHelper;
-import util.Trie;
+import util.SimpleTrie;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,9 +15,9 @@ import java.util.List;
  */
 public class StaticCommandsCodeHelper extends PatternHelper {
   /** The command reference. */
-  protected Trie<CHCommand> commands = null;
+  protected SimpleTrie<CHCommand> commands = null;
 	/** Maps an environment name to a list of commands. */
-	protected HashMap<String,ArrayList<CHCommand>> environments = new HashMap<String, ArrayList<CHCommand>>();
+	protected HashMap<String,ArrayList<CHCommand>> scopes = new HashMap<String, ArrayList<CHCommand>>();
   /**
    * The last command that has been found.
    */
@@ -26,7 +26,7 @@ public class StaticCommandsCodeHelper extends PatternHelper {
   public StaticCommandsCodeHelper(String patternString, StaticCommandsReader commandsReader) {
     pattern = new PatternPair(patternString);
 	  commands = commandsReader.getCommands();
-	  environments = commandsReader.getScopes();
+	  scopes = commandsReader.getScopes();
   }
 
 	@Override

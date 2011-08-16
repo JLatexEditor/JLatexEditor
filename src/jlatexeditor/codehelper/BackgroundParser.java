@@ -6,8 +6,8 @@ import jlatexeditor.PackagesExtractor;
 import sce.component.AbstractResource;
 import sce.component.SourceCodeEditor;
 import util.ParseUtil;
-import util.Trie;
-import util.TrieSet;
+import util.SetTrie;
+import util.SimpleTrie;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -52,7 +52,7 @@ public class BackgroundParser extends Thread {
 		return stableState.files;
 	}
 
-	public Trie<?> getWords() {
+	public SimpleTrie<?> getWords() {
     return stableState.words;
   }
 
@@ -61,11 +61,11 @@ public class BackgroundParser extends Thread {
 	}
 
 	/**
-	 * Returns all imported packages as Trie.
+	 * Returns all imported packages as SimpleTrie.
 	 *
-	 * @return all imported packages as Trie
+	 * @return all imported packages as SimpleTrie
 	 */
-	public Trie<Package> getPackages() {
+	public SimpleTrie<Package> getPackages() {
 		return stableState.packages;
 	}
 
@@ -78,35 +78,35 @@ public class BackgroundParser extends Thread {
 		return stableState.getIndirectlyImportedPackages();
 	}
 
-	public Trie<?> getCommandNames() {
+	public SimpleTrie<?> getCommandNames() {
     return stableState.commandNames;
   }
 
-	public TrieSet<String> getCommandsAndFiles() {
+	public SetTrie<String> getCommandsAndFiles() {
 		return stableState.commandsAndFiles;
 	}
 
-	public Trie<Command> getCommands() {
+	public SimpleTrie<Command> getCommands() {
     return stableState.commands;
   }
 
-	public Trie<Environment> getEnvironments() {
+	public SimpleTrie<Environment> getEnvironments() {
 		return stableState.environments;
 	}
 
-  public Trie<FilePos> getLabelDefs() {
+  public SimpleTrie<FilePos> getLabelDefs() {
     return stableState.labelDefs;
   }
 
-	public TrieSet<FilePos> getLabelRefs() {
+	public SetTrie<FilePos> getLabelRefs() {
 		return stableState.labelRefs;
 	}
 
-  public TrieSet<FilePos> getBibRefs() {
+  public SetTrie<FilePos> getBibRefs() {
     return stableState.bibRefs;
   }
 
-	public Trie<FilePos<BibEntry>> getBibKeys2bibEntries() {
+	public SimpleTrie<FilePos<BibEntry>> getBibKeys2bibEntries() {
 		return stableState.bibKeys2bibEntries;
 	}
 
@@ -358,11 +358,11 @@ public class BackgroundParser extends Thread {
     bibModified = bibFile.lastModified();
 
     buildingState.bibEntries = BibParser.parseBib(bibFile);
-	  buildingState.bibKeys2bibEntries = new Trie<FilePos<BibEntry>>();
+	  buildingState.bibKeys2bibEntries = new SimpleTrie<FilePos<BibEntry>>();
 	  for (FilePos<BibEntry> bibEntry : buildingState.bibEntries) {
 		  buildingState.bibKeys2bibEntries.add(bibEntry.getName(), bibEntry);
 	  }
-	  buildingState.bibWords2bibEntries = new TrieSet<BibEntry>();
+	  buildingState.bibWords2bibEntries = new SetTrie<BibEntry>();
 	  for (FilePos<BibEntry> filePos : buildingState.bibEntries) {
 		  BibEntry bibEntry = filePos.element;
 		  buildingState.bibWords2bibEntries.add(bibEntry.getEntryName().toLowerCase(), bibEntry);
@@ -497,18 +497,18 @@ public class BackgroundParser extends Thread {
 	class ParserState {
 		DocumentClass documentClass;
 		HashSet<File> files = new HashSet<File>();
-	  Trie words = new Trie();
-	  Trie<Package> packages = new Trie<Package>();
-	  Trie commandNames = new Trie();
-	  TrieSet<String> commandsAndFiles = new TrieSet<String>();
-	  Trie<Command> commands = new Trie<Command>();
-	  Trie<Environment> environments = new Trie<Environment>();
-	  Trie<FilePos> labelDefs = new Trie<FilePos>();
-		TrieSet<FilePos> labelRefs = new TrieSet<FilePos>();
-		Trie<FilePos<BibEntry>> bibKeys2bibEntries = new Trie<FilePos<BibEntry>>();
+	  SimpleTrie words = new SimpleTrie();
+	  SimpleTrie<Package> packages = new SimpleTrie<Package>();
+	  SimpleTrie commandNames = new SimpleTrie();
+	  SetTrie<String> commandsAndFiles = new SetTrie<String>();
+	  SimpleTrie<Command> commands = new SimpleTrie<Command>();
+	  SimpleTrie<Environment> environments = new SimpleTrie<Environment>();
+	  SimpleTrie<FilePos> labelDefs = new SimpleTrie<FilePos>();
+		SetTrie<FilePos> labelRefs = new SetTrie<FilePos>();
+		SimpleTrie<FilePos<BibEntry>> bibKeys2bibEntries = new SimpleTrie<FilePos<BibEntry>>();
 		ArrayList<FilePos<BibEntry>> bibEntries = new ArrayList<FilePos<BibEntry>>();
-		TrieSet<BibEntry> bibWords2bibEntries = new TrieSet<BibEntry>();
-	  TrieSet<FilePos> bibRefs = new TrieSet<FilePos>();
+		SetTrie<BibEntry> bibWords2bibEntries = new SetTrie<BibEntry>();
+	  SetTrie<FilePos> bibRefs = new SetTrie<FilePos>();
 
 		ArrayList<StructureEntry> structureStack = new ArrayList<StructureEntry>();
 

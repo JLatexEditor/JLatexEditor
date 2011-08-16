@@ -12,8 +12,8 @@ import sce.syntaxhighlighting.ParserState;
 import sce.syntaxhighlighting.ParserStateStack;
 import sce.syntaxhighlighting.SyntaxHighlighting;
 import util.Function1;
+import util.SimpleTrie;
 import util.SpellChecker;
-import util.Trie;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +37,7 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
   // text pane and document
   private SCEPane pane = null;
   private SCEDocument document = null;
-	private Trie<CHCommand> commands;
+	private SimpleTrie<CHCommand> commands;
 	private BackgroundParser backgroundParser;
 
   // do we need to parse
@@ -46,7 +46,7 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 
 	private SpellChecker spellChecker;
 
-  public LatexSyntaxHighlighting(SCEPane pane, SpellChecker spellChecker, Trie<CHCommand> commands, BackgroundParser backgroundParser) {
+  public LatexSyntaxHighlighting(SCEPane pane, SpellChecker spellChecker, SimpleTrie<CHCommand> commands, BackgroundParser backgroundParser) {
 	  super("LatexSyntaxHighlighting");
     this.pane = pane;
 	  this.spellChecker = spellChecker;

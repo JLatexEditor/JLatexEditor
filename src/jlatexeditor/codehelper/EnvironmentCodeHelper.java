@@ -6,10 +6,9 @@ import jlatexeditor.PackagesExtractor;
 import jlatexeditor.SCEManager;
 import sce.codehelper.CHCommand;
 import sce.codehelper.PatternPair;
-import sce.codehelper.WordWithPos;
-import util.AbstractTrie;
+import util.SetTrie;
+import util.Trie;
 import util.Function1;
-import util.TrieSet;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,11 +18,11 @@ import java.util.List;
  *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
-public class EnvironmentCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtractor.Environment>> {
-	protected static final Function1<TrieSet<PackagesExtractor.Environment>,String> TRIE_SET_2_STRING_FUNCTION = new Function1<TrieSet<PackagesExtractor.Environment>, String>() {
+public class EnvironmentCodeHelper extends ExtPatternHelper<SetTrie<PackagesExtractor.Environment>> {
+	protected static final Function1<SetTrie<PackagesExtractor.Environment>,String> TRIE_SET_2_STRING_FUNCTION = new Function1<SetTrie<PackagesExtractor.Environment>, String>() {
 		@Override
-		public String apply(TrieSet<PackagesExtractor.Environment> trieSet) {
-			return trieSet.getObjects().iterator().next().getName();
+		public String apply(SetTrie<PackagesExtractor.Environment> setTrie) {
+			return setTrie.getObjects().iterator().next().getName();
 		}
 	};
 	protected  static final Function1<Environment,String> ENVIRONMENT_2_STRING_FUNCTION = new Function1<Environment, String>() {
@@ -51,7 +50,7 @@ public class EnvironmentCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtr
 	  return false;
 	}
 
-	public Iterable<CHCommand> getCompletions(String search, Function1<TrieSet<PackagesExtractor.Environment>, Boolean> filterFunc) {
+	public Iterable<CHCommand> getCompletions(String search, Function1<SetTrie<PackagesExtractor.Environment>, Boolean> filterFunc) {
 		ExtIterable<String> userIter = SCEManager.getBackgroundParser().getEnvironments().getObjectsIterable(search).map(ENVIRONMENT_2_STRING_FUNCTION);
 		ExtIterable<String> standardIter = SCEManager.getLatexCommands().getEnvironments().getObjectsIterable(search).map(CHCOMMAND_2_STING_FUNCTION);
 		ExtIterable<String> packEnvIter = PackagesExtractor.getPackageParser().getEnvironments().getTrieSetIterator(search).filter(filterFunc).map(TRIE_SET_2_STRING_FUNCTION);
@@ -60,17 +59,17 @@ public class EnvironmentCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtr
 		return new MergeSortIterable<String>(STRING_COMPARATOR, userIter, standardIter, packEnvIter, dcEnvIter).distinct().map(STRING_2_CHCOMMAND).toList(20);
 	}
 
-	protected Function1<TrieSet<PackagesExtractor.Environment>, Boolean> minUsage(final int minUsageCount) {
-		return new Function1<TrieSet<PackagesExtractor.Environment>, Boolean>() {
+	protected Function1<SetTrie<PackagesExtractor.Environment>, Boolean> minUsage(final int minUsageCount) {
+		return new Function1<SetTrie<PackagesExtractor.Environment>, Boolean>() {
 			@Override
-			public Boolean apply(TrieSet<PackagesExtractor.Environment> trieSet) {
-				return trieSet.getObjects().iterator().next().getUsageCount() >= minUsageCount;
+			public Boolean apply(SetTrie<PackagesExtractor.Environment> setTrie) {
+				return setTrie.getObjects().iterator().next().getUsageCount() >= minUsageCount;
 			}
 		};
 	}
 
 	public String getMaxCommonPrefix(String search) {
-		List<AbstractTrie<? extends Object>> tries = Arrays.asList(
+		List<Trie<? extends Object>> tries = Arrays.asList(
 			SCEManager.getBackgroundParser().getEnvironments(),
 			SCEManager.getLatexCommands().getEnvironments(),
 			PackagesExtractor.getPackageParser().getEnvironments(),
@@ -78,7 +77,7 @@ public class EnvironmentCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtr
 		);
 
 		String maxPrefix = null;
-		for (AbstractTrie<? extends Object> trie : tries) {
+		for (Trie<? extends Object> trie : tries) {
 			String maxCommonPrefix = trie.getMaxCommonPrefix(search);
 			if (maxCommonPrefix.length() >= search.length()) {
 				if (maxPrefix == null) {

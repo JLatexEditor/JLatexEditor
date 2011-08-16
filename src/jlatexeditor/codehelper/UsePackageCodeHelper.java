@@ -1,17 +1,12 @@
 package jlatexeditor.codehelper;
 
-import de.endrullis.utils.collections.CollectionUtils;
 import de.endrullis.utils.collections.ExtIterable;
 import jlatexeditor.PackagesExtractor;
 import sce.codehelper.CHCommand;
 import sce.codehelper.PatternPair;
-import sce.codehelper.WordWithPos;
 import util.Function1;
-import util.Trie;
-import util.TrieSet;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * CodeHelper for \\usepackage{...}.

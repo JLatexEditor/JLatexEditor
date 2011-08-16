@@ -4,7 +4,7 @@ import jlatexeditor.SCEManager;
 import sce.codehelper.*;
 import sce.component.SourceCodeEditor;
 import util.Function1;
-import util.Trie;
+import util.SimpleTrie;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -376,11 +376,11 @@ public class TemplateEditor extends JDialog {
 		return generatorTableModel.getGenerators().get(generatorTable.getSelectedRow());
 	}
 
-	private Trie<CHCommand> getSystemTemplates() {
+	private SimpleTrie<CHCommand> getSystemTemplates() {
 		return SCEManager.getSystemTabCompletion();
 	}
 
-	private Trie<CHCommand> getTemplates() {
+	private SimpleTrie<CHCommand> getTemplates() {
 		return SCEManager.getTabCompletion();
 	}
 
@@ -951,7 +951,7 @@ public class TemplateEditor extends JDialog {
 	public static class TemplateListModel extends AbstractListModel {
 		List<String> templateNames;
 
-		public TemplateListModel(Trie<CHCommand> templates) {
+		public TemplateListModel(SimpleTrie<CHCommand> templates) {
 			templateNames = templates.getObjectsIterable("").map(new Function1<CHCommand, String>() {
 				public String apply(CHCommand a1) {
 					return a1.getName();

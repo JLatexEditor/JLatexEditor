@@ -4,13 +4,12 @@ import jlatexeditor.codehelper.BackgroundParser;
 import jlatexeditor.gui.TemplateEditor;
 import sce.codehelper.CHCommand;
 import sce.codehelper.CHCommandArgument;
-import sce.component.SCEDocumentChar;
 import sce.component.SCEDocumentRow;
 import sce.component.SCEPane;
 import sce.syntaxhighlighting.ParserState;
 import sce.syntaxhighlighting.ParserStateStack;
 import util.SpellChecker;
-import util.Trie;
+import util.SimpleTrie;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -28,7 +27,7 @@ public class TemplateSyntaxHighlighting extends LatexSyntaxHighlighting {
 	private Collection<String> templateArguments = new HashSet<String>();
 	private TemplateEditor templateEditor;
 
-	public TemplateSyntaxHighlighting(SCEPane pane, SpellChecker spellChecker, Trie<CHCommand> commands, BackgroundParser backgroundParser, TemplateEditor templateEditor) {
+	public TemplateSyntaxHighlighting(SCEPane pane, SpellChecker spellChecker, SimpleTrie<CHCommand> commands, BackgroundParser backgroundParser, TemplateEditor templateEditor) {
 		super(pane, spellChecker, commands, backgroundParser);
 		this.templateEditor = templateEditor;
 	}

@@ -25,9 +25,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -40,6 +38,7 @@ public class SCEManager {
   private static BackgroundParser backgroundParser = null;
   private static StaticCommandsReader latexCommands = new StaticCommandsReader("data/codehelper/commands.xml");
   private static StaticCommandsReader systemTabCompletion = new StaticCommandsReader("data/codehelper/liveTemplates.xml");
+  private static StaticCommandsReader userTabCompletion = new StaticCommandsReader(GProperties.SETTINGS_DIR + "/liveTemplates.xml", true);
   private static StaticCommandsReader tabCompletion = new StaticCommandsReader("data/codehelper/liveTemplates.xml");
 
 	private static Properties iconMap = new Properties() {{
@@ -76,11 +75,11 @@ public class SCEManager {
     return latexCommands;
   }
 
-	public static Trie<CHCommand> getSystemTabCompletion() {
+	public static SimpleTrie<CHCommand> getSystemTabCompletion() {
 		return systemTabCompletion.getCommands();
 	}
 
-	public static Trie<CHCommand> getTabCompletion() {
+	public static SimpleTrie<CHCommand> getTabCompletion() {
     return tabCompletion.getCommands();
   }
 
@@ -140,14 +139,14 @@ public class SCEManager {
 	  if (backgroundParser != null) {
 			codeHelper.addPatternHelper(new CiteHelper(backgroundParser));
 		  // add completion for \ref and \eqref
-			codeHelper.addPatternHelper(new GenericCodeHelper("\\\\(?:ref|eqref)\\{([^{}]*)", new Function0<AbstractTrie<?>>() {
-				public Trie<?> apply() {
+			codeHelper.addPatternHelper(new GenericCodeHelper("\\\\(?:ref|eqref)\\{([^{}]*)", new Function0<Trie<?>>() {
+				public SimpleTrie<?> apply() {
 					return backgroundParser.getLabelDefs();
 				}
 			}));
 		  // add completion for \label
-			codeHelper.addPatternHelper(new GenericCodeHelper("\\\\label\\{([^{}]*)", new Function0<AbstractTrie<?>>() {
-				public AbstractTrie<?> apply() {
+			codeHelper.addPatternHelper(new GenericCodeHelper("\\\\label\\{([^{}]*)", new Function0<Trie<?>>() {
+				public Trie<?> apply() {
 					return backgroundParser.getLabelRefs();
 				}
 			}));

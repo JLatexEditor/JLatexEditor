@@ -6,7 +6,7 @@ import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
 import sce.component.*;
 import sce.syntaxhighlighting.ParserStateStack;
 import sce.syntaxhighlighting.SyntaxHighlighting;
-import util.TrieSet;
+import util.SetTrie;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -239,7 +239,7 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
         byte entryStyle = stateStyles[LatexStyles.getStyle("begin")];
         // is the bib item used?
         if(backgroundParser != null) {
-          TrieSet<BackgroundParser.FilePos> bibRefs = backgroundParser.getBibRefs();
+          SetTrie<BackgroundParser.FilePos> bibRefs = backgroundParser.getBibRefs();
           if(!bibRefs.contains(entryName)) {
             entryStyle = stateStyles[LatexStyles.COMMENT];
           }
