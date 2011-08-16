@@ -117,6 +117,16 @@ public class TemplateEditor extends JDialog {
 				}
 			}
 		});
+		generatorTable.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getModifiers() == 0) {
+					if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+						deleteGenerator();
+					}
+				}
+			}
+		});
 
 		// replace button text by icons if possible
 		try {
