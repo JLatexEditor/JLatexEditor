@@ -280,10 +280,24 @@ public class SCEManager {
     });
   }
 
+	/**
+	 * Loads an icon by filename (including path).
+	 *
+	 * @param filename path to file
+	 * @return icon
+	 * @throws IOException if an I/O error occurs
+	 */
 	public static ImageIcon getDirectImageIcon(String filename) throws IOException {
 		return new ImageIcon(StreamUtils.readBytesFromInputStream(StreamUtils.getInputStream(filename)));
 	}
 
+	/**
+	 * Loads the icon defined by the mapping data/icons/icon_map.properties.
+	 *
+	 * @param key mapping key
+	 * @return icon
+	 * @throws IOException if an I/O error occurs
+	 */
 	public static ImageIcon getMappedImageIcon(String key) throws IOException {
 		return getDirectImageIcon(iconMap.getProperty(key));
 	}
