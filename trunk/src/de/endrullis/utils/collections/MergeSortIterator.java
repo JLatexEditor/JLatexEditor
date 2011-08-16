@@ -7,7 +7,9 @@ import java.util.Iterator;
 import java.util.PriorityQueue;
 
 /**
- * Merge sort iterator.
+ * Priority-based merge sort iterator.
+ * If two elements are equal the merge sort operator prefers the one produced by the iterator with the smaller index in
+ * the iterators array.
  *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
@@ -18,8 +20,9 @@ public class MergeSortIterator<T> extends ExtIterator<T> {
 	public MergeSortIterator(final Comparator<T> comparator, Iterator<T>[] iterators) {
 		queue = new PriorityQueue<IteratorWrapper>(iterators.length);
 		this.comparator = comparator;
+		int wrapperNr = 0;
 		for (Iterator<T> iterator : iterators) {
-			IteratorWrapper wrapper = new IteratorWrapper(iterator);
+			IteratorWrapper wrapper = new IteratorWrapper(iterator, wrapperNr);
 			if (wrapper.hasNext()) {
 				queue.add(wrapper);
 			}
@@ -47,10 +50,12 @@ public class MergeSortIterator<T> extends ExtIterator<T> {
 
 	private class IteratorWrapper implements Comparable<IteratorWrapper> {
 		private Iterator<T> iterator;
+		private int wrapperNr;
 		private T next = null;
 
-		private IteratorWrapper(Iterator<T> iterator) {
+		private IteratorWrapper(Iterator<T> iterator, int wrapperNr) {
 			this.iterator = iterator;
+			this.wrapperNr = wrapperNr;
 		}
 
 		public boolean hasNext() {
@@ -70,7 +75,11 @@ public class MergeSortIterator<T> extends ExtIterator<T> {
 
 		@Override
 		public int compareTo(IteratorWrapper that) {
-			return comparator.compare(this.next, that.next);
+			int compare = comparator.compare(this.next, that.next);
+			if (compare == 0) {
+				return new Integer(this.wrapperNr).compareTo(that.wrapperNr);
+			}
+			return compare;
 		}
 	}
 }
