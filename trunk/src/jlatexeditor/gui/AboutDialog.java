@@ -1,5 +1,6 @@
 package jlatexeditor.gui;
 
+import jlatexeditor.SCEManager;
 import jlatexeditor.translation.I18n;
 
 import javax.swing.*;
@@ -19,6 +20,8 @@ public class AboutDialog extends JFrame {
   public AboutDialog(String version) {
     super(I18n.getString("about_dialog.title"));
     setUndecorated(true);
+
+	  SCEManager.setWindowIcon(this);
 
 	  StringBuilder sb = new StringBuilder();
     sb.append(System.getProperty("java.vm.name")).append("<br>");

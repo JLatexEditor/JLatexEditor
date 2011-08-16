@@ -198,11 +198,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 	  initFileChooser();
 
 		// set icon
-		try {
-			setIconImage(SCEManager.getDirectImageIcon("images/icon_32.png").getImage());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		SCEManager.setWindowIcon(this);
 
     /*
     JRootPane rootPane = getRootPane();

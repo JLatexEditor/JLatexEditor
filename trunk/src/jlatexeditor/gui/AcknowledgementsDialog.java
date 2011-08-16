@@ -1,5 +1,6 @@
 package jlatexeditor.gui;
 
+import jlatexeditor.SCEManager;
 import jlatexeditor.translation.I18n;
 
 import javax.swing.*;
@@ -15,6 +16,8 @@ public class AcknowledgementsDialog extends JFrame {
 
   public AcknowledgementsDialog(String version) {
     super(I18n.getString("acknowledgements_dialog.title"));
+
+	  SCEManager.setWindowIcon(this);
 
     Container cp = getContentPane();
     cp.setLayout(new BorderLayout());
