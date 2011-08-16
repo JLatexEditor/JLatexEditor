@@ -76,14 +76,14 @@ public class SVNView extends JPanel implements ActionListener {
 
         Node node = get(root, relativePath);
         if(node == null) {
-          if(result.getServerStatus() == SVN.StatusResult.SERVER_UP_TO_DATE) continue;
+          if(result.getServerStatus() == SVN.StatusResult.Server.upToDate) continue;
           node = add(root, relativePath);
         }
 
         node.setSvnStatus(result);
         treeModel.nodeChanged(node);
 
-        if (result.getServerStatus() == SVN.StatusResult.SERVER_OUTDATED) hasUpdates = true;
+        if (result.getServerStatus() == SVN.StatusResult.Server.outdated) hasUpdates = true;
       }
     } catch (Exception e) {
       if (!hadException) e.printStackTrace();
@@ -283,7 +283,7 @@ public class SVNView extends JPanel implements ActionListener {
     public boolean isConflict(boolean deep) {
       boolean isConflict =
               svnStatus != null
-              && svnStatus.getLocalStatus() == SVN.StatusResult.LOCAL_CONFLICT;
+              && svnStatus.getLocalStatus() == SVN.StatusResult.Local.conflict;
       if(!deep || children == null) return isConflict;
 
       for(Object child : children) {
@@ -293,8 +293,8 @@ public class SVNView extends JPanel implements ActionListener {
     }
 
     public boolean isLocallyModified(boolean deep) {
-      int local = svnStatus != null ? svnStatus.getLocalStatus() : SVN.StatusResult.LOCAL_UNCHANGED;
-      boolean isLocallyModified = local != SVN.StatusResult.LOCAL_UNCHANGED && local != SVN.StatusResult.LOCAL_NOT_SVN;
+      SVN.StatusResult.Local local = svnStatus != null ? svnStatus.getLocalStatus() : SVN.StatusResult.Local.unchanged;
+      boolean isLocallyModified = local != SVN.StatusResult.Local.unchanged && local != SVN.StatusResult.Local.notInSvn;
       if(!deep || children == null) return isLocallyModified;
 
       for(Object child : children) {
@@ -305,13 +305,13 @@ public class SVNView extends JPanel implements ActionListener {
 
     public boolean isNotInSVN() {
       return svnStatus != null
-              && svnStatus.getLocalStatus() == SVN.StatusResult.LOCAL_NOT_SVN;
+              && svnStatus.getLocalStatus() == SVN.StatusResult.Local.notInSvn;
     }
 
     public boolean isServerModified(boolean deep) {
       boolean isServerModified =
               svnStatus != null
-              && svnStatus.getServerStatus() != SVN.StatusResult.SERVER_UP_TO_DATE;
+              && svnStatus.getServerStatus() != SVN.StatusResult.Server.upToDate;
       if(!deep || children == null) return isServerModified;
 
       for(Object child : children) {
@@ -342,8 +342,8 @@ public class SVNView extends JPanel implements ActionListener {
 
       SVN.StatusResult status = node.getSvnStatus();
       if(status != null) {
-        int local = status.getLocalStatus();
-        if(local == SVN.StatusResult.LOCAL_CONFLICT) setIcon(lightning);
+        SVN.StatusResult.Local local = status.getLocalStatus();
+        if(local == SVN.StatusResult.Local.conflict) setIcon(lightning);
       }
 
       return this;
