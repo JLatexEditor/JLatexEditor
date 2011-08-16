@@ -1,6 +1,5 @@
 package jlatexeditor.gui;
 
-import com.google.inject.internal.Strings;
 import jlatexeditor.SCEManager;
 import sce.codehelper.*;
 import sce.component.SourceCodeEditor;
@@ -38,13 +37,17 @@ public class TemplateEditor extends JDialog {
 	public MinimalTable argumentsTable;
 	public JButton saveButton;
 	public JButton cancelButton;
-	public MinimalTable generateTable;
-	public JPanel generatePanel;
+	public MinimalTable generatorTable;
+	public JPanel generatorPanel;
 	public JButton copyTemplateButton;
 	public JButton renameTemplateButton;
+	public JButton moveArgumentUpButton;
+	public JButton moveArgumentDownButton;
+	public JButton deleteArgumentButton;
+	public JButton deleteGeneratorButton;
 	public TemplateListModel templateListModel;
 	public ArgumentsTableModel argumentsTableModel;
-	public GenerateTableModel generateTableModel;
+	public GeneratorTableModel generatorTableModel;
 
 	private CHCommand oldTemplate;
 	private CHCommand newTemplate;
@@ -62,6 +65,7 @@ public class TemplateEditor extends JDialog {
 			public void valueChanged(ListSelectionEvent e) {
 				if (e.getValueIsAdjusting()) return;
 
+				saveTemplateIfChanged();
 				load(getSelectedTemplate());
 				pack();
 			}
@@ -94,47 +98,38 @@ public class TemplateEditor extends JDialog {
 		// set up attributesTable
 		argumentsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
-				if (!argumentsTable.getSelectionModel().isSelectionEmpty()) {
-					CHCommandArgument argument = getArgumentsTableModel().getArguments().get(argumentsTable.getSelectedRow());
-					if (argument.getGenerators().isEmpty()) {
-						generatePanel.setVisible(false);
-					} else {
-						generatePanel.setVisible(true);
-						generateTable.setRowHeight(new JComboBox().getPreferredSize().height);
-						generateTable.setModel(generateTableModel = new GenerateTableModel(argument));
-						String[] argNames = getArgumentNames();
-						TableColumn nameCol = generateTable.getColumnModel().getColumn(GenerateTableModel.C_Name);
-						nameCol.setCellEditor(new ComboBoxCellEditor(argNames));
-						nameCol.setCellRenderer(new ComboBoxCellRenderer(argNames));
-						String[] functionNames = getFunctionsNames();
-						TableColumn functionCol = generateTable.getColumnModel().getColumn(GenerateTableModel.C_Function);
-						functionCol.setCellEditor(new ComboBoxCellEditor(functionNames));
-						functionCol.setCellRenderer(new ComboBoxCellRenderer(functionNames));
-						pack();
-					}
-				}
+				reloadGenerators();
 			}
 		});
 		argumentsTable.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				CHCommandArgument selectedArgument = getSelectedArgument();
-
-				if (selectedArgument != null) {
-					if (e.getModifiers() == KeyEvent.CTRL_MASK) {
-						if (e.getKeyCode() == KeyEvent.VK_UP) {
-							newTemplate.getArgumentsHashMap().moveArgUp(selectedArgument);
-							reloadArguments();
-							selectArgument(selectedArgument);
-						} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-							newTemplate.getArgumentsHashMap().moveArgDown(selectedArgument);
-							reloadArguments();
-							selectArgument(selectedArgument);
-						}
+				if (e.getModifiers() == KeyEvent.CTRL_MASK) {
+					if (e.getKeyCode() == KeyEvent.VK_UP) {
+						moveArgumentUp();
+					} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+						moveArgumentDown();
+					}
+				} else if (e.getModifiers() == 0) {
+					if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+						deleteArgument();
 					}
 				}
 			}
 		});
+
+		// replace button text by icons if possible
+		try {
+			moveArgumentUpButton.setIcon(SCEManager.getMappedImageIcon("move up"));
+			moveArgumentUpButton.setText("");
+			moveArgumentDownButton.setIcon(SCEManager.getMappedImageIcon("move down"));
+			moveArgumentDownButton.setText("");
+			deleteArgumentButton.setIcon(SCEManager.getMappedImageIcon("delete from list"));
+			deleteArgumentButton.setText("");
+			deleteGeneratorButton.setIcon(SCEManager.getMappedImageIcon("delete from list"));
+			deleteGeneratorButton.setText("");
+		} catch (Exception ignored) {
+		}
 
 		addTemplateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -156,14 +151,31 @@ public class TemplateEditor extends JDialog {
 				askToDeleteSelectedTemplate();
 			}
 		});
-
+		moveArgumentUpButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				moveArgumentUp();
+			}
+		});
+		moveArgumentDownButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				moveArgumentDown();
+			}
+		});
+		deleteArgumentButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				deleteArgument();
+			}
+		});
+		deleteGeneratorButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				deleteGenerator();
+			}
+		});
 
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (oldTemplate != null) {
-					newTemplate.setUsage(editor.getText());
-					getTemplates().remove(oldTemplate.getName());
-					getTemplates().add(newTemplate.getName(), newTemplate);
+				if (newTemplate != null) {
+					saveTemplate();
 				}
 			}
 		});
@@ -187,13 +199,59 @@ public class TemplateEditor extends JDialog {
 		setSize(800, 600);
 	}
 
+	private void deleteGenerator() {
+		CHArgumentGenerator selectedGenerator = getSelectedGenerator();
+		if (selectedGenerator == null) return;
+
+		getSelectedArgument().getGenerators().remove(selectedGenerator);
+		reloadGenerators();
+	}
+
+	private void deleteArgument() {
+		CHCommandArgument selectedArgument = getSelectedArgument();
+		if (selectedArgument == null) return;
+
+		removeTemplateArgument(selectedArgument.getName());
+	}
+
+	private void moveArgumentDown() {
+		CHCommandArgument selectedArgument = getSelectedArgument();
+		if (selectedArgument == null) return;
+
+		newTemplate.getArgumentsHashMap().moveArgDown(selectedArgument);
+		reloadArguments();
+		selectArgument(selectedArgument);
+	}
+
+	private void moveArgumentUp() {
+		CHCommandArgument selectedArgument = getSelectedArgument();
+		if (selectedArgument == null) return;
+
+		newTemplate.getArgumentsHashMap().moveArgUp(selectedArgument);
+		reloadArguments();
+		selectArgument(selectedArgument);
+	}
+
+	private void saveTemplate() {
+		newTemplate.setUsage(editor.getText());
+		getTemplates().add(newTemplate.getName(), newTemplate.clone());
+		// TODO: save templates to file
+	}
+
+	private void saveTemplateIfChanged() {
+		if (newTemplate != null) {
+			newTemplate.setUsage(editor.getText());
+			if (!getTemplates().get(newTemplate.getName()).deepEquals(newTemplate)) {
+				if (JOptionPane.showConfirmDialog(owner, "Do you want to save your changes for template \"" + newTemplate.getName() + "\"", "Save changes?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+					saveTemplate();
+				}
+			}
+		}
+	}
+
 	private void selectArgument(CHCommandArgument selectedArgument) {
 		int index = argumentsTableModel.getArguments().indexOf(selectedArgument);
 		argumentsTable.getSelectionModel().setSelectionInterval(index, index);
-	}
-
-	private void selectArgument(String argumentName) {
-		selectArgument(newTemplate.getArgumentsHashMap().get(argumentName));
 	}
 
 	private void selectTemplate(int index) {
@@ -297,6 +355,17 @@ public class TemplateEditor extends JDialog {
 		return argumentsTableModel.getArguments().get(argumentsTable.getSelectedRow());
 	}
 
+	/**
+	 * Returns the selected template argument or null if no argument is selected.
+	 *
+	 * @return selected template argument or null if no argument is selected
+	 */
+	private CHArgumentGenerator getSelectedGenerator() {
+		if (generatorTable.getSelectedRow() < 0) return null;
+
+		return generatorTableModel.getGenerators().get(generatorTable.getSelectedRow());
+	}
+
 	private Trie<CHCommand> getSystemTemplates() {
 		return SCEManager.getSystemTabCompletion();
 	}
@@ -317,7 +386,7 @@ public class TemplateEditor extends JDialog {
 		col.setCellEditor(new ComboBoxCellEditor(CHArgumentType.TYPES));
 		col.setCellRenderer(new ComboBoxCellRenderer(CHArgumentType.TYPES));
 		*/
-		generatePanel.setVisible(false);
+		generatorPanel.setVisible(false);
 		saveButton.setEnabled(true);
 		cancelButton.setEnabled(true);
 
@@ -329,6 +398,28 @@ public class TemplateEditor extends JDialog {
 		argumentsTable.setModel(argumentsTableModel = new ArgumentsTableModel(newTemplate));
 	}
 
+	private void reloadGenerators() {
+		CHCommandArgument argument = getSelectedArgument();
+
+		if (argument == null || argument.getGenerators().isEmpty()) {
+			generatorPanel.setVisible(false);
+		} else {
+			generatorTable.getSelectionModel().clearSelection();
+			generatorPanel.setVisible(true);
+			generatorTable.setRowHeight(new JComboBox().getPreferredSize().height);
+			generatorTable.setModel(generatorTableModel = new GeneratorTableModel(argument));
+			String[] argNames = getArgumentNames();
+			TableColumn nameCol = generatorTable.getColumnModel().getColumn(GeneratorTableModel.C_Name);
+			nameCol.setCellEditor(new ComboBoxCellEditor(argNames));
+			nameCol.setCellRenderer(new ComboBoxCellRenderer(argNames));
+			String[] functionNames = getFunctionsNames();
+			TableColumn functionCol = generatorTable.getColumnModel().getColumn(GeneratorTableModel.C_Function);
+			functionCol.setCellEditor(new ComboBoxCellEditor(functionNames));
+			functionCol.setCellRenderer(new ComboBoxCellRenderer(functionNames));
+			pack();
+		}
+	}
+
 	private void createUIComponents() {
 		editor = SCEManager.createTemplateSourceCodeEditor(this);
 	}
@@ -337,8 +428,8 @@ public class TemplateEditor extends JDialog {
 		return argumentsTableModel;
 	}
 
-	public GenerateTableModel getGenerateTableModel() {
-		return generateTableModel;
+	public GeneratorTableModel getGeneratorTableModel() {
+		return generatorTableModel;
 	}
 
 	public boolean hasTemplateArgument(String argument) {
@@ -391,6 +482,7 @@ public class TemplateEditor extends JDialog {
 		baseArgument.getGenerators().add(gen);
 
 		selectArgument(baseArgument);
+		reloadGenerators();
 	}
 
 	private String[] getFunctionsNames() {
@@ -514,20 +606,42 @@ public class TemplateEditor extends JDialog {
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.gridwidth = 2;
+		gbc.gridheight = 3;
 		gbc.weightx = 1.0;
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.insets = new Insets(0, 4, 4, 4);
 		panel4.add(scrollPane1, gbc);
 		argumentsTable = new TemplateEditor.MinimalTable();
 		scrollPane1.setViewportView(argumentsTable);
-		generatePanel = new JPanel();
-		generatePanel.setLayout(new GridBagLayout());
+		moveArgumentUpButton = new JButton();
+		moveArgumentUpButton.setText("Move up");
+		gbc = new GridBagConstraints();
+		gbc.gridx = 2;
+		gbc.gridy = 0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		panel4.add(moveArgumentUpButton, gbc);
+		moveArgumentDownButton = new JButton();
+		moveArgumentDownButton.setText("Move down");
+		gbc = new GridBagConstraints();
+		gbc.gridx = 2;
+		gbc.gridy = 1;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		panel4.add(moveArgumentDownButton, gbc);
+		deleteArgumentButton = new JButton();
+		deleteArgumentButton.setText("Delete");
+		gbc = new GridBagConstraints();
+		gbc.gridx = 2;
+		gbc.gridy = 2;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		panel4.add(deleteArgumentButton, gbc);
+		generatorPanel = new JPanel();
+		generatorPanel.setLayout(new GridBagLayout());
 		gbc = new GridBagConstraints();
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		gbc.fill = GridBagConstraints.BOTH;
-		panel2.add(generatePanel, gbc);
-		generatePanel.setBorder(BorderFactory.createTitledBorder("Derived argument values"));
+		panel2.add(generatorPanel, gbc);
+		generatorPanel.setBorder(BorderFactory.createTitledBorder("Derived argument values"));
 		final JScrollPane scrollPane2 = new JScrollPane();
 		gbc = new GridBagConstraints();
 		gbc.gridx = 0;
@@ -536,9 +650,16 @@ public class TemplateEditor extends JDialog {
 		gbc.weightx = 1.0;
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.insets = new Insets(0, 4, 4, 4);
-		generatePanel.add(scrollPane2, gbc);
-		generateTable = new TemplateEditor.MinimalTable();
-		scrollPane2.setViewportView(generateTable);
+		generatorPanel.add(scrollPane2, gbc);
+		generatorTable = new TemplateEditor.MinimalTable();
+		scrollPane2.setViewportView(generatorTable);
+		deleteGeneratorButton = new JButton();
+		deleteGeneratorButton.setText("Delete");
+		gbc = new GridBagConstraints();
+		gbc.gridx = 2;
+		gbc.gridy = 0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		generatorPanel.add(deleteGeneratorButton, gbc);
 		final JPanel panel5 = new JPanel();
 		panel5.setLayout(new GridBagLayout());
 		gbc = new GridBagConstraints();
@@ -568,6 +689,7 @@ public class TemplateEditor extends JDialog {
 		gbc.insets = new Insets(0, 0, 4, 4);
 		panel5.add(cancelButton, gbc);
 		enabledCheckBox = new JCheckBox();
+		enabledCheckBox.setEnabled(false);
 		enabledCheckBox.setText("Enabled");
 		enabledCheckBox.setMnemonic('E');
 		enabledCheckBox.setDisplayedMnemonicIndex(0);
@@ -698,14 +820,18 @@ public class TemplateEditor extends JDialog {
 		}
 	}
 
-	public class GenerateTableModel implements TableModel {
+	public class GeneratorTableModel implements TableModel {
 		private static final int C_Name = 0, C_Function = 1;
 		private String[] columns = new String[]{"Attribute Name", "Function"};
 		private Class[] columnClasses = new Class[]{String.class, String.class};
 		private ArrayList<CHArgumentGenerator> generators = new ArrayList<CHArgumentGenerator>();
 
-		public GenerateTableModel(CHCommandArgument arg) {
+		public GeneratorTableModel(CHCommandArgument arg) {
 			generators = arg.getGenerators();
+		}
+
+		public ArrayList<CHArgumentGenerator> getGenerators() {
+			return generators;
 		}
 
 		@Override

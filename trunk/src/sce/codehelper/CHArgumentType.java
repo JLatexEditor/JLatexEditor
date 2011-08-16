@@ -40,4 +40,14 @@ public class CHArgumentType {
 	public String getProperty(String defaultExtension) {
 		return properties.get(defaultExtension);
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof CHArgumentType) {
+			CHArgumentType that = (CHArgumentType) obj;
+			return this.name.equals(that.name) && this.properties.equals(that.properties);
+		} else {
+			return false;
+		}
+	}
 }
