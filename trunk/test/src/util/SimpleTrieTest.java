@@ -87,7 +87,15 @@ public class SimpleTrieTest extends TestCase {
 		}
 
 		String expected = CollectionUtils.join(Arrays.asList(strings), "\n");
-		String actual = CollectionUtils.join(trie.getObjectsIterable(""), "\n");
+		String actual = CollectionUtils.join(trie.getObjectsIterable(), "\n");
+		assertEquals(expected, actual);
+
+		expected = CollectionUtils.join(Arrays.asList(strings).subList(0, 5), "\n");
+		actual = CollectionUtils.join(trie.getObjects("", 5), "\n");
+		assertEquals(expected, actual);
+
+		expected = CollectionUtils.join(Arrays.asList(strings).subList(0, 0), "\n");
+		actual = CollectionUtils.join(trie.getObjects("", 0), "\n");
 		assertEquals(expected, actual);
 
 		ArrayList<String> expectedList = new ArrayList<String>();
