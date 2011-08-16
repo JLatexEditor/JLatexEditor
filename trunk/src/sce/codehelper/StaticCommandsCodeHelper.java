@@ -54,12 +54,7 @@ public class StaticCommandsCodeHelper extends PatternHelper {
   }
 
   public Iterable<? extends CHCommand> getCompletions(String prefix) {
-	  List<CHCommand> objects = commands.getObjects(prefix, 1000);
-	  if (objects != null) {
-	    return objects;
-	  } else {
-		  return new ArrayList<CHCommand>();
-	  }
+	  return commands.getObjects(prefix, 1000);
   }
 
   /**

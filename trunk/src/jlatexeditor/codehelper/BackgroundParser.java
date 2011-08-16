@@ -390,18 +390,16 @@ public class BackgroundParser extends Thread {
 			int count = keys.size() < 2 ? 10 : 100;
 			List<BibEntry> selectedEntries = stableState.bibWords2bibEntries.getObjects(keys.get(0), count);
 
-			if (selectedEntries != null) {
-				for (BibEntry entry : selectedEntries) {
-					boolean all = true;
-					for (int i = 1; i < keys.size(); i++) {
-						String key = keys.get(i);
-						if (!entry.getText().toLowerCase().contains(key)) {
-							all = false;
-							break;
-						}
+			for (BibEntry entry : selectedEntries) {
+				boolean all = true;
+				for (int i = 1; i < keys.size(); i++) {
+					String key = keys.get(i);
+					if (!entry.getText().toLowerCase().contains(key)) {
+						all = false;
+						break;
 					}
-					if (all) entries.add(entry);
 				}
+				if (all) entries.add(entry);
 			}
 		} else {
 			return stableState.bibWords2bibEntries.getObjects("", 10);

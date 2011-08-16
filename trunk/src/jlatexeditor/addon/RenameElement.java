@@ -50,11 +50,9 @@ public class RenameElement extends AddOn {
 
 		  List<String> fileNames = SCEManager.getBackgroundParser().getCommandsAndFiles().getObjects(oldCommandName, 1000);
 		  HashSet<File> files = new HashSet<File>();
-		  if (fileNames != null) {
-			  for (String fileName : fileNames) {
-				  files.add(new File(fileName));
-			  }
-		  }
+			for (String fileName : fileNames) {
+				files.add(new File(fileName));
+			}
 
 		  replaceInAllFiles(jle, files, "\\\\" + oldCommandName + "([^\\p{L}]|$)", "\\\\" + newCommandName + "$1", false);
 
@@ -89,9 +87,6 @@ public class RenameElement extends AddOn {
 
 			    // determine all files/editors that contain this label
 			    List<BackgroundParser.FilePos> filePoses = SCEManager.getBackgroundParser().getLabelRefs().getObjects(oldLabel, 1000);
-			    if (filePoses == null) {
-				    filePoses = new ArrayList<BackgroundParser.FilePos>();
-			    }
 			    filePoses.add(SCEManager.getBackgroundParser().getLabelDefs().get(oldLabel));
 
 			    replaceInAllFiles(jle, filePoses, "\\\\(label|ref|eqref)\\{" + oldLabel + "\\}", "\\\\$1{" + newLabel + "}", false);
@@ -181,9 +176,6 @@ public class RenameElement extends AddOn {
 
       // determine all files/editors that contain this citation
       List<BackgroundParser.FilePos> filePoses = SCEManager.getBackgroundParser().getBibRefs().getObjects(oldRef, 1000);
-      if (filePoses == null) {
-        filePoses = new ArrayList<BackgroundParser.FilePos>();
-      }
       filePoses.add(SCEManager.getBackgroundParser().getBibKeys2bibEntries().get(oldRef));
 
       String balanced = "[^\\{\\}]*(?:\\{[^\\{\\}]*\\}[^\\{\\}]*)*";
