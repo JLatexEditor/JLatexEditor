@@ -1229,10 +1229,10 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 			builder.append("<html>");
 			builder.append("SVN update: " + (results.size() == 0 ? "All Quiet on the Western Front" : "<br>"));
 			builder.append("<br>");
-			svnList("Updated/Merged:", builder, results, new int[]{SVN.UpdateResult.TYPE_UPDATE, SVN.UpdateResult.TYPE_MERGED});
-			svnList("Added:", builder, results, new int[]{SVN.UpdateResult.TYPE_ADD});
-			svnList("Deleted:", builder, results, new int[]{SVN.UpdateResult.TYPE_DELETE});
-			svnList("Conflicts:", builder, results, new int[]{SVN.UpdateResult.TYPE_CONFLICT});
+			svnList("Updated/Merged:", builder, results, new SVN.UpdateResult.Type[]{SVN.UpdateResult.Type.update, SVN.UpdateResult.Type.merged});
+			svnList("Added:", builder, results, new SVN.UpdateResult.Type[]{SVN.UpdateResult.Type.add});
+			svnList("Deleted:", builder, results, new SVN.UpdateResult.Type[]{SVN.UpdateResult.Type.delete});
+			svnList("Conflicts:", builder, results, new SVN.UpdateResult.Type[]{SVN.UpdateResult.Type.conflict});
 			builder.append("</html>");
 
 			checkExternalModification(false);
@@ -1339,7 +1339,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
     }
   }
 
-  private void svnList(String message, StringBuilder builder, ArrayList<SVN.UpdateResult> results, int[] types) {
+  private void svnList(String message, StringBuilder builder, ArrayList<SVN.UpdateResult> results, SVN.UpdateResult.Type[] types) {
 	  int count = 0;
     boolean first = true;
     for (SVN.UpdateResult result : results) {
@@ -1347,7 +1347,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 		    builder.append("<li>...</li>");
 		    break;
 	    }
-      for (int type : types) {
+      for (SVN.UpdateResult.Type type : types) {
         if (result.getType() == type) {
           if (first) {
             builder.append(message);

@@ -36,19 +36,19 @@ public class SVN {
         File file = new File(dir, fileName);
         switch (c) {
           case ('A'):
-            results.add(new UpdateResult(file, UpdateResult.TYPE_ADD));
+            results.add(new UpdateResult(file, UpdateResult.Type.add));
             break;
           case ('D'):
-            results.add(new UpdateResult(file, UpdateResult.TYPE_DELETE));
+            results.add(new UpdateResult(file, UpdateResult.Type.delete));
             break;
           case ('U'):
-            results.add(new UpdateResult(file, UpdateResult.TYPE_UPDATE));
+            results.add(new UpdateResult(file, UpdateResult.Type.update));
             break;
           case ('G'):
-            results.add(new UpdateResult(file, UpdateResult.TYPE_MERGED));
+            results.add(new UpdateResult(file, UpdateResult.Type.merged));
             break;
           case ('C'):
-            results.add(new UpdateResult(file, UpdateResult.TYPE_CONFLICT));
+            results.add(new UpdateResult(file, UpdateResult.Type.conflict));
             break;
           default:
             throw new Exception("Parsing SVN output failed: " + line + ".");
@@ -192,16 +192,12 @@ public class SVN {
 	}
 
   public static class UpdateResult {
-    public static final int TYPE_UPDATE = 0;
-    public static final int TYPE_MERGED = 1;
-    public static final int TYPE_ADD = 2;
-    public static final int TYPE_DELETE = 3;
-    public static final int TYPE_CONFLICT = 4;
+	  public enum Type { update, merged, add, delete, conflict }
 
     private File file;
-    private int type;
+    private Type type;
 
-    public UpdateResult(File file, int type) {
+    public UpdateResult(File file, Type type) {
       this.file = file;
       this.type = type;
     }
@@ -210,7 +206,7 @@ public class SVN {
       return file;
     }
 
-    public int getType() {
+    public Type getType() {
       return type;
     }
   }
