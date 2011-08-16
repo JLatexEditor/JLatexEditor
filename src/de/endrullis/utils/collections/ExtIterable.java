@@ -3,6 +3,7 @@ package de.endrullis.utils.collections;
 import util.Function1;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 
 /**
@@ -36,6 +37,10 @@ public abstract class ExtIterable<T> implements Iterable<T> {
 
 	public ExtIterable<T> distinct() {
 		return new DistinctIterable<T>(this);
+	}
+
+	public ExtIterable<T> distinct(Equals<T> equals) {
+		return new DistinctIterable<T>(this, equals);
 	}
 
 	@Override

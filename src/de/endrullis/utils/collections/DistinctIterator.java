@@ -2,6 +2,7 @@ package de.endrullis.utils.collections;
 
 import de.endrullis.utils.collections.ExtIterator;
 
+import java.util.Comparator;
 import java.util.Iterator;
 
 /**
@@ -12,17 +13,19 @@ import java.util.Iterator;
  */
 public class DistinctIterator<T> extends ExtIterator<T> {
 	private Iterator<T> iterator;
+	private Equals<T> equals;
 	private T lastValue, next;
 
-	public DistinctIterator(Iterator<T> iterator) {
+	public DistinctIterator(Iterator<T> iterator, Equals<T> equals) {
 		this.iterator = iterator;
+		this.equals = equals;
 	}
 
 	public boolean hasNext() {
 		while (next == null) {
 			if (!iterator.hasNext()) return false;
 			next = iterator.next();
-			if (lastValue != null && lastValue.equals(next)) {
+			if (lastValue != null && equals.equals(lastValue, next)) {
 				next = null;
 			}
 		}
