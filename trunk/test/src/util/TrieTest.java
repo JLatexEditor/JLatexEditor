@@ -8,13 +8,13 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Tests for Trie.
+ * Tests for SimpleTrie.
  *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 public class TrieTest extends TestCase {
   public void testTrie() {
-    Trie<Object> root = new Trie<Object>();
+    SimpleTrie<Object> root = new SimpleTrie<Object>();
     assertEquals(1, root.add("asdf"));
     assertEquals("asdf", root.getMaxCommonPrefix(""));
     assertEquals("asdf", root.getMaxCommonPrefix("a"));
@@ -97,7 +97,7 @@ public class TrieTest extends TestCase {
 			"dabaladab",
 		};
 
-		Trie<String> trie = new Trie<String>();
+		SimpleTrie<String> trie = new SimpleTrie<String>();
 		for (String string : strings) {
 			trie.add(string, string);
 		}

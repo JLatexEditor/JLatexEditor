@@ -6,17 +6,19 @@ import de.endrullis.utils.collections.ExtIterator;
 import java.util.*;
 
 /**
+ * Trie implementation that maps keys to sets of objects.
+ *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
-public class TrieSet<T> implements AbstractTrie<T> {
-	private TreeMap<Character, TrieSet<T>> map = new TreeMap<Character, TrieSet<T>>();
+public class SetTrie<T> implements Trie<T> {
+	private TreeMap<Character, SetTrie<T>> map = new TreeMap<Character, SetTrie<T>>();
 
 	private HashSet<T> objects = new HashSet<T>();
 
-	public TrieSet() {
+	public SetTrie() {
 	}
 
-	public TrieSet(T object) {
+	public SetTrie(T object) {
 	  objects.add(object);
 	}
 
@@ -46,9 +48,9 @@ public class TrieSet<T> implements AbstractTrie<T> {
 		  return objects.size();
 	  }
 
-	  TrieSet<T> next = map.get(chars[i]);
+	  SetTrie<T> next = map.get(chars[i]);
 	  if (next == null) {
-	    next = new TrieSet<T>();
+	    next = new SetTrie<T>();
 	    map.put(chars[i], next);
 	  }
 	  return next.add(chars, i + 1, object);
@@ -68,7 +70,7 @@ public class TrieSet<T> implements AbstractTrie<T> {
 	    return objects.size() == 0;
 	  }
 
-	  TrieSet<T> next = map.get(chars[i]);
+	  SetTrie<T> next = map.get(chars[i]);
 	  if (next != null && next.remove(chars, object, i + 1)) {
 	    map.remove(chars[i]);
 	  }
@@ -91,21 +93,21 @@ public class TrieSet<T> implements AbstractTrie<T> {
 		return ts;
 	}
 
-	private TrieSet<T> getNode(String prefix) {
+	private SetTrie<T> getNode(String prefix) {
 		return getNode(prefix.toCharArray(), 0);
 	}
 
-	private TrieSet<T> getNode(char[] chars, int i) {
+	private SetTrie<T> getNode(char[] chars, int i) {
 	  if (i == chars.length) return this;
 
-	  TrieSet<T> next = map.get(chars[i]);
+	  SetTrie<T> next = map.get(chars[i]);
 	  return next != null ? next.getNode(chars, i + 1) : null;
 	}
 
 	private HashSet<T> get(char[] chars, int i) {
 	  if (i == chars.length) return objects;
 
-	  TrieSet<T> next = map.get(chars[i]);
+	  SetTrie<T> next = map.get(chars[i]);
 	  return next != null ? next.get(chars, i + 1) : null;
 	}
 
@@ -118,7 +120,7 @@ public class TrieSet<T> implements AbstractTrie<T> {
 	    return getMaxCommonPrefix();
 	  }
 
-	  TrieSet<T> next = map.get(chars[i]);
+	  SetTrie<T> next = map.get(chars[i]);
 	  if (next == null) {
 	    return "";
 	  }
@@ -128,7 +130,7 @@ public class TrieSet<T> implements AbstractTrie<T> {
 
 	private String getMaxCommonPrefix() {
 	  if (objects.size() == 0 && map.size() == 1) {
-	    Map.Entry<Character, TrieSet<T>> entity = map.entrySet().iterator().next();
+	    Map.Entry<Character, SetTrie<T>> entity = map.entrySet().iterator().next();
 	    return entity.getKey() + entity.getValue().getMaxCommonPrefix();
 	  }
 	  return "";
@@ -137,7 +139,7 @@ public class TrieSet<T> implements AbstractTrie<T> {
 	public List<String> getStrings(String prefix, int count) {
 	  // navigate to the trie node that represents the end of the prefix
 	  char[] chars = truncate(prefix).toCharArray();
-	  TrieSet<T> t = this;
+	  SetTrie<T> t = this;
 	  for (char aChar : chars) {
 	    t = t.map.get(aChar);
 	    if (t == null) {
@@ -150,25 +152,25 @@ public class TrieSet<T> implements AbstractTrie<T> {
 	  return list;
 	}
 
-	public Iterator<TrieSet<T>> getTrieSetIterator() {
+	public Iterator<SetTrie<T>> getTrieSetIterator() {
 		return getTrieSetIterator("").iterator();
 	}
 
-	public ExtIterable<TrieSet<T>> getTrieSetIterator(final String prefix) {
-		return new ExtIterable<TrieSet<T>>() {
+	public ExtIterable<SetTrie<T>> getTrieSetIterator(final String prefix) {
+		return new ExtIterable<SetTrie<T>>() {
 			@Override
-			public ExtIterator<TrieSet<T>> iterator() {
+			public ExtIterator<SetTrie<T>> iterator() {
 				return new TrieIterator<T>(getNode(prefix));
 			}
 		};
 	}
 
 
-	public class TrieIterator<T> extends ExtIterator<TrieSet<T>> {
-		private LinkedList<Iterator<TrieSet<T>>> nodeStack = new LinkedList<Iterator<TrieSet<T>>>();
-		private TrieSet<T> trie;
+	public class TrieIterator<T> extends ExtIterator<SetTrie<T>> {
+		private LinkedList<Iterator<SetTrie<T>>> nodeStack = new LinkedList<Iterator<SetTrie<T>>>();
+		private SetTrie<T> trie;
 
-		public TrieIterator(TrieSet<T> initialNode) {
+		public TrieIterator(SetTrie<T> initialNode) {
 			trie = initialNode;
 			if (trie != null && !trie.map.isEmpty()) {
 				nodeStack.push(trie.map.values().iterator());
@@ -180,7 +182,7 @@ public class TrieSet<T> implements AbstractTrie<T> {
 			if (trie != null && trie.hasObjects()) return true;
 
 			while (!nodeStack.isEmpty()) {
-				Iterator<TrieSet<T>> peek = nodeStack.peek();
+				Iterator<SetTrie<T>> peek = nodeStack.peek();
 				if (peek.hasNext()) {
 					trie = peek.next();
 					if (!trie.map.isEmpty()) {
@@ -197,9 +199,9 @@ public class TrieSet<T> implements AbstractTrie<T> {
 		}
 
 		@Override
-		public TrieSet<T> next() {
+		public SetTrie<T> next() {
 			if (hasNext()) {
-				TrieSet<T> ret = trie;
+				SetTrie<T> ret = trie;
 				trie = null;
 				return ret;
 			}
@@ -214,7 +216,7 @@ public class TrieSet<T> implements AbstractTrie<T> {
 	public List<T> getObjects(String prefix, int count) {
 	  // navigate to the trie node that represents the end of the prefix
 	  char[] chars = truncate(prefix).toCharArray();
-	  TrieSet<T> t = this;
+	  SetTrie<T> t = this;
 	  for (char aChar : chars) {
 	    t = t.map.get(aChar);
 	    if (t == null) {
@@ -241,7 +243,7 @@ public class TrieSet<T> implements AbstractTrie<T> {
 	    list.add(prefix);
 	    remaining--;
 	  }
-	  for (Map.Entry<Character, TrieSet<T>> entry : map.entrySet()) {
+	  for (Map.Entry<Character, SetTrie<T>> entry : map.entrySet()) {
 	    if (remaining == 0) break;
 	    remaining = entry.getValue().addStrings(list, prefix + entry.getKey(), remaining);
 	  }
@@ -256,7 +258,7 @@ public class TrieSet<T> implements AbstractTrie<T> {
 			  if (remaining == 0) break;
 		  }
 	  }
-	  for (Map.Entry<Character, TrieSet<T>> entry : map.entrySet()) {
+	  for (Map.Entry<Character, SetTrie<T>> entry : map.entrySet()) {
 	    if (remaining == 0) break;
 	    remaining = entry.getValue().addObjects(list, prefix + entry.getKey(), remaining);
 	  }

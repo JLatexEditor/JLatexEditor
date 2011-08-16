@@ -3,7 +3,7 @@ package jlatexeditor.codehelper;
 import sce.codehelper.CHCommand;
 import sce.codehelper.CHCommandArgument;
 import util.ParseUtil;
-import util.Trie;
+import util.SimpleTrie;
 
 import java.util.ArrayList;
 
@@ -65,7 +65,7 @@ public class Command extends BackgroundParser.FilePos {
   /**
    * Unfolding macros once.
    */
-  public static String unfoldOnce(String text, Trie<Command> commands) {
+  public static String unfoldOnce(String text, SimpleTrie<Command> commands) {
     int index = 0;
     while (index < text.length()) {
       char c = text.charAt(index);
@@ -136,7 +136,7 @@ public class Command extends BackgroundParser.FilePos {
   /**
    * Unfolding macros recursively.
    */
-  public static String unfoldRecursive(String text, Trie<Command> commands, int max) {
+  public static String unfoldRecursive(String text, SimpleTrie<Command> commands, int max) {
     while(max-- > 0) {
       String unfolded = unfoldOnce(text, commands);
       if(unfolded.equals(text)) return unfolded;

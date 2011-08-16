@@ -4,7 +4,7 @@ import my.XML.XMLDocument;
 import my.XML.XMLElement;
 import my.XML.XMLParser;
 import util.StreamUtils;
-import util.Trie;
+import util.SimpleTrie;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,9 +14,9 @@ import java.util.HashMap;
  */
 public class StaticCommandsReader {
 	/** The command reference. */
-	protected Trie<CHCommand> commands = new Trie<CHCommand>();
+	protected SimpleTrie<CHCommand> commands = new SimpleTrie<CHCommand>();
 	/** The environment reference. */
-	protected Trie<CHCommand> environments = new Trie<CHCommand>();
+	protected SimpleTrie<CHCommand> environments = new SimpleTrie<CHCommand>();
 	/** Maps an environment name to a list of commands. */
 	protected HashMap<String,ArrayList<CHCommand>> scopes = new HashMap<String, ArrayList<CHCommand>>();
 
@@ -24,18 +24,24 @@ public class StaticCommandsReader {
 		readCommands(filename, false);
 	}
 
+	public StaticCommandsReader(String filename, boolean mayFail) {
+		readCommands(filename, mayFail);
+	}
+
 	/**
 	 * Reads the commands from xml file.
 	 *
 	 * @param filename the filename
 	 */
-	public void readCommands(String filename, boolean userDefined) {
+	public void readCommands(String filename, boolean mayFail) {
 	  XMLParser xmlParser = new XMLParser();
 	  XMLDocument commandsDocument;
 	  try {
 	    commandsDocument = xmlParser.parse(StreamUtils.readFile(filename));
 	  } catch (Exception e) {
-	    e.printStackTrace();
+		  if (!mayFail) {
+	      e.printStackTrace();
+		  }
 	    return;
 	  }
 
@@ -200,11 +206,11 @@ public class StaticCommandsReader {
 		return htmlString.replaceAll("&nbsp;", " ").replaceAll("&lt;", "<").replaceAll("&gt;", ">").replaceAll("&nl;", "\n").replaceAll("&quot;", "\"").replaceAll("&amp;", "&");
 	}
 
-	public Trie<CHCommand> getCommands() {
+	public SimpleTrie<CHCommand> getCommands() {
 		return commands;
 	}
 
-	public Trie<CHCommand> getEnvironments() {
+	public SimpleTrie<CHCommand> getEnvironments() {
 		return environments;
 	}
 

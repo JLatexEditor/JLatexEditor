@@ -2,10 +2,6 @@ package jlatexeditor.codehelper;
 
 import sce.codehelper.CHCommand;
 import sce.codehelper.CHCommandArgument;
-import util.ParseUtil;
-import util.Trie;
-
-import java.util.ArrayList;
 
 /**
  * Environment defined via \newenvironment.

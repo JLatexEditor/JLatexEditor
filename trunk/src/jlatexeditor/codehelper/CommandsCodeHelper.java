@@ -6,11 +6,11 @@ import jlatexeditor.SCEManager;
 import sce.codehelper.CHCommand;
 import sce.codehelper.CHCommandArgument;
 import sce.codehelper.PatternPair;
-import util.AbstractTrie;
+import util.Trie;
 import util.Function1;
 import de.endrullis.utils.collections.MergeSortIterable;
-import util.Trie;
-import util.TrieSet;
+import util.SimpleTrie;
+import util.SetTrie;
 
 import java.util.*;
 
@@ -19,11 +19,11 @@ import java.util.*;
  *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
-public class CommandsCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtractor.Command>> {
-	protected static final Function1<TrieSet<PackagesExtractor.Command>,String> TRIE_SET_2_STRING_FUNCTION = new Function1<TrieSet<PackagesExtractor.Command>, String>() {
+public class CommandsCodeHelper extends ExtPatternHelper<SetTrie<PackagesExtractor.Command>> {
+	protected static final Function1<SetTrie<PackagesExtractor.Command>,String> TRIE_SET_2_STRING_FUNCTION = new Function1<SetTrie<PackagesExtractor.Command>, String>() {
 		@Override
-		public String apply(TrieSet<PackagesExtractor.Command> trieSet) {
-			return trieSet.getObjects().iterator().next().getName();
+		public String apply(SetTrie<PackagesExtractor.Command> setTrie) {
+			return setTrie.getObjects().iterator().next().getName();
 		}
 	};
 	protected static final Function1<Command,String> COMMAND_2_STRING_FUNCTION = new Function1<Command, String>() {
@@ -51,10 +51,10 @@ public class CommandsCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtract
 	  return false;
 	}
 
-	public Iterable<CHCommand> getCompletions(String _search, Function1<TrieSet<PackagesExtractor.Command>, Boolean> filterFunc) {
+	public Iterable<CHCommand> getCompletions(String _search, Function1<SetTrie<PackagesExtractor.Command>, Boolean> filterFunc) {
 		String search = _search.substring(1);
-		final Trie<Command> userCommands = SCEManager.getBackgroundParser().getCommands();
-		final Trie<CHCommand> standardCommands = SCEManager.getLatexCommands().getCommands();
+		final SimpleTrie<Command> userCommands = SCEManager.getBackgroundParser().getCommands();
+		final SimpleTrie<CHCommand> standardCommands = SCEManager.getLatexCommands().getCommands();
 
 		ExtIterable<String> userIter = userCommands.getObjectsIterable(search).map(COMMAND_2_STRING_FUNCTION);
 		ExtIterable<String> standardIter = standardCommands.getObjectsIterable(search).map(CHCOMMAND_2_STING_FUNCTION);
@@ -78,11 +78,11 @@ public class CommandsCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtract
 		}).toList(20);
 	}
 
-	protected Function1<TrieSet<PackagesExtractor.Command>, Boolean> minUsage(final int minUsageCount) {
-		return new Function1<TrieSet<PackagesExtractor.Command>, Boolean>() {
+	protected Function1<SetTrie<PackagesExtractor.Command>, Boolean> minUsage(final int minUsageCount) {
+		return new Function1<SetTrie<PackagesExtractor.Command>, Boolean>() {
 			@Override
-			public Boolean apply(TrieSet<PackagesExtractor.Command> trieSet) {
-				return trieSet.getObjects().iterator().next().getUsageCount() >= minUsageCount;
+			public Boolean apply(SetTrie<PackagesExtractor.Command> setTrie) {
+				return setTrie.getObjects().iterator().next().getUsageCount() >= minUsageCount;
 			}
 		};
 	}
@@ -90,7 +90,7 @@ public class CommandsCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtract
 	public String getMaxCommonPrefix(String _search) {
 		String search = _search.substring(1);
 
-		List<AbstractTrie<? extends Object>> tries = Arrays.asList(
+		List<Trie<? extends Object>> tries = Arrays.asList(
 			SCEManager.getBackgroundParser().getCommands(),
 			SCEManager.getLatexCommands().getCommands(),
 			PackagesExtractor.getPackageParser().getCommands(),
@@ -98,7 +98,7 @@ public class CommandsCodeHelper extends ExtPatternHelper<TrieSet<PackagesExtract
 		);
 
 		String maxPrefix = null;
-		for (AbstractTrie<? extends Object> trie : tries) {
+		for (Trie<? extends Object> trie : tries) {
 			String maxCommonPrefix = trie.getMaxCommonPrefix(search);
 			if (maxCommonPrefix.length() >= search.length()) {
 				if (maxPrefix == null) {

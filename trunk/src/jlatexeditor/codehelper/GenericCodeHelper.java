@@ -3,7 +3,7 @@ package jlatexeditor.codehelper;
 import sce.codehelper.CHCommand;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
-import util.AbstractTrie;
+import util.Trie;
 import util.Function0;
 
 import java.util.ArrayList;
@@ -11,9 +11,9 @@ import java.util.List;
 
 public class GenericCodeHelper extends PatternHelper {
   protected WordWithPos label;
-	protected Function0<AbstractTrie<?>> getCompletionTrie;
+	protected Function0<Trie<?>> getCompletionTrie;
 
-  public GenericCodeHelper(String pattern, Function0<AbstractTrie<?>> getCompletionTrie) {
+  public GenericCodeHelper(String pattern, Function0<Trie<?>> getCompletionTrie) {
     this.pattern = new PatternPair(pattern);
 	  this.getCompletionTrie = getCompletionTrie;
   }
@@ -31,7 +31,7 @@ public class GenericCodeHelper extends PatternHelper {
   }
 
   public Iterable<? extends CHCommand> getCompletions(int level) {
-    AbstractTrie<?> trie = getCompletionTrie.apply();
+    Trie<?> trie = getCompletionTrie.apply();
 
     ArrayList<CHCommand> commands = new ArrayList<CHCommand>();
     List<String> strings = trie.getStrings(label.word, 100);
@@ -43,7 +43,7 @@ public class GenericCodeHelper extends PatternHelper {
   }
 
   public String getMaxCommonPrefix() {
-	  AbstractTrie<?> trie = getCompletionTrie.apply();
+	  Trie<?> trie = getCompletionTrie.apply();
     return trie.getMaxCommonPrefix(label.word);
   }
 }

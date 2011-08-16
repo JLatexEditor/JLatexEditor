@@ -1,12 +1,9 @@
 package jlatexeditor.codehelper;
 
-import de.endrullis.utils.BetterProperties2;
-import jlatexeditor.PackagesExtractor;
 import jlatexeditor.gproperties.GProperties;
 import sce.codehelper.CHCommand;
 import sce.codehelper.WordWithPos;
 import util.Function1;
-import util.TrieSet;
 
 import java.util.Comparator;
 
