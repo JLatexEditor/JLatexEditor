@@ -54,44 +54,16 @@ public class SimpleTrieTest extends TestCase {
     assertEquals("", root.getMaxCommonPrefix(""));
     assertEquals("ccc", root.getMaxCommonPrefix("c"));
 
-    List<String> list = root.getStrings("", 3);
-    String s = "";
-    for (String s1 : list) {
-      s += s1 + "\n";
-    }
-    assertEquals(
-            "aaa\n" +
-						"b2\n" +
-						"blah\n", s);
+    assertEquals(Arrays.asList("aaa", "b2", "blah"), root.getStrings("", 3));
 
-    list = root.getStrings("aa", 1);
-    s = "";
-    for (String s1 : list) {
-      s += s1 + "\n";
-    }
-    assertEquals("aaa\n", s);
 
-    list = root.getStrings("c", 3);
-    s = "";
-    for (String s1 : list) {
-      s += s1 + "\n";
-    }
-    assertEquals(
-            "ccc1\n" +
-						"ccc2\n" +
-						"ccc3\n", s);
+    assertEquals(Arrays.asList("aaa"), root.getStrings("aa", 1));
+
+    assertEquals(Arrays.asList("ccc1", "ccc2", "ccc3"), root.getStrings("c", 3));
 
     assertEquals(1, root.add("cc"));
 
-    list = root.getStrings("c", 3);
-    s = "";
-    for (String s1 : list) {
-      s += s1 + "\n";
-    }
-    assertEquals(
-            "cc\n" +
-						"ccc1\n" +
-						"ccc2\n", s);
+    assertEquals(Arrays.asList("cc", "ccc1", "ccc2"), root.getStrings("c", 3));
   }
 
 	public void testObjectIterator() {
