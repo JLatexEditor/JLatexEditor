@@ -1,7 +1,5 @@
 package de.endrullis.utils.collections;
 
-import de.endrullis.utils.collections.ExtIterator;
-
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.PriorityQueue;
