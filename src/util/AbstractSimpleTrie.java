@@ -17,12 +17,10 @@ public abstract class AbstractSimpleTrie<T> implements Trie<T>, Iterable<T> {
 		return getObjectsIterable("");
 	}
 
-	/*
 	@Override
 	public List<T> getObjects(String prefix, int count) {
-		return
+		return getObjectsIterable(prefix).toList(count);
 	}
-	*/
 
 	@Override
 	public Iterator<T> iterator() {

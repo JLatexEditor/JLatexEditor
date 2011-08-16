@@ -136,22 +136,6 @@ public class SimpleTrie<T> extends AbstractSimpleTrie<T> {
     return list;
   }
 
-  public List<T> getObjects(String prefix, int count) {
-    // navigate to the trie node that represents the end of the prefix
-    char[] chars = truncate(prefix).toCharArray();
-    SimpleTrie<T> t = this;
-    for (char aChar : chars) {
-      t = t.map.get(aChar);
-      if (t == null) {
-        return new ArrayList<T>();
-      }
-    }
-
-    ArrayList<T> list = new ArrayList<T>();
-    t.addObjects(list, prefix, count);
-    return list;
-  }
-
 	public ExtIterable<T> getObjectsIterable(final String prefix) {
 		return new ExtIterable<T>() {
 			@Override
