@@ -1,5 +1,7 @@
 package de.endrullis.utils.collections;
 
+import junit.framework.Test;
+
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.PriorityQueue;
@@ -24,6 +26,7 @@ public class MergeSortIterator<T> extends ExtIterator<T> {
 			if (wrapper.hasNext()) {
 				queue.add(wrapper);
 			}
+			wrapperNr++;
 		}
 	}
 
