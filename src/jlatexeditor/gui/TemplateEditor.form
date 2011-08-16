@@ -2,7 +2,7 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="jlatexeditor.gui.TemplateEditor">
   <grid id="27dc6" binding="mainPanel" layout-manager="GridBagLayout">
     <constraints>
-      <xy x="20" y="20" width="635" height="464"/>
+      <xy x="20" y="20" width="721" height="470"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -15,7 +15,7 @@
           <gridbag weightx="1.0" weighty="1.0"/>
         </constraints>
         <properties>
-          <dividerLocation value="244"/>
+          <dividerLocation value="179"/>
         </properties>
         <border type="none"/>
         <children>
@@ -112,7 +112,7 @@
                 <children>
                   <scrollpane id="93cc6">
                     <constraints>
-                      <grid row="0" column="0" row-span="3" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <grid row="1" column="0" row-span="3" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                       <gridbag top="0" left="4" bottom="4" right="4" weightx="1.0" weighty="0.0"/>
                     </constraints>
                     <properties/>
@@ -126,7 +126,7 @@
                   </scrollpane>
                   <component id="6576b" class="javax.swing.JButton" binding="moveArgumentUpButton">
                     <constraints>
-                      <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                       <gridbag weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
@@ -135,7 +135,7 @@
                   </component>
                   <component id="c47b6" class="javax.swing.JButton" binding="moveArgumentDownButton">
                     <constraints>
-                      <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                       <gridbag weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
@@ -144,11 +144,20 @@
                   </component>
                   <component id="3cbc5" class="javax.swing.JButton" binding="deleteArgumentButton">
                     <constraints>
-                      <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                       <gridbag weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
                       <text value="Delete"/>
+                    </properties>
+                  </component>
+                  <component id="3b3fd" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag top="0" left="4" bottom="4" right="4" weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <text value="Arguments of the from &quot;@argName@&quot; can be added via ALT+ENTER in the editor"/>
                     </properties>
                   </component>
                 </children>
