@@ -37,7 +37,6 @@ public class WordCompletion extends PatternHelper {
   public Iterable<? extends CHCommand> getCompletions(int level) {
     ArrayList<CHCommand> commands = new ArrayList<CHCommand>();
     List<String> strings = backgroundParser.getWords().getStrings(word.word, 100);
-    if (strings == null) return commands;
 
     for (String string : strings) commands.add(new CHCommand(string));
 

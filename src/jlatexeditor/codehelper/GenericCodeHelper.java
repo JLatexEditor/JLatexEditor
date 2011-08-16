@@ -35,7 +35,6 @@ public class GenericCodeHelper extends PatternHelper {
 
     ArrayList<CHCommand> commands = new ArrayList<CHCommand>();
     List<String> strings = trie.getStrings(label.word, 100);
-    if (strings == null) return commands;
 
     for (String string : strings) commands.add(new CHCommand(string));
 

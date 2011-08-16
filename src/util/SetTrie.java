@@ -143,7 +143,7 @@ public class SetTrie<T> implements Trie<T> {
 	  for (char aChar : chars) {
 	    t = t.map.get(aChar);
 	    if (t == null) {
-	      return null;
+	      return new ArrayList<String>();
 	    }
 	  }
 
