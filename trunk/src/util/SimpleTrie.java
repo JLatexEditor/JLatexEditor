@@ -56,20 +56,29 @@ public class SimpleTrie<T> extends AbstractSimpleTrie<T> {
   }
 
   public boolean remove(String s) {
-    return remove(truncate(s).toCharArray(), 0);
+    return remove(truncate(s).toCharArray(), 0, false);
   }
 
-  private boolean remove(char[] chars) {
-    return remove(chars, 0);
+  public boolean removeAll(String s) {
+    return remove(truncate(s).toCharArray(), 0, true);
   }
 
-  private boolean remove(char[] chars, int i) {
+  private boolean remove(char[] chars, boolean all) {
+    return remove(chars, 0, all);
+  }
+
+  private boolean remove(char[] chars, int i, boolean all) {
     if (i == chars.length) {
-      return --count == 0;
+	    if (all) {
+		    count = 0;
+		    return true;
+	    } else {
+		    return --count == 0;
+	    }
     }
 
     SimpleTrie next = map.get(chars[i]);
-    if (next != null && next.remove(chars, i + 1)) {
+    if (next != null && next.remove(chars, i + 1, all)) {
       map.remove(chars[i]);
     }
     return map.isEmpty();

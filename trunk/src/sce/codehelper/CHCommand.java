@@ -24,6 +24,8 @@ public class CHCommand implements Comparable, Cloneable {
   private String hint = null;
 	/** Arguments. */
   private ArgumentsHashMap argumentsHashMap = new ArgumentsHashMap();
+	/** Enabled?. */
+	private boolean enabled = true;
 
   /** User defined? */
   private boolean isUserDefined = false;
@@ -137,6 +139,24 @@ public class CHCommand implements Comparable, Cloneable {
 	}
 
 	/**
+	 * Returns true if the command is enabled.
+	 *
+	 * @return true if the command is enabled
+	 */
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	/**
+	 * Enabled or disables the command.
+	 *
+	 * @param enabled true to enable command
+	 */
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	/**
    * Returns true if the command is defined or changed by the user.
    *
    * @return true if user defined
@@ -179,14 +199,15 @@ public class CHCommand implements Comparable, Cloneable {
 	 */
   public boolean equals(Object obj) {
     if(!(obj instanceof CHCommand)) return false;
-    CHCommand o = (CHCommand) obj;
+    CHCommand that = (CHCommand) obj;
 
-    if(!equalsNull(name, o.name)
-            || !equalsNull(usage, o.usage)
-            || !equalsNull(style, o.style)
-            || !equalsNull(hint, o.hint)) return false;
+    if(!equalsNull(this.name, that.name)
+				|| !equalsNull(this.usage, that.usage)
+				|| !equalsNull(this.style, that.style)
+				|| !equalsNull(this.hint, that.hint)
+				|| this.enabled != that.enabled) return false;
 
-	  return argumentsHashMap.size() == o.argumentsHashMap.size();
+	  return argumentsHashMap.size() == that.argumentsHashMap.size();
   }
 
 	public boolean deepEquals(CHCommand that) {
@@ -216,6 +237,7 @@ public class CHCommand implements Comparable, Cloneable {
 		for (CHCommandArgument argument : getArguments()) {
 			c.addArgument(argument.clone());
 		}
+		c.setEnabled(enabled);
 		c.finalizeArguments();
 		return c;
 	}

@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -50,7 +51,6 @@ public class TemplateEditor extends JDialog {
 	public ArgumentsTableModel argumentsTableModel;
 	public GeneratorTableModel generatorTableModel;
 
-	private CHCommand oldTemplate;
 	private CHCommand newTemplate;
 	private JFrame owner;
 
@@ -61,13 +61,14 @@ public class TemplateEditor extends JDialog {
 		$$$setupUI$$$();
 		setContentPane(mainPanel);
 
-		// populate commandList
+		templateList.setCellRenderer(new TemplateListCellRenderer());
 		templateList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				if (e.getValueIsAdjusting()) return;
+				if (templateList.getSelectedIndex() < 0) return;
 
 				saveTemplateIfChanged();
-				load(getSelectedTemplate());
+				loadTemplate(getSelectedTemplate());
 				pack();
 			}
 		});
@@ -193,7 +194,7 @@ public class TemplateEditor extends JDialog {
 		restoreSystemTemplateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (getSystemTemplates().contains(newTemplate.getName())) {
-					load(getSystemTemplates().get(newTemplate.getName()).clone());
+					loadTemplate(getSystemTemplates().get(newTemplate.getName()).clone());
 				}
 			}
 		});
@@ -201,7 +202,7 @@ public class TemplateEditor extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				CHCommand selectedTemplate = getSelectedTemplate();
 				if (selectedTemplate != null) {
-					load(selectedTemplate);
+					loadTemplate(selectedTemplate);
 				}
 			}
 		});
@@ -245,13 +246,24 @@ public class TemplateEditor extends JDialog {
 
 	private void saveTemplate() {
 		newTemplate.setUsage(editor.getText());
-		getUserTemplates().add(newTemplate.getName(), newTemplate.clone());
+		newTemplate.setEnabled(enabledCheckBox.isSelected());
+		CHCommand systemTemplate = getSystemTemplates().get(newTemplate.getName());
+		if (systemTemplate != null && systemTemplate.equals(newTemplate)) {
+			getUserTemplates().removeAll(newTemplate.getName());
+		} else {
+			CHCommand templateClone = newTemplate.clone();
+			templateClone.setUserDefined(true);
+			getUserTemplates().add(newTemplate.getName(), templateClone);
+		}
+		reloadTemplateList();
+		selectTemplate(newTemplate.getName());
 		// TODO: save templates to file
 	}
 
 	private void saveTemplateIfChanged() {
 		if (newTemplate != null) {
 			newTemplate.setUsage(editor.getText());
+			newTemplate.setEnabled(enabledCheckBox.isSelected());
 			if (!getTemplates().get(newTemplate.getName()).deepEquals(newTemplate)) {
 				if (JOptionPane.showConfirmDialog(owner, "Do you want to save your changes for template \"" + newTemplate.getName() + "\"", "Save changes?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 					saveTemplate();
@@ -302,7 +314,7 @@ public class TemplateEditor extends JDialog {
 	}
 
 	private void askToRenameTemplate() {
-		CHCommand selectedTemplate = getSelectedTemplate();
+		CHCommand selectedTemplate = getSelectedTemplate().clone();
 		if (selectedTemplate == null) return;
 
 		String templateName = JOptionPane.showInputDialog(owner, "New template name: ", "Rename template", JOptionPane.QUESTION_MESSAGE);
@@ -310,7 +322,7 @@ public class TemplateEditor extends JDialog {
 			String oldTemplateName = selectedTemplate.getName();
 			selectedTemplate.setName(templateName);
 			if (addTemplate(selectedTemplate, owner)) {
-				getUserTemplates().remove(oldTemplateName);
+				removeOrDisableTemplate(oldTemplateName);
 				reloadTemplateList();
 				selectTemplate(templateName);
 			}
@@ -322,11 +334,23 @@ public class TemplateEditor extends JDialog {
 		if (selectedTemplate == null) return;
 
 		if (JOptionPane.showConfirmDialog(owner, "Are you sure you want to delete this template?") == JOptionPane.YES_OPTION) {
-			getUserTemplates().remove(selectedTemplate.getName());
+			// disable template if system template
+			removeOrDisableTemplate(selectedTemplate.getName());
+			newTemplate = null;
 			int selectedIndex = templateList.getSelectedIndex();
 			reloadTemplateList();
 			selectTemplate(Math.min(selectedIndex, templateListModel.getSize() - 1));
 			// TODO: save changes to file
+		}
+	}
+
+	private void removeOrDisableTemplate(String templateName) {
+		getUserTemplates().removeAll(templateName);
+		if (getSystemTemplates().contains(templateName)) {
+			CHCommand disabledTemplate = getSystemTemplates().get(templateName).clone();
+			disabledTemplate.setEnabled(false);
+			disabledTemplate.setUserDefined(true);
+			getUserTemplates().add(disabledTemplate.getName(), disabledTemplate);
 		}
 	}
 
@@ -336,7 +360,8 @@ public class TemplateEditor extends JDialog {
 			return false;
 		}
 
-		getTemplates().add(template.getName(), template);
+		template.setUserDefined(true);
+		getUserTemplates().add(template.getName(), template);
 		reloadTemplateList();
 		selectTemplate(template.getName());
 		// TODO: save changes to file
@@ -352,7 +377,7 @@ public class TemplateEditor extends JDialog {
 	private CHCommand getSelectedTemplate() {
 		if (templateList.getSelectedIndex() < 0) return null;
 
-		return getTemplates().get(templateListModel.getElementAt(templateList.getSelectedIndex()));
+		return getTemplates().get(templateListModel.getElementAt(templateList.getSelectedIndex()).getName());
 	}
 
 	/**
@@ -389,12 +414,12 @@ public class TemplateEditor extends JDialog {
 		return SCEManager.getTabCompletion();
 	}
 
-	private void load(CHCommand template) {
+	private void loadTemplate(CHCommand template) {
 		if (template == null) return;
 
-		oldTemplate = template;
 		newTemplate = template.clone();
 		editor.setText(newTemplate.getUsage());
+		enabledCheckBox.setSelected(template.isEnabled());
 		reloadArguments();
 		/*
 		TableColumn col = attributesTable.getColumnModel().getColumn(ArgumentsTableModel.C_Type);
@@ -713,7 +738,6 @@ public class TemplateEditor extends JDialog {
 		gbc.insets = new Insets(0, 0, 4, 4);
 		panel5.add(cancelButton, gbc);
 		enabledCheckBox = new JCheckBox();
-		enabledCheckBox.setEnabled(false);
 		enabledCheckBox.setText("Enabled");
 		enabledCheckBox.setMnemonic('E');
 		enabledCheckBox.setDisplayedMnemonicIndex(0);
@@ -740,7 +764,7 @@ public class TemplateEditor extends JDialog {
 		return mainPanel;
 	}
 
-	public class ArgumentsTableModel implements TableModel {
+	class ArgumentsTableModel implements TableModel {
 		private static final int C_Name = 0, C_Value = 1, C_Completion = 2, C_Hint = 3;
 		private String[] columns = new String[]{"Name", "Value", "Completion", "Hint"};
 		private Class[] columnClasses = new Class[]{String.class, String.class, Boolean.class, String.class};
@@ -844,7 +868,7 @@ public class TemplateEditor extends JDialog {
 		}
 	}
 
-	public class GeneratorTableModel implements TableModel {
+	class GeneratorTableModel implements TableModel {
 		private static final int C_Name = 0, C_Function = 1;
 		private String[] columns = new String[]{"Attribute Name", "Function"};
 		private Class[] columnClasses = new Class[]{String.class, String.class};
@@ -919,7 +943,7 @@ public class TemplateEditor extends JDialog {
 		}
 	}
 
-	public class ComboBoxCellRenderer extends JComboBox implements TableCellRenderer {
+	class ComboBoxCellRenderer extends JComboBox implements TableCellRenderer {
 		public ComboBoxCellRenderer(String[] items) {
 			super(items);
 		}
@@ -940,7 +964,7 @@ public class TemplateEditor extends JDialog {
 		}
 	}
 
-	public class ComboBoxCellEditor extends DefaultCellEditor {
+	class ComboBoxCellEditor extends DefaultCellEditor {
 		public ComboBoxCellEditor(String[] items) {
 			super(new JComboBox(items));
 		}
@@ -954,14 +978,10 @@ public class TemplateEditor extends JDialog {
 	}
 
 	public static class TemplateListModel extends AbstractListModel {
-		List<String> templateNames;
+		List<CHCommand> templates;
 
 		public TemplateListModel(AbstractSimpleTrie<CHCommand> templates) {
-			templateNames = templates.getObjectsIterable("").map(new Function1<CHCommand, String>() {
-				public String apply(CHCommand a1) {
-					return a1.getName();
-				}
-			}).toList();
+			this.templates = templates.getObjectsIterable("").toList();
 		}
 
 		/**
@@ -971,15 +991,52 @@ public class TemplateEditor extends JDialog {
 		 * @return index of template name or -1 if template name is not in this list
 		 */
 		public int getIndexOf(String templateName) {
-			return templateNames.indexOf(templateName);
+			for (int i = 0; i < templates.size(); i++) {
+				if (templates.get(i).getName().equals(templateName)) return i;
+			}
+			return -1;
 		}
 
 		public int getSize() {
-			return templateNames.size();
+			return templates.size();
 		}
 
-		public String getElementAt(int index) {
-			return templateNames.get(index);
+		public CHCommand getElementAt(int index) {
+			return templates.get(index);
+		}
+	}
+
+	private static class TemplateListCellRenderer extends JLabel implements ListCellRenderer {
+		private static Icon systemIcon, userIcon, disabledIcon;
+
+		static {
+			try {
+				systemIcon = SCEManager.getMappedImageIcon("system template");
+				userIcon = SCEManager.getMappedImageIcon("user template");
+				disabledIcon = SCEManager.getMappedImageIcon("disabled template");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		public TemplateListCellRenderer() {
+			setOpaque(true);
+		}
+
+		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+			setText(value.toString());
+			setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
+
+			if (value instanceof CHCommand) {
+				CHCommand command = (CHCommand) value;
+				if (command.isEnabled()) {
+					setIcon(command.isUserDefined() ? userIcon : systemIcon);
+				} else {
+					setIcon(disabledIcon);
+				}
+			}
+
+			return this;
 		}
 	}
 }
