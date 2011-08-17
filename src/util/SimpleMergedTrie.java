@@ -34,6 +34,15 @@ public class SimpleMergedTrie<T> extends AbstractSimpleTrie<T> {
 	}
 
 	@Override
+	public T get(String key) {
+		for (AbstractSimpleTrie<T> trie : tries) {
+			T object = trie.get(key);
+			if (object != null) return object;
+		}
+		return null;
+	}
+
+	@Override
 	public int add(String s) {
 		throw new NotImplementedException();
 	}
@@ -62,6 +71,14 @@ public class SimpleMergedTrie<T> extends AbstractSimpleTrie<T> {
 	@Override
 	public List<String> getStrings(String prefix, int count) {
 		throw new NotImplementedException();
+	}
+
+	@Override
+	public boolean contains(String key) {
+		for (AbstractSimpleTrie<T> trie : tries) {
+			if (trie.contains(key)) return true;
+		}
+		return false;
 	}
 
 	public static String maxCommonPrefix(String prefix1, String prefix2) {

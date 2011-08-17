@@ -27,6 +27,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Properties;
 
 /**
@@ -39,7 +40,11 @@ public class SCEManager {
   private static StaticCommandsReader latexCommands = new StaticCommandsReader("data/codehelper/commands.xml");
   private static StaticCommandsReader systemTabCompletion = new StaticCommandsReader("data/codehelper/liveTemplates.xml");
   private static StaticCommandsReader userTabCompletion = new StaticCommandsReader(GProperties.SETTINGS_DIR + "/liveTemplates.xml", true);
-  private static StaticCommandsReader tabCompletion = new StaticCommandsReader("data/codehelper/liveTemplates.xml");
+  private static SimpleCommandsReader tabCompletion = new SimpleCommandsReader(new SimpleMergedTrie(new Comparator<CHCommand>() {
+	  public int compare(CHCommand o1, CHCommand o2) {
+		  return o1.getName().compareTo(o2.getName());
+	  }
+  }, userTabCompletion.getCommands(), systemTabCompletion.getCommands()));
 
 	private static Properties iconMap = new Properties() {{
 		try {
@@ -79,7 +84,11 @@ public class SCEManager {
 		return systemTabCompletion.getCommands();
 	}
 
-	public static SimpleTrie<CHCommand> getTabCompletion() {
+	public static SimpleTrie<CHCommand> getUserTabCompletion() {
+		return userTabCompletion.getCommands();
+	}
+
+	public static AbstractSimpleTrie<CHCommand> getTabCompletion() {
     return tabCompletion.getCommands();
   }
 

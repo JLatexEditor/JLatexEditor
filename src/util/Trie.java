@@ -14,4 +14,5 @@ public interface Trie<T> {
 	public String getMaxCommonPrefix(String prefix);
 	public List<String> getStrings(String prefix, int count);
 	public List<T> getObjects(String prefix, int count);
+	public boolean contains(String key);
 }

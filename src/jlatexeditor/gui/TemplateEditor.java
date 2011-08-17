@@ -3,6 +3,7 @@ package jlatexeditor.gui;
 import jlatexeditor.SCEManager;
 import sce.codehelper.*;
 import sce.component.SourceCodeEditor;
+import util.AbstractSimpleTrie;
 import util.Function1;
 import util.SimpleTrie;
 
@@ -244,7 +245,7 @@ public class TemplateEditor extends JDialog {
 
 	private void saveTemplate() {
 		newTemplate.setUsage(editor.getText());
-		getTemplates().add(newTemplate.getName(), newTemplate.clone());
+		getUserTemplates().add(newTemplate.getName(), newTemplate.clone());
 		// TODO: save templates to file
 	}
 
@@ -309,7 +310,7 @@ public class TemplateEditor extends JDialog {
 			String oldTemplateName = selectedTemplate.getName();
 			selectedTemplate.setName(templateName);
 			if (addTemplate(selectedTemplate, owner)) {
-				getTemplates().remove(oldTemplateName);
+				getUserTemplates().remove(oldTemplateName);
 				reloadTemplateList();
 				selectTemplate(templateName);
 			}
@@ -321,7 +322,7 @@ public class TemplateEditor extends JDialog {
 		if (selectedTemplate == null) return;
 
 		if (JOptionPane.showConfirmDialog(owner, "Are you sure you want to delete this template?") == JOptionPane.YES_OPTION) {
-			getTemplates().remove(selectedTemplate.getName());
+			getUserTemplates().remove(selectedTemplate.getName());
 			int selectedIndex = templateList.getSelectedIndex();
 			reloadTemplateList();
 			selectTemplate(Math.min(selectedIndex, templateListModel.getSize() - 1));
@@ -380,7 +381,11 @@ public class TemplateEditor extends JDialog {
 		return SCEManager.getSystemTabCompletion();
 	}
 
-	private SimpleTrie<CHCommand> getTemplates() {
+	private SimpleTrie<CHCommand> getUserTemplates() {
+		return SCEManager.getUserTabCompletion();
+	}
+
+	private AbstractSimpleTrie<CHCommand> getTemplates() {
 		return SCEManager.getTabCompletion();
 	}
 
@@ -951,7 +956,7 @@ public class TemplateEditor extends JDialog {
 	public static class TemplateListModel extends AbstractListModel {
 		List<String> templateNames;
 
-		public TemplateListModel(SimpleTrie<CHCommand> templates) {
+		public TemplateListModel(AbstractSimpleTrie<CHCommand> templates) {
 			templateNames = templates.getObjectsIterable("").map(new Function1<CHCommand, String>() {
 				public String apply(CHCommand a1) {
 					return a1.getName();
