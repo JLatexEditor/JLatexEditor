@@ -14,6 +14,8 @@ import java.io.File;
 import java.util.*;
 
 public class SVNView extends JPanel implements ActionListener {
+  private enum MaybeBool {jtrue, jfalse, maybe};
+
   private JLatexEditorJFrame jle;
   private StatusBar statusBar;
 
@@ -57,21 +59,52 @@ public class SVNView extends JPanel implements ActionListener {
   }
 
   private synchronized void checkForUpdates_() {
-    boolean hasUpdates = false;
-
     File file = jle.getActiveEditor().getFile();
     if (!file.exists()) return;
     File dir = file.getParentFile();
 
     root.setFile(dir);
-    updateLocal(root, dir);
-    tree.expandRow(0);
+    SwingUtilities.invokeLater(new UpdateLocal(root, dir));
 
     if (!new File(dir, ".svn").exists()) return;
 
     try {
-      ArrayList<SVN.StatusResult> results = SVN.getInstance().status(dir, true);
+      SwingUtilities.invokeLater(new UpdateServer(SVN.getInstance().status(dir, true)));
+    } catch (Exception e) {
+      if (!hadException) e.printStackTrace();
+      hadException = true;
+    }
+  }
+
+  private class UpdateLocal implements Runnable {
+    private Node node;
+    private File dir;
+
+    private UpdateLocal(Node node, File dir) {
+      this.node = node;
+      this.dir = dir;
+    }
+
+    public void run() {
+      updateLocal(node, dir);
+      tree.expandRow(0);
+    }
+  }
+
+  private class UpdateServer implements Runnable {
+    private ArrayList<SVN.StatusResult> results;
+
+    private UpdateServer(ArrayList<SVN.StatusResult> results) {
+      this.results = results;
+    }
+
+    public void run() {
+      boolean hasUpdates = false;
+
       for (SVN.StatusResult result : results) {
+        // why can . have modifications?
+        if(result.getRelativePath().equals(".")) continue;
+
         String relativePath = result.getRelativePath();
 
         Node node = get(root, relativePath);
@@ -85,12 +118,9 @@ public class SVNView extends JPanel implements ActionListener {
 
         if (result.getServerStatus() == SVN.StatusResult.Server.outdated) hasUpdates = true;
       }
-    } catch (Exception e) {
-      if (!hadException) e.printStackTrace();
-      hadException = true;
-    }
 
-    statusBar.setUpdatesAvailableVisible(hasUpdates);
+      statusBar.setUpdatesAvailableVisible(hasUpdates);
+    }
   }
 
   private Node get(Node node, String relativePath) {
@@ -99,15 +129,15 @@ public class SVNView extends JPanel implements ActionListener {
       String directoryName = relativePath.substring(0,delim);
       String pathRemainder = relativePath.substring(delim+1);
 
-      int geIndex = getNodeGE(node, directoryName, true);
+      int geIndex = getNodeGE(node, directoryName, MaybeBool.maybe);
       Node ge = geIndex < node.getChildCount() ? (Node) node.getChildAt(geIndex) : null;
 
       if(ge != null && ge.getName().equals(directoryName)) return get(ge, pathRemainder);
     } else {
-      int geIndex = getNodeGE(node, relativePath, false);
+      int geIndex = getNodeGE(node, relativePath, MaybeBool.maybe);
       Node ge = geIndex < node.getChildCount() ? (Node) node.getChildAt(geIndex) : null;
 
-      if(ge.getName().equals(relativePath)) return ge;
+      if(ge != null && ge.getName().equals(relativePath)) return ge;
     }
 
     return null;
@@ -119,7 +149,7 @@ public class SVNView extends JPanel implements ActionListener {
       String directoryName = relativePath.substring(0,delim);
       String pathRemainder = relativePath.substring(delim+1);
 
-      int geIndex = getNodeGE(node, directoryName, true);
+      int geIndex = getNodeGE(node, directoryName, MaybeBool.jtrue);
       Node ge = geIndex < node.getChildCount() ? (Node) node.getChildAt(geIndex) : null;
 
       // insert directory if needed
@@ -131,7 +161,7 @@ public class SVNView extends JPanel implements ActionListener {
 
       return add(ge, pathRemainder);
     } else {
-      int geIndex = getNodeGE(node, relativePath, false);
+      int geIndex = getNodeGE(node, relativePath, MaybeBool.jfalse);
       Node ge = geIndex < node.getChildCount() ? (Node) node.getChildAt(geIndex) : null;
 
       // insert file if needed
@@ -148,12 +178,12 @@ public class SVNView extends JPanel implements ActionListener {
   /**
    * Returns the first child of the given parent that is larger than the given name.
    */
-  private int getNodeGE(Node parent, String name, boolean isDirectory) {
+  private int getNodeGE(Node parent, String name, MaybeBool isDirectory) {
     for(int childNr = 0; childNr < parent.getChildCount(); childNr++) {
       Node child = (Node) parent.getChildAt(childNr);
       boolean childIsDirectory = child.isDirectory();
-      if(isDirectory && !childIsDirectory) return childNr;
-      if(!isDirectory && childIsDirectory) continue;
+      if(isDirectory == MaybeBool.jtrue && !childIsDirectory) return childNr;
+      if(isDirectory == MaybeBool.jfalse && childIsDirectory) continue;
 
       if(child.getName().compareTo(name) >= 0) return childNr;
     }
@@ -174,7 +204,7 @@ public class SVNView extends JPanel implements ActionListener {
 
   private boolean nameFilter(String name) {
     if(name.startsWith(".")) return false;
-    if(name.length() < 4 || disallowedExtension.contains(name.substring(name.length()-4))) return false;
+    if(disallowedExtension.contains(getSuffix(name, 4))) return false;
     if(name.contains(".synctex.gz")) return false;
 
     return true;
@@ -207,6 +237,11 @@ public class SVNView extends JPanel implements ActionListener {
 
       if(file.isDirectory()) updateLocal(fileNode, file);
       childNr++;
+    }
+
+    // prune tree
+    while(childNr < node.getChildCount()) {
+      treeModel.removeNodeFromParent((Node) node.getChildAt(childNr));
     }
   }
 
@@ -319,6 +354,11 @@ public class SVNView extends JPanel implements ActionListener {
       }
       return isServerModified;
     }
+
+    public boolean isServerAddOrDelte() {
+      return svnStatus != null
+             && svnStatus.getServerStatus() == SVN.StatusResult.Server.addOrDelete;
+    }
   }
 
   public static FileComparator fileComparator = new FileComparator();
@@ -333,19 +373,14 @@ public class SVNView extends JPanel implements ActionListener {
 
   public class Renderer extends DefaultTreeCellRenderer {
     private Node node = null;
-    private ImageIcon lightning = new ImageIcon(Renderer.class.getResource("/images/icons/lightning_16.png"));
+    private ImageIcon iconLightning = new ImageIcon(Renderer.class.getResource("/images/icons/lightning_16.png"));
+    private ImageIcon iconTex = new ImageIcon(Renderer.class.getResource("/images/icons/tex-icon.png"));
+    private ImageIcon iconPdf = new ImageIcon(Renderer.class.getResource("/images/icons/pdf-icon.png"));
 
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
       node = (Node) value;
       super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);    //To change body of overridden methods use File | Settings | File Templates.
-
-      SVN.StatusResult status = node.getSvnStatus();
-      if(status != null) {
-        SVN.StatusResult.Local local = status.getLocalStatus();
-        if(local == SVN.StatusResult.Local.conflict) setIcon(lightning);
-      }
-
       return this;
     }
 
@@ -364,7 +399,7 @@ public class SVNView extends JPanel implements ActionListener {
         int middle = 16 + ((getWidth() - 16) /2 + 1);
 
         if(localModification || conflict) {
-          g.setColor(conflict ? SCEDiff.COLOR_CHANGE : SCEDiff.COLOR_ADD);
+          g.setColor(conflict ? Color.RED : SCEDiff.COLOR_ADD);
           int x = 1;
           int width = serverModification ? middle : getWidth()-1;
           g.fillRect(x,1,width,getHeight()-1);
@@ -387,9 +422,28 @@ public class SVNView extends JPanel implements ActionListener {
 
       Icon icon = getIcon();
       icon.paintIcon(this, g2D, (16 - icon.getIconWidth())/2 ,2);
+
+      if(conflict)  {
+        iconLightning.paintIcon(this, g2D, (16 - iconLightning.getIconWidth())/2 ,2);
+      }
+
       g2D.drawString(getText(), 20, getHeight()-5);
+
 
       if(notInSVN) g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
     }
+
+    public Icon getIcon() {
+      String extension = getSuffix(node.getName(), 4);
+
+      if(extension.equals(".tex")) return iconTex;
+      if(extension.equals(".pdf")) return iconPdf;
+
+      return super.getIcon();
+    }
+  }
+
+  private String getSuffix(String name, int length) {
+    return name.substring(Math.max(0,name.length()-length)).toLowerCase();
   }
 }
