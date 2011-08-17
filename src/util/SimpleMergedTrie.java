@@ -1,5 +1,6 @@
 package util;
 
+import de.endrullis.utils.collections.Equals;
 import de.endrullis.utils.collections.ExtIterable;
 import de.endrullis.utils.collections.MergeSortIterable;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -17,10 +18,16 @@ import java.util.List;
  */
 public class SimpleMergedTrie<T> extends AbstractSimpleTrie<T> {
 	private Comparator<T> comparator;
+	private Equals<T> equals;
 	private AbstractSimpleTrie<T>[] tries;
 
-	public SimpleMergedTrie(Comparator<T> comparator, AbstractSimpleTrie<T>... tries) {
+	public SimpleMergedTrie(final Comparator<T> comparator, AbstractSimpleTrie<T>... tries) {
 		this.comparator = comparator;
+		this.equals = new Equals<T>() {
+			public boolean equals(T a1, T a2) {
+				return comparator.compare(a1, a2) == 0;
+			}
+		};
 		this.tries = tries;
 	}
 
@@ -30,7 +37,7 @@ public class SimpleMergedTrie<T> extends AbstractSimpleTrie<T> {
 		for (int i = 0; i < iters.length; i++) {
 			iters[i] = tries[i].getObjectsIterable(prefix);
 		}
-		return new MergeSortIterable<T>(comparator, iters);
+		return new MergeSortIterable<T>(comparator, iters).distinct(equals);
 	}
 
 	@Override

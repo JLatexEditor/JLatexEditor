@@ -23,11 +23,11 @@ public class StaticCommandsReader implements CommandsReader {
 	protected HashMap<String,ArrayList<CHCommand>> scopes = new HashMap<String, ArrayList<CHCommand>>();
 
 	public StaticCommandsReader(String filename) {
-		readCommands(filename, false);
+		this(filename, false);
 	}
 
-	public StaticCommandsReader(String filename, boolean mayFail) {
-		readCommands(filename, mayFail);
+	public StaticCommandsReader(String filename, boolean userDefined) {
+		readCommands(filename, userDefined, userDefined);
 	}
 
 	/**
@@ -35,7 +35,7 @@ public class StaticCommandsReader implements CommandsReader {
 	 *
 	 * @param filename the filename
 	 */
-	public void readCommands(String filename, boolean mayFail) {
+	public void readCommands(String filename, boolean userDefined, boolean mayFail) {
 	  XMLParser xmlParser = new XMLParser();
 	  XMLDocument commandsDocument;
 	  try {
@@ -62,7 +62,7 @@ public class StaticCommandsReader implements CommandsReader {
 		    if (command == null) continue;
 
         // user defined command?
-        command.setUserDefined(true);
+        command.setUserDefined(userDefined);
 
 		    // add the command to the commands list
 		    commands.add(command.getName(), command);
@@ -74,7 +74,7 @@ public class StaticCommandsReader implements CommandsReader {
 		    if (env == null) continue;
 
         // user defined command?
-        env.setUserDefined(true);
+        env.setUserDefined(userDefined);
 
 		    // add the command to the commands list
 		    environments.add(env.getName(), env);
@@ -125,6 +125,9 @@ public class StaticCommandsReader implements CommandsReader {
 		}
 		command.setStyle(decode(commandXML.getAttribute("style")));
 		command.setHint(decode(commandXML.getAttribute("hint")));
+		if (commandXML.getAttribute("enabled") != null) {
+			command.setEnabled(commandXML.getAttribute("enabled").equals("true"));
+		}
 
 		// read the arguments
 		for (XMLElement argumentXML : commandXML.getChildElements()) {

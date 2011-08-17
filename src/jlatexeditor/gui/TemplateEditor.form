@@ -227,7 +227,6 @@
                       <gridbag top="0" left="4" bottom="4" right="4" weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
-                      <enabled value="false"/>
                       <text value="&amp;Enabled"/>
                     </properties>
                   </component>
