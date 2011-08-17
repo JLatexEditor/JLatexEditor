@@ -10,9 +10,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
+ * Static commands reader.
+ *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
-public class StaticCommandsReader {
+public class StaticCommandsReader implements CommandsReader {
 	/** The command reference. */
 	protected SimpleTrie<CHCommand> commands = new SimpleTrie<CHCommand>();
 	/** The environment reference. */

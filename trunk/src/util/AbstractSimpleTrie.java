@@ -17,6 +17,8 @@ public abstract class AbstractSimpleTrie<T> implements Trie<T>, Iterable<T> {
 		return getObjectsIterable("");
 	}
 
+	public abstract T get(String key);
+
 	@Override
 	public List<T> getObjects(String prefix, int count) {
 		return getObjectsIterable(prefix).toList(count);
