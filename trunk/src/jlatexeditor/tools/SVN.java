@@ -121,10 +121,9 @@ public class SVN {
       char c = line.charAt(0);
       if (line.charAt(1) == ' ') {
         int cutColumn = remote ? 10 : 8;
-        StatusResult.Server serverStatus =
-                line.substring(0,cutColumn).indexOf('*') >= 0
-                        || line.substring(0,cutColumn).indexOf('!') >= 0 ?
-                        StatusResult.Server.outdated : StatusResult.Server.upToDate;
+        StatusResult.Server serverStatus = StatusResult.Server.upToDate;
+        if(line.substring(0,cutColumn).indexOf('*') >= 0) serverStatus = StatusResult.Server.outdated;
+        if(line.substring(0,cutColumn).indexOf('!') >= 0) serverStatus = StatusResult.Server.addOrDelete;
 
         String revisionAndFile = line.substring(cutColumn).trim();
         int spaceIndex = revisionAndFile.indexOf(' ');
@@ -213,7 +212,7 @@ public class SVN {
 
   public static class StatusResult {
 	  public enum Local { add, delete, modified, conflict, unchanged, notInSvn }
-	  public enum Server { upToDate, outdated }
+	  public enum Server { upToDate, outdated, addOrDelete }
 
     private File file;
     private String relativePath;
