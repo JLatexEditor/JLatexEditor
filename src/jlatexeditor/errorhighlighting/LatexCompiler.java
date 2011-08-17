@@ -208,7 +208,7 @@ public class LatexCompiler extends Thread {
 						    before = StringUtils.stringAfter(before, "> ").getOrElse(before);
 					    }
 					    before = StringUtils.stringAfter(before, "...").getOrElse(before);
-					    before = before.substring(0, before.length() - 1);
+					    before = before.substring(0, Math.max(0, before.length() - 1));
 					    String after = secondLine.substring(firstLine.length());
 					    after  = StringUtils.stringBefore(after, "...", 'l').getOrElse(after);
 
