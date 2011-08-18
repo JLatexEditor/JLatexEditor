@@ -415,7 +415,12 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 					if (term == null) term = new StyleableTerm(termString, chars, matcher.start(1), LatexStyles.U_NORMAL);
 				}
 
-				term.applyStyleToDoc();
+        try {
+				  term.applyStyleToDoc();
+        } catch (Throwable e) {
+          System.err.println(rowString + "; " + termString + "; " + matcher.start(1) + "; " + chars.length);
+          e.printStackTrace();
+        }
 			}
 		}
 		return argumentsIterator;

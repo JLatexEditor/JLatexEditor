@@ -4,6 +4,7 @@ import my.XML.XMLDocument;
 import my.XML.XMLElement;
 import my.XML.XMLException;
 import my.XML.XMLParser;
+import util.ProcessUtil;
 import util.StreamUtils;
 import util.SystemUtils;
 
@@ -23,7 +24,7 @@ import java.util.HashMap;
  */
 public class ProgramUpdater extends JFrame implements ActionListener {
   public static final String VERSIONS_FILE_NAME = "versions.xml";
-  public static final String UPDATE_DIR = "update";
+  private static File updateDir = null;
 
   private JProgressBar progressBar = new JProgressBar();
   private JButton abortButton = new JButton("Abort");
@@ -93,7 +94,10 @@ public class ProgramUpdater extends JFrame implements ActionListener {
    * @param confirmation if true a dialog is shown if the update process was successful
    * @return true if the update was successful
    */
-  public boolean performUpdate(boolean confirmation) {
+  public boolean performUpdate(boolean confirmation) throws IOException {
+    // create update dir
+    updateDir = createTempDirectory("update");
+
     setAlwaysOnTop(true);
     setVisible(true);
 
@@ -188,12 +192,8 @@ public class ProgramUpdater extends JFrame implements ActionListener {
    * Loads the files from the web.
    */
   private void downloadFiles() throws IOException, InterruptedException {
-    // create update dir if not exists
-    File updateDir = new File(UPDATE_DIR);
-    if (!updateDir.exists()) updateDir.mkdir();
-
     for (String filename : files2download) {
-      File outFile = new File(UPDATE_DIR + "/" + filename);
+      File outFile = new File(updateDir, filename);
       outFile.getParentFile().mkdirs();
       out = new FileOutputStream(outFile);
       in = getInputStream(filename);
@@ -239,14 +239,19 @@ public class ProgramUpdater extends JFrame implements ActionListener {
   /**
    * Overwrites the old files with the new one (from update dir).
    */
-  public static void moveFiles() {
-    File updateDir = new File(UPDATE_DIR);
+  public void moveFiles() throws IOException {
     if (!updateDir.isDirectory()) return;
 
     // move files in update dir to .
-    File[] files2move = updateDir.listFiles();
-    for (File file : files2move) {
-      file.renameTo(new File(file.getName()));
+    if(SystemUtils.isMacOS()) {
+      File destinationDir = new File(System.getProperty("user.dir"));
+      String command = "mv -f " + updateDir.getAbsolutePath() + "/* " + destinationDir.getAbsolutePath();
+      ProcessUtil.exec(new String[] {"/usr/bin/osascript", "-e", "\"do shell script \\\"" + command + "\\\" with administrator privileges\""}, destinationDir);
+    } else {
+      File[] files2move = updateDir.listFiles();
+      for (File file : files2move) {
+        file.renameTo(new File(file.getName()));
+      }
     }
 
     // remove the update dir
@@ -266,7 +271,7 @@ public class ProgramUpdater extends JFrame implements ActionListener {
     }
     doc.setRootElement(filesXml);
 
-    FileWriter fileWriter = new FileWriter(UPDATE_DIR + "/" + VERSIONS_FILE_NAME);
+    FileWriter fileWriter = new FileWriter(new File(updateDir, VERSIONS_FILE_NAME));
     fileWriter.write(doc.toString());
     fileWriter.close();
   }
@@ -296,5 +301,20 @@ public class ProgramUpdater extends JFrame implements ActionListener {
       if (out != null) out.close();
     } catch (IOException ignored) {
     }
+  }
+
+  /**
+   * Creates a temporary directory.
+   */
+  public static File createTempDirectory(String prefix) throws IOException {
+    File file = File.createTempFile(prefix, Long.toString(System.nanoTime()));
+    File dir = new File(file.getAbsolutePath() + ".d");
+    file.delete();
+
+    if(!dir.mkdir()) {
+      throw new IOException("Failed to create temporary directory: " + dir.getAbsolutePath());
+    }
+
+    return dir;
   }
 }
