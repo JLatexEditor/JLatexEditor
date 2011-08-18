@@ -1445,9 +1445,13 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
         if (!saveAll()) return;
 
         // perform update
-        if (updater.performUpdate(true)) {
-          // restart the editor
-          System.exit(255);
+        try {
+          if (updater.performUpdate(true)) {
+            // restart the editor
+            System.exit(255);
+          }
+        } catch (IOException e) {
+          e.printStackTrace();
         }
       }
     } else {
