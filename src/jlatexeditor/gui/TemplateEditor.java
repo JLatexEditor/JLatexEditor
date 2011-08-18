@@ -15,10 +15,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
@@ -61,13 +58,23 @@ public class TemplateEditor extends JDialog {
 		$$$setupUI$$$();
 		setContentPane(mainPanel);
 
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				if (saveTemplateIfChanged(true)) {
+					setVisible(false);
+				}
+			}
+		});
+
 		templateList.setCellRenderer(new TemplateListCellRenderer());
 		templateList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				if (e.getValueIsAdjusting()) return;
 				if (templateList.getSelectedIndex() < 0) return;
 
-				saveTemplateIfChanged();
+				saveTemplateIfChanged(false);
 				loadTemplate(getSelectedTemplate());
 				pack();
 			}
@@ -260,16 +267,25 @@ public class TemplateEditor extends JDialog {
 		SCEManager.saveUserTabCompletion();
 	}
 
-	private void saveTemplateIfChanged() {
+	private boolean saveTemplateIfChanged(boolean allowCancel) {
 		if (newTemplate != null) {
 			newTemplate.setUsage(editor.getText());
 			newTemplate.setEnabled(enabledCheckBox.isSelected());
 			if (!getTemplates().get(newTemplate.getName()).deepEquals(newTemplate)) {
-				if (JOptionPane.showConfirmDialog(owner, "Do you want to save your changes for template \"" + newTemplate.getName() + "\"", "Save changes?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-					saveTemplate();
+				int options = allowCancel ? JOptionPane.YES_NO_CANCEL_OPTION : JOptionPane.YES_NO_OPTION;
+				int res = JOptionPane.showConfirmDialog(owner, "Do you want to save your changes for template \"" + newTemplate.getName() + "\"", "Save changes?", options);
+				switch (res) {
+					case JOptionPane.YES_OPTION:
+						saveTemplate();
+						return true;
+					case JOptionPane.NO_OPTION:
+						return true;
+					case JOptionPane.CANCEL_OPTION:
+						return false;
 				}
 			}
 		}
+		return true;
 	}
 
 	private void selectArgument(CHCommandArgument selectedArgument) {
