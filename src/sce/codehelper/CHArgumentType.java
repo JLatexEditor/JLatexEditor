@@ -1,6 +1,7 @@
 package sce.codehelper;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Argument type of a CHCommandArgument.
@@ -49,5 +50,15 @@ public class CHArgumentType {
 		} else {
 			return false;
 		}
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(name);
+		for (Map.Entry<String, String> entry : properties.entrySet()) {
+			sb.append("|").append(entry.getKey()).append("=").append(entry.getValue());
+		}
+		return sb.toString();
 	}
 }

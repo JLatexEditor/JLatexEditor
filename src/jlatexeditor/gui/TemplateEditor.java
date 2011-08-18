@@ -257,7 +257,7 @@ public class TemplateEditor extends JDialog {
 		}
 		reloadTemplateList();
 		selectTemplate(newTemplate.getName());
-		// TODO: save templates to file
+		SCEManager.saveUserTabCompletion();
 	}
 
 	private void saveTemplateIfChanged() {
@@ -340,7 +340,7 @@ public class TemplateEditor extends JDialog {
 			int selectedIndex = templateList.getSelectedIndex();
 			reloadTemplateList();
 			selectTemplate(Math.min(selectedIndex, templateListModel.getSize() - 1));
-			// TODO: save changes to file
+			SCEManager.saveUserTabCompletion();
 		}
 	}
 
@@ -364,7 +364,7 @@ public class TemplateEditor extends JDialog {
 		getUserTemplates().add(template.getName(), template);
 		reloadTemplateList();
 		selectTemplate(template.getName());
-		// TODO: save changes to file
+		SCEManager.saveUserTabCompletion();
 
 		return true;
 	}

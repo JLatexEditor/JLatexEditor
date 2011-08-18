@@ -25,6 +25,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -37,9 +39,10 @@ public class SCEManager {
   private static SCEManagerInteraction instance = null;
 
   private static BackgroundParser backgroundParser = null;
+	private static final String USER_LIVE_TEMPLATES_FILENAME = GProperties.SETTINGS_DIR + "/liveTemplates.xml";
   private static StaticCommandsReader latexCommands = new StaticCommandsReader("data/codehelper/commands.xml");
   private static StaticCommandsReader systemTabCompletion = new StaticCommandsReader("data/codehelper/liveTemplates.xml");
-  private static StaticCommandsReader userTabCompletion = new StaticCommandsReader(GProperties.SETTINGS_DIR + "/liveTemplates.xml", true);
+	private static StaticCommandsReader userTabCompletion = new StaticCommandsReader(USER_LIVE_TEMPLATES_FILENAME, true);
   private static SimpleCommandsReader tabCompletion = new SimpleCommandsReader(new SimpleMergedTrie(new Comparator<CHCommand>() {
 	  public int compare(CHCommand o1, CHCommand o2) {
 		  return o1.getName().compareTo(o2.getName());
@@ -86,6 +89,14 @@ public class SCEManager {
 
 	public static SimpleTrie<CHCommand> getUserTabCompletion() {
 		return userTabCompletion.getCommands();
+	}
+
+	public static void saveUserTabCompletion() {
+		try {
+			StaticCommandsWriter.writeToFile(new File(USER_LIVE_TEMPLATES_FILENAME), userTabCompletion);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static AbstractSimpleTrie<CHCommand> getTabCompletion() {

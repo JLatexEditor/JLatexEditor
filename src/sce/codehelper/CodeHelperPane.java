@@ -9,6 +9,7 @@ import javax.swing.event.PopupMenuListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -256,20 +257,22 @@ public class CodeHelperPane extends JPanel implements KeyListener, SCEDocumentLi
       if (tabCompletion.matches()) {
         WordWithPos wordToReplace = tabCompletion.getWordToReplace();
 
-        for (CHCommand command : tabCompletion.getCompletions(level)) {
-          if (wordToReplace.word.equals(command.getName())) {
-            SCECaret caret = pane.getCaret();
-            document.remove(wordToReplace.getStartPos(), caret);
+	      Iterator<? extends CHCommand> iterator = tabCompletion.getCompletions(level).iterator();
+	      if (iterator.hasNext()) {
+					CHCommand template = iterator.next();
+					if (template != null && template.isEnabled() && wordToReplace.word.equals(template.getName())) {
+						SCECaret caret = pane.getCaret();
+						document.remove(wordToReplace.getStartPos(), caret);
 
-            Template newTemplate = Template.startTemplate(pane, command.getUsage(), command.getArguments(), wordToReplace.getStartRow(), wordToReplace.getStartCol());
-	          if (newTemplate != null) {
-		          template = newTemplate;
-	          }
+						Template newTemplate = Template.startTemplate(pane, template.getUsage(), template.getArguments(), wordToReplace.getStartRow(), wordToReplace.getStartCol());
+						if (newTemplate != null) {
+							this.template = newTemplate;
+						}
 
-            e.consume();
-            return;
-          }
-        }
+						e.consume();
+						return;
+					}
+	      }
       }
     }
 
