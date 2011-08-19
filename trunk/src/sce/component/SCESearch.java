@@ -54,6 +54,15 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
   private GroupLayout.Group groupVertical;
   private static final Color ERROR_COLOR = new Color(255, 204, 204);
 
+  /**
+   * Last search.
+   */
+  private static SCESearch lastSearch;
+
+  public static SCESearch getLastSearch() {
+    return lastSearch;
+  }
+
   public SCESearch(SourceCodeEditor editor) {
     this.editor = editor;
     setBackground(new Color(233, 244, 255));
@@ -91,9 +100,8 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
     layout = new GroupLayout(this);
     setLayout(layout);
 
-    layout.setAutoCreateGaps(true);
-
     input.setColumns(40);
+    input.setMinimumSize(new Dimension(200,20));
     add(input);
     input.addKeyListener(this);
     add(buttonNext);
@@ -131,22 +139,27 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
                                     .addComponent(input)
                                     .addComponent(replace)
                     )
+                    .addGap(2,6,8)
                     .addGroup(
                             layout.createParallelGroup()
                                     .addGroup(
                                             layout.createSequentialGroup()
                                                     .addComponent(buttonNext)
+                                                    .addGap(2,4,4)
                                                     .addComponent(buttonPrevious)
+                                                    .addGap(2,4,4)
                                                     .addComponent(caseSensitive)
                                                     .addComponent(regExp)
                                                     .addComponent(selectionOnly)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
+                                                    .addGap(2,50,Short.MAX_VALUE)
                                                     .addComponent(buttonShowReplace)
+                                                    .addGap(2,15,20)
                                                     .addComponent(buttonClose)
                                     )
                                     .addGroup(
                                     layout.createSequentialGroup()
                                             .addComponent(buttonReplace)
+                                            .addGap(2,4,4)
                                             .addComponent(buttonReplaceAll)
                             )
                     );
@@ -155,7 +168,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
             layout.createSequentialGroup()
                     .addGap(2)
                     .addGroup(
-                            layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                            layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                                     .addComponent(input)
                                     .addComponent(buttonNext)
                                     .addComponent(buttonPrevious)
@@ -166,7 +179,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
                                     .addComponent(buttonClose)
                     )
                     .addGroup(
-                            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                            layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                                     .addComponent(replace)
                                     .addComponent(buttonReplace)
                                     .addComponent(buttonReplaceAll)
@@ -459,6 +472,8 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
   }
 
 	private void searchChanged() {
+    lastSearch = this;
+
 		informSearchChangeListeners();
 		updateThread.searchChanged();
 	}

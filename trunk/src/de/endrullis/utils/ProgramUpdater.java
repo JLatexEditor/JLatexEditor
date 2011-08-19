@@ -242,15 +242,28 @@ public class ProgramUpdater extends JFrame implements ActionListener {
   public void moveFiles() throws IOException {
     if (!updateDir.isDirectory()) return;
 
+    // test for writing rights
+    boolean writable = false;
+    try {
+      File file = new File(updateDir, "test");
+      if(file.createNewFile() || file.canWrite()) writable = true;
+      file.delete();
+    } catch (Throwable e) {}
+
     // move files in update dir to .
-    if(SystemUtils.isMacOS()) {
-      File destinationDir = new File(System.getProperty("user.dir"));
-      String command = "mv -f " + updateDir.getAbsolutePath() + "/* " + destinationDir.getAbsolutePath();
-      ProcessUtil.exec(new String[] {"/usr/bin/osascript", "-e", "\"do shell script \\\"" + command + "\\\" with administrator privileges\""}, destinationDir);
-    } else {
+    if(writable) {
       File[] files2move = updateDir.listFiles();
       for (File file : files2move) {
-        file.renameTo(new File(file.getName()));
+        file.renameTo(new File(updateDir, file.getName()));
+      }
+    } else {
+      File destinationDir = new File(System.getProperty("user.dir"));
+      String command = "mv -f " + updateDir.getAbsolutePath() + "/* " + destinationDir.getAbsolutePath();
+
+      if(SystemUtils.isMacOS()) {
+        ProcessUtil.exec(new String[] {"/usr/bin/osascript", "-e", "\"do shell script \\\"" + command + "\\\" with administrator privileges\""}, destinationDir);
+      } else {
+        // TODO: handle linux and windows
       }
     }
 
