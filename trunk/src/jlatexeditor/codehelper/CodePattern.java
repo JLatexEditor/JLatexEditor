@@ -11,7 +11,8 @@ public class CodePattern {
 
 	public static final PatternPair parameterPattern = new PatternPair("\\{([^\\{]*)", "([^\\}]*)\\}");
 	public static final PatternPair commandParamPattern = new PatternPair("\\\\(\\p{L}+)(?:\\[[^\\{\\}\\[\\]]*\\])?\\{" + flatPattern);
-  public static final PatternPair commandPattern = new PatternPair("\\\\(\\p{L}*)", "(\\p{L}+)");
+	public static final PatternPair commandPattern = new PatternPair("\\\\(\\p{L}*)", "(\\p{L}*)");
+	public static final PatternPair environmentPattern = new PatternPair("\\\\(begin|end)\\{(\\p{L}*)", "(\\p{L}*)\\}");
 
   public static final PatternPair citeParameterPattern = new PatternPair("(?:\\{|, *)([^\\{\\}, ]*)", "([^\\{\\}, ]*) *(?:\\}|,)");
   public static final PatternPair bibItemPattern = new PatternPair("@[\\w\\W]+ *\\{ *([^ ,\\}]*)", "([^ ,\\}]+)[ ,\\}]");
