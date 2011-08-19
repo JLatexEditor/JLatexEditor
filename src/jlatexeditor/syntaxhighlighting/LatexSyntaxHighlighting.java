@@ -390,8 +390,8 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 				}
 			}
 
-			// extract word from row that shell be checked for misspellings
-			String rowString = document.getRowsModel().getRowAsString(row_nr);
+			// extract word from row that shall be checked for misspellings
+			String rowString = row.toString();
 
 			// for each term in this row
 			Matcher matcher = TERM_PATTERN.matcher(rowString);
