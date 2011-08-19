@@ -76,7 +76,9 @@ public class TemplateEditor extends JDialog {
 
 				saveTemplateIfChanged(false);
 				loadTemplate(getSelectedTemplate());
-				pack();
+
+        invalidate();
+        doLayout();
 			}
 		});
 		reloadTemplateList();

@@ -1,5 +1,6 @@
 package sce.component;
 
+import jlatexeditor.Doc;
 import jlatexeditor.gproperties.GProperties;
 import sce.codehelper.CodeHelper;
 import sce.codehelper.CodeHelperPane;
@@ -457,6 +458,20 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
 		public static final String REMOVE_WORD_BEHIND_CARET = "remove word behind caret";
 		public static final String COMPLETE                 = "complete";
 
+    public static final String UNDO                     = "undo";
+		public static final String REDO                     = "redo";
+		public static final String FIND                     = "find";
+		public static final String REPLACE                  = "replace";
+		public static final String FIND_NEXT                = "find_next";
+		public static final String FIND_PREVIOUS            = "find_previous";
+		public static final String CUT                      = "cut";
+		public static final String COPY                     = "copy";
+		public static final String PASTE                    = "paste";
+		public static final String SELECT_ALL               = "select all";
+		public static final String SELECT_NONE              = "select none";
+		public static final String COMMENT                  = "comment";
+		public static final String UNCOMMENT                = "uncomment";
+
 		private String key;
 
 		Actions(String key) {
@@ -502,17 +517,80 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
 			if (key.equals(REMOVE_WORD_BEHIND_CARET)) {
 				ui.removeWordBehindCaret();
 			} else
-			if (key.equals(COMPLETE)) {
-				ui.complete();
-			}
+      if (key.equals(COMPLETE)) {
+        ui.complete();
+      } else
+      if (key.equals(UNDO)) {
+        pane.getUndoManager().undo(false);
+      } else
+      if (key.equals(REDO)) {
+        pane.getUndoManager().redo(false);
+      } else
+      if (key.equals(FIND)) {
+        pane.getSourceCodeEditor().toggleSearch();
+      } else
+      if (key.equals(REPLACE)) {
+        pane.getSourceCodeEditor().replace();
+      } else
+      if (key.equals(FIND_NEXT)) {
+        ensureOpenSearch(pane.getSourceCodeEditor());
+        pane.getSourceCodeEditor().getSearch().next(false, true);
+      } else
+      if (key.equals(FIND_PREVIOUS)) {
+        ensureOpenSearch(pane.getSourceCodeEditor());
+        pane.getSourceCodeEditor().getSearch().previous();
+      } else
+      if (key.equals(CUT)) {
+        pane.getSourceCodeEditor().cut();
+      } else
+      if (key.equals(COPY)) {
+        pane.getSourceCodeEditor().copy();
+      } else
+      if (key.equals(PASTE)) {
+        pane.getSourceCodeEditor().paste();
+      } else
+      if (key.equals(SELECT_ALL)) {
+        SCEDocument document = pane.getDocument();
+        document.setSelectionRange(document.createDocumentPosition(0,0), document.createDocumentPosition(document.getRowsModel().getRowsCount()-1, 0), true);
+        pane.repaint();
+      } else
+      if (key.equals(SELECT_NONE)) {
+        SCEDocument document = pane.getDocument();
+        document.setSelectionRange(null, null, true);
+        pane.getCaret().setSelectionMark();
+        pane.repaint();
+      } else
+      if (key.equals(COMMENT)) {
+        SourceCodeEditor editor = pane.getSourceCodeEditor();
+        String lineComment = "//";
+        try {
+          lineComment = ((SourceCodeEditor<? extends Doc>) editor).getResource().getProperty("lineComment");
+        } catch (Throwable _) { /* ignore */ }
+        pane.getSourceCodeEditor().lineComment(lineComment);
+      } else
+      if (key.equals(COMMENT)) {
+        SourceCodeEditor editor = pane.getSourceCodeEditor();
+        String lineComment = "//";
+        try {
+          lineComment = ((SourceCodeEditor<? extends Doc>) editor).getResource().getProperty("lineComment");
+        } catch (Throwable _) { /* ignore */ }
+        editor.lineUncomment(lineComment);
+      }
 		}
+
+    private void ensureOpenSearch(SourceCodeEditor editor) {
+      if (!editor.getSearch().isVisible()) {
+        editor.search(SCESearch.getLastSearch());
+      }
+    }
 
 		public static ActionMap getActionMap() {
 			ActionMap am = new ActionMap();
 			add(am, MOVE_VIEW_UP, MOVE_VIEW_UP_SHIFT, MOVE_VIEW_DOWN, MOVE_VIEW_DOWN_SHIFT,
 				JUMP_LEFT, JUMP_LEFT_SHIFT, JUMP_RIGHT, JUMP_RIGHT_SHIFT, JUMP_TO_FRONT, JUMP_TO_FRONT_SHIFT, JUMP_TO_END, JUMP_TO_END_SHIFT,
 				REMOVE_LINE, REMOVE_LINE_BEFORE_CARET, REMOVE_LINE_BEHIND_CARET, REMOVE_WORD_BEFORE_CARET, REMOVE_WORD_BEHIND_CARET,
-				COMPLETE);
+				COMPLETE,
+        UNDO, REDO, FIND, REPLACE, FIND_NEXT, FIND_PREVIOUS, CUT, COPY, PASTE, SELECT_ALL, SELECT_NONE, COMMENT, UNCOMMENT);
 			return am;
 		}
 

@@ -45,7 +45,7 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction, ActionListener, WindowListener, ChangeListener, MouseMotionListener, TreeSelectionListener, SearchChangeListener, SCETabbedPane.CloseListener {
+public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction, ActionListener, WindowListener, ChangeListener, MouseMotionListener, TreeSelectionListener, SCETabbedPane.CloseListener {
   public static final File FILE_LAST_SESSION = new File(GProperties.SETTINGS_DIR + "/last.session");
   public static final File FILE_RECENT = new File(GProperties.SETTINGS_DIR + "/recent");
   public static final File CHANGELOG = new File("CHANGELOG");
@@ -106,7 +106,6 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 
   private HashMap<URI, Doc> docMap = new HashMap<URI, Doc>();
 	private File lastDocDir;
-	private SCESearch lastSearch;
 
 	public static void main(String args[]) {
 		// init logging
@@ -343,6 +342,20 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
     createPaneShortcut(SCEPaneUI.Actions.REMOVE_WORD_BEFORE_CARET, false);
     createPaneShortcut(SCEPaneUI.Actions.REMOVE_WORD_BEHIND_CARET, false);
     createPaneShortcut(SCEPaneUI.Actions.COMPLETE, false);
+
+    createPaneShortcut(SCEPaneUI.Actions.UNDO, false);
+    createPaneShortcut(SCEPaneUI.Actions.REDO, false);
+    createPaneShortcut(SCEPaneUI.Actions.FIND, false);
+    createPaneShortcut(SCEPaneUI.Actions.REPLACE, false);
+    createPaneShortcut(SCEPaneUI.Actions.FIND_NEXT, false);
+    createPaneShortcut(SCEPaneUI.Actions.FIND_PREVIOUS, false);
+    createPaneShortcut(SCEPaneUI.Actions.CUT, false);
+    createPaneShortcut(SCEPaneUI.Actions.COPY, false);
+    createPaneShortcut(SCEPaneUI.Actions.PASTE, false);
+    createPaneShortcut(SCEPaneUI.Actions.SELECT_ALL, false);
+    createPaneShortcut(SCEPaneUI.Actions.SELECT_NONE, false);
+    createPaneShortcut(SCEPaneUI.Actions.COMMENT, false);
+    createPaneShortcut(SCEPaneUI.Actions.UNCOMMENT, false);
 
     // prevent that TabbledPane consumes the "control UP"
     Object ancestorMap = UIManager.get("TabbedPane.ancestorInputMap");
@@ -634,7 +647,6 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
     SourceCodeEditor<Doc> editor;
 	  editor = assignDocProperties(doc);
 	  editor.setResource(doc);
-	  editor.getSearch().addSearchChangeListener(this);
     tabbedPane.removeChangeListener(this);
     tabbedPane.addTab(doc.getName(), editor);
     tabbedPane.addChangeListener(this);
@@ -1066,59 +1078,48 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 
 		// find
 		if (action.equals("find")) {
-			getActiveEditor().toggleSearch();
+			// paneUI
 		} else
 		// replace
 		if (action.equals("replace")) {
-			getActiveEditor().replace();
+			// paneUI
 		} else
 		// find next
 		if (action.equals("find next")) {
-			ensureOpenSearch();
-			getActiveEditor().getSearch().next(false, true);
+			// paneUI
 		} else
 		// find previous
 		if (action.equals("find previous")) {
-			ensureOpenSearch();
-			getActiveEditor().getSearch().previous();
+			// paneUI
 		} else
 
 		// cut
 		if (action.equals("cut")) {
-			getActiveEditor().cut();
+			// paneUI
 		} else
 		// copy
 		if (action.equals("copy")) {
-			getActiveEditor().copy();
+			// paneUI
 		} else
 		// paste
 		if (action.equals("paste")) {
-			getActiveEditor().paste();
+			// paneUI
 		} else
 		// select all
 		if (action.equals("select all")) {
-      SCEPane pane = getActiveEditor().getTextPane();
-      SCEDocument document = pane.getDocument();
-      document.setSelectionRange(document.createDocumentPosition(0,0), document.createDocumentPosition(document.getRowsModel().getRowsCount()-1, 0), true);
-		  pane.repaint();
+			// paneUI
     } else
     if (action.equals("select none")) {
-      SCEPane pane = getActiveEditor().getTextPane();
-      SCEDocument document = pane.getDocument();
-      document.setSelectionRange(null, null, true);
-      pane.getCaret().setSelectionMark();
-      pane.repaint();
+			// paneUI
     } else
 
 		// lineComment
 		if (action.equals("comment")) {
-			String lineComment = getActiveEditor().getResource().getProperty("lineComment");
-			getActiveEditor().lineComment(lineComment);
+			// paneUI
 		} else
 		// lineUncomment
 		if (action.equals("uncomment")) {
-			String lineComment = getActiveEditor().getResource().getProperty("lineComment");
-			getActiveEditor().lineUncomment(lineComment);
+			// paneUI
 		} else
 
 		// show/hide symbols
@@ -1308,12 +1309,6 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 		}
   }
 
-	private void ensureOpenSearch() {
-		if (!getActiveEditor().getSearch().isVisible()) {
-			getActiveEditor().search(lastSearch);
-		}
-	}
-
 	private void showTool(int tab) {
 		if (!toolsTab.isVisible()) toolsTab.setVisible(true);
 
@@ -1501,10 +1496,6 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 		tabbedPane.setSelectedIndex(tab+1);
 		tabbedPane.addChangeListener(this);
 		focusOwner.requestFocus();
-	}
-
-	public void searchChanged(SCESearch search) {
-		lastSearch = search;
 	}
 
   public void windowOpened(WindowEvent e) {
