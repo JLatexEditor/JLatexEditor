@@ -17,17 +17,17 @@ import java.util.HashSet;
  */
 public class HelpUrlHandler extends URLStreamHandler {
 	protected URLConnection openConnection(final URL u) throws IOException {
-		String command = null;
+		LatexQuickHelp.Element element = null;
 
 		String realUrlString = u.toExternalForm().substring(5);
 		if (realUrlString.contains("#")) {
 			int index = realUrlString.indexOf("#");
-			command = realUrlString.substring(index + 1);
+			element = new LatexQuickHelp.Element(realUrlString.substring(index + 1));
 
 			realUrlString = realUrlString.substring(0, index);
 		}
 		final URL realUrl = new URL(realUrlString);
-		final String finalCommand = command == null || command.equals("") ? null : command;
+		final LatexQuickHelp.Element finalElement = element == null || element.name.equals("") ? null : element;
 		return new URLConnection(realUrl) {
 			private URLConnection realConnection = realUrl.openConnection();
 
@@ -43,14 +43,14 @@ public class HelpUrlHandler extends URLStreamHandler {
 
 			@Override
 			public InputStream getInputStream() throws IOException {
-				String content = HelpUrlHandler.getHelpTextAt(finalCommand, realConnection);
+				String content = HelpUrlHandler.getHelpTextAt(finalElement, realConnection);
 
 				return new ByteArrayInputStream(content.getBytes());
 			}
 		};
 	}
 
-	public static String getHelpTextAt(String command, URLConnection urlConnection) {
+	public static String getHelpTextAt(LatexQuickHelp.Element element, URLConnection urlConnection) {
 		String content = "content-type: text/html\n\n";
 		content += "<html><body>";
 
@@ -65,12 +65,12 @@ public class HelpUrlHandler extends URLStreamHandler {
 		}
 
 		// append packages providing the command
-		if (command != null) {
-			String commandsPack = getPackagesString(PackagesExtractor.getPackageParser().getCommands().get(command.substring(1)));
-			String commandsDoc = getPackagesString(PackagesExtractor.getDocClassesParser().getCommands().get(command.substring(1)));
+		if (element != null) {
+			String commandsPack = getPackagesString(PackagesExtractor.getPackageParser().getCommands().get(element.name));
+			String commandsDoc = getPackagesString(PackagesExtractor.getDocClassesParser().getCommands().get(element.name));
 			if (commandsPack != null || commandsDoc != null) {
 				content += "<hr/>";
-				content += "<h3>Packages providing this command</h3>";
+				content += "<h3>Packages that directly provide this " + element.type + "</h3>";
 				content += "<ul>";
 				if (commandsPack != null) {
 					content += "<li><b>package(s)</b>: " + commandsPack + "</li>";

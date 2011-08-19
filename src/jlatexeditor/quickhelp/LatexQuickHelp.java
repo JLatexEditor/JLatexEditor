@@ -1,5 +1,6 @@
 package jlatexeditor.quickhelp;
 
+import de.endrullis.utils.StringUtils;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
 import sce.component.SCEDocument;
@@ -97,13 +98,17 @@ public class LatexQuickHelp implements QuickHelp {
    * @param column the column
    * @return the command
    */
-  public String findCommand(int row, int column) {
+  public Element findElement(int row, int column) {
     String line = document.getRowsModel().getRowAsString(row);
 
 	  List<WordWithPos> groups = commandPattern.find(line, row, column);
-
 	  if (groups != null) {
-      return groups.get(0).word;
+      return new Element(Element.Type.command, groups.get(0).word);
+    }
+
+	  groups = envPattern.find(line, row, column);
+	  if (groups != null) {
+      return new Element(Element.Type.environment, groups.get(0).word);
     }
 
     return null;
@@ -123,6 +128,9 @@ public class LatexQuickHelp implements QuickHelp {
 		  case command:
 			  fileName = comEnvs.get(element.name);
 				break;
+		  case environment:
+			  fileName = comEnvs.get(element.name);
+			  break;
 	  }
     if (fileName == null) fileName = comEnvs.get("<empty>");
 	  // if (fileName == null) return null;
@@ -130,12 +138,12 @@ public class LatexQuickHelp implements QuickHelp {
     URL url = StreamUtils.getURL(directory + fileName);
     if (url == null) return null;
 
-    return "help:" + url.toString() + "#" + element.name;
+    return "help:" + url.toString() + "#" + element.getHelpCode();
   }
 
   public String getHelpUrlAt(int row, int column) {
-    String command = findCommand(row, column);
-    return getHelpUrl(new Element(Element.Type.command, command));
+    Element element = findElement(row, column);
+    return getHelpUrl(element);
   }
 
 	public void setDocument(SCEDocument document) {
@@ -150,7 +158,7 @@ public class LatexQuickHelp implements QuickHelp {
   }
 
 	public static class Element {
-		enum Type { command, environment, docclass, pack }
+		public enum Type { command, environment, docclass, pack }
 
 		public Type type;
 		public String name;
@@ -158,6 +166,20 @@ public class LatexQuickHelp implements QuickHelp {
 		public Element(Type type, String name) {
 			this.type = type;
 			this.name = name;
+		}
+
+		public Element(String code) {
+			this.type = Type.valueOf(StringUtils.stringBefore(code, ":").get());
+			this.name = StringUtils.stringAfter(code, ":").get();
+		}
+
+		public String getHelpCode() {
+			return type + ":" + name;
+		}
+
+		@Override
+		public String toString() {
+			return getHelpCode();
 		}
 	}
 }
