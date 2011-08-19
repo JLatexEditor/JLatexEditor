@@ -1,6 +1,7 @@
 package jlatexeditor.quickhelp;
 
 import de.endrullis.utils.StringUtils;
+import jlatexeditor.codehelper.CodePattern;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
 import sce.component.SCEDocument;
@@ -33,11 +34,6 @@ public class LatexQuickHelp implements QuickHelp {
    * Regular expression to extract commands from HTML pages.
    */
   static final Pattern htmlComEnvPattern = Pattern.compile("<li>.*<a href=\"([^\"]+)\">(.*)</a>.*</li>");
-	/**
-	 * PatternPair to find command under cursor.
-	 */
-  static final PatternPair commandPattern = new PatternPair("(\\\\\\w*)", "(\\w*)");
-  static final PatternPair envPattern = new PatternPair("\\\\begin\\{(\\w*)", "(\\w*)\\}");
 
   /**
    * Source code.
@@ -101,14 +97,14 @@ public class LatexQuickHelp implements QuickHelp {
   public Element findElement(int row, int column) {
     String line = document.getRowsModel().getRowAsString(row);
 
-	  List<WordWithPos> groups = commandPattern.find(line, row, column);
+	  List<WordWithPos> groups = CodePattern.commandPattern.find(line, row, column);
 	  if (groups != null) {
       return new Element(Element.Type.command, groups.get(0).word);
     }
 
-	  groups = envPattern.find(line, row, column);
+	  groups = CodePattern.environmentPattern.find(line, row, column);
 	  if (groups != null) {
-      return new Element(Element.Type.environment, groups.get(0).word);
+      return new Element(Element.Type.environment, groups.get(1).word);
     }
 
     return null;
