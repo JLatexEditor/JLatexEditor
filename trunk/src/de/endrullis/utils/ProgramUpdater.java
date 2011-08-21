@@ -113,7 +113,7 @@ public class ProgramUpdater extends JFrame implements ActionListener {
         // TODO
         //FootWizard.startApplication("AfterUpdate", new String[]{AFTER_UPDATE_JAR_NAME}, "");
       } else {
-        moveFiles();
+        if(!moveFiles()) throw new IOException("Failed to move files to destination folder.");
       }
 
       if (totalSize > 0) {
@@ -243,7 +243,6 @@ public class ProgramUpdater extends JFrame implements ActionListener {
     if (!updateDir.isDirectory()) return false;
 
     File destinationDir = new File(System.getProperty("user.dir"));
-    System.out.println(destinationDir.getAbsolutePath());
 
     // test for writing rights
     boolean writable = false;
@@ -252,10 +251,15 @@ public class ProgramUpdater extends JFrame implements ActionListener {
       if(file.createNewFile() || file.canWrite()) writable = true;
       file.delete();
     } catch (Throwable e) {}
-    writable = false;
-    System.out.println(writable);
 
     boolean success = true;
+
+    // restore executable flags after download
+    if(SystemUtils.isLinuxOS() || SystemUtils.isMacOS()) {
+      try {
+        ProcessUtil.exec(new String[] {"chmod", "+x", new File(updateDir, "jlatexeditor").getAbsolutePath()}, null);
+      } catch(Throwable ignored) { }
+    }
 
     // move files in update dir to .
     if(writable) {
@@ -267,7 +271,6 @@ public class ProgramUpdater extends JFrame implements ActionListener {
       String command = "mv -f " + updateDir.getAbsolutePath() + "/* " + destinationDir.getAbsolutePath();
 
       if(SystemUtils.isMacOS()) {
-        System.out.println("/usr/bin/osascript -e \"do shell script \\\"" + command + "\\\" with administrator privileges\"");
         try {
           ProcessUtil.exec(new String[] {"/usr/bin/osascript", "-e", "do shell script \"" + command + "\" with administrator privileges"}, destinationDir).waitFor();
         } catch (InterruptedException e) {
