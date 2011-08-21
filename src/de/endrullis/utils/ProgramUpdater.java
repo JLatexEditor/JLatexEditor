@@ -239,29 +239,40 @@ public class ProgramUpdater extends JFrame implements ActionListener {
   /**
    * Overwrites the old files with the new one (from update dir).
    */
-  public void moveFiles() throws IOException {
-    if (!updateDir.isDirectory()) return;
+  public boolean moveFiles() throws IOException {
+    if (!updateDir.isDirectory()) return false;
+
+    File destinationDir = new File(System.getProperty("user.dir"));
+    System.out.println(destinationDir.getAbsolutePath());
 
     // test for writing rights
     boolean writable = false;
     try {
-      File file = new File(updateDir, "test");
+      File file = new File(destinationDir, "test");
       if(file.createNewFile() || file.canWrite()) writable = true;
       file.delete();
     } catch (Throwable e) {}
+    writable = false;
+    System.out.println(writable);
+
+    boolean success = true;
 
     // move files in update dir to .
     if(writable) {
       File[] files2move = updateDir.listFiles();
       for (File file : files2move) {
-        file.renameTo(new File(updateDir, file.getName()));
+        file.renameTo(new File(destinationDir, file.getName()));
       }
     } else {
-      File destinationDir = new File(System.getProperty("user.dir"));
       String command = "mv -f " + updateDir.getAbsolutePath() + "/* " + destinationDir.getAbsolutePath();
 
       if(SystemUtils.isMacOS()) {
-        ProcessUtil.exec(new String[] {"/usr/bin/osascript", "-e", "\"do shell script \\\"" + command + "\\\" with administrator privileges\""}, destinationDir);
+        System.out.println("/usr/bin/osascript -e \"do shell script \\\"" + command + "\\\" with administrator privileges\"");
+        try {
+          ProcessUtil.exec(new String[] {"/usr/bin/osascript", "-e", "do shell script \"" + command + "\" with administrator privileges"}, destinationDir).waitFor();
+        } catch (InterruptedException e) {
+          success = false;
+        }
       } else {
         // TODO: handle linux and windows
       }
@@ -269,6 +280,8 @@ public class ProgramUpdater extends JFrame implements ActionListener {
 
     // remove the update dir
     updateDir.delete();
+
+    return success;
   }
 
   /**
