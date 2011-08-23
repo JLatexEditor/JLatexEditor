@@ -1,7 +1,5 @@
 package de.endrullis.utils.collections;
 
-import junit.framework.Test;
-
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.PriorityQueue;
