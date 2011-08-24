@@ -560,6 +560,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 		  public void propertyChange(PropertyChangeEvent evt) {
 			  // register new keystroke
 			  String shortcutString = GProperties.getString("shortcut." + command);
+
 			  if (shortcutString != null && !shortcutString.equals("")) {
 			    KeyStroke keyStroke = KeyStroke.getKeyStroke(shortcutString);
 			    SCEPaneUI.replaceKeyStrokeAndAction(keyStroke, command);

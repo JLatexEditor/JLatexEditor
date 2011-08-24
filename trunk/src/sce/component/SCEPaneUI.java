@@ -462,8 +462,8 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
 		public static final String REDO                     = "redo";
 		public static final String FIND                     = "find";
 		public static final String REPLACE                  = "replace";
-		public static final String FIND_NEXT                = "find_next";
-		public static final String FIND_PREVIOUS            = "find_previous";
+		public static final String FIND_NEXT                = "find next";
+		public static final String FIND_PREVIOUS            = "find previous";
 		public static final String CUT                      = "cut";
 		public static final String COPY                     = "copy";
 		public static final String PASTE                    = "paste";
@@ -568,7 +568,7 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
         } catch (Throwable _) { /* ignore */ }
         pane.getSourceCodeEditor().lineComment(lineComment);
       } else
-      if (key.equals(COMMENT)) {
+      if (key.equals(UNCOMMENT)) {
         SourceCodeEditor editor = pane.getSourceCodeEditor();
         String lineComment = "//";
         try {

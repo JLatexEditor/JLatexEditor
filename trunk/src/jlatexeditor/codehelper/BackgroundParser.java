@@ -267,7 +267,7 @@ public class BackgroundParser extends Thread {
 	      } catch (StringIndexOutOfBoundsException ignored) {
 	      }
 	      if (isCommand) {
-          name = name.substring(1);
+          name = name.substring(1); // TODO: CRASHES
 		      buildingState.commands.add(name, new Command(name, fileCanonicalPath, line, numberOfArgs, optional, body));
 			    buildingState.commandsAndFiles.add(name, file.getAbsolutePath());
 	      } else {
