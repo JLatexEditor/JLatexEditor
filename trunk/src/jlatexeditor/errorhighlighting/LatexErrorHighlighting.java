@@ -77,9 +77,11 @@ public class LatexErrorHighlighting implements LatexCompileListener {
 
         String row = document.getRowsModel().getRowAsString(errorRow);
 
-        int errorColumn = 0;
-        String before = error.getTextBefore();
-        if (before != null) errorColumn = row.indexOf(before) + before.length();
+        int errorColumn = error.getColumn();
+        if(errorColumn < 0) {
+          String before = error.getTextBefore();
+          if (before != null) errorColumn = row.indexOf(before) + before.length();
+        }
 
         SCEDocumentPosition start, end;
 	      /*

@@ -236,8 +236,21 @@ public class LatexCompiler extends Thread {
                   if(causeLineEntry != null) {
                     int errorLine = causeLineEntry.getValue();
 
+                    // find the error column
+                    String theLine = fileLines.get(errorLine);
+                    int nrOfLetters = lastOccurrence + before.length() - causeLineEntry.getKey();
+                    int errorColumn = 0;
+                    while (errorColumn < theLine.length()) {
+                      char c = theLine.charAt(errorColumn);
+                      if(c != ' ' && c != '\n' && c != '\r') {
+                        nrOfLetters--;
+                        if(nrOfLetters == 0) break;
+                      }
+                      errorColumn++;
+                    }
 
-                    cause.setLine(errorLine);
+                    cause.setLine(errorLine+1);
+                    cause.setColumn(errorColumn);
                   }
                 }
 
