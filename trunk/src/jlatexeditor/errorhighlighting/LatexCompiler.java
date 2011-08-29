@@ -11,6 +11,7 @@ import util.SystemUtils;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -128,10 +129,64 @@ public class LatexCompiler extends Thread {
     errorView.compileFinished();
   }
 
+  private static Pattern whiteSpacePattern = Pattern.compile("[ \\n\\r]");
+
+  private class FileContent {
+    private StringBuilder fileText = new StringBuilder();
+    private ArrayList<String> fileLines = new ArrayList<String>();
+    private TreeMap<Integer,Integer> pos2line = new TreeMap<Integer, Integer>();
+    private HashMap<Integer,Integer> line2pos = new HashMap<Integer, Integer>();
+
+    public FileContent(File file) throws IOException {
+      BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+      pos2line.put(0,0);
+      line2pos.put(0,0);
+
+      String fileLine;
+      for (int fileLineNr=0; (fileLine = r.readLine()) != null; fileLineNr++) {
+        pos2line.put(fileText.length(), fileLineNr);
+        line2pos.put(fileLineNr, fileText.length());
+
+        fileLines.add(fileLine);
+        fileText.append(whiteSpacePattern.matcher(fileLine).replaceAll(""));
+      }
+
+      r.close();
+    }
+
+    /**
+     * Returns the text of the file without whitespace.
+     */
+    public StringBuilder getText() {
+      return fileText;
+    }
+
+    public ArrayList<String> getLines() {
+      return fileLines;
+    }
+
+    public TreeMap<Integer, Integer> getPos2Line() {
+      return pos2line;
+    }
+
+    public HashMap<Integer, Integer> getLine2Pos() {
+      return line2pos;
+    }
+
+    public int getLineStart(int line) {
+      Integer pos = getLine2Pos().get(line);
+      return pos != null ? pos : fileText.length();
+    }
+
+    public int getLineEnd(int line) {
+      return getLineStart(line+1);
+    }
+  }
+
 	public void parseLatexOutput(File file, BufferedReader in) throws IOException {
 		LatexCompileError error;
 
-    Pattern whiteSpacePattern = Pattern.compile("[ \\n\\r]");
+    HashMap<File,FileContent> file2content = new HashMap<File,FileContent>();
 
 		ArrayList<String> fileStack = new ArrayList<String>();
 		String versionString = in.readLine();
@@ -217,27 +272,20 @@ public class LatexCompiler extends Thread {
                 after = whiteSpacePattern.matcher(after).replaceAll("");
 						    String searchString = before + after;
 
-                StringBuilder fileText = new StringBuilder();
-                ArrayList<String> fileLines = new ArrayList<String>();
-                TreeMap<Integer,Integer> lineMap = new TreeMap<Integer, Integer>();
-                lineMap.put(0,0);
-						    BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(cause.getFile())));
+                FileContent fileContent = file2content.get(cause.getFile());
+                if(fileContent == null) {
+                  fileContent = new FileContent(cause.getFile());
+                  file2content.put(cause.getFile(), fileContent);
+                }
 
-                String fileLine;
-						    for (int fileLineNr=0; fileLineNr < cause.getLineStart() && (fileLine = r.readLine()) != null; fileLineNr++) {
-                  lineMap.put(fileText.length(), fileLineNr);
-                  fileLines.add(fileLine);
-                  fileText.append(whiteSpacePattern.matcher(fileLine).replaceAll(""));
-						    }
-
-                int lastOccurrence = fileText.lastIndexOf(searchString);
+                int lastOccurrence = fileContent.getText().lastIndexOf(searchString, fileContent.getLineStart(cause.getLineStart()));
                 if(lastOccurrence >= 0) {
-                  Map.Entry<Integer,Integer> causeLineEntry = lineMap.floorEntry(lastOccurrence + before.length());
+                  Map.Entry<Integer,Integer> causeLineEntry = fileContent.getPos2Line().floorEntry(lastOccurrence + before.length());
                   if(causeLineEntry != null) {
                     int errorLine = causeLineEntry.getValue();
 
                     // find the error column
-                    String theLine = fileLines.get(errorLine);
+                    String theLine = fileContent.getLines().get(errorLine);
                     int nrOfLetters = lastOccurrence + before.length() - causeLineEntry.getKey();
                     int errorColumn = 0;
                     while (errorColumn < theLine.length()) {
@@ -253,8 +301,6 @@ public class LatexCompiler extends Thread {
                     cause.setColumn(errorColumn);
                   }
                 }
-
-                r.close();
 					    }
 
 					    cause.setTextBefore(before);
