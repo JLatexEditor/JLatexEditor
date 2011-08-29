@@ -1,5 +1,6 @@
 package jlatexeditor.tools;
 
+import jlatexeditor.gproperties.GProperties;
 import util.ProcessUtil;
 import util.StreamUtils;
 import util.Tuple;
@@ -9,12 +10,16 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * SVN utilities.
  */
 public class SVN {
   private static SVN instance = null;
+  private static HashMap<String,String> defaultEnv = new HashMap<String, String>() {{
+    put("LC_CTYPE", "UTF-8");
+  }};
 
   public static SVN getInstance() {
     if (instance == null) instance = new SVN();
@@ -25,7 +30,7 @@ public class SVN {
     ArrayList<UpdateResult> results = new ArrayList<UpdateResult>();
 
     Process svn;
-		svn = ProcessUtil.exec(new String[]{"svn", "--non-interactive", "update"}, dir);
+		svn = ProcessUtil.exec(new String[]{GProperties.getString("svn.executable"), "--non-interactive", "update"}, dir, defaultEnv);
 
     BufferedReader in = new BufferedReader(new InputStreamReader(svn.getInputStream()), 100000);
     String line;
@@ -65,7 +70,7 @@ public class SVN {
     message = message.replace('"', ' ');
     message = message.replace('\\', ' ');
 
-    Process svn = ProcessUtil.exec(new String[]{"svn", "--non-interactive", "commit", "-m", message}, dir);
+    Process svn = ProcessUtil.exec(new String[]{GProperties.getString("svn.executable"), "--non-interactive", "commit", "-m", message}, dir, defaultEnv);
 
 		boolean success = true;
 
@@ -108,8 +113,8 @@ public class SVN {
     Process svn;
     try {
       svn = remote ?
-              ProcessUtil.exec(new String[]{"svn", "--non-interactive", "--show-updates", "status"}, dir) :
-              ProcessUtil.exec(new String[]{"svn", "--non-interactive", "status"}, dir);
+              ProcessUtil.exec(new String[]{GProperties.getString("svn.executable"), "--non-interactive", "--show-updates", "status"}, dir, defaultEnv) :
+              ProcessUtil.exec(new String[]{GProperties.getString("svn.executable"), "--non-interactive", "status"}, dir, defaultEnv);
     } catch (Exception e) {
       e.printStackTrace();
       throw new Exception("SVN status failed!", e);
@@ -169,9 +174,9 @@ public class SVN {
   }
 
   public synchronized void resolved(File file) {
-    Process svn = null;
+    Process svn;
     try {
-      svn = ProcessUtil.exec(new String[]{"svn", "--non-interactive", "resolved", file.getName()}, file.getParentFile());
+      svn = ProcessUtil.exec(new String[]{GProperties.getString("svn.executable"), "--non-interactive", "resolved", file.getName()}, file.getParentFile(), defaultEnv);
       svn.waitFor();
     } catch (Exception e) {
       e.printStackTrace();

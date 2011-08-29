@@ -273,6 +273,7 @@ public class TemplateEditor extends JDialog {
 		if (newTemplate != null) {
 			newTemplate.setUsage(editor.getText());
 			newTemplate.setEnabled(enabledCheckBox.isSelected());
+      // TODO: fixme... the following line can throw a NullPointerException
 			if (!getTemplates().get(newTemplate.getName()).deepEquals(newTemplate)) {
 				int options = allowCancel ? JOptionPane.YES_NO_CANCEL_OPTION : JOptionPane.YES_NO_OPTION;
 				int res = JOptionPane.showConfirmDialog(owner, "Do you want to save your changes for template \"" + newTemplate.getName() + "\"", "Save changes?", options);
