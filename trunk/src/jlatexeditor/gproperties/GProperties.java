@@ -93,6 +93,7 @@ public class GProperties {
 	  properties.addEntry(new Comment(" When closing the editor"));
     properties.addEntry(new Def("ask_for_saving_files_before_closing", BOOLEAN, "true"));
 	  properties.addEntry(new Comment(" Check for svn updates in the background"));
+    properties.addEntry(new Def("svn.executable", STRING, "svn"));
 	  properties.addEntry(new Def("check_for_svn_updates", BOOLEAN, "true"));
 	  properties.addEntry(new Comment(" Interval in which JLE checks for svn updates (in seconds)"));
 	  properties.addEntry(new Def("check_for_svn_updates.interval", INT_GT_0, "120"));

@@ -11,6 +11,8 @@ import util.SystemUtils;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -129,6 +131,8 @@ public class LatexCompiler extends Thread {
 	public void parseLatexOutput(File file, BufferedReader in) throws IOException {
 		LatexCompileError error;
 
+    Pattern whiteSpacePattern = Pattern.compile("[ \\n\\r]");
+
 		ArrayList<String> fileStack = new ArrayList<String>();
 		String versionString = in.readLine();
 		errorView.appendLine(versionString);
@@ -164,11 +168,6 @@ public class LatexCompiler extends Thread {
 			  ArrayList<String> linesBeforeLineNumber = new ArrayList<String>();
 			  boolean discoveredEmptyLine = false;
 		    while (line != null && !line.startsWith("l.")) {
-			    /*
-		      if (line.startsWith("<argument>")) {
-		        error.setCommand(line.substring("<argument>".length()).trim());
-		      }
-		      */
 			    if (line.equals("")) {
 				    discoveredEmptyLine = true;
 			    }
@@ -214,20 +213,35 @@ public class LatexCompiler extends Thread {
 
 					    // search for the corresponding line in the source file
 					    if (cause.getFile().exists()) {
+                before = whiteSpacePattern.matcher(before).replaceAll("");
+                after = whiteSpacePattern.matcher(after).replaceAll("");
 						    String searchString = before + after;
 
-						    ArrayList<String> fileLines = new ArrayList<String>();
+                StringBuilder fileText = new StringBuilder();
+                ArrayList<String> fileLines = new ArrayList<String>();
+                TreeMap<Integer,Integer> lineMap = new TreeMap<Integer, Integer>();
+                lineMap.put(0,0);
 						    BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(cause.getFile())));
-						    String fileLine = null;
-						    for (int fileLineNr=0; fileLineNr<cause.getLineStart() && (fileLine = r.readLine()) != null; fileLineNr++) {
-							    fileLines.add(fileLine);
+
+                String fileLine;
+						    for (int fileLineNr=0; fileLineNr < cause.getLineStart() && (fileLine = r.readLine()) != null; fileLineNr++) {
+                  lineMap.put(fileText.length(), fileLineNr);
+                  fileLines.add(fileLine);
+                  fileText.append(whiteSpacePattern.matcher(fileLine).replaceAll(""));
 						    }
-						    for (int fileLineNr = fileLines.size()-1; fileLineNr >= 0; fileLineNr--) {
-							    if (fileLines.get(fileLineNr).contains(searchString)) {
-								    cause.setLine(fileLineNr + 1);
-								    break;
-							    }
-						    }
+
+                int lastOccurrence = fileText.lastIndexOf(searchString);
+                if(lastOccurrence >= 0) {
+                  Map.Entry<Integer,Integer> causeLineEntry = lineMap.floorEntry(lastOccurrence + before.length());
+                  if(causeLineEntry != null) {
+                    int errorLine = causeLineEntry.getValue();
+
+
+                    cause.setLine(errorLine);
+                  }
+                }
+
+                r.close();
 					    }
 
 					    cause.setTextBefore(before);
