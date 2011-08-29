@@ -46,6 +46,6 @@ public class LatexCompilerTest extends TestCase {
 
 		String parseOutContent = StreamUtils.readFile(parseOut.getPath());
 
-		assertEquals(parseOutContent, sb.toString());
+		assertEquals("Parser output does not equal file \"" + parseOut.getName() + "\"", parseOutContent, sb.toString());
 	}
 }

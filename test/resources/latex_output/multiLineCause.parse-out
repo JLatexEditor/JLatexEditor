@@ -265,7 +265,7 @@ error:
 error:
 <font color="#000000">./pr-do/do.tex</font><font color="gray">: 103</font>
   <font color="#9a6634">Undefined control sequence.</font>
-  mid \: s,t \in \ter {\asig },\; \dg<font color="red">[ERROR]</font>{s} \to _\atrs t\} \; .
+  mid \: s,t \in \ter {\asig },\; \dg<font color="red">[ERROR]</font>{s} \to _\atrs t\} \; . 
 
 error:
 <font color="#000000">./pr-do/do.tex</font><font color="gray">: 103</font>
@@ -295,7 +295,7 @@ error:
 error:
 <font color="#000000">./pr-do/do.tex</font><font color="gray">: 103</font>
   <font color="#9a6634">Undefined control sequence.</font>
-  mid \: s,t \in \ter {\asig },\; \dg<font color="red">[ERROR]</font>{s} \to _\atrs t\} \; .
+  mid \: s,t \in \ter {\asig },\; \dg<font color="red">[ERROR]</font>{s} \to _\atrs t\} \; . 
 
 error:
 <font color="#000000">./pr-do/do.tex</font><font color="gray">: 103</font>
@@ -694,7 +694,7 @@ error:
 error:
 <font color="#000000">./pr-do/do.tex</font><font color="gray">: 230</font>
   <font color="#9a6634">Undefined control sequence.</font>
-  \trspeb \xstrcns<font color="red">[ERROR]</font>\ldots \xstrcns \trspeb \,\sstrcns
+  \trspeb \xstrcns<font color="red">[ERROR]</font>\ldots \xstrcns \trspeb \,\sstrcns 
 
 error:
 <font color="#000000">./pr-do/do.tex</font><font color="gray">: 230</font>
@@ -704,7 +704,7 @@ error:
 error:
 <font color="#000000">./pr-do/do.tex</font><font color="gray">: 230</font>
   <font color="#9a6634">Undefined control sequence.</font>
-  \trspeb \xstrcns \ldots \xstrcns<font color="red">[ERROR]</font>\trspeb \,\sstrcns
+  \trspeb \xstrcns \ldots \xstrcns<font color="red">[ERROR]</font>\trspeb \,\sstrcns 
 
 error:
 <font color="#000000">./pr-do/do.tex</font><font color="gray">: 230</font>
