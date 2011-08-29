@@ -1,0 +1,972 @@
+warning:
+<font color="#000000">./pr-do/intro.tex</font><font color="gray">: 87</font>
+  <font color="#9a6634">Reference `ch:unique' on page 3 undefined on input line 87.</font>
+
+warning:
+<font color="#000000">./pr-do/intro.tex</font><font color="gray">: 98</font>
+  <font color="#9a6634">Font shape `U/wasy/b/n' in size <8> not available(Font)              Font shape `U/wasy/m/n' tried instead on input line 98.</font>
+
+warning:
+<font color="#000000">./pr-do/intro.tex</font><font color="gray">: 98</font>
+  <font color="#9a6634">Font shape `U/wasy/b/n' in size <6> not available(Font)              Font shape `U/wasy/m/n' tried instead on input line 98.</font>
+
+warning:
+<font color="#000000">./pr-do/intro.tex</font><font color="gray">: 98</font>
+  <font color="#9a6634">Font shape `U/stmry/b/n' undefined(Font)              using `U/stmry/m/n' instead on input line 98.</font>
+
+overfull hbox:
+<font color="#000000">./pr-do/intro.tex</font><font color="gray">: 143--147</font>
+  <font color="#9a6634">Overfull \hbox (2.49623pt too wide) in paragraph at lines 143--147</font>
+
+overfull hbox:
+<font color="#000000">./pr-do/specs.tex</font><font color="gray">: 9--59</font>
+  <font color="#9a6634">Overfull \hbox (1.24327pt too wide) in paragraph at lines 9--59</font>
+
+warning:
+<font color="#000000">./pr-do/specs.tex</font><font color="gray">: </font>
+  <font color="#9a6634">`h' float specifier changed to `ht'.</font>
+
+overfull hbox:
+<font color="#000000">./pr-do/productivity.tex</font><font color="gray">: 113--119</font>
+  <font color="#9a6634">Overfull \hbox (1.90051pt too wide) in paragraph at lines 113--119</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 18</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  f {M}}}} \notag & (1)\;\, \strfunap<font color="red">[ERROR]</font>{f}{ \strcns {\datf {0}}{\
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 18</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  \end{align}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 18</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \strfunap<font color="red">[ERROR]</font>{f}{\astr }
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 18</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  \end{align}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 18</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  p {f}{\astr }}} & (2)\;\, \strfunap<font color="red">[ERROR]</font>{f}{\strcns {\datf {1}}{\s
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 18</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  \end{align}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 18</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \strfunap<font color="red">[ERROR]</font>{f}{\astr }
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 18</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  \end{align}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 18</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  f {M}}}} \notag & (1)\;\, \strfunap<font color="red">[ERROR]</font>{f}{ \strcns {\datf {0}}{\
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 18</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  \end{align}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 18</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \strfunap<font color="red">[ERROR]</font>{f}{\astr }
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 18</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  \end{align}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 18</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  p {f}{\astr }}} & (2)\;\, \strfunap<font color="red">[ERROR]</font>{f}{\strcns {\datf {1}}{\s
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 18</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  \end{align}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 18</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \strfunap<font color="red">[ERROR]</font>{f}{\astr }
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 18</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  \end{align}<font color="red">[ERROR]</font>
+
+warning:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 24</font>
+  <font color="#9a6634">Reference `ex:do2' on page 10 undefined on input line 24.</font>
+
+warning:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 27</font>
+  <font color="#9a6634">Reference `ex:do2' on page 10 undefined on input line 27.</font>
+
+warning:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 30</font>
+  <font color="#9a6634">Reference `ex:do2' on page 10 undefined on input line 30.</font>
+
+overfull hbox:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 32--43</font>
+  <font color="#9a6634">Overfull \hbox (12.98592pt too wide) in paragraph at lines 32--43</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 46</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 46</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  and an \emph{opponent} $\sdg<font color="red">[ERROR]</font>$
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 55</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 55</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  possible strategies for the opponent $\sdg<font color="red">[ERROR]</font>$.
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 59</font>
+  <font color="#9a6634">LaTeX Error: File `figs/pstricks/doexample' not found.</font>
+  \includegraphics{figs/pstricks/doexample}}<font color="red">[ERROR]</font>
+
+overfull hbox:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 61</font>
+  <font color="#9a6634">Underfull \hbox (badness 10000) in paragraph at lines 61--61</font>
+
+warning:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 67</font>
+  <font color="#9a6634">Reference `ex:do2' on page 10 undefined on input line 67.</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 73</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 73</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  for $\sdg<font color="red">[ERROR]</font>$ with the property that
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 74</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \dg<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 74</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  $\dg<font color="red">[ERROR]</font>{\astrtrm}$ is invariant under exchange
+
+overfull hbox:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 65--78</font>
+  <font color="#9a6634">Underfull \hbox (badness 1242) in paragraph at lines 65--78</font>
+
+overfull hbox:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 65--78</font>
+  <font color="#9a6634">Underfull \hbox (badness 1320) in paragraph at lines 65--78</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 83</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 83</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+    is a function $\sdg<font color="red">[ERROR]</font> \funin \ter{\asig}_{\sortS} \to \ter{\asig}_{\sor...
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 84</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 84</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  ch that $\databstr{\funap{\sdg}{\cstrtrm}}<font color="red">[ERROR]</font> = \databstr{\cstrtrm}$
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 86</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 86</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+    and $\funap{\sdg}{\cstrtrm}<font color="red">[ERROR]</font>$ is in closed data-constructor normal form.
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 92</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \dgars<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 92</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+    $\dgars<font color="red">[ERROR]</font>{\atrs}{\sdg}
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 92</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+    $\dgars{\atrs}{\sdg<font color="red">[ERROR]</font>}
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 94</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 94</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+    for every data-exchange function $\sdg<font color="red">[ERROR]</font>$,
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 103</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+   \dgars<font color="red">[ERROR]</font>{\atrs }{\sdg } \defdby \{ \pair {s}{t} \mid \: s,t \in \
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 103</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+    \end{align*}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 103</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+   \dgars {\atrs }{\sdg<font color="red">[ERROR]</font>} \defdby \{ \pair {s}{t} \mid \: s,t \in \
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 103</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+    \end{align*}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 103</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  mid \: s,t \in \ter {\asig },\; \dg<font color="red">[ERROR]</font>{s} \to _\atrs t\} \; .
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 103</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+    \end{align*}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 103</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+   \dgars<font color="red">[ERROR]</font>{\atrs }{\sdg } \defdby \{ \pair {s}{t} \mid \: s,t \in \
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 103</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+    \end{align*}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 103</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+   \dgars {\atrs }{\sdg<font color="red">[ERROR]</font>} \defdby \{ \pair {s}{t} \mid \: s,t \in \
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 103</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+    \end{align*}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 103</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  mid \: s,t \in \ter {\asig },\; \dg<font color="red">[ERROR]</font>{s} \to _\atrs t\} \; .
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 103</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+    \end{align*}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 105</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+    Thus the steps $s \to_{\dgars<font color="red">[ERROR]</font>{\atrs}{\sdg}} t$
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 105</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+    Thus the steps $s \to_{\dgars{\atrs}{\sdg<font color="red">[ERROR]</font>}} t$
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 106</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \dgars<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 106</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+    in $\dgars<font color="red">[ERROR]</font>{\atrs}{\sdg}$ are
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 106</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+    in $\dgars{\atrs}{\sdg<font color="red">[ERROR]</font>}$ are
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 108</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+    $ s \mapsto \dg<font color="red">[ERROR]</font>{s} \to_{\atrs} t $.
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 110</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \doLow<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 110</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  term $\astrtrm \in \ter{\asig}_{\sortS}$}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 117</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+      \doLow<font color="red">[ERROR]</font>{\atrs}{\astrtrm} \defdby \inf \{ \terprd{\dgars{\atrs}{\sdg...
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 117</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \dgars<font color="red">[ERROR]</font>{\atrs }{\sdg }
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 117</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  \{ \terprd{\dgars{\atrs}{\sdg}}{\astrtrm}<font color="red">[ERROR]</font> \where {}
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 117</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \dgars {\atrs }{\sdg<font color="red">[ERROR]</font>}
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 117</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  \{ \terprd{\dgars{\atrs}{\sdg}}{\astrtrm}<font color="red">[ERROR]</font> \where {}
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 118</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+      \sdg<font color="red">[ERROR]</font> \text{ a data-exchange function on } \atrs \} %\punc .
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 122</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \doLow<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 122</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  is \emph{\daobly{} productive} if $\doLow<font color="red">[ERROR]</font>{\atrs}{\rootsc} = \infty$...
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 130</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+      \doLow<font color="red">[ERROR]</font>{\atrs}{\astrtrm} \le \terprd{\atrs}{\astrtrm}\punc.
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 140</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \doLow<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 140</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+    \daob~lower bound $\doLow<font color="red">[ERROR]</font>{\atrs}{\astrtrm}$
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 144</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 144</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  stricted to data-exchange functions~$\sdg<font color="red">[ERROR]</font>$ that factor as
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 149</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+       \sdg<font color="red">[ERROR]</font> \funin \ter{\asig}
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 151</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>_{\pebble }
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 151</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  \overset{\sdg_{\pebble}}{\longrightarrow}<font color="red">[ERROR]</font> \ter{\asig} \;
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 152</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 152</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  ext{(for some function $\sdg_{\pebble}$)}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 152</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 152</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  ext{(for some function $\sdg_{\pebble}$)}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 152</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 152</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  ext{(for some function $\sdg_{\pebble}$)}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 152</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 152</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  ext{(for some function $\sdg_{\pebble}$)}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 165</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 165</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+    and for every data-exchange function $\sdg<font color="red">[ERROR]</font>$ on $\atrs$,
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 166</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 166</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  ere exists a data-exchange function $\sdg<font color="red">[ERROR]</font>'$ on $\atrs$ of the
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 168</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \dgars<font color="red">[ERROR]</font>{\atrs }{\sdg '}
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 168</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+    $\terprd{\dgars{\atrs}{\sdg'}}{\astrtrm}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 168</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \dgars {\atrs }{\sdg<font color="red">[ERROR]</font>'}
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 168</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+    $\terprd{\dgars{\atrs}{\sdg'}}{\astrtrm}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 170</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \dgars<font color="red">[ERROR]</font>{\atrs }{\sdg }
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 170</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+     \terprd{\dgars{\atrs}{\sdg}}{\astrtrm}<font color="red">[ERROR]</font>$.
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 170</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \dgars {\atrs }{\sdg<font color="red">[ERROR]</font>}
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 170</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+     \terprd{\dgars{\atrs}{\sdg}}{\astrtrm}<font color="red">[ERROR]</font>$.
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 172</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 172</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+    adapting $\sdg<font color="red">[ERROR]</font>$ in an infinite
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 175</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \dgars<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 175</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+   reduction graph of $\astrtrm$ in $\dgars<font color="red">[ERROR]</font>{\atrs}{\sdg}$,
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 175</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  raph of $\astrtrm$ in $\dgars{\atrs}{\sdg<font color="red">[ERROR]</font>}$,
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 176</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 176</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+    thereby defining $\sdg<font color="red">[ERROR]</font>'$ as follows:
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 180</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>'
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 180</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+    and $\funap{\sdg'}{\astrtrm_0}<font color="red">[ERROR]</font> \neq \funap{\sdg}{\astrtrm}$,
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 180</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 180</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  }{\astrtrm_0} \neq \funap{\sdg}{\astrtrm}<font color="red">[ERROR]</font>$,
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 182</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>'
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 182</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+    $\funap{\sdg'}{\astrtrm}<font color="red">[ERROR]</font> \defdby \funap{\sdg'}{\astrtrm_0}$,
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 182</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>'
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 182</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  strtrm} \defdby \funap{\sdg'}{\astrtrm_0}<font color="red">[ERROR]</font>$,
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 184</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>'
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 184</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+    $\funap{\sdg'}{\astrtrm}<font color="red">[ERROR]</font> \defdby \funap{\sdg}{\astrtrm}$.
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 184</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 184</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  {\astrtrm} \defdby \funap{\sdg}{\astrtrm}<font color="red">[ERROR]</font>$.
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 187</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \dgars<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 187</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+   R'}}{\astrtrm}$ of $\astrtrm$ in $\dgars<font color="red">[ERROR]</font>{\atrs}{\sdg'}$
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 187</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  rm}$ of $\astrtrm$ in $\dgars{\atrs}{\sdg<font color="red">[ERROR]</font>'}$
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 198</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \doLow<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 198</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  $\doLow<font color="red">[ERROR]</font>{\atrs}{\astrtrm_1} = \doLow{\atrs}{\astrtrm_2}$ holds
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 198</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  $\doLow{\atrs}{\astrtrm_1} = \doLow<font color="red">[ERROR]</font>{\atrs}{\astrtrm_2}$ holds
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 203</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  $ \doLow<font color="red">[ERROR]</font>{\atrs}{\databstr{\astrtrm}} \defdby \doLow{\atrs}{\astrtrm} $
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 203</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  atrs}{\databstr{\astrtrm}} \defdby \doLow<font color="red">[ERROR]</font>{\atrs}{\astrtrm} $
+
+warning:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 207</font>
+  <font color="#9a6634">Reference `sec:results' on page 12 undefined on input line 207.</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 217</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+    $\strff{g} \in \Ssmincns<font color="red">[ERROR]</font>$, $k = \arityS{\strff{g}}$, and $\ell = \ar...
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 220</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \doLow<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 220</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+    of $\strff{g}$}<font color="red">[ERROR]</font> is:
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 222</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \doLow<font color="red">[ERROR]</font>{\atrs }{\strff {g}}
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 222</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  oLow{\atrs}{\strff{g}}}{n_1,\ldots,n_{k}}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 224</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+      \doLow<font color="red">[ERROR]</font>{\atrs}{\,\funap{\strff{g}}{
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 230</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \trspeb \xstrcns<font color="red">[ERROR]</font>\ldots \xstrcns \trspeb \,\sstrcns
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 230</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  b\xstrcns\ldots\xstrcns\trspeb\,\sstrcns}<font color="red">[ERROR]</font>^{\text{$m$ times}}\,\astr$.
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 230</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \trspeb \xstrcns \ldots \xstrcns<font color="red">[ERROR]</font>\trspeb \,\sstrcns
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 230</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  b\xstrcns\ldots\xstrcns\trspeb\,\sstrcns}<font color="red">[ERROR]</font>^{\text{$m$ times}}\,\astr$.
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 281</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 281</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+   for a given data-exchange function $\sdg<font color="red">[ERROR]</font>$,
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 289</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+    \funap{\astrfun}{\cstrtrm} \to_{\dgars<font color="red">[ERROR]</font>{\atrs}{\sdg}}
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 289</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  strfun}{\cstrtrm} \to_{\dgars{\atrs}{\sdg<font color="red">[ERROR]</font>}}
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 290</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+    \astrtrm_1 \to_{\dgars<font color="red">[ERROR]</font>{\atrs}{\sdg}} \astrtrm_2 \to_{\dgars{\atrs}{\...
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 290</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+    \astrtrm_1 \to_{\dgars{\atrs}{\sdg<font color="red">[ERROR]</font>}} \astrtrm_2 \to_{\dgars{\atrs}{\...
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 290</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  gars{\atrs}{\sdg}} \astrtrm_2 \to_{\dgars<font color="red">[ERROR]</font>{\atrs}{\sdg}}
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 290</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \sdg}} \astrtrm_2 \to_{\dgars{\atrs}{\sdg<font color="red">[ERROR]</font>}}
+
+warning:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 302</font>
+  <font color="#9a6634">Citation `terese:2003' on page 12 undefined on input line 302.</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 327</font>
+  <font color="#9a6634">LaTeX Error: File `figs/pstricks/dobounds' not found.</font>
+  \includegraphics{figs/pstricks/dobounds}}<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 352</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \doLow<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 352</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  to the \daob{} lower bound $\doLow<font color="red">[ERROR]</font>{\atrs}{\strff{f}}$.
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 353</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \doLow<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 353</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  In this example the lower bound $\doLow<font color="red">[ERROR]</font>{\atrs}{\strff{f}}$
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 355</font>
+  <font color="#9a6634">Undefined control sequence.</font>
+  \doLow<font color="red">[ERROR]</font>
+
+error:
+<font color="#000000">./pr-do/do.tex</font><font color="gray">: 355</font>
+  <font color="#9a6634">Follow-up error of "Undefined control sequence."</font>
+  In general $\doLow<font color="red">[ERROR]</font>{\atrs}{\strff{f}}$ can even be a superposition of i...
+
+overfull hbox:
+<font color="#000000">./pr-do/nets.tex</font><font color="gray">: 1--11</font>
+  <font color="#9a6634">Overfull \hbox (2.0751pt too wide) in paragraph at lines 1--11</font>
+
+overfull hbox:
+<font color="#000000">./pr-do/nets.tex</font><font color="gray">: 62--70</font>
+  <font color="#9a6634">Overfull \hbox (1.56952pt too wide) in paragraph at lines 62--70</font>
+
+warning:
+<font color="#000000">./pr-do/main.tex</font><font color="gray">: 161</font>
+  <font color="#9a6634">Reference `ch:pr-do:secdecide' on page 16 undefined on input line 161.</font>
+
+warning:
+<font color="#000000">./pr-do/main.tex</font><font color="gray">: 248</font>
+  <font color="#9a6634">Reference `ch:pr-do:secdecide' on page 16 undefined on input line 248.</font>
+
+overfull hbox:
+<font color="#000000">./pr-do/main.tex</font><font color="gray">: 266--271</font>
+  <font color="#9a6634">Overfull \hbox (1.92232pt too wide) in paragraph at lines 266--271</font>
+
+overfull hbox:
+<font color="#000000">./pr-do/main.tex</font><font color="gray">: 279</font>
+  <font color="#9a6634">Underfull \hbox (badness 10000) in paragraph at lines 279--279</font>
+
+warning:
+<font color="#000000">./pr-do/main.tex</font><font color="gray">: 392</font>
+  <font color="#9a6634">Reference `ch:pr-do:secdecide' on page 18 undefined on input line 392.</font>
+
+overfull hbox:
+<font color="#000000">./pr-do/main.tex</font><font color="gray">: 410</font>
+  <font color="#9a6634">Overfull \hbox (60.7012pt too wide) in paragraph at lines 410--410</font>
+
+overfull hbox:
+<font color="#000000">./pr-do/main.tex</font><font color="gray">: 423--425</font>
+  <font color="#9a6634">Overfull \hbox (14.1887pt too wide) in paragraph at lines 423--425</font>
+
+overfull hbox:
+<font color="#000000">./pr-do/main.tex</font><font color="gray">: 9--20</font>
+  <font color="#9a6634">Overfull \hbox (3.85332pt too wide) in paragraph at lines 9--20</font>
+
+overfull hbox:
+<font color="#000000">./pr-do/main.tex</font><font color="gray">: 59</font>
+  <font color="#9a6634">Overfull \hbox (32.07895pt too wide) in paragraph at lines 59--59</font>
+
+warning:
+<font color="#000000">./pr-do/figs/artmorse.pstex_t</font><font color="gray">: 13</font>
+  <font color="#9a6634">Font shape `OMS/cmsy/m/n' in size <20> not available(Font)              size <20.74> substituted on input line 13.</font>
+
+warning:
+<font color="#000000">./pr-do/figs/artmorse.pstex_t</font><font color="gray">: 13</font>
+  <font color="#9a6634">Font shape `OMS/cmsy/m/n' in size <13.99994> not available(Font)              size <14.4> substituted on input line 13.</font>
+
+warning:
+<font color="#000000">./pr-do/figs/artmorse.pstex_t</font><font color="gray">: 13</font>
+  <font color="#9a6634">Font shape `OML/cmm/m/it' in size <20> not available(Font)              size <20.74> substituted on input line 13.</font>
+
+warning:
+<font color="#000000">./pr-do/figs/artmorse.pstex_t</font><font color="gray">: 13</font>
+  <font color="#9a6634">Font shape `OML/cmm/m/it' in size <13.99994> not available(Font)              size <14.4> substituted on input line 13.</font>
+
+warning:
+<font color="#000000">./pr-do/figs/artmorse.pstex_t</font><font color="gray">: 13</font>
+  <font color="#9a6634">Font shape `U/lasy/m/n' in size <20> not available(Font)              size <20.74> substituted on input line 13.</font>
+
+warning:
+<font color="#000000">./pr-do/figs/artmorse.pstex_t</font><font color="gray">: 13</font>
+  <font color="#9a6634">Font shape `U/lasy/m/n' in size <13.99994> not available(Font)              size <14.4> substituted on input line 13.</font>
+
+warning:
+<font color="#000000">./pr-do/figs/artmorse.pstex_t</font><font color="gray">: 13</font>
+  <font color="#9a6634">Font shape `U/wasy/m/n' in size <20> not available(Font)              size <20.74> substituted on input line 13.</font>
+
+warning:
+<font color="#000000">./pr-do/figs/artmorse.pstex_t</font><font color="gray">: 13</font>
+  <font color="#9a6634">Font shape `U/wasy/m/n' in size <13.99994> not available(Font)              size <14.4> substituted on input line 13.</font>
+
+warning:
+<font color="#000000">./pr-do/figs/artmorse.pstex_t</font><font color="gray">: 13</font>
+  <font color="#9a6634">Font shape `U/stmry/m/n' in size <20> not available(Font)              size <20.74> substituted on input line 13.</font>
+
+warning:
+<font color="#000000">./pr-do/figs/artmorse.pstex_t</font><font color="gray">: 13</font>
+  <font color="#9a6634">Font shape `U/stmry/m/n' in size <13.99994> not available(Font)              size <14.4> substituted on input line 13.</font>
+
+overfull hbox:
+<font color="#000000">./pr-do/main.tex</font><font color="gray">: 167</font>
+  <font color="#9a6634">Overfull \hbox (30.62384pt too wide) in paragraph at lines 167--167</font>
+
+overfull hbox:
+<font color="#000000">./pr-do/main.tex</font><font color="gray">: 115--202</font>
+  <font color="#9a6634">Overfull \hbox (32.70433pt too wide) in paragraph at lines 115--202</font>
+
+overfull hbox:
+<font color="#000000">./pr-do/main.tex</font><font color="gray">: 115--202</font>
+  <font color="#9a6634">Underfull \hbox (badness 10000) in paragraph at lines 115--202</font>
+
+overfull hbox:
+<font color="#000000">./pr-do/main.tex</font><font color="gray">: 202</font>
+  <font color="#9a6634">Underfull \hbox (badness 10000) in paragraph at lines 202--202</font>
+
+warning:
+<font color="#000000">./pr-do/main.tex</font><font color="gray">: 206</font>
+  <font color="#9a6634">Reference `example:J' on page 19 undefined on input line 206.</font>
+
+warning:
+<font color="#000000">./pr-do/main.tex</font><font color="gray">: 214</font>
+  <font color="#9a6634">Reference `appsec:pop' on page 19 undefined on input line 214.</font>
+
+overfull hbox:
+<font color="#000000">./pr-do/decide.tex</font><font color="gray">: 129--151</font>
+  <font color="#9a6634">Overfull \hbox (33.6676pt too wide) in paragraph at lines 129--151</font>
+
+overfull hbox:
+<font color="#000000">./main-pr-do.tex</font><font color="gray">: 259</font>
+  <font color="#9a6634">Overfull \hbox (2.5827pt too wide) in paragraph at lines 259--259</font>
+
+overfull hbox:
+<font color="#000000">./main-pr-do.tex</font><font color="gray">: 309--314</font>
+  <font color="#9a6634">Overfull \hbox (2.54533pt too wide) in paragraph at lines 309--314</font>
+
+warning:
+<font color="#000000">./main-pr-do.tex</font><font color="gray">: 361</font>
+  <font color="#9a6634">Reference `example:J' on page 24 undefined on input line 361.</font>
+
+warning:
+<font color="#000000">./main-pr-do.tex</font><font color="gray">: 367</font>
+  <font color="#9a6634">Reference `example:J' on page 24 undefined on input line 367.</font>
+
+overfull hbox:
+<font color="#000000">./main-pr-do.tex</font><font color="gray">: 377</font>
+  <font color="#9a6634">Overfull \hbox (5.95093pt too wide) in paragraph at lines 377--377</font>
+
+overfull hbox:
+<font color="#000000">./main-pr-do.tex</font><font color="gray">: 458</font>
+  <font color="#9a6634">Overfull \hbox (30.2218pt too wide) in paragraph at lines 458--458</font>
+
+overfull hbox:
+<font color="#000000">./main-pr-do.tex</font><font color="gray">: 518</font>
+  <font color="#9a6634">Overfull \hbox (51.7314pt too wide) in paragraph at lines 518--518</font>
+
+overfull hbox:
+<font color="#000000">./pr-do/related.tex</font><font color="gray">: 2--10</font>
+  <font color="#9a6634">Overfull \hbox (4.05617pt too wide) in paragraph at lines 2--10</font>
+
+overfull hbox:
+<font color="#000000">./pr-do/related.tex</font><font color="gray">: 72--88</font>
+  <font color="#9a6634">Overfull \hbox (10.00331pt too wide) in paragraph at lines 72--88</font>
+
+overfull hbox:
+<font color="#000000">./main-pr-do.bbl</font><font color="gray">: 4--8</font>
+  <font color="#9a6634">Underfull \hbox (badness 1303) in paragraph at lines 4--8</font>
+
+overfull hbox:
+<font color="#000000">./main-pr-do.bbl</font><font color="gray">: 33--37</font>
+  <font color="#9a6634">Underfull \hbox (badness 4217) in paragraph at lines 33--37</font>
+
+overfull hbox:
+<font color="#000000">./main-pr-do.bbl</font><font color="gray">: 33--37</font>
+  <font color="#9a6634">Underfull \hbox (badness 1454) in paragraph at lines 33--37</font>
+
+overfull hbox:
+<font color="#000000">./main-pr-do.bbl</font><font color="gray">: 39--43</font>
+  <font color="#9a6634">Underfull \hbox (badness 2103) in paragraph at lines 39--43</font>
+
+overfull hbox:
+<font color="#000000">./main-pr-do.bbl</font><font color="gray">: 39--43</font>
+  <font color="#9a6634">Underfull \hbox (badness 1490) in paragraph at lines 39--43</font>
+
+warning:
+<font color="#000000">./closing.tex</font><font color="gray">: </font>
+  <font color="#9a6634">Size substitutions with differences(Font)              up to 0.74pt have occurred.</font>
+
+warning:
+<font color="#000000">./closing.tex</font><font color="gray">: </font>
+  <font color="#9a6634">Some font shapes were not available, defaults substituted.</font>
+
+warning:
+<font color="#000000">./closing.tex</font><font color="gray">: </font>
+  <font color="#9a6634">There were undefined references.</font>
+
