@@ -22,6 +22,7 @@ public class LatexCompileError {
   private String fileName = null;
   private int lineStart = -1;
   private int lineEnd = -1;
+  private int column = -1;
 
   private String message = null;
   private String cause = null;
@@ -87,6 +88,14 @@ public class LatexCompileError {
 
   public void setLineEnd(int lineEnd) {
     this.lineEnd = lineEnd;
+  }
+
+  public int getColumn() {
+    return column;
+  }
+
+  public void setColumn(int column) {
+    this.column = column;
   }
 
   public String getMessage() {
