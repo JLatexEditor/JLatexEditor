@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Diff test.
  */
-public class DiffTest {
+public class DiffTestApp {
   public static void main(String args[]) throws IOException {
     {
       System.out.println("Test 1: ");

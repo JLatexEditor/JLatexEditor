@@ -73,6 +73,7 @@
   <!-- Delete class and jar files. -->
   <target name="clean">
     <delete dir="${buildClasses}"/>
+    <delete dir="${buildClasses-test}"/>
     <delete dir="${build}"/>
   </target>
 
@@ -122,7 +123,7 @@
 
 	<!-- Run tests. -->
 	<target name="test" depends="compile-test">
-    <junit>
+    <junit failureproperty="failure">
 	    <classpath>
 		    <pathelement location="${buildClasses}"/>
 		    <pathelement location="${buildClasses-test}"/>
@@ -130,11 +131,14 @@
 			  <path refid="libraries-test"/>
 			</classpath>
 
+      <formatter type="xml" usefile="true" />
       <formatter type="brief" usefile="false" />
       <batchtest>
         <fileset dir="${buildClasses-test}" includes="**/*Test.class" />
       </batchtest>
     </junit>
+
+		<fail if="failure"/>
   </target>
 
   <!-- Builds the upload directory including the jar file. -->
