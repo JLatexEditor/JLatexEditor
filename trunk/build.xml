@@ -16,6 +16,7 @@
   <property name="upload" location="${dist}/${ant.project.name}"/>
   <property name="uploadPrepare" location="${dist}/${ant.project.name}_prepare"/>
   <property name="releases" location="${dist}/releases"/>
+  <property name="reports-test" location="reports"/>
 
   <property name="buildClasses" location="${build}/classes"/>
   <property name="buildClasses-test" location="${build}/classes-test"/>
@@ -123,7 +124,10 @@
 
 	<!-- Run tests. -->
 	<target name="test" depends="compile-test">
-    <junit failureproperty="failure">
+		<delete dir="${reports-test}" />
+		<mkdir dir="${reports-test}" />
+
+    <junit printsummary="yes" failureproperty="failure">
 	    <classpath>
 		    <pathelement location="${buildClasses}"/>
 		    <pathelement location="${buildClasses-test}"/>
@@ -133,7 +137,7 @@
 
       <formatter type="xml" usefile="true" />
       <formatter type="brief" usefile="false" />
-      <batchtest>
+      <batchtest todir="${reports-test}">
         <fileset dir="${buildClasses-test}" includes="**/*Test.class" />
       </batchtest>
     </junit>
