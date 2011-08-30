@@ -127,7 +127,7 @@
 		<delete dir="${reports-test}" />
 		<mkdir dir="${reports-test}" />
 
-    <junit printsummary="yes" failureproperty="failure">
+    <junit printsummary="no" failureproperty="failure">
 	    <classpath>
 		    <pathelement location="${buildClasses}"/>
 		    <pathelement location="${buildClasses-test}"/>
