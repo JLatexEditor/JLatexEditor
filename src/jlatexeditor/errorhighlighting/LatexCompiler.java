@@ -129,7 +129,10 @@ public class LatexCompiler extends Thread {
     errorView.compileFinished();
   }
 
-  private static Pattern whiteSpacePattern = Pattern.compile("[ \\n\\r]");
+  private static final Pattern whiteSpacePattern = Pattern.compile("($|[^\\\\])(?:\\\\\\\\)*%.*|[ \\n\\r]");
+  private static String removeWhiteSpace(String string) {
+    return whiteSpacePattern.matcher(string).replaceAll("$1");
+  }
 
   private class FileContent {
     private StringBuilder fileText = new StringBuilder();
@@ -148,7 +151,7 @@ public class LatexCompiler extends Thread {
         line2pos.put(fileLineNr, fileText.length());
 
         fileLines.add(fileLine);
-        fileText.append(whiteSpacePattern.matcher(fileLine).replaceAll(""));
+        fileText.append(removeWhiteSpace(fileLine));
       }
 
       r.close();
@@ -268,8 +271,8 @@ public class LatexCompiler extends Thread {
 
 					    // search for the corresponding line in the source file
 					    if (cause.getFile().exists()) {
-                before = whiteSpacePattern.matcher(before).replaceAll("");
-                after = whiteSpacePattern.matcher(after).replaceAll("");
+                before = removeWhiteSpace(before);
+                after = removeWhiteSpace(after);
 						    String searchString = before + after;
 
                 FileContent fileContent = file2content.get(cause.getFile());
@@ -280,7 +283,7 @@ public class LatexCompiler extends Thread {
 
                 int lastOccurrence = fileContent.getText().lastIndexOf(searchString, fileContent.getLineStart(cause.getLineStart()));
                 if(lastOccurrence >= 0) {
-                  Map.Entry<Integer,Integer> causeLineEntry = fileContent.getPos2Line().floorEntry(lastOccurrence + before.length());
+                  Map.Entry<Integer,Integer> causeLineEntry = fileContent.getPos2Line().floorEntry(lastOccurrence + before.length()-1);
                   if(causeLineEntry != null) {
                     int errorLine = causeLineEntry.getValue();
 
