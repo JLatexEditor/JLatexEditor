@@ -94,7 +94,7 @@ public abstract class Doc implements AbstractResource, SCEDocumentListener {
 		private String id;
 
 		public FileDoc(File file) {
-      // fixing Java bug: getParentFile() returns null for relative paths
+      // fixing a Java bug: getParentFile() returns null for relative paths
       if(file.getParentFile() == null) file = new File(file.getAbsolutePath());
 
 			this.file = file;
