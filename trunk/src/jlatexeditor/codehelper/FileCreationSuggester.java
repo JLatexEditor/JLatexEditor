@@ -20,7 +20,7 @@ import java.util.List;
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 public class FileCreationSuggester implements CodeAssistant, SCEPopup.ItemHandler {
-	private PatternPair parameterPattern = new PatternPair("\\\\(input|include)\\{([^\\{]*)", "([^\\}]*)\\}");
+	private PatternPair parameterPattern = new PatternPair("\\\\(input|include|lstinputlisting)(?:\\[[^\\]]*\\])?\\{([^\\{]*)", "([^\\}]*)\\}");
 
 	public FileCreationSuggester() {
 	}
@@ -76,6 +76,7 @@ public class FileCreationSuggester implements CodeAssistant, SCEPopup.ItemHandle
 
 			try {
 				File file = action.getFile();
+				file.getParentFile().mkdirs();
 				if (file.createNewFile())
 					SCEManager.getInstance().open(new Doc.FileDoc(file));
 			} catch (IOException e) {
