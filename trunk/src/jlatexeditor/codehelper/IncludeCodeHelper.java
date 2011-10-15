@@ -21,7 +21,7 @@ public class IncludeCodeHelper extends PatternHelper {
   protected WordWithPos fileName;
 
   public IncludeCodeHelper() {
-    pattern = new PatternPair("\\\\(include(?:graphics)?|input|bibliography)(?:\\[[^\\]]*\\])?\\{([^{}]*/)?([^{}/]*)");
+    pattern = new PatternPair("\\\\(include(?:graphics)?|input|bibliography|lstinputlisting)(?:\\[[^\\]]*\\])?\\{([^{}]*/)?([^{}/]*)");
   }
 
   @Override
