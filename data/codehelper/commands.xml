@@ -356,34 +356,33 @@
   </command>
 
   <command name="lefteqn" usage="\lefteqn{@eqn@}" hint="prints eqn in display math style">
-    <argument name="eqn">
-    </argument>
+    <argument name="eqn"/>
   </command>
 
   <command name="linebreak" usage="\linebreak[@number@]" hint="break the current line">
-    <argument name="number" hint="0 to 4, the higher the number, the more insistent the request is">
-    </argument>
+    <argument name="number" hint="0 to 4, the higher the number, the more insistent the request is"/>
   </command>
 
   <command name="linewidth" hint="the width of lines in the current environment">
   </command>
 
+  <command name="lstinputlisting" usage="\lstinputlisting{@file@}" hint="insert source code with highlighting">
+	  <argument name="file" type="file" value="" completion="true"/>
+  </command>
+
   <command name="location" usage="\location{@address@}" hint="modifies your organization's standard address">
-    <argument name="address">
-    </argument>
+    <argument name="address"/>
   </command>
 
   <command name="makebox" usage="\makebox[@width@][@position@]{@text@}"
            hint="creates a box to contain the specified text">
-    <argument name="width" hint="the width of the box">
-    </argument>
+    <argument name="width" hint="the width of the box"/>
     <argument name="position" hint="specify the position of text within the box">
       <argumentValue value="l" hint="flushleft"/>
       <argumentValue value="r" hint="flushright"/>
       <argumentValue value="s" hint="interword space adjusted so text fills box exactly"/>
     </argument>
-    <argument name="text">
-    </argument>
+    <argument name="text"/>
   </command>
 
   <command name="maketitle" hint="generates a title on a separate title page">
