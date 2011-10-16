@@ -3,6 +3,7 @@ package jlatexeditor.tools;
 import jlatexeditor.gproperties.GProperties;
 import util.ProcessUtil;
 import util.StreamUtils;
+import util.SystemUtils;
 import util.Tuple;
 
 import java.io.BufferedReader;
@@ -18,7 +19,9 @@ import java.util.HashMap;
 public class SVN {
   private static SVN instance = null;
   private static HashMap<String,String> defaultEnv = new HashMap<String, String>() {{
-    put("LC_CTYPE", "UTF-8");
+	  if (SystemUtils.isMacOS()) {
+      put("LC_CTYPE", "UTF-8");
+	  }
   }};
 
   public static SVN getInstance() {
