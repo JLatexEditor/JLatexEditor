@@ -15,6 +15,7 @@ New Features and other Changes in JLatexEditor
   - search is automatically limited to selection range if selection is spanning at least one line
   - the depth of the awesome deep bracket matching can now be configured (editor.bracket_matching.depth)
   - double click on a bracket now selects the whole block
+  - improved latex parser (recognition of user defined commands)
   - improved latex output parser (recognition of nested errors and better performance)
   - general font size can be increased via main_window.font_scale_factor in global settings
   - added filename completion support for \lstinputlisting
