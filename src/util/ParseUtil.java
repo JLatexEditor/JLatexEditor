@@ -3,6 +3,34 @@ package util;
 import java.util.ArrayList;
 
 public class ParseUtil {
+	/**
+	 * Reads a single Latex command, an balanced argument between two braces or a single character,
+	 *
+	 * @param text input text
+	 * @param index start index
+	 * @return (character / command / argument, nextIndex)
+	 */
+	public static Tuple<String,Integer> parseItem(String text, int index) {
+		if (text.charAt(index) == '{') {
+			String argument = parseBalanced(text, index + 1, '}');
+			return new Tuple<String, Integer>(argument, index + argument.length() + 2);
+		} else {
+			while (text.charAt(index) == ' ') index++;
+			if (text.charAt(index) == '\\') {
+				int startIndex = index;
+				index++;
+				if (Character.isLetter(text.charAt(index))) {
+					while (Character.isLetter(text.charAt(index))) index++;
+				} else {
+					index++;
+				}
+				return new Tuple<String, Integer>(text.substring(startIndex, index), index);
+			} else {
+				return new Tuple<String, Integer>("" + text.charAt(index), index + 1);
+			}
+		}
+	}
+	
   /**
    * Parses a balanced string excluding the closing symbol. 
    */

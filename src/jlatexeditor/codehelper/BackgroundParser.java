@@ -8,6 +8,7 @@ import sce.component.SourceCodeEditor;
 import util.ParseUtil;
 import util.SetTrie;
 import util.SimpleTrie;
+import util.Tuple;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -243,8 +244,9 @@ public class BackgroundParser extends Thread {
 
 	      boolean isCommand = command.equals("newcommand") || command.equals("renewcommand") || command.equals("DeclareRobustCommand");
 
-        String name = ParseUtil.parseBalanced(tex, index+1, '}');
-        index += 2 + name.length();
+	      Tuple<String,Integer> itemPositionPair = ParseUtil.parseItem(tex, index);
+	      String name = itemPositionPair.first;
+        index = itemPositionPair.second;
         // number of arguments
         int numberOfArgs = 0;
 	      String optional = null, body = null;
@@ -258,8 +260,7 @@ public class BackgroundParser extends Thread {
 					}
 					// default argument
 					if(tex.charAt(index) == '[') {
-						try {
-							optional = ParseUtil.parseBalanced(tex, index+1, ']');
+						try {      							optional = ParseUtil.parseBalanced(tex, index+1, ']');
 							index += 2 + optional.length();
 						} catch(NumberFormatException ignore) {}
 					}
