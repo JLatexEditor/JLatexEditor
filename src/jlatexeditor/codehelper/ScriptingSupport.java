@@ -148,7 +148,6 @@ public class ScriptingSupport implements CodeAssistant {
           writer.println(content);
         } else {
           writer.println("main = tree \"" + content.replace('\n', ' ').replaceAll("\"", "\\\"") + "\"");
-          System.err.println(scriptDir);
         }
         writer.close();
 
