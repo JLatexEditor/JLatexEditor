@@ -134,7 +134,7 @@ public class ProgramUpdater extends JFrame implements ActionListener {
 
       if (totalSize > 0) {
         if (confirmation) {
-          JOptionPane.showMessageDialog(this, "Update was successful. The program will be restartet.");
+          JOptionPane.showMessageDialog(this, "Update was successful. The program will be restarted.");
         }
         setVisible(false);
         dispose();
