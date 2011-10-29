@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleDisplayName</key>
+	<string>JLatexEditor</string>
+	<key>CFBundleExecutable</key>
+	<string>jlatexeditor</string>
+	<key>CFBundleIconFile</key>
+	<string>tex-cookie.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>cc.jle</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>0.2</string>
+	<key>CFBundleName</key>
+	<string>JLatexEditor</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.2</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>0.2</string>
+    <key>NSHumanReadableCopyright</key>
+    <string>1980 B.C. - 2011 A.C Stefan Endrullis, GNU General Public License.</string>
+</dict>
+</plist>
