@@ -167,6 +167,7 @@ getName name = foldr (\c s -> replace c "" s) name ["(",")","[","]","{","}","\\"
 
 parseInput :: Parser  (Term,[Highlight])
 parseInput = do
+  whiteSpace
   term <- parseTerm
   highlights <- many parseHighlight
   return (term,highlights)
