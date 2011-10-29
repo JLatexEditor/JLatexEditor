@@ -11,6 +11,7 @@ import util.ProcessOutput;
 import util.ProcessUtil;
 import util.SpellChecker;
 
+import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ public class ScriptingSupport implements CodeAssistant {
   public boolean assistAt(SCEPane pane) {
     SCEDocument document = pane.getDocument();
 
-    SCEDocumentRows rows = document.getRowsModel();
+    final SCEDocumentRows rows = document.getRowsModel();
     synchronized (rows) {
       int rowNr = pane.getCaret().getRow();
       while(rowNr >= 0) {
@@ -151,14 +152,21 @@ public class ScriptingSupport implements CodeAssistant {
         }
         writer.close();
 
-        ProcessUtil.execAndWait(new String[]{"ghc", "--make", sourceName}, scriptDir);
-        ProcessOutput result = ProcessUtil.execAndWait(new String[] {"./" + executableName}, scriptDir);
-        output = result.getStdout();
+	      try {
+	        ProcessUtil.execAndWait(new String[]{"ghc", "--make", sourceName}, scriptDir);
+	        ProcessOutput result = ProcessUtil.execAndWait(new String[] {"./" + executableName}, scriptDir);
+	        output = result.getStdout();
+	      } catch (IOException e1) {
+		      if (e1.getMessage().startsWith("Cannot run program")) {
+		 		    JOptionPane.showMessageDialog(null, "Failed to run ghc.  Is ghc installed on your system?.\nMore details about this error are written to STDOUT after you clicked OK.", "Failed to run ghc", JOptionPane.ERROR_MESSAGE);
+		 	    }
+		      throw e1;
+	      }
       }
 
       pane.getDocument().replace(codeEnd+1,0,endRow,0, output + "\n");
     } catch (IOException e) {
-      e.printStackTrace();
+	    e.printStackTrace();
     }
 
     caret.moveTo(caretPos, false);
