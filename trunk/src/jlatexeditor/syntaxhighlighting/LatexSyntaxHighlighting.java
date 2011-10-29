@@ -1,9 +1,11 @@
 package jlatexeditor.syntaxhighlighting;
 
 import jlatexeditor.codehelper.BackgroundParser;
+import jlatexeditor.codehelper.ScriptingSupport;
 import jlatexeditor.syntaxhighlighting.states.DontParse;
 import jlatexeditor.syntaxhighlighting.states.Env;
 import jlatexeditor.syntaxhighlighting.states.MathMode;
+import jlatexeditor.syntaxhighlighting.states.ScriptMode;
 import sce.codehelper.CHArgumentType;
 import sce.codehelper.CHCommand;
 import sce.codehelper.CHCommandArgument;
@@ -11,6 +13,7 @@ import sce.component.*;
 import sce.syntaxhighlighting.ParserState;
 import sce.syntaxhighlighting.ParserStateStack;
 import sce.syntaxhighlighting.SyntaxHighlighting;
+import sun.font.Script;
 import util.Function1;
 import util.SimpleTrie;
 import util.SpellChecker;
@@ -39,6 +42,8 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
   private SCEDocument document = null;
 	private SimpleTrie<CHCommand> commands;
 	private BackgroundParser backgroundParser;
+
+  private static final String scriptBegin = ScriptingSupport.genericBegin.substring(1);
 
   // do we need to parse
   private boolean parseNeeded = false;
@@ -170,6 +175,26 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 				rowWasParsed = true;
 			}
 		}
+
+    if (state instanceof ScriptMode) {
+      byte styleText = state.getStyles()[LatexStyles.TEXT];
+      byte styleComment = state.getStyles()[LatexStyles.COMMENT];
+
+      for(int nr = 0; nr < row.length; nr++) {
+        SCEDocumentChar c = chars[nr];
+
+        if(c.character == ' ') { c.style = styleText; continue; }
+        if(c.character == '%') { c.style = styleComment;
+          for(nr++; nr < row.length; nr++) chars[nr].style = styleText;
+          rowWasParsed = true;
+          break;
+        }
+
+        stateStack.pop();
+        state = stateStack.peek();
+        break;
+      }
+    }
 
 		if (!rowWasParsed) {
 			// check if row has been added during an svn merge
@@ -368,6 +393,22 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 						} else {
 							stateStack.push(state = new DontParse(state));
 						}
+          } else
+          if (restOfRow.startsWith(scriptBegin)) {
+            int position = char_nr;
+            while (char_nr < row.length) chars[char_nr++].style = commentStyle;
+
+            int offset = scriptBegin.length();
+            int closing = restOfRow.indexOf('}', offset);
+            if(closing >= 0) {
+              String language = restOfRow.substring(offset, closing);
+              if(ScriptingSupport.languagesSet.contains(language)) {
+                byte todoStyle = stateStyles[LatexStyles.TODO];
+                for(int nr = position+offset+1; nr <= position+closing; nr++) chars[nr].style = todoStyle;
+              }
+            }
+
+            stateStack.push(state = new ScriptMode());
 					} else {
 						Matcher matcher = TODO_PATTERN.matcher(restOfRow.toLowerCase());
 						if (matcher.find()) {

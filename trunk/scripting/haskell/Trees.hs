@@ -41,7 +41,6 @@ tree string =
         hPutStrLn stdout $ renderTerm term
         hPutStr stdout $ "\\begin{pgfonlayer}{background}"
         hPutStrLn stdout $ concat $ map (\h -> 
-          -- "\n  " ++ intersections (nodes h) ++
           "\n  " ++ renderHighlight term h) highlights
         hPutStrLn stdout $ "\\end{pgfonlayer}"
 
@@ -70,51 +69,63 @@ nested n m term
   | m == name term = occurs n term
   | otherwise      = or $ map (nested n m) (subterms term)   
 
-{-
-hPath n = "h_" ++ n
-vPath n = "v_" ++ n
-iName n m = "i_" ++ n ++ "_" ++ m
+data Direction = Up | Eq | Down
 
-intersections (n:m:nodes) =
-  let move p x y =  "($(" ++ p ++ ")+(" ++ show x ++ "cm," ++ show y ++ "cm)$)"
-      hpath n = "\\path [draw=none,name path=" ++ hPath n ++ "] " ++ move n (-10) 0 ++ " -- " ++ move n 10 0 ++ ";\n"
-      vpath n = "\\path [draw=none,name path=" ++ vPath n ++ "] " ++ move n 0 (-10) ++ " -- " ++ move n 0 10 ++ ";\n"
-      intersect n m = "\\path [name intersections={of=" ++ hPath n ++ " and " ++ vPath m ++ "}];\n" ++
-                      "\\coordinate ("++ iName n m ++ ") at (intersection-1);\n"
-  in hpath n ++ vpath n ++ hpath m ++ vpath m ++ intersect n m ++ intersect m n ++ intersections (m:nodes)
-intersections _ = ""
--}
+directions :: [Int] -> [Direction]
+directions (a:b:xs)
+  | a < b = Down : directions (b:xs)
+  | a > b = Up : directions (b:xs)
+  | otherwise = Eq : directions (b:xs)
+directions _ = []
+
+up_down :: Term -> [String] -> [(Direction,(String,(Direction,String)))]
+up_down term nodes =
+  let depths = map (\n -> depth n term) nodes
+  in zip (directions $ (-1):depths) $ zip nodes $ zip (directions $ depths ++ [-1]) $ (tail nodes ++ [head nodes])
+
+north_east n = "($(" ++ n ++ ".north east) + (.7mm,-.7mm)$)"
+north_west n = "($(" ++ n ++ ".north west) + (-.7mm,-.7mm)$)"
+south_east n = "($(" ++ n ++ ".south east) + (.7mm,.7mm)$)"
+south_west n = "($(" ++ n ++ ".south west) + (-.7mm,.7mm)$)"
+south n = "($(" ++ n ++ ".south) + (0mm,-1mm)$)"
+north n = "($(" ++ n ++ ".north) + (0mm,1mm)$)"
+on_way_left p n = "($(" ++ p ++ ") !.15! 270:(" ++ n ++ ") !.4! (" ++ n ++ ")$)"
+on_way_right p n = "($(" ++ p ++ ") !.15! 90:(" ++ n ++ ") !.4! (" ++ n ++ ")$)"
 
 renderHighlight :: Term -> Highlight -> String
 renderHighlight tree highlight =
-  "\\draw [rounded corners=1.5mm] " ++ style highlight ++ " " ++ renderHighlight_ tree "" (nodes highlight) 
-
-north_east y n = "($(" ++ n ++ ".north east) + (1mm," ++ show y ++ "mm)$)"
-north_west y n = "($(" ++ n ++ ".north west) + (-1mm," ++ show y ++ "mm)$)"
-south_east n = "($(" ++ n ++ ".south east) + (1mm,0mm)$)"
-south_west n = "($(" ++ n ++ ".south west) + (-1mm,0mm)$)"
-south n = "($(" ++ n ++ ".south) + (0mm,-1mm)$)"
-north n = "($(" ++ n ++ ".north) + (0mm,1mm)$)"
-
-renderHighlight_ tree p [] = south p ++ " -- " ++ south_east p ++ " -- " ++ north_east (-1) p ++ " -- cycle;"
-renderHighlight_ tree p (n:ns) =
-  let nesting = nested p n tree
+  let root = head $ nodes highlight
   in
-  -- root node
-  (if p == "" 
-    then south_east n ++ " -- " ++ north_east (-1) n ++ " -- " ++ north n ++ " -- " 
-    else "")
-  ++
-  -- previous node deeper or equal depth
-  (if depth p tree >= depth n tree || not (nested p n tree)
-    then south p ++ " -- " ++ south_east p ++ " -- " 
-         ++ (if depth p tree > depth n tree then north_east (-1) p ++ " -- " else "")
-         ++ (if not (nested p n tree) then south_west n ++ " -- " else "") 
-    else
-    (if depth p tree < depth n tree
-      then north_west (-1) n ++ " -- " ++ south_west n ++ " -- "
-      else south n ++ " -- "))
-  ++ renderHighlight_ tree n ns
+  "\\draw [rounded corners=1.5mm] " ++ style highlight ++ " " ++ 
+  -- root
+  south_east root ++ " -- " ++ north_east root ++ " -- " ++ north root ++ " -- " ++
+  -- remaining path
+  renderHighlight_ tree (up_down tree $ nodes highlight) 
+
+renderHighlight_ tree [] = "cycle;"
+--south p ++ " -- " ++ south_east p ++ " -- " ++ north_east p ++ " -- cycle;"
+renderHighlight_ tree ((d1,(n,(d2,nn))):ns) =
+  (case d1 of
+     Down -> north_west n ++ " -- " ++ south_west n ++ " -- " ++
+             case d2 of
+               Down -> ""
+               Eq   -> south n ++ " -- " ++ south_east n ++ " -- "
+               Up   -> south n ++ " -- " ++ south_east n ++ " -- " ++ north_east n ++ " -- "
+             ++ on_way_left n nn ++ " -- " ++ on_way_right nn n ++ " -- "
+     Eq   -> south_west n ++ " -- " ++
+             case d2 of
+               Down -> ""
+               Eq   -> south n ++ " -- " ++ south_east n ++ " -- "
+               Up   -> south n ++ " -- " ++ south_east n ++ " -- " ++ north_east n ++ " -- "
+             ++ on_way_left n nn ++ " -- " ++ on_way_right nn n ++ " -- "
+     Up   -> case d2 of
+               Down -> ""
+               Eq   -> south_east n ++ " -- "
+               Up   -> south_east n ++ " -- " ++ north_east n ++ " -- "
+             ++ on_way_left n nn ++ " -- " ++ on_way_right nn n ++ " -- "
+  ) ++ renderHighlight_ tree ns
+
+-- || not (nested p n tree)
 
 --------------------------------------------------------------------------------
 -- Parsing the input language
