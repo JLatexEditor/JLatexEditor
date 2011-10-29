@@ -1,5 +1,5 @@
 
-module Main where
+module Trees where
 
 import IO hiding (try)
 import System.Environment
@@ -11,7 +11,7 @@ import qualified Data.Map as Map
 
 import Text.ParserCombinators.Parsec as P
 import qualified Text.ParserCombinators.Parsec.Token as T
-import Text.ParserCombinators.Parsec.Language( javaStyle )
+import Text.ParserCombinators.Parsec.Language( javaStyle, emptyDef )
 import Text.ParserCombinators.Parsec.Error hiding (Message)
 
 import Debug.Trace
@@ -32,15 +32,18 @@ data Highlight = Highlight {
 
 main :: IO ()
 main = do args <- getArgs
-          case Main.parse (args !! 0) of
-            Left errors -> hPutStrLn stderr $ show errors
-            Right (term,highlights) -> do 
-               hPutStrLn stdout $ renderTerm term
-               hPutStr stdout $ "\\begin{pgfonlayer}{background}"
-               hPutStrLn stdout $ concat $ map (\h -> 
-                 -- "\n  " ++ intersections (nodes h) ++
-                 "\n  " ++ renderHighlight term h) highlights
-               hPutStrLn stdout $ "\\end{pgfonlayer}"
+          tree $ args !! 0
+
+tree string = 
+    case Trees.parse string of
+      Left errors -> hPutStrLn stderr $ show errors
+      Right (term,highlights) -> do 
+        hPutStrLn stdout $ renderTerm term
+        hPutStr stdout $ "\\begin{pgfonlayer}{background}"
+        hPutStrLn stdout $ concat $ map (\h -> 
+          -- "\n  " ++ intersections (nodes h) ++
+          "\n  " ++ renderHighlight term h) highlights
+        hPutStrLn stdout $ "\\end{pgfonlayer}"
 
 renderTerm :: Term -> String
 renderTerm term = "\\" ++ renderTerm_ term ++ ";"
@@ -129,9 +132,9 @@ replace s r string
   | otherwise                   = (head string) : (replace s r $ tail string)
 
 lexer :: T.TokenParser ()
-lexer  = T.makeTokenParser (javaStyle { T.reservedOpNames = [] })
+lexer  = T.makeTokenParser emptyDef -- (javaStyle { T.reservedOpNames = [], T.reservedNames = [] })
 
-delimiters    = [' ',',','.',':',';','(',')','[',']','=','\n']
+delimiters    = [' ',',','.',':',';','(',')','{','}','[',']','=','\n']
 whiteSpace    = T.whiteSpace lexer
 lexeme        = T.lexeme lexer
 symbol        = T.symbol lexer
@@ -142,17 +145,25 @@ comma         = T.comma lexer
 commaSep      = T.commaSep lexer
 colon         = T.colon lexer
 constant c    = lexeme (P.string c)
+stringLiteral = T.stringLiteral lexer
 
 identifier :: Parser String
-identifier = do
+identifier = stringLiteral <|> escapedIdentifier <|> do
   string <- lexeme $ many1 $ noneOf delimiters
   return $ escape string
+
+escapedIdentifier :: Parser String
+escapedIdentifier = do
+  constant "{"
+  strings <- many ((many1 $ noneOf "{}") <|> (do s <- escapedIdentifier; return $ "{" ++ s ++ "}"))
+  constant "}"
+  return $ concat strings
 
 -------------------------------------------------------------------------------
 -- Parsing
 -------------------------------------------------------------------------------
 
-getName name = foldr (\c s -> replace c "" s) name ["(",")","[","]","{","}","\\"]  
+getName name = foldr (\c s -> replace c "" s) name ["(",")","[","]","{","}","\\","$"]  
 
 parseInput :: Parser  (Term,[Highlight])
 parseInput = do
@@ -165,7 +176,7 @@ parseTerm = do
   pbc <- parseOption
   pac <- parseOption
   root <- identifier
-  name <- (try $ do constant ":"; n <- identifier; return n) <|> return (getName root)
+  name <- (try $ do constant "@"; n <- identifier; return n) <|> return (getName root)
   pn <- parseOption
   subterms <- try (parens $ sepBy parseTerm (constant ",")) <|> return []
   return $ Term { root = root

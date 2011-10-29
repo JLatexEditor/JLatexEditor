@@ -1,14 +1,17 @@
 package jlatexeditor.codehelper;
 
+import de.endrullis.utils.ProgramUpdater;
 import sce.codehelper.CodeAssistant;
 import sce.codehelper.PatternPair;
 import sce.codehelper.SCEPopup;
 import sce.codehelper.WordWithPos;
 import sce.component.*;
+import util.FileUtil;
+import util.ProcessOutput;
+import util.ProcessUtil;
 import util.SpellChecker;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +20,7 @@ import java.util.List;
  */
 public class ScriptingSupport implements CodeAssistant {
   private String genericBegin = "%!begin{";
-  private String[] languages = new String [] {"haskell"};
+  private String[] languages = new String [] {"haskell", "tree"};
 
 	public ScriptingSupport() {
 	}
@@ -113,10 +116,52 @@ public class ScriptingSupport implements CodeAssistant {
       endRow = codeEnd+1;
     }
 
-    File[] files = new File("./scripting/" + language).listFiles();
-    for(File file : files) {
-      if(file.getName().startsWith(".")) continue;
-      System.err.println(file);
+    try {
+      File scriptDir = FileUtil.createTempDirectory("script");
+      scriptDir.deleteOnExit();
+
+      String libDir = language;
+      if(language.equals("tree")) libDir = "haskell";
+
+      File[] files = new File("./scripting/" + libDir).listFiles();
+      for(File file : files) {
+        if(file.getName().startsWith(".")) continue;
+        if(!file.isFile()) continue;
+
+        FileUtil.copyFile(file, new File(scriptDir, file.getName()));
+      }
+
+      String output = "";
+
+      StringBuilder contentBuilder = new StringBuilder();
+      for(int rowNr = startRow+1; rowNr <= codeEnd; rowNr++) {
+        contentBuilder.append(rows.getRowAsString(rowNr).trim().substring(1));
+      }
+      String content = contentBuilder.toString();
+
+      if(language.equals("haskell") || language.equals("tree")) {
+        String sourceName = "Main.hs";
+        String executableName = "Main";
+
+        PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(new File(scriptDir, sourceName), true)));
+        if(language.equals("haskell")) {
+          writer.println(content);
+        } else {
+          writer.println("main = tree \"" + content.replace('\n', ' ').replaceAll("\"", "\\\"") + "\"");
+          System.err.println(scriptDir);
+        }
+        writer.close();
+
+        ProcessUtil.execAndWait(new String[]{"ghc", "--make", sourceName}, scriptDir);
+        ProcessOutput result = ProcessUtil.execAndWait(new String[] {"./" + executableName}, scriptDir);
+        output = result.getStdout();
+      }
+
+      pane.getDocument().replace(codeEnd+1,0,endRow,0, output + "\n");
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+
+    caret.moveTo(caretPos, false);
   }
 }

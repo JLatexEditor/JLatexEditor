@@ -32,6 +32,10 @@ public class StreamUtils {
     return outputStream.toByteArray();
   }
 
+  public static String readInputStream(InputStream in) throws IOException {
+    return new String(readBytesFromInputStream(in));
+  }
+
   /**
    * Reads the contents of the file.
    *

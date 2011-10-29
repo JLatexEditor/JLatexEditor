@@ -4,6 +4,7 @@ import de.endrullis.utils.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -41,6 +42,20 @@ public class ProcessUtil {
     return exec(command, dir, null);
   }
 
+  public static ProcessOutput execAndWait(String command[], File dir) throws IOException {
+    Process process = exec(command, dir);
+
+    // empty the error stream to prevent blocking
+    ErrorReader errorReader = new ErrorReader(process.getErrorStream());
+    errorReader.start();
+
+    String stdout = StreamUtils.readInputStream(process.getInputStream());
+    errorReader.waitFor();
+    String stderr = errorReader.getError();
+
+    return new ProcessOutput(stdout, stderr);
+  }
+
   public static Process exec(String command, File dir) throws IOException {
 		ArrayList<String> list = StringUtils.tokenize(command);
 		String[] array = new String[list.size()];
@@ -48,4 +63,39 @@ public class ProcessUtil {
 
 	  return exec(array, dir);
 	}
+
+  /**
+   * Tread reading an error stream.
+   */
+  public static class ErrorReader extends Thread {
+    private InputStream err;
+    private String error = null;
+
+    private ErrorReader(InputStream err) {
+      this.err = err;
+    }
+
+    public void run() {
+      try {
+        error = StreamUtils. readInputStream(err);
+      } catch (IOException e) {
+        error = "";
+        notifyAll();
+      }
+    }
+
+    public String getError() {
+      return error;
+    }
+
+    public void waitFor() {
+      while(error == null) {
+        synchronized (this) {
+          try {
+            wait(500);
+          } catch (InterruptedException e) {}
+        }
+      }
+    }
+  }
 }
