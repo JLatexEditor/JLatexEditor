@@ -42,7 +42,7 @@ public class ProcessUtil {
     return exec(command, dir, null);
   }
 
-  public static ProcessOutput execAndWait(String command[], File dir) throws IOException {
+  public static ProcessOutput execAndWait(String command[], File dir) throws IOException, InterruptedException {
     Process process = exec(command, dir);
 
     // empty the error stream to prevent blocking
@@ -53,7 +53,9 @@ public class ProcessUtil {
     errorReader.waitFor();
     String stderr = errorReader.getError();
 
-    return new ProcessOutput(stdout, stderr);
+	  int returnCode = process.waitFor();
+
+    return new ProcessOutput(returnCode, stdout, stderr);
   }
 
   public static Process exec(String command, File dir) throws IOException {

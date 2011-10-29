@@ -4,15 +4,21 @@ package util;
  * Stdout and stderr of a process.
  */
 public class ProcessOutput {
-  private String stdout;
+	private int returnCode;
+	private String stdout;
   private String stderr;
 
-  public ProcessOutput(String stdout, String stderr) {
-    this.stdout = stdout;
+  public ProcessOutput(int returnCode, String stdout, String stderr) {
+	  this.returnCode = returnCode;
+	  this.stdout = stdout;
     this.stderr = stderr;
   }
 
-  public String getStdout() {
+	public int getReturnCode() {
+		return returnCode;
+	}
+
+	public String getStdout() {
     return stdout;
   }
 

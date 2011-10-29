@@ -153,8 +153,13 @@ public class ScriptingSupport implements CodeAssistant {
         writer.close();
 
 	      try {
-	        ProcessUtil.execAndWait(new String[]{"ghc", "--make", sourceName}, scriptDir);
-	        ProcessOutput result = ProcessUtil.execAndWait(new String[] {"./" + executableName}, scriptDir);
+		      ProcessOutput processOutput = ProcessUtil.execAndWait(new String[]{"ghc", "--make", sourceName}, scriptDir);
+		      if (processOutput.getReturnCode() > 0) {
+			      System.out.println(processOutput.getStderr());
+			      JOptionPane.showMessageDialog(null, processOutput.getStderr().trim(), "GHC error", JOptionPane.ERROR_MESSAGE);
+			      throw new IOException("GHC error");
+		      }
+		      ProcessOutput result = ProcessUtil.execAndWait(new String[] {"./" + executableName}, scriptDir);
 	        output = result.getStdout();
 	      } catch (IOException e1) {
 		      if (e1.getMessage().startsWith("Cannot run program")) {
@@ -167,6 +172,7 @@ public class ScriptingSupport implements CodeAssistant {
       pane.getDocument().replace(codeEnd+1,0,endRow,0, output + "\n");
     } catch (IOException e) {
 	    e.printStackTrace();
+    } catch (InterruptedException ignored) {
     }
 
     caret.moveTo(caretPos, false);
