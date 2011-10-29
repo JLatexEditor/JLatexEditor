@@ -4,6 +4,7 @@ import my.XML.XMLDocument;
 import my.XML.XMLElement;
 import my.XML.XMLException;
 import my.XML.XMLParser;
+import util.FileUtil;
 import util.ProcessUtil;
 import util.StreamUtils;
 import util.SystemUtils;
@@ -96,7 +97,7 @@ public class ProgramUpdater extends JFrame implements ActionListener {
    */
   public boolean performUpdate(boolean confirmation) throws IOException {
     // create update dir
-    updateDir = createTempDirectory("update");
+    updateDir = FileUtil.createTempDirectory("update");
 
     setAlwaysOnTop(true);
     setVisible(true);
@@ -334,21 +335,5 @@ public class ProgramUpdater extends JFrame implements ActionListener {
       if (out != null) out.close();
     } catch (IOException ignored) {
     }
-  }
-
-  /**
-   * Creates a temporary directory.
-   */
-  public static File createTempDirectory(String prefix) throws IOException {
-    File file = File.createTempFile(prefix, Long.toString(System.nanoTime()));
-    File dir = new File(file.getAbsolutePath() + ".d");
-    dir.deleteOnExit();
-    file.delete();
-
-    if(!dir.mkdir()) {
-      throw new IOException("Failed to create temporary directory: " + dir.getAbsolutePath());
-    }
-
-    return dir;
   }
 }
