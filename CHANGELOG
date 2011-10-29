@@ -6,6 +6,12 @@ New Features and other Changes in JLatexEditor
 # set "show_new_features" in global settings to "false".
 
 
+== Version 0.2.5 ==
+
+* bug fixes:
+  - fixed Linux updater
+
+
 == Version 0.2.4 ==
 
 * bug fixes:
