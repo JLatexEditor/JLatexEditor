@@ -261,7 +261,8 @@
 				package="${program.cname}"
 				section="tex"
 				depends="sun-java6-jre | openjdk-6-jre | sun-java7-jre | openjdk-7-jre | default-jre, texlive-base-bin, texlive-latex-base"
-				recommends="subversion, aspell | hunspell">
+				recommends="subversion, aspell | hunspell"
+				suggests="ghc6">
 
 			<version upstream="${jle.version}.${build.number}"/>
 			<maintainer name="Stefan Endrullis" email="stefan@endrullis.de"/>
