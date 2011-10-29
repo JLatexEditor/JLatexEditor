@@ -225,6 +225,8 @@ public class GProperties {
     properties.addEntry(new Def("shortcut.remove word behind caret", SHORTCUT, "control DELETE"));
     properties.addEntry(new Def("shortcut.complete", SHORTCUT, "control SPACE"));
 
+    properties.addEntry(new Def("shortcut.bibtex.move", SHORTCUT, "alt X"));
+
     properties.addEntry(new Comment(" Focus Traversal"));
     properties.addEntry(new Def("shortcut.focus traversal forward", SHORTCUT, "TAB"));
     properties.addEntry(new Def("shortcut.focus traversal backward", SHORTCUT, "shift TAB"));

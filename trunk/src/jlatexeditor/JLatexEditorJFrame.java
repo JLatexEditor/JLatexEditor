@@ -343,6 +343,8 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
     createPaneShortcut(SCEPaneUI.Actions.REMOVE_WORD_BEHIND_CARET, false);
     createPaneShortcut(SCEPaneUI.Actions.COMPLETE, false);
 
+    createPaneShortcut(SCEPaneUI.Actions.BIBTEX_MOVE, false);
+
     createPaneShortcut(SCEPaneUI.Actions.UNDO, false);
     createPaneShortcut(SCEPaneUI.Actions.REDO, false);
     createPaneShortcut(SCEPaneUI.Actions.FIND, false);
