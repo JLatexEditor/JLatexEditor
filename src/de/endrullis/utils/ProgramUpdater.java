@@ -259,11 +259,11 @@ public class ProgramUpdater extends JFrame implements ActionListener {
     // restore executable flags after download
     if(SystemUtils.isLinuxOS() || SystemUtils.isMacOS()) {
       try {
-        ProcessUtil.exec(new String[] {"chmod", "uog+x", new File(updateDir, "jlatexeditor").getAbsolutePath()}, null);
-      } catch(Throwable ignored) { }
+        ProcessUtil.exec(new String[] {"chmod", "uog+x", new File(updateDir, "jlatexeditor").getAbsolutePath()}, updateDir);
+      } catch(Throwable ignored) {
+        ignored.printStackTrace();
+      }
     }
-
-    System.err.println(updateDir);
 
     // move files in update dir to .
     if(writable) {
