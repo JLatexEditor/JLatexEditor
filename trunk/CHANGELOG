@@ -3,7 +3,7 @@ New Features and other Changes in JLatexEditor
 """"""""""""""""""""""""""""""""""""""""""""""
 
 # If you do not want to get notified about new features
-# set "show_new_features" in global properties to "false".
+# set "show_new_features" in global settings to "false".
 
 
 == Version 0.2.3 ==
@@ -39,7 +39,7 @@ New Features and other Changes in JLatexEditor
 * minor enhancements:
   - code completion popups can be used by mouse
   - improved parsing of latex output
-  - allow to set interval for svn status checks (via check_for_svn_updates.interval in global.properties)
+  - allow to set interval for svn status checks (via check_for_svn_updates.interval in global settings)
 * bug fixes:
   - "Replace All" button is no longer disabled if no occurrence is selected
 
@@ -49,7 +49,7 @@ New Features and other Changes in JLatexEditor
 * minor enhancements:
   - colored highlighting of LaTeX errors and warnings in corresponding lists
   - continuous comments
-  - shortcut for completion (control+space) can be configure in global.settings
+  - shortcut for completion (control+space) can be configure in global settings
 * bug fixes:
   - fixed error in deb package which caused exceptions in open dialog
 
