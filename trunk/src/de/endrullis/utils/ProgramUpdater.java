@@ -25,6 +25,9 @@ import java.util.HashMap;
  */
 public class ProgramUpdater extends JFrame implements ActionListener {
   public static final String VERSIONS_FILE_NAME = "versions.xml";
+
+  private File destinationDir = new File(System.getProperty("user.dir"));
+  private boolean destinationWritable = false;
   private static File updateDir = null;
 
   private JProgressBar progressBar = new JProgressBar();
@@ -72,6 +75,13 @@ public class ProgramUpdater extends JFrame implements ActionListener {
 
     pack();
     setLocationRelativeTo(null);
+
+    // test for writing rights in the destination directory
+    try {
+      File file = new File(destinationDir, "test");
+      if(file.createNewFile() || file.canWrite()) destinationWritable = true;
+      file.delete();
+    } catch (Throwable e) {}
   }
 
   /**
@@ -97,7 +107,12 @@ public class ProgramUpdater extends JFrame implements ActionListener {
    */
   public boolean performUpdate(boolean confirmation) throws IOException {
     // create update dir
-    updateDir = FileUtil.createTempDirectory("update");
+    if(destinationWritable) {
+      updateDir = new File("update");
+    } else {
+      updateDir = FileUtil.createTempDirectory("update");
+    }
+    if(!updateDir.exists()) updateDir.mkdir();
 
     setAlwaysOnTop(true);
     setVisible(true);
@@ -245,16 +260,6 @@ public class ProgramUpdater extends JFrame implements ActionListener {
   public boolean moveFiles() throws IOException {
     if (!updateDir.isDirectory()) return false;
 
-    File destinationDir = new File(System.getProperty("user.dir"));
-
-    // test for writing rights
-    boolean writable = false;
-    try {
-      File file = new File(destinationDir, "test");
-      if(file.createNewFile() || file.canWrite()) writable = true;
-      file.delete();
-    } catch (Throwable e) {}
-
     boolean success = true;
 
     // restore executable flags after download
@@ -267,7 +272,7 @@ public class ProgramUpdater extends JFrame implements ActionListener {
     }
 
     // move files in update dir to .
-    if(writable) {
+    if(destinationWritable) {
       File[] files2move = updateDir.listFiles();
       for (File file : files2move) {
         file.renameTo(new File(destinationDir, file.getName()));
