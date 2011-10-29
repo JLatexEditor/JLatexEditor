@@ -14,14 +14,17 @@ import util.SpellChecker;
 import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 /**
  * Scripting support.
  */
 public class ScriptingSupport implements CodeAssistant {
-  private String genericBegin = "%!begin{";
-  private String[] languages = new String [] {"haskell", "tree"};
+  public static final String genericBegin = "%!begin{";
+  public static final String[] languages = new String [] {"haskell", "tree"};
+  public static final HashSet<String> languagesSet = new HashSet<String>(Arrays.asList(languages));
 
 	public ScriptingSupport() {
 	}
