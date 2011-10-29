@@ -361,12 +361,18 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    * Insert text from clipboard.
    */
   public void paste() {
+    String string = getClipboardData();
+    if(string == null) return;
+    insert(string.replaceAll("\t", "  "));
+  }
+
+  public String getClipboardData() {
     Transferable content = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
     try {
-      String string = (String) content.getTransferData(DataFlavor.stringFlavor);
-	    insert(string.replaceAll("\t", "  "));
+      return (String) content.getTransferData(DataFlavor.stringFlavor);
     } catch (Exception ignored) {
     }
+    return null;
   }
 
   /**

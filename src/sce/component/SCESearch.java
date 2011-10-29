@@ -543,11 +543,13 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 	}
 
 	public void setProperties(SCESearch lastSearch) {
-		input.setText(lastSearch.input.getText());
-		replace.setText(lastSearch.replace.getText());
-		caseSensitive.setSelected(lastSearch.caseSensitive.isSelected());
-		regExp.setSelected(lastSearch.regExp.isSelected());
-		setShowReplace(lastSearch.isShowReplace());
+		if(lastSearch == null) return;
+
+    input.setText(lastSearch.input.getText());
+    replace.setText(lastSearch.replace.getText());
+    caseSensitive.setSelected(lastSearch.caseSensitive.isSelected());
+    regExp.setSelected(lastSearch.regExp.isSelected());
+    setShowReplace(lastSearch.isShowReplace());
 	}
 
 	private class UpdateThread extends Thread {

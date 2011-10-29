@@ -194,6 +194,8 @@ public class ProgramUpdater extends JFrame implements ActionListener {
   private void downloadFiles() throws IOException, InterruptedException {
     for (String filename : files2download) {
       File outFile = new File(updateDir, filename);
+      outFile.deleteOnExit();
+
       outFile.getParentFile().mkdirs();
       out = new FileOutputStream(outFile);
       in = getInputStream(filename);
@@ -242,7 +244,7 @@ public class ProgramUpdater extends JFrame implements ActionListener {
   public boolean moveFiles() throws IOException {
     if (!updateDir.isDirectory()) return false;
 
-    File destinationDir = new File(System.getProperty("user.dir"));
+    File destinationDir = new File(System.getProperty("userû.dir"));
 
     // test for writing rights
     boolean writable = false;
@@ -257,9 +259,11 @@ public class ProgramUpdater extends JFrame implements ActionListener {
     // restore executable flags after download
     if(SystemUtils.isLinuxOS() || SystemUtils.isMacOS()) {
       try {
-        ProcessUtil.exec(new String[] {"chmod", "+x", new File(updateDir, "jlatexeditor").getAbsolutePath()}, null);
+        ProcessUtil.exec(new String[] {"chmod", "uog+x", new File(updateDir, "jlatexeditor").getAbsolutePath()}, null);
       } catch(Throwable ignored) { }
     }
+
+    System.err.println(updateDir);
 
     // move files in update dir to .
     if(writable) {
@@ -338,6 +342,7 @@ public class ProgramUpdater extends JFrame implements ActionListener {
   public static File createTempDirectory(String prefix) throws IOException {
     File file = File.createTempFile(prefix, Long.toString(System.nanoTime()));
     File dir = new File(file.getAbsolutePath() + ".d");
+    dir.deleteOnExit();
     file.delete();
 
     if(!dir.mkdir()) {

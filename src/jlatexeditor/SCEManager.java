@@ -189,6 +189,7 @@ public class SCEManager {
     scePane.setLineBreakListener(new LatexLineBreakListener());
 
     try {
+      codeAssistant.addAssistant(new ScriptingSupport());
 	    codeAssistant.addAssistant(new FileCreationSuggester());
       codeAssistant.addAssistant(new PackageImportSuggester(instance));
       codeAssistant.addAssistant(new SpellCheckSuggester(createSpellChecker()));

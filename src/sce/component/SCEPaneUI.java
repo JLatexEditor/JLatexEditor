@@ -22,6 +22,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * SourceCodeEditor UI.
@@ -458,6 +460,8 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
 		public static final String REMOVE_WORD_BEHIND_CARET = "remove word behind caret";
 		public static final String COMPLETE                 = "complete";
 
+    public static final String BIBTEX_MOVE              = "bibtex.move";
+
     public static final String UNDO                     = "undo";
 		public static final String REDO                     = "redo";
 		public static final String FIND                     = "find";
@@ -519,6 +523,37 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
 			} else
       if (key.equals(COMPLETE)) {
         ui.complete();
+      } else
+      if (key.equals(BIBTEX_MOVE)) {
+        Pattern pattern = Pattern.compile("@(\\w+) *\\{ *([^ ,]+) *,");
+
+        String item = pane.getDocument().getSelectedText();
+        if(item == null) return;
+
+        Matcher matcher = pattern.matcher(item);
+        if(!matcher.find()) return;
+        String itemName = matcher.group(2);
+
+        pane.cut();
+
+        SCEDocument document = pane.getDocument();
+        SCEDocumentRow[] rows = document.getRowsModel().getRows();
+        for(SCEDocumentRow row : rows) {
+          matcher = pattern.matcher(row.toString());
+          if(matcher.find()) {
+            String type = matcher.group(1);
+            String name = matcher.group(2);
+
+            if(type.toLowerCase().trim().equals("string")) continue;
+
+            if(name.compareTo(itemName) > 0) {
+              pane.getCaret().moveTo(row.row_nr, 0, false);
+              break;
+            }
+          }
+        }
+
+        pane.paste();
       } else
       if (key.equals(UNDO)) {
         pane.getUndoManager().undo(false);
@@ -590,6 +625,7 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
 				JUMP_LEFT, JUMP_LEFT_SHIFT, JUMP_RIGHT, JUMP_RIGHT_SHIFT, JUMP_TO_FRONT, JUMP_TO_FRONT_SHIFT, JUMP_TO_END, JUMP_TO_END_SHIFT,
 				REMOVE_LINE, REMOVE_LINE_BEFORE_CARET, REMOVE_LINE_BEHIND_CARET, REMOVE_WORD_BEFORE_CARET, REMOVE_WORD_BEHIND_CARET,
 				COMPLETE,
+              BIBTEX_MOVE,
         UNDO, REDO, FIND, REPLACE, FIND_NEXT, FIND_PREVIOUS, CUT, COPY, PASTE, SELECT_ALL, SELECT_NONE, COMMENT, UNCOMMENT);
 			return am;
 		}
