@@ -244,7 +244,7 @@ public class ProgramUpdater extends JFrame implements ActionListener {
   public boolean moveFiles() throws IOException {
     if (!updateDir.isDirectory()) return false;
 
-    File destinationDir = new File(System.getProperty("userû.dir"));
+    File destinationDir = new File(System.getProperty("user.dir"));
 
     // test for writing rights
     boolean writable = false;
