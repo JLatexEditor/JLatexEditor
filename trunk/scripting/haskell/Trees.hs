@@ -97,10 +97,10 @@ up_down term nodes =
       (directions $ depths ++ [-1])
       (tail nodes ++ [head nodes])
 
-north_east n = "($(" ++ n ++ ".north east) + (.7mm,-.7mm)$)"
-north_west n = "($(" ++ n ++ ".north west) + (-.7mm,-.7mm)$)"
-south_east n = "($(" ++ n ++ ".south east) + (.7mm,.7mm)$)"
-south_west n = "($(" ++ n ++ ".south west) + (-.7mm,.7mm)$)"
+north_east n = "($(" ++ n ++ ".north east) + (.4mm,-.4mm)$)"
+north_west n = "($(" ++ n ++ ".north west) + (-.4mm,-.4mm)$)"
+south_east n = "($(" ++ n ++ ".south east) + (.4mm,.4mm)$)"
+south_west n = "($(" ++ n ++ ".south west) + (-.4mm,.4mm)$)"
 south n = "($(" ++ n ++ ".south) + (0mm,-1mm)$)"
 north n = "($(" ++ n ++ ".north) + (0mm,1mm)$)"
 west n = "($(" ++ n ++ ".west) + (-1mm,0mm)$)"
