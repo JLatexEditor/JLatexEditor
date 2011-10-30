@@ -59,6 +59,13 @@ depth n term
   | n == name term = 0
   | otherwise      = 1 + minimum (999 : map (depth n) (subterms term))
 
+depth_lr :: String -> Term -> Int
+depth_lr n term
+  | n == ""        = 0
+  | n == name term = 0
+  | otherwise      = 
+      minimum (999 : map (\(i,t) -> depth_lr n t + (2*i - 1 - (length $ subterms term))) (zip [1..] (subterms term)))
+
 occurs n term 
   | n == name term = True
   | otherwise      = or $ map (occurs n) (subterms term)   
@@ -69,19 +76,26 @@ nested n m term
   | m == name term = occurs n term
   | otherwise      = or $ map (nested n m) (subterms term)   
 
-data Direction = Up | Eq | Down
+data Direction = Dec | Eq | Inc
 
 directions :: [Int] -> [Direction]
 directions (a:b:xs)
-  | a < b = Down : directions (b:xs)
-  | a > b = Up : directions (b:xs)
+  | a < b = Inc : directions (b:xs)
+  | a > b = Dec : directions (b:xs)
   | otherwise = Eq : directions (b:xs)
 directions _ = []
 
-up_down :: Term -> [String] -> [(Direction,(String,(Direction,String)))]
+up_down :: Term -> [String] -> [(String,Direction,String,Direction,String)]
 up_down term nodes =
   let depths = map (\n -> depth n term) nodes
-  in zip (directions $ (-1):depths) $ zip nodes $ zip (directions $ depths ++ [-1]) $ (tail nodes ++ [head nodes])
+      zip5 (a:as) (b:bs) (c:cs) (d:ds) (e:es) = (a,b,c,d,e) : zip5 as bs cs ds es
+      zip5 _ _ _ _ _ = [] 
+  in zip5 
+      ("" : nodes)
+      (directions $ (-1):depths)
+      nodes
+      (directions $ depths ++ [-1])
+      (tail nodes ++ [head nodes])
 
 north_east n = "($(" ++ n ++ ".north east) + (.7mm,-.7mm)$)"
 north_west n = "($(" ++ n ++ ".north west) + (-.7mm,-.7mm)$)"
@@ -89,39 +103,58 @@ south_east n = "($(" ++ n ++ ".south east) + (.7mm,.7mm)$)"
 south_west n = "($(" ++ n ++ ".south west) + (-.7mm,.7mm)$)"
 south n = "($(" ++ n ++ ".south) + (0mm,-1mm)$)"
 north n = "($(" ++ n ++ ".north) + (0mm,1mm)$)"
+west n = "($(" ++ n ++ ".west) + (-1mm,0mm)$)"
+east n = "($(" ++ n ++ ".east) + (1mm,0mm)$)"
 on_way_left p n = "($(" ++ p ++ ") !.15! 270:(" ++ n ++ ") !.4! (" ++ n ++ ")$)"
 on_way_right p n = "($(" ++ p ++ ") !.15! 90:(" ++ n ++ ") !.4! (" ++ n ++ ")$)"
 
 renderHighlight :: Term -> Highlight -> String
 renderHighlight tree highlight =
   let root = head $ nodes highlight
+      lst = last $ nodes highlight
   in
   "\\draw [rounded corners=1.5mm] " ++ style highlight ++ " " ++ 
   -- root
-  south_east root ++ " -- " ++ north_east root ++ " -- " ++ north root ++ " -- " ++
+  (if depth_lr lst tree <= depth_lr root tree 
+   then south_east root ++ " -- " 
+   else east root ++ " -- ") ++
+  north_east root ++ " -- " ++ north root ++ " -- " ++
   -- remaining path
   renderHighlight_ tree (up_down tree $ nodes highlight) 
 
 renderHighlight_ tree [] = "cycle;"
---south p ++ " -- " ++ south_east p ++ " -- " ++ north_east p ++ " -- cycle;"
-renderHighlight_ tree ((d1,(n,(d2,nn))):ns) =
+renderHighlight_ tree ((pn,d1,n,d2,nn):ns) =
   (case d1 of
-     Down -> north_west n ++ " -- " ++ south_west n ++ " -- " ++
+     Inc ->  (if depth_lr pn tree >= depth_lr n tree 
+               then north_west n ++ " -- " 
+               else west n ++ " -- ") ++
              case d2 of
-               Down -> ""
-               Eq   -> south n ++ " -- " ++ south_east n ++ " -- "
-               Up   -> south n ++ " -- " ++ south_east n ++ " -- " ++ north_east n ++ " -- "
+               Inc -> if depth_lr nn tree >= depth_lr n tree 
+                      then south_west n ++ " -- "
+                      else if depth_lr pn tree >= depth_lr n tree 
+                           then west n ++ " -- "
+                           else ""
+               Eq   -> south_west n ++ " -- " ++ south n ++ " -- " ++ south_east n ++ " -- "
+               Dec   -> south_west n ++ " -- " ++ south n ++ " -- " ++ south_east n ++ " -- " ++ 
+                        if depth_lr n tree >= depth_lr nn tree 
+                        then north_east n ++ " -- "
+                        else ""
              ++ on_way_left n nn ++ " -- " ++ on_way_right nn n ++ " -- "
-     Eq   -> south_west n ++ " -- " ++
+     Eq  ->  south_west n ++ " -- " ++
              case d2 of
-               Down -> ""
+               Inc -> ""
                Eq   -> south n ++ " -- " ++ south_east n ++ " -- "
-               Up   -> south n ++ " -- " ++ south_east n ++ " -- " ++ north_east n ++ " -- "
+               Dec   -> south n ++ " -- " ++ south_east n ++ " -- " ++ north_east n ++ " -- "
              ++ on_way_left n nn ++ " -- " ++ on_way_right nn n ++ " -- "
-     Up   -> case d2 of
-               Down -> ""
-               Eq   -> south_east n ++ " -- "
-               Up   -> south_east n ++ " -- " ++ north_east n ++ " -- "
+     Dec ->  case d2 of
+               Inc -> ""
+               Eq  -> south_east n ++ " -- "
+               Dec -> if depth_lr pn tree <= depth_lr n tree 
+                      then south_east n ++ " -- "
+                      else east n ++ " -- " ++
+                           if depth_lr n tree >= depth_lr nn tree 
+                           then north_east n ++ " -- "
+                           else ""
              ++ on_way_left n nn ++ " -- " ++ on_way_right nn n ++ " -- "
   ) ++ renderHighlight_ tree ns
 
