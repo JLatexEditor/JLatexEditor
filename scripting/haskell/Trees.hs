@@ -30,6 +30,16 @@ data Highlight = Highlight {
   , style :: String
 } deriving (Eq, Show)
 
+data Config = Config {
+    node_sep :: Double
+  , edge_sep :: Double
+} deriving (Eq, Show)
+
+defaultConfig = Config {
+    node_sep = 0.5
+  , edge_sep = 0.2
+}
+
 main :: IO ()
 main = do args <- getArgs
           tree $ args !! 0
@@ -37,11 +47,11 @@ main = do args <- getArgs
 tree string = 
     case Trees.parse string of
       Left errors -> hPutStrLn stderr $ show errors
-      Right (term,highlights) -> do 
+      Right (config,term,highlights) -> do 
         hPutStrLn stdout $ renderTerm term
         hPutStr stdout $ "\\begin{pgfonlayer}{background}"
         hPutStrLn stdout $ concat $ map (\h -> 
-          "\n  " ++ renderHighlight term h) highlights
+          "\n  " ++ renderHighlight config term h) highlights
         hPutStrLn stdout $ "\\end{pgfonlayer}"
 
 renderTerm :: Term -> String
@@ -50,7 +60,7 @@ renderTerm term = "\\" ++ renderTerm_ term ++ ";"
 renderTerm_ term =
   "node" ++ propNode term ++ " (" ++ name term ++ ") {" ++ root term ++ "}" ++
   (replace "\n" "\n  " $ 
-    concat $ map (\child -> "\n  " ++ propBeforeChild term ++ "child" ++ propAfterChild term ++ 
+    concat $ map (\child -> "\n  " ++ propBeforeChild child ++ "child" ++ propAfterChild child ++ 
                             " { " ++ renderTerm_ child ++ "\n}") $ subterms term)
 
 depth :: String -> Term -> Int
@@ -97,66 +107,72 @@ up_down term nodes =
       (directions $ depths ++ [-1])
       (tail nodes ++ [head nodes])
 
-north_east n = "($(" ++ n ++ ".north east) + (.4mm,-.4mm)$)"
-north_west n = "($(" ++ n ++ ".north west) + (-.4mm,-.4mm)$)"
-south_east n = "($(" ++ n ++ ".south east) + (.4mm,.4mm)$)"
-south_west n = "($(" ++ n ++ ".south west) + (-.4mm,.4mm)$)"
-south n = "($(" ++ n ++ ".south) + (0mm,-1mm)$)"
-north n = "($(" ++ n ++ ".north) + (0mm,1mm)$)"
-west n = "($(" ++ n ++ ".west) + (-1mm,0mm)$)"
-east n = "($(" ++ n ++ ".east) + (1mm,0mm)$)"
-on_way_left p n = "($(" ++ p ++ ") !.15! 270:(" ++ n ++ ") !.4! (" ++ n ++ ")$)"
-on_way_right p n = "($(" ++ p ++ ") !.15! 90:(" ++ n ++ ") !.4! (" ++ n ++ ")$)"
+north_east c n = "($(" ++ n ++ ".north east) + " ++ (show $ node_sep c) ++ "*(.4mm,.4mm)$)"
+north_west c n = "($(" ++ n ++ ".north west) + " ++ (show $ node_sep c) ++ "*(-.4mm,.4mm)$)"
+south_east c n = "($(" ++ n ++ ".south east) + " ++ (show $ node_sep c) ++ "*(.4mm,-.4mm)$)"
+south_west c n = "($(" ++ n ++ ".south west) + " ++ (show $ node_sep c) ++ "*(-.4mm,-.4mm)$)"
+south c n = "($(" ++ n ++ ".south) + " ++ (show $ node_sep c) ++ "*(0mm,-1mm)$)"
+north c n = "($(" ++ n ++ ".north) + " ++ (show $ node_sep c) ++ "*(0mm,1mm)$)"
+west c n = "($(" ++ n ++ ".west) + " ++ (show $ node_sep c) ++ "*(-1mm,0mm)$)"
+east c n = "($(" ++ n ++ ".east) + " ++ (show $ node_sep c) ++ "*(1mm,0mm)$)"
+on_way_left c p n = "($(" ++ p ++ ") !" ++ (show $ edge_sep c) ++ "! 270:(" ++ n ++ ") !.4! (" ++ n ++ ")$)"
+on_way_right c p n = "($(" ++ p ++ ") !" ++ (show $ edge_sep c) ++ "! 90:(" ++ n ++ ") !.4! (" ++ n ++ ")$)"
 
-renderHighlight :: Term -> Highlight -> String
-renderHighlight tree highlight =
+renderHighlight :: Config -> Term -> Highlight -> String
+renderHighlight c tree highlight =
   let root = head $ nodes highlight
       lst = last $ nodes highlight
   in
   "\\draw [rounded corners=1.5mm] " ++ style highlight ++ " " ++ 
   -- root
   (if depth_lr lst tree <= depth_lr root tree 
-   then south_east root ++ " -- " 
-   else east root ++ " -- ") ++
-  north_east root ++ " -- " ++ north root ++ " -- " ++
+   then south_east c root ++ " -- " 
+   else east c root ++ " -- ") ++
+  north_east c root ++ " -- " ++ north c root ++ " -- " ++
   -- remaining path
-  renderHighlight_ tree (up_down tree $ nodes highlight) 
+  renderHighlight_ c tree (up_down tree $ nodes highlight) 
 
-renderHighlight_ tree [] = "cycle;"
-renderHighlight_ tree ((pn,d1,n,d2,nn):ns) =
+renderHighlight_ c tree [] = "cycle;"
+renderHighlight_ c tree ((pn,d1,n,d2,nn):ns) =
   (case d1 of
      Inc ->  (if depth_lr pn tree >= depth_lr n tree 
-               then north_west n ++ " -- " 
-               else west n ++ " -- ") ++
+               then north_west c n ++ " -- " 
+               else west c n ++ " -- ") ++
              case d2 of
                Inc -> if depth_lr nn tree >= depth_lr n tree 
-                      then south_west n ++ " -- "
+                      then south_west c n ++ " -- "
                       else if depth_lr pn tree >= depth_lr n tree 
-                           then west n ++ " -- "
+                           then west c n ++ " -- "
                            else ""
-               Eq   -> south_west n ++ " -- " ++ south n ++ " -- " ++ south_east n ++ " -- "
-               Dec   -> south_west n ++ " -- " ++ south n ++ " -- " ++ south_east n ++ " -- " ++ 
-                        if depth_lr n tree >= depth_lr nn tree 
-                        then north_east n ++ " -- "
-                        else ""
-             ++ on_way_left n nn ++ " -- " ++ on_way_right nn n ++ " -- "
-     Eq  ->  south_west n ++ " -- " ++
+               Eq  -> south_west c n ++ " -- " ++ south c n ++ " -- " ++ south_east c n ++ " -- "
+               Dec -> south_west c n ++ " -- " ++ south c n ++ " -- " ++ south_east c n ++ " -- " ++ 
+                      if depth_lr n tree >= depth_lr nn tree 
+                      then north_east c n ++ " -- "
+                      else ""
+             ++ on_way_left c n nn ++ " -- " ++ on_way_right c nn n ++ " -- "
+     Eq  ->  south_west c n ++ " -- " ++
              case d2 of
                Inc -> ""
-               Eq   -> south n ++ " -- " ++ south_east n ++ " -- "
-               Dec   -> south n ++ " -- " ++ south_east n ++ " -- " ++ north_east n ++ " -- "
-             ++ on_way_left n nn ++ " -- " ++ on_way_right nn n ++ " -- "
+               Eq  -> south c n ++ " -- " ++ south_east c n ++ " -- "
+               Dec -> south c n ++ " -- " ++ south_east c n ++ " -- " ++ 
+                      if depth_lr n tree >= depth_lr nn tree 
+                      then north_east c n ++ " -- "
+                      else east c n ++ " -- "
+             ++ on_way_left c n nn ++ " -- " ++ on_way_right c nn n ++ " -- "
      Dec ->  case d2 of
                Inc -> ""
-               Eq  -> south_east n ++ " -- "
+               Eq  -> south_east c n ++ " -- "
                Dec -> if depth_lr pn tree <= depth_lr n tree 
-                      then south_east n ++ " -- "
-                      else east n ++ " -- " ++
+                      then south_east c n ++ " -- " ++
                            if depth_lr n tree >= depth_lr nn tree 
-                           then north_east n ++ " -- "
+                           then north_east c n ++ " -- "
+                           else east c n ++ " -- "
+                      else east c n ++ " -- " ++
+                           if depth_lr n tree >= depth_lr nn tree 
+                           then north_east c n ++ " -- "
                            else ""
-             ++ on_way_left n nn ++ " -- " ++ on_way_right nn n ++ " -- "
-  ) ++ renderHighlight_ tree ns
+             ++ on_way_left c n nn ++ " -- " ++ on_way_right c nn n ++ " -- "
+  ) ++ renderHighlight_ c tree ns
 
 -- || not (nested p n tree)
 
@@ -183,6 +199,7 @@ whiteSpace    = T.whiteSpace lexer
 lexeme        = T.lexeme lexer
 symbol        = T.symbol lexer
 natural       = T.natural lexer
+float         = T.float lexer
 parens        = T.parens lexer
 semi          = T.semi lexer
 comma         = T.comma lexer
@@ -209,19 +226,20 @@ escapedIdentifier = do
 
 getName name = foldr (\c s -> replace c "" s) name ["(",")","[","]","{","}","\\","$"]  
 
-parseInput :: Parser  (Term,[Highlight])
+parseInput :: Parser (Config,Term,[Highlight])
 parseInput = do
   whiteSpace
+  config <- parseConfig <|> return defaultConfig
   term <- parseTerm
   highlights <- many parseHighlight
-  return (term,highlights)
+  return (config,term,highlights)
   
 parseTerm :: Parser Term
 parseTerm = do
   pbc <- parseOption
   pac <- parseOption
   root <- identifier
-  name <- (try $ do constant "@"; n <- identifier; return n) <|> return (getName root)
+  name <- (try $ do constant ":"; n <- identifier; return n) <|> return (getName root)
   pn <- parseOption
   subterms <- try (parens $ sepBy parseTerm (constant ",")) <|> return []
   return $ Term { root = root
@@ -242,3 +260,20 @@ parseHighlight = do
   style <- parseOption
   nodes <- parens $ sepBy identifier (constant ",")
   return $ Highlight { nodes = nodes, style = style }
+
+parseConfig :: Parser Config
+parseConfig = do
+  constant "<"
+  options <- sepBy parseConfigOption (constant ",")
+  constant ">"
+  return $ foldr (\(n,v) c -> case n of
+                                  "node_sep" -> c { node_sep = v }
+                                  "edge_sep" -> c { edge_sep = v }
+                                  otherwise  -> c) defaultConfig options
+
+parseConfigOption :: Parser (String,Double)
+parseConfigOption = do
+  name <- identifier
+  constant "="
+  value <- float
+  return (name,value)
