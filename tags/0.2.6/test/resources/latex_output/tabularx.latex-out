@@ -1,0 +1,179 @@
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian)
+entering extended mode
+(./main.tex
+LaTeX2e <2009/09/24>
+Babel <v3.8l> and hyphenation patterns for english, usenglishmax, dumylang, noh
+yphenation, farsi, arabic, croatian, bulgarian, ukrainian, russian, czech, slov
+ak, danish, dutch, finnish, french, basque, ngerman, german, german-x-2009-06-1
+9, ngerman-x-2009-06-19, ibycus, monogreek, greek, ancientgreek, hungarian, san
+skrit, italian, latin, latvian, lithuanian, mongolian2a, mongolian, bokmal, nyn
+orsk, romanian, irish, coptic, serbian, turkish, welsh, esperanto, uppersorbian
+, estonian, indonesian, interlingua, icelandic, kurmanji, slovenian, polish, po
+rtuguese, spanish, galician, catalan, swedish, ukenglish, pinyin, loaded.
+(/usr/share/texmf-texlive/tex/latex/base/article.cls
+Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
+(/usr/share/texmf-texlive/tex/latex/base/size10.clo))
+(/usr/share/texmf-texlive/tex/latex/tools/tabularx.sty
+(/usr/share/texmf-texlive/tex/latex/tools/array.sty))
+(/usr/share/texmf/tex/latex/xcolor/xcolor.sty
+(/etc/texmf/tex/latex/config/color.cfg)
+(/usr/share/texmf-texlive/tex/latex/pdftex-def/pdftex.def)) (./main.aux)
+(/usr/share/texmf/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+)
+./main.tex:22: Undefined control sequence.
+<recently read> \rowcolor 
+                          
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+<template> ...\hskip 1sp\d@llarbegin \columncolor 
+                                                  {lightgray}\ignorespaces 
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+\@preamble ...ength \hsize {2\hsize }\columncolor 
+                                                  {lightgray}\ignorespaces \...
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+<recently read> \rowcolor 
+                          
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+<template> ...\hskip 1sp\d@llarbegin \columncolor 
+                                                  {lightgray}\ignorespaces 
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+\@preamble ...ength \hsize {2\hsize }\columncolor 
+                                                  {lightgray}\ignorespaces \...
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+<recently read> \rowcolor 
+                          
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+<template> ...\hskip 1sp\d@llarbegin \columncolor 
+                                                  {lightgray}\ignorespaces 
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+\@preamble ...ength \hsize {2\hsize }\columncolor 
+                                                  {lightgray}\ignorespaces \...
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+<recently read> \rowcolor 
+                          
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+<template> ...\hskip 1sp\d@llarbegin \columncolor 
+                                                  {lightgray}\ignorespaces 
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+\@preamble ...ength \hsize {2\hsize }\columncolor 
+                                                  {lightgray}\ignorespaces \...
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+<recently read> \rowcolor 
+                          
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+<template> ...\hskip 1sp\d@llarbegin \columncolor 
+                                                  {lightgray}\ignorespaces 
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+\@preamble ...ength \hsize {2\hsize }\columncolor 
+                                                  {lightgray}\ignorespaces \...
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+<recently read> \rowcolor 
+                          
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+<template> ...\hskip 1sp\d@llarbegin \columncolor 
+                                                  {lightgray}\ignorespaces 
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+\@preamble ...ength \hsize {2\hsize }\columncolor 
+                                                  {lightgray}\ignorespaces \...
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+<recently read> \rowcolor 
+                          
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+<template> ...\hskip 1sp\d@llarbegin \columncolor 
+                                                  {lightgray}\ignorespaces 
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+\@preamble ...ength \hsize {2\hsize }\columncolor 
+                                                  {lightgray}\ignorespaces \...
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+<recently read> \rowcolor 
+                          
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+<template> ...\hskip 1sp\d@llarbegin \columncolor 
+                                                  {lightgray}\ignorespaces 
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+\@preamble ...ength \hsize {2\hsize }\columncolor 
+                                                  {lightgray}\ignorespaces \...
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+<recently read> \rowcolor 
+                          
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+<template> ...\hskip 1sp\d@llarbegin \columncolor 
+                                                  {lightgray}\ignorespaces 
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+\@preamble ...ength \hsize {2\hsize }\columncolor 
+                                                  {lightgray}\ignorespaces \...
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+<recently read> \rowcolor 
+                          
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+<template> ...\hskip 1sp\d@llarbegin \columncolor 
+                                                  {lightgray}\ignorespaces 
+l.22         \end{tabularx}
+                           
+./main.tex:22: Undefined control sequence.
+\@preamble ...ength \hsize {2\hsize }\columncolor 
+                                                  {lightgray}\ignorespaces \...
+l.22         \end{tabularx}
+                           
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./main.aux) )
+(see the transcript file for additional information)</usr/share/texmf-texlive/f
+onts/type1/public/amsfonts/cm/cmr10.pfb>
+Output written on main.pdf (1 page, 17964 bytes).
+SyncTeX written on main.synctex.gz
+Transcript written on main.log.

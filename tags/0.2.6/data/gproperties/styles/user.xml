@@ -1,0 +1,17 @@
+<!DOCTYPE styles [
+		<!ELEMENT styles (element)+>
+
+		<!ELEMENT element EMPTY>
+		<!ATTLIST element name CDATA #REQUIRED
+		                  style CDATA #REQUIRED
+		                  foreground CDATA #IMPLIED
+		                  background CDATA #IMPLIED>
+]>
+<styles>
+  <element name="text" style="plain" foreground="000000"/>
+  <element name="key" style="plain" foreground="0000ff"/>
+  <element name="comment" style="italic" foreground="808080"/>
+  <element name="bracket" style="bold" foreground="2fbf53"/>
+  <element name="number" style="plain" foreground="008000"/>
+  <element name="error" style="plain" foreground="ff0000"/>
+</styles>

@@ -1,0 +1,30 @@
+#!/bin/bash
+cp pack.temp.dmg temp.dmg
+
+wget http://endrullis.de/JLatexEditor/releases/JLatexEditor-latest.tar.gz
+tar xfz JLatexEditor-latest.tar.gz
+rm JLatexEditor/.wstart.bat
+rm JLatexEditor/jlatexeditor.bat
+
+export device=$(hdiutil attach -readwrite -noverify -noautoopen "temp.dmg" | egrep '^/dev/' | sed 1q | awk '{print $1}')
+
+read
+
+VOL_DIR=/Volumes/JLatexEditor/JLatexEditor.app/Contents/MacOS
+rm -rf $VOL_DIR/*
+mv JLatexEditor/* $VOL_DIR
+rmdir JLatexEditor
+rm JLatexEditor-latest.tar.gz
+
+cp ../dev/images/cookie-icon/tex-cookie_512.png $VOL_DIR/tex-cookie.png
+cp -f ../scripts/jlatexeditor $VOL_DIR/
+
+chmod -Rf go-w /Volumes/JLatexEditor/
+sync
+sync
+hdiutil detach ${device}
+rm JLatexEditor.dmg
+hdiutil convert "temp.dmg" -format UDZO -imagekey zlib-level=9 -o "JLatexEditor.dmg"
+
+rm -rf content/JLatexEditor.app/Contents/MacOS/*
+rm -f temp.dmg
