@@ -6,7 +6,7 @@ New Features and other Changes in JLatexEditor
 # set "show_new_features" in global settings to "false".
 
 
-== Coming in Version 0.2.6 ==
+== Version 0.2.6 ==
 
 * new features:
   - general haskell scripting support and special support for generating tikz trees
