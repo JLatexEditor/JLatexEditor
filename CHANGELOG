@@ -10,6 +10,8 @@ New Features and other Changes in JLatexEditor
 
 * new features:
   - general haskell scripting support and special support for generating tikz trees
+* minor enhancements:
+  - improved aspell recovery
 
 
 == Version 0.2.5 ==
