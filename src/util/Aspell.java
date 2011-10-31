@@ -23,6 +23,13 @@ public final class Aspell implements SpellChecker {
   private static boolean instanceFailed = false;
   private static HashMap<String, Aspell> instances = new HashMap<String, Aspell>();
 
+  private String lang;
+  private String langTag;
+
+  private String lastWord = null;
+  private HashSet<String> badWords = new HashSet<String>();
+
+  private Process aspellProcess = null;
   private PrintStream aspellIn;
   private BufferedReader aspellOut;
   private BufferedReader aspellErr;
@@ -76,7 +83,7 @@ public final class Aspell implements SpellChecker {
    * @throws IOException if aspell could not be started
    */
   public Aspell(String lang) throws IOException {
-    startAspell(lang, lang);
+    this(lang, lang);
   }
 
   /**
@@ -87,6 +94,8 @@ public final class Aspell implements SpellChecker {
    * @throws IOException if aspell could not be started
    */
   public Aspell(String lang, String langTag) throws IOException {
+    this.lang = lang;
+    this.langTag = langTag;
     startAspell(lang, langTag);
   }
 
@@ -98,7 +107,7 @@ public final class Aspell implements SpellChecker {
             "--language-tag=" + langTag
     };
 
-    Process aspellProcess = Runtime.getRuntime().exec(aspellCommand);
+    aspellProcess = Runtime.getRuntime().exec(aspellCommand);
 
     // see if aspell died
     try {
@@ -122,6 +131,12 @@ public final class Aspell implements SpellChecker {
     personalWords.addAll(Arrays.asList(getPersonalWordList()));
   }
 
+  private synchronized void restart() throws IOException {
+    if(aspellProcess != null) aspellProcess.destroy();
+
+    startAspell(lang, langTag);
+  }
+
   /**
    * Check spelling of the word using aspell.
    *
@@ -130,7 +145,13 @@ public final class Aspell implements SpellChecker {
    * @throws IOException thrown if execution of aspell failed
    */
   public synchronized Result check(String word) throws IOException {
-	  word = StringUtils.truncate(word);
+    return check(word, true);
+  }
+
+  private synchronized Result check(String word, boolean guessBadWords) throws IOException {
+	  if(badWords.contains(word)) return new Result();
+
+    word = StringUtils.truncate(word);
     flushOut();
     aspellIn.println(word);
     aspellIn.flush();
@@ -147,7 +168,30 @@ public final class Aspell implements SpellChecker {
       aspellOut.readLine();
       return new Result(Arrays.asList(line.split(": ")[1].split(", ")));
     } else {
-      throw new RuntimeException("unknown aspell answer: " + line);
+      restart();
+
+      // try to find out which word caused the problem
+      if(guessBadWords) {
+        String problemWord = null;
+
+        for(String s : new String[] { lastWord, word }) {
+          if(s == null) continue;
+
+          try {
+            // try the word multiple times
+            for(int checkNr = 0; checkNr < 2; checkNr++) check(s, false);
+          } catch (IOException e) {
+            if(badWords.add(s)) problemWord = s;
+          }
+        }
+
+        if(problemWord != null) {
+          System.err.println("Warning: aspell has troubles with the word \"" + problemWord + "\".");
+          return check(word, true);
+        }
+      }
+
+      throw new IOException("unknown aspell answer: " + line);
     }
   }
 
