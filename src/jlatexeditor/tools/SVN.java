@@ -28,6 +28,10 @@ public class SVN {
     if (instance == null) instance = new SVN();
     return instance;
   }
+	
+	public synchronized boolean isDirUnderVersionControl(File dir) {
+		return new File(dir, ".svn").exists();
+	}
 
   public synchronized ArrayList<UpdateResult> update(File dir) throws Exception {
     ArrayList<UpdateResult> results = new ArrayList<UpdateResult>();
@@ -175,6 +179,20 @@ public class SVN {
 
     return results;
   }
+
+	/**
+	 * Adds a file to svn.
+	 *
+	 * @param file file to add
+	 */
+	public synchronized void add(File file) {
+	  try {
+		  Process svn = ProcessUtil.exec(new String[]{GProperties.getString("svn.executable"), "--non-interactive", "--parents", "add", file.getName()}, file.getParentFile(), defaultEnv);
+	    svn.waitFor();
+	  } catch (Exception e) {
+	    e.printStackTrace();
+	  }
+	}
 
   public synchronized void resolved(File file) {
     Process svn;

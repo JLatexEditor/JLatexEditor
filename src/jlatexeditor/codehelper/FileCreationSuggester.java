@@ -3,12 +3,14 @@ package jlatexeditor.codehelper;
 import de.endrullis.utils.StringUtils;
 import jlatexeditor.Doc;
 import jlatexeditor.SCEManager;
+import jlatexeditor.tools.SVN;
 import sce.codehelper.CodeAssistant;
 import sce.codehelper.PatternPair;
 import sce.codehelper.SCEPopup;
 import sce.codehelper.WordWithPos;
 import sce.component.SCEPane;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -77,8 +79,15 @@ public class FileCreationSuggester implements CodeAssistant, SCEPopup.ItemHandle
 			try {
 				File file = action.getFile();
 				file.getParentFile().mkdirs();
-				if (file.createNewFile())
+				if (file.createNewFile()) {
+					if (SCEManager.getInstance().isProjectUnderVersionControl()) {
+						int res = JOptionPane.showConfirmDialog(SCEManager.getMainWindow(), "Do you want to add this file to svn?", "Question", JOptionPane.YES_NO_OPTION);
+						if (res == JOptionPane.YES_OPTION) {
+							SVN.getInstance().add(file);
+						}
+					}
 					SCEManager.getInstance().open(new Doc.FileDoc(file));
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

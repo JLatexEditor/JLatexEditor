@@ -66,7 +66,7 @@ public class SVNView extends JPanel implements ActionListener {
     root.setFile(dir);
     SwingUtilities.invokeLater(new UpdateLocal(root, dir));
 
-    if (!new File(dir, ".svn").exists()) return;
+    if (!SVN.getInstance().isDirUnderVersionControl(dir)) return;
 
     try {
       SwingUtilities.invokeLater(new UpdateServer(SVN.getInstance().status(dir, true)));
