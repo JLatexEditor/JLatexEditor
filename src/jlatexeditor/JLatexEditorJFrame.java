@@ -1184,6 +1184,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
         ProcessUtil.exec(array, getMainEditor().getFile().getParentFile());
       } catch(Exception ex) {
         logger.log(Level.SEVERE, "Forward search failed", ex);
+	      JOptionPane.showMessageDialog(this, "Forward search failed", ex.getMessage(), JOptionPane.ERROR_MESSAGE);
       }
     } else
 
