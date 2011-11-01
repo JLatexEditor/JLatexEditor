@@ -6,6 +6,13 @@ New Features and other Changes in JLatexEditor
 # set "show_new_features" in global settings to "false".
 
 
+== Coming Version 0.2.7 ==
+
+* minor enhancements:
+  - file creation suggester asks for adding file to svn if project is under version control
+  - fixed a bug in SVN view
+
+
 == Version 0.2.6 ==
 
 * new features:

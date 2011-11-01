@@ -12,4 +12,6 @@ public interface SCEManagerInteraction {
   public SourceCodeEditor<Doc> open(Doc doc);
 	public SourceCodeEditor<Doc> open(Doc doc, boolean selectTab);
   public SourceCodeEditor<Doc> open(Doc doc, int lineNr);
+
+	public boolean isProjectUnderVersionControl();
 }

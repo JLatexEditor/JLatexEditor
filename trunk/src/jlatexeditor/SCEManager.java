@@ -37,6 +37,7 @@ import java.util.Properties;
  */
 public class SCEManager {
   private static SCEManagerInteraction instance = null;
+  private static JFrame mainWindow = null;
 
   private static BackgroundParser backgroundParser = null;
 	private static final String USER_LIVE_TEMPLATES_FILENAME = GProperties.SETTINGS_DIR + "/liveTemplates.xml";
@@ -71,7 +72,15 @@ public class SCEManager {
     SCEManager.instance = instance;
   }
 
-  public static BackgroundParser getBackgroundParser() {
+	public static JFrame getMainWindow() {
+		return mainWindow;
+	}
+
+	public static void setMainWindow(JFrame mainWindow) {
+		SCEManager.mainWindow = mainWindow;
+	}
+
+	public static BackgroundParser getBackgroundParser() {
     return backgroundParser;
   }
 

@@ -173,6 +173,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 	public JLatexEditorJFrame(JLatexEditorParams params) {
     super(windowTitleSuffix);
     SCEManager.setInstance(this);
+    SCEManager.setMainWindow(this);
 
 		// set files to open
     filesToOpen = (List<String>) params.getUnboundArguments().clone();
@@ -760,7 +761,13 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 		return editor;
 	}
 
-  /**
+	@Override
+	public boolean isProjectUnderVersionControl() {
+		File mainFile = mainEditor.getFile();
+		return mainFile.exists() && SVN.getInstance().isDirUnderVersionControl(mainFile.getParentFile());
+	}
+
+	/**
    * Returns true if any modifications have been done at an open file.
    *
    * @return true if any modifications have been done at an open file
