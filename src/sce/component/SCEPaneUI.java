@@ -407,7 +407,7 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
 	protected void installKeyboardActions() {
 		//InputMap km = getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 		InputMap km = new ComponentInputMap(pane);
-		km.put(KeyStroke.getKeyStroke("control shift L"), Actions.JUMP_LEFT);
+		//km.put(KeyStroke.getKeyStroke("control shift L"), Actions.JUMP_LEFT);
 
 		SwingUtilities.replaceUIInputMap(pane, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, km);
 		km = getInputMap(JComponent.WHEN_FOCUSED);
