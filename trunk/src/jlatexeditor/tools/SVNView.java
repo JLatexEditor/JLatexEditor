@@ -134,10 +134,7 @@ public class SVNView extends JPanel implements ActionListener {
 
       if(ge != null && ge.getName().equals(directoryName)) return get(ge, pathRemainder);
     } else {
-      int geIndex = getNodeGE(node, relativePath, MaybeBool.maybe);
-      Node ge = geIndex < node.getChildCount() ? (Node) node.getChildAt(geIndex) : null;
-
-      if(ge != null && ge.getName().equals(relativePath)) return ge;
+	    return node.name2child.get(relativePath);
     }
 
     return null;
@@ -273,6 +270,7 @@ public class SVNView extends JPanel implements ActionListener {
     private File file = null;
     private boolean isDirectory;
     private SVN.StatusResult svnStatus = null;
+	  private HashMap<String,Node> name2child = new HashMap<String, Node>();
 
     private Node(String name, File file) {
       setFile(file);
@@ -283,7 +281,21 @@ public class SVNView extends JPanel implements ActionListener {
       setFile(file);
     }
 
-    public String getName() {
+	  @Override
+	  public void add(MutableTreeNode newChild) {
+		  Node child = (Node) newChild;
+		  super.add(child);
+		  name2child.put(child.getName(), child);
+	  }
+
+	  @Override
+	  public void insert(MutableTreeNode newChild, int childIndex) {
+		  Node child = (Node) newChild;
+		  super.insert(child, childIndex);
+		  name2child.put(child.getName(), child);
+	  }
+
+	  public String getName() {
       return (String) getUserObject();
     }
 
