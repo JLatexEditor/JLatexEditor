@@ -1,14 +1,18 @@
 package jlatexeditor.codehelper;
 
 import jlatexeditor.*;
+import jlatexeditor.addon.ExtractCommand;
 import jlatexeditor.quickhelp.LatexQuickHelp;
 import sce.codehelper.CodeAssistant;
 import sce.codehelper.PatternPair;
 import sce.codehelper.SCEPopup;
 import sce.codehelper.WordWithPos;
+import sce.component.SCEDocument;
+import sce.component.SCEDocumentRow;
 import sce.component.SCEPane;
 import sce.component.SourceCodeEditor;
 import sun.print.BackgroundLookupListener;
+import util.ParseUtil;
 
 import java.io.File;
 import java.util.*;
@@ -43,13 +47,15 @@ public class PackageImportSuggester implements CodeAssistant, SCEPopup.ItemHandl
 			element = new LatexQuickHelp.Element(LatexQuickHelp.Element.Type.environment, wordUnderCaret.word);
 		}
 
+		boolean provided = false;
 		String comEnvName = wordUnderCaret.word;
 	  if(comEnvName.length() == 0) return false;
 
-		ArrayList<Object> suggestionList = new ArrayList<Object>();
+		LinkedList<Object> suggestionList = new LinkedList<Object>();
 
 		if (LatexDependencies.isCurrentDocumentClassProviding(element)) {
 			suggestionList.add("<html><body bgcolor='#202080'><table><tr><td width='500'><font color='#ffff00'>already provided</font> <font color='#A0A0A0'>by documentclass</font> <font color='#ffffff'>" + element.name);
+			provided = true;
 		}
 
 		ArrayList<LatexDependencies.PackInfo> packInfos = LatexDependencies.getPackagesProviding(element);
@@ -57,6 +63,7 @@ public class PackageImportSuggester implements CodeAssistant, SCEPopup.ItemHandl
 			switch (packInfo.state) {
 				case imported:
 					suggestionList.add("<html><body bgcolor='#202080'><table><tr><td width='200'><font color='#ffff00'>already provided</font> <font color='#A0A0A0'>by package</font> <font color='#ffffff'>" + packInfo.pack.getName() + "</font></td><td width='300' color='#ffffff'>" + packInfo.pack.getDescription());
+					provided = true;
 					break;
 				case importable:
 					suggestionList.add(new ImportPackage(packInfo.pack));
@@ -64,6 +71,13 @@ public class PackageImportSuggester implements CodeAssistant, SCEPopup.ItemHandl
 			}
 		}
 
+		if (!provided) {
+			switch (element.type) {
+				case command:
+					suggestionList.addFirst(new CreateCommand(element.name, argumentsOfCommand(pane, wordUnderCaret)));
+			}
+		}
+		
 		if (!suggestionList.isEmpty()) {
 			pane.getPopup().openPopup(suggestionList, this);
 		}
@@ -71,7 +85,32 @@ public class PackageImportSuggester implements CodeAssistant, SCEPopup.ItemHandl
 		return true;
 	}
 
+	private int argumentsOfCommand(SCEPane pane, WordWithPos wordUnderCaret) {
+		SCEDocument document = pane.getDocument();
+		String rest = document.getText(wordUnderCaret.getStartPos(), document.getEndPos());
+
+		int charNr = 0;
+		while (Character.isLetter(rest.charAt(charNr))) charNr++;
+
+		int argCount = 0;
+		while (rest.charAt(charNr) == '{') {
+			String part = ParseUtil.parseBalanced(rest, charNr+1, '}');
+			charNr += part.length() + 2;
+			argCount++;
+		}
+
+		return argCount;
+	}
+
 	public void perform(Object item) {
+		if (item instanceof CreateCommand) {
+			CreateCommand createCommand = (CreateCommand) item;
+			String commandBody = "";
+			for (int i=0; i<createCommand.arguments; i++) {
+				commandBody += "#" + (i+1);
+			}
+			ExtractCommand.askToDeclareCommand((JLatexEditorJFrame) SCEManager.getInstance(), "\\" + createCommand.commandName, commandBody);
+		}
 	  if (item instanceof ImportPackage) {
 		  ImportPackage importPackage = (ImportPackage) item;
 		  importPackage(importPackage.pack.getName());
@@ -118,6 +157,21 @@ public class PackageImportSuggester implements CodeAssistant, SCEPopup.ItemHandl
 
 // inner classes
 
+	private class CreateCommand {
+		String commandName;
+		int arguments;
+
+		private CreateCommand(String commandName, int arguments) {
+			this.commandName = commandName;
+			this.arguments = arguments;
+		}
+
+		@Override
+		public String toString() {
+			return "create new command \\" + commandName;
+		}
+	}
+	
 	private class ImportPackage {
 	  PackagesExtractor.Package pack;
 

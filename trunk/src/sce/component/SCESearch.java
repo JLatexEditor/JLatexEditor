@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * Search pane.
@@ -53,6 +54,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
   private GroupLayout.Group groupHorizontal;
   private GroupLayout.Group groupVertical;
   private static final Color ERROR_COLOR = new Color(255, 204, 204);
+  private static final Color ERROR_FOREGROUND_COLOR = new Color(255, 0, 0);
 
   /**
    * Last search.
@@ -627,6 +629,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
       SCEMarkerBar markerBar = editor.getMarkerBar();
       SCEPane pane = editor.getTextPane();
 
+      input.setForeground(Color.BLACK);
       input.setBackground(Color.WHITE);
 
       SCECaret caret = editor.getTextPane().getCaret();
@@ -636,55 +639,59 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 
       SCEDocumentRange selectionRange = null;
 
-      if (length != 0) {
-        if (!regExp.isSelected()) {
-          // normal search
-          if (!caseSensitive.isSelected()) search = search.toLowerCase();
+	    try {
+	      if (length != 0) {
+	        if (!regExp.isSelected()) {
+	          // normal search
+	          if (!caseSensitive.isSelected()) search = search.toLowerCase();
 
-          int index = -1;
-          while ((index = text.indexOf(search, index + 1)) != -1) {
-            int rowStart = text2row[index];
-            int columnStart = text2column[index];
+	          int index = -1;
+	          while ((index = text.indexOf(search, index + 1)) != -1) {
+	            int rowStart = text2row[index];
+	            int columnStart = text2column[index];
 
-	          int rowEnd = rowStart;
-	          int columnEnd = columnStart + length;
+		          int rowEnd = rowStart;
+		          int columnEnd = columnStart + length;
 
-	          selectionRange = processOccurrence(resultsTemp, document, markerBar, pane, caret, selectionRange, rowStart, columnStart, rowEnd, columnEnd);
-          }
-        } else {
-          // regexp search
-          Pattern pattern = Pattern.compile(search, Pattern.MULTILINE | (caseSensitive.isSelected() ? 0 : Pattern.CASE_INSENSITIVE));
-          Matcher matcher = pattern.matcher(text);
-          while (matcher.find()) {
-            int startIndex = matcher.start();
-            int endIndex = matcher.end();
-            // skip matches of length 0
-            if (startIndex == endIndex) continue;
+		          selectionRange = processOccurrence(resultsTemp, document, markerBar, pane, caret, selectionRange, rowStart, columnStart, rowEnd, columnEnd);
+	          }
+	        } else {
+	          // regexp search
+	          Pattern pattern = Pattern.compile(search, Pattern.MULTILINE | (caseSensitive.isSelected() ? 0 : Pattern.CASE_INSENSITIVE));
+	          Matcher matcher = pattern.matcher(text);
+	          while (matcher.find()) {
+	            int startIndex = matcher.start();
+	            int endIndex = matcher.end();
+	            // skip matches of length 0
+	            if (startIndex == endIndex) continue;
 
-            int rowStart = text2row[startIndex];
-            int columnStart = text2column[startIndex];
+	            int rowStart = text2row[startIndex];
+	            int columnStart = text2column[startIndex];
 
-            int rowEnd = text2row[endIndex];
-            int columnEnd = text2column[endIndex];
+	            int rowEnd = text2row[endIndex];
+	            int columnEnd = text2column[endIndex];
 
-	          selectionRange = processOccurrence(resultsTemp, document, markerBar, pane, caret, selectionRange, rowStart, columnStart, rowEnd, columnEnd);
-          }
-        }
-      } else {
-        document.clearSelection();
-      }
+		          selectionRange = processOccurrence(resultsTemp, document, markerBar, pane, caret, selectionRange, rowStart, columnStart, rowEnd, columnEnd);
+	          }
+	        }
+	      } else {
+	        document.clearSelection();
+	      }
 
-      results = resultsTemp;
+	      results = resultsTemp;
 
-      if (length > 0 && resultsTemp.size() == 0) {
-        input.setBackground(ERROR_COLOR);
-        document.clearSelection();
-      } else {
-        // set the selection
-        if(selectionRange != null && setSelection) document.setSelectionRange(selectionRange, false);
+	      if (length > 0 && resultsTemp.size() == 0) {
+	        input.setBackground(ERROR_COLOR);
+	        document.clearSelection();
+	      } else {
+	        // set the selection
+	        if(selectionRange != null && setSelection) document.setSelectionRange(selectionRange, false);
 
-        if (move) next(true, true);
-      }
+	        if (move) next(true, true);
+	      }
+      } catch (PatternSyntaxException e) {
+		    input.setForeground(ERROR_FOREGROUND_COLOR);
+	    }
 
       markerBar.repaint();
       pane.repaint();

@@ -4,6 +4,7 @@ import de.endrullis.utils.collections.ExtIterable;
 import jlatexeditor.Doc;
 import jlatexeditor.JLatexEditorJFrame;
 import jlatexeditor.SCEManager;
+import jlatexeditor.SCEManagerInteraction;
 import jlatexeditor.codehelper.BackgroundParser;
 import jlatexeditor.codehelper.Command;
 import sce.component.*;
@@ -32,34 +33,38 @@ public class ExtractCommand extends AddOn {
 		if (document.hasSelection()) {
 			String selectedText = document.getSelectedText();
 
-			BackgroundParser.FilePos lastCommandPos = getLastCommandPos(jle);
-			if (lastCommandPos == null) return;
-
-			JTextField commandNameTextField = new JTextField();
-			SourceCodeEditor<Doc> templateSce = SCEManager.createLatexSourceCodeEditor();
-			templateSce.setText(selectedText);
-
-			Object[] message = {
-				"Template name:", commandNameTextField,
-				"\nDefine your template (use #1-#9 for parameters):\n", templateSce
-			};
-			int resp = JOptionPane.showConfirmDialog(jle, message, "Declare command", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-
-			if (resp != JOptionPane.OK_OPTION) {
-				return;
-			}
-
-			String commandName = commandNameTextField.getText();
-			String template = templateSce.getText().trim();
-			if (commandName.startsWith("\\")) {
-				commandName = commandName.substring(1);
-			}
-
-			declareCommand(jle, lastCommandPos, commandName, template);
+			askToDeclareCommand(jle, "", selectedText);
 		}
 	}
 
-	private void declareCommand(JLatexEditorJFrame jle, BackgroundParser.FilePos lastCommandPos, String commandName, String templateText) {
+	public static void askToDeclareCommand(JLatexEditorJFrame jle, String commandName, String commandBody) {
+		BackgroundParser.FilePos lastCommandPos = getLastCommandPos(jle);
+		if (lastCommandPos == null) return;
+
+		JTextField commandNameTextField = new JTextField(commandName);
+		SourceCodeEditor<Doc> templateSce = SCEManager.createLatexSourceCodeEditor();
+		templateSce.setText(commandBody);
+
+		Object[] message = {
+			"Template name:", commandNameTextField,
+			"\nDefine your template (use #1-#9 for parameters):\n", templateSce
+		};
+		int resp = JOptionPane.showConfirmDialog(jle, message, "Declare command", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+		if (resp != JOptionPane.OK_OPTION) {
+			return;
+		}
+
+		commandName = commandNameTextField.getText();
+		String template = templateSce.getText().trim();
+		if (commandName.startsWith("\\")) {
+			commandName = commandName.substring(1);
+		}
+
+		declareCommand(jle, lastCommandPos, commandName, template);
+	}
+
+	private static void declareCommand(JLatexEditorJFrame jle, BackgroundParser.FilePos lastCommandPos, String commandName, String templateText) {
 		SourceCodeEditor<Doc> editor = jle.open(new Doc.FileDoc(new File(lastCommandPos.getFile())), false);
 		SCEPane pane = editor.getTextPane();
 
@@ -67,7 +72,7 @@ public class ExtractCommand extends AddOn {
 
 		Template template = new Template(commandName, templateText);
 
-		pane.getDocument().insert(template.toDeclaration(), lastCommandPos.getLineNr() + 1, 0);
+		pane.getDocument().insert(template.toDeclaration() + "\n", lastCommandPos.getLineNr() + 1, 0);
 
 		jle.open(activeEditor.getResource(), 0);
 		activeEditor.getTextPane().getCaret().moveTo(0, 0, false);
@@ -81,7 +86,7 @@ public class ExtractCommand extends AddOn {
 		activeEditor.search(search);
 	}
 
-	private BackgroundParser.FilePos getLastCommandPos(JLatexEditorJFrame jle) {
+	private static BackgroundParser.FilePos getLastCommandPos(JLatexEditorJFrame jle) {
 		// determine map from file to last declared command
 		HashMap<String, Command> files2lastCommand = new HashMap<String, Command>();
 
@@ -144,6 +149,8 @@ public class ExtractCommand extends AddOn {
 	private static String escapeRegEx(String text) {
 		return text.replaceAll("([\\\\.\\[\\]\\{\\}\\(\\)*+-])", "\\\\$1");
 	}
+
+
 
 
 	public static class Template {
