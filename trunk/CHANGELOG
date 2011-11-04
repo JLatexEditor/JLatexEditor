@@ -12,7 +12,8 @@ New Features and other Changes in JLatexEditor
   - file creation suggester asks for adding file to svn if project is under version control
   - suggest to create non-existing command when pressing alt+enter
   - invalid regular expressions in search input field are highlighted red
-  - fixed a bug in SVN view
+  - double click in SVN view opens corresponding file
+  - fixed a bug in SVN view which led to invalid highlighting of files in SVN view
 
 
 == Version 0.2.6 ==

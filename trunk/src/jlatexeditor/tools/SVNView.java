@@ -1,5 +1,6 @@
 package jlatexeditor.tools;
 
+import jlatexeditor.Doc;
 import jlatexeditor.JLatexEditorJFrame;
 import jlatexeditor.gproperties.GProperties;
 import jlatexeditor.gui.StatusBar;
@@ -10,6 +11,8 @@ import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.*;
 
@@ -26,7 +29,7 @@ public class SVNView extends JPanel implements ActionListener {
   private boolean hadException = false;
   private CheckForUpdates updateChecker = new CheckForUpdates();
 
-  public SVNView(JLatexEditorJFrame jle, StatusBar statusBar) {
+  public SVNView(final JLatexEditorJFrame jle, StatusBar statusBar) {
     this.jle = jle;
     this.statusBar = statusBar;
 
@@ -48,6 +51,21 @@ public class SVNView extends JPanel implements ActionListener {
     constraints.gridx = 1;
 
     tree.setCellRenderer(new Renderer());
+	  
+	  tree.addMouseListener(new MouseAdapter() {
+		  @Override
+		  public void mouseClicked(MouseEvent e) {
+			  // open file on double click
+			  if (e.getClickCount() == 2) {
+				  TreePath path = tree.getPathForLocation(e.getX(), e.getY());
+				  Node node = (Node) path.getLastPathComponent();
+				  File file = node.getFile();
+				  if (file.isFile() && file.exists()) {
+					  jle.open(new Doc.FileDoc(file));
+				  }
+			  }
+		  }
+	  });
   }
 
   public void actionPerformed(ActionEvent e) {
