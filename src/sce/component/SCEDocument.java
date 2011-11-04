@@ -255,6 +255,15 @@ public class SCEDocument {
     return selectionEnd;
   }
 
+	public SCEDocumentPosition getStartPos() {
+		return new SCEDocumentPosition(0, 0);
+	}
+
+	public SCEDocumentPosition getEndPos() {
+		int row = rows.getRowsCount() - 1;
+		return new SCEDocumentPosition(row, rows.getRow(row).length);
+	}
+
   /**
    * Returns the selected text as string.
    *

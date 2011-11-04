@@ -260,7 +260,8 @@ public class BackgroundParser extends Thread {
 					}
 					// default argument
 					if(tex.charAt(index) == '[') {
-						try {      							optional = ParseUtil.parseBalanced(tex, index+1, ']');
+						try {
+							optional = ParseUtil.parseBalanced(tex, index+1, ']');
 							index += 2 + optional.length();
 						} catch(NumberFormatException ignore) {}
 					}
