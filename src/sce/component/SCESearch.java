@@ -470,7 +470,11 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
   }
 
   public void keyReleased(KeyEvent e) {
-    if (e.getSource() == input) searchChanged();
+    if (e.getSource() == input) {
+	    if (!e.isActionKey()) {
+		    searchChanged();
+	    }
+    }
   }
 
 	private void searchChanged() {
