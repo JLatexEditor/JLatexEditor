@@ -24,7 +24,7 @@ public class SystemUtils {
    * @return true if os is windows
    */
   public static boolean isWinOS() {
-    return getOSName().startsWith("win") || getOSName().indexOf("windows") >= 0;
+    return getOSName().startsWith("win") || getOSName().contains("windows");
   }
 
   /**
@@ -33,7 +33,7 @@ public class SystemUtils {
    * @return true if os is mac
    */
   public static boolean isMacOS() {
-    return getOSName().indexOf("mac") >= 0;
+    return getOSName().contains("mac");
   }
 
   /**
