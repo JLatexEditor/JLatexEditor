@@ -305,7 +305,7 @@
               hint="list of words, separated by spaces, in which each hyphenation point is indicated by a - character"/>
   </command>
 
-  <command name="include" usage="\include{@file@}" hint="selective inclusion of files">
+  <command name="include" usage="\include{@file@}" hint="selective inclusion of files" style="include">
     <argument name="file" type="file|defaultExtension=tex|extensions=tex" value="" completion="true"/>
   </command>
 
@@ -322,7 +322,7 @@
   <command name="indent" hint="produces a horizontal space whose width equals the width of the paragraph indentation">
   </command>
 
-  <command name="input" usage="\input{@file@}" hint="causes the indicated file to be read and processed">
+  <command name="input" usage="\input{@file@}" hint="causes the indicated file to be read and processed" style="include">
     <argument name="file" type="file|defaultExtension=tex|extensions=tex" value="" completion="true"/>
   </command>
 
