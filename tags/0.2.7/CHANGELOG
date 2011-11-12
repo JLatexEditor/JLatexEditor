@@ -1,0 +1,149 @@
+
+New Features and other Changes in JLatexEditor
+""""""""""""""""""""""""""""""""""""""""""""""
+
+# If you do not want to get notified about new features
+# set "show_new_features" in global settings to "false".
+
+
+== Version 0.2.7 ==
+
+* new features:
+  - added completion for \bibliographystyle (ticket #203)
+* enhancements:
+  - commands with completion support are marked bold
+  - file creation suggester asks for adding file to svn if project is under version control
+  - suggest to create non-existing command when pressing alt+enter
+  - invalid regular expressions in search input field are highlighted red
+  - double click in SVN view opens corresponding file (SVN view stays experimental and incomplete)
+* bug fixes:
+  - fixed a bug in SVN view which led to invalid highlighting of files in SVN view
+  - fixed bug #198: F3 does not work anymore if search input field has focus
+
+
+== Version 0.2.6 ==
+
+* new features:
+  - general haskell scripting support and special support for generating tikz trees
+* minor enhancements:
+  - improved aspell recovery
+
+
+== Version 0.2.5 ==
+
+* bug fixes:
+  - fixed Linux updater
+
+
+== Version 0.2.4 ==
+
+* bug fixes:
+  - fixed Mac OS X updater
+
+
+== Version 0.2.3 ==
+
+* new features:
+	- diff view shows changes within lines and allows you to take over or reject particular changes
+	- template editor for defining user live templates
+	- installer and updater for Mac OS X
+* minor enhancements:
+  - search is automatically limited to selection range if selection is spanning at least one line
+  - the depth of the awesome deep bracket matching can now be configured (editor.bracket_matching.depth)
+  - double click on a bracket now selects the whole block
+  - improved latex parser (recognition of user defined commands)
+  - improved latex output parser (recognition of nested errors and better performance)
+  - general font size can be increased via main_window.font_scale_factor in global settings
+  - added filename completion support for \lstinputlisting
+* bug fixes:
+  - fixed broken notification of available svn updates
+  - fixed broken quick help in stable version
+  - some minor bug fixes
+
+
+== Version 0.2.2 ==
+
+* new features:
+  - completion of environment names after \begin and \end
+  - multi-level completion for commands, environments, documentclasses, packages, and files
+  - jump to environment definition via control+B
+  - suggestions for package imports via alt+ENTER on undefined commands or environments
+  - quick help shows lists of packages and documentclasses providing command under cursor
+  - quick help allows to open documentation of LaTeX packages via "texdoc"
+  - option to create macro from existing LaTeX code via control+shift+M or "LaTeX"->"Extract Command"
+  - exclude lines from being parsed by surrounding them with "%###"
+* minor enhancements:
+  - code completion popups can be used by mouse
+  - improved parsing of latex output
+  - allow to set interval for svn status checks (via check_for_svn_updates.interval in global settings)
+* bug fixes:
+  - "Replace All" button is no longer disabled if no occurrence is selected
+
+
+== Version 0.2.1 ==
+
+* minor enhancements:
+  - colored highlighting of LaTeX errors and warnings in corresponding lists
+  - continuous comments
+  - shortcut for completion (control+space) can be configure in global settings
+* bug fixes:
+  - fixed error in deb package which caused exceptions in open dialog
+
+
+== Version 0.2.0 ==
+
+* new features:
+  - reopen last closed document via control+shift+W or "File"->"Open Recent"->"Open Last Closed"
+  - added completion for parameters of \documentclass, \usepackage, \usetheme, \usecolortheme,
+    \usefonttheme, \useinnertheme, and \useoutertheme
+  - automatically generate labels for sections, figures, and tables (see corresponding live templates)
+  - quick help on commands shows packages providing them
+* major improvements:
+  - replaced buggy Java open dialog with a completely new one - better looking and better usability
+  - improved math environment detection and error highlighting
+  - invalid environment closing is marked as error while typing
+* minor enhancements:
+  - prettied up tabs and icons in compile tree
+  - added icons to menu (thanks to Tango Desktop Project for the icons)
+  - added initial and very primitive file search; started via control+shift+N or "LaTeX"->"File Search"
+  - svn merge conflicts are highlighted red
+  - improved bibtex highlighting (unused items marked grey)
+  - improved LaTeX highlighting (duplicated labels marked red)
+  - improved configuration of keyboard shortcuts
+    * allows to configure control+left/right/up/down/y/k/u...
+    * open keyboard shortcut configuration dialog via control+space
+  - improvements for mac (now using Mac menubar)
+  - quick jump to compiler output from errors and warnings using context menu
+  - added live templates: table
+  - automatically close environments (if not yet closed)
+  - automatically increase indentation after opening an environment, after \item, and after an
+    opening brace
+  - several other minor bug fixes and improvements
+
+
+== Version 0.1.56 ==
+
+* new refactoring features:
+  - renaming of BitTex items and \cite{...} via F2 or "LaTeX"->"Rename Element"
+* minor enhancements:
+  - hunspell results are cached for better performance
+* bug fixes:
+  - inverse search did not work with absolute paths
+  - some bug fixes in BibTex parser
+
+
+== Version 0.1.55 ==
+
+* minor bug fixes:
+  - CHANGELOG opens after every start
+  - CHANGELOG not included in .deb package
+
+
+== Version 0.1.54 ==
+
+* new refactoring features:
+  - rename commands, labels, environments via F2 or "LaTeX"->"Rename Element"
+  - close current environment via control+alt+E or "LaTeX"->"Close Environment"
+  - realign table columns via control+alt+r or "LaTeX"->"Realign Table Columns"
+* minor changes:
+  - "Forward Search" located in "LaTeX" menu

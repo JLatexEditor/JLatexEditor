@@ -1,0 +1,493 @@
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian)
+entering extended mode
+(./main.tex
+LaTeX2e <2009/09/24>
+Babel <v3.8l> and hyphenation patterns for english, usenglishmax, dumylang, noh
+yphenation, farsi, arabic, croatian, bulgarian, ukrainian, russian, czech, slov
+ak, danish, dutch, finnish, french, basque, ngerman, german, german-x-2009-06-1
+9, ngerman-x-2009-06-19, ibycus, monogreek, greek, ancientgreek, hungarian, san
+skrit, italian, latin, latvian, lithuanian, mongolian2a, mongolian, bokmal, nyn
+orsk, romanian, irish, coptic, serbian, turkish, welsh, esperanto, uppersorbian
+, estonian, indonesian, interlingua, icelandic, kurmanji, slovenian, polish, po
+rtuguese, spanish, galician, catalan, swedish, ukenglish, pinyin, loaded.
+(./IEEEtran.cls
+Document Class: IEEEtran 2007/03/05 V1.7a by Michael Shell
+-- See the "IEEEtran_HOWTO" manual for usage information.
+-- http://www.michaelshell.org/tex/ieeetran/
+(/usr/share/texmf-texlive/tex/latex/psnfss/ot1ptm.fd)
+-- Using 8.5in x 11in (letter) paper.
+-- Using PDF output.
+-- This is a 10 point document.
+) (/usr/share/texmf-texlive/tex/latex/psnfss/times.sty)
+(/usr/share/texmf-texlive/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/share/texmf-texlive/tex/latex/amsmath/amstext.sty
+(/usr/share/texmf-texlive/tex/latex/amsmath/amsgen.sty))
+(/usr/share/texmf-texlive/tex/latex/amsmath/amsbsy.sty)
+(/usr/share/texmf-texlive/tex/latex/amsmath/amsopn.sty))
+(/usr/share/texmf-texlive/tex/latex/graphics/epsfig.sty
+(/usr/share/texmf-texlive/tex/latex/graphics/graphicx.sty
+(/usr/share/texmf-texlive/tex/latex/graphics/keyval.sty)
+(/usr/share/texmf-texlive/tex/latex/graphics/graphics.sty
+(/usr/share/texmf-texlive/tex/latex/graphics/trig.sty)
+(/etc/texmf/tex/latex/config/graphics.cfg)
+(/usr/share/texmf-texlive/tex/latex/pdftex-def/pdftex.def))))
+(/usr/share/texmf-texlive/tex/latex/preprint/balance.sty)
+(/usr/share/texmf-texlive/tex/latex/amsfonts/amssymb.sty
+(/usr/share/texmf-texlive/tex/latex/amsfonts/amsfonts.sty))
+(/usr/share/texmf-texlive/tex/latex/base/latexsym.sty)
+(/usr/share/texmf-texlive/tex/latex/xkeyval/xkeyval.sty
+(/usr/share/texmf-texlive/tex/generic/xkeyval/xkeyval.tex))
+(/usr/share/texmf-texlive/tex/latex/subfigure/subfigure.sty
+****************************************
+* Local config file subfigure.cfg used *
+****************************************
+(/usr/share/texmf-texlive/tex/latex/subfigure/subfigure.cfg))
+(/usr/share/texmf-texlive/tex/latex/tools/calc.sty)
+(/usr/share/texmf-texlive/tex/latex/graphics/color.sty
+(/etc/texmf/tex/latex/config/color.cfg))
+(/usr/share/texmf-texlive/tex/latex/ltxmisc/framed.sty)
+(/usr/share/texmf-texlive/tex/latex/ltxmisc/url.sty)
+(/usr/share/texmf-texlive/tex/latex/base/alltt.sty)
+(/usr/share/texmf-texlive/tex/latex/ltxmisc/boxedminipage.sty)
+(/usr/share/texmf-texlive/tex/latex/sttools/stfloats.sty)
+(/usr/share/texmf/tex/latex/pgf/frontendlayer/tikz.sty
+(/usr/share/texmf/tex/latex/pgf/basiclayer/pgf.sty
+(/usr/share/texmf/tex/latex/pgf/utilities/pgfrcs.sty
+(/usr/share/texmf/tex/generic/pgf/utilities/pgfutil-common.tex)
+(/usr/share/texmf/tex/generic/pgf/utilities/pgfutil-latex.def)
+(/usr/share/texmf/tex/generic/pgf/utilities/pgfrcs.code.tex))
+(/usr/share/texmf/tex/latex/pgf/basiclayer/pgfcore.sty
+(/usr/share/texmf/tex/latex/pgf/systemlayer/pgfsys.sty
+(/usr/share/texmf/tex/generic/pgf/systemlayer/pgfsys.code.tex
+(/usr/share/texmf/tex/generic/pgf/utilities/pgfkeys.code.tex)
+(/usr/share/texmf/tex/generic/pgf/systemlayer/pgf.cfg)
+(/usr/share/texmf/tex/generic/pgf/systemlayer/pgfsys-pdftex.def
+(/usr/share/texmf/tex/generic/pgf/systemlayer/pgfsys-common-pdf.def)))
+(/usr/share/texmf/tex/generic/pgf/systemlayer/pgfsyssoftpath.code.tex)
+(/usr/share/texmf/tex/generic/pgf/systemlayer/pgfsysprotocol.code.tex))
+(/usr/share/texmf/tex/latex/xcolor/xcolor.sty
+(/etc/texmf/tex/latex/config/color.cfg))
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcore.code.tex
+(/usr/share/texmf/tex/generic/pgf/math/pgfmath.code.tex
+(/usr/share/texmf/tex/generic/pgf/math/pgfmathcalc.code.tex
+(/usr/share/texmf/tex/generic/pgf/math/pgfmathutil.code.tex)
+(/usr/share/texmf/tex/generic/pgf/math/pgfmathparser.code.tex)
+(/usr/share/texmf/tex/generic/pgf/math/pgfmathoperations.code.tex
+(/usr/share/texmf/tex/generic/pgf/math/pgfmathtrig.code.tex)
+(/usr/share/texmf/tex/generic/pgf/math/pgfmathrnd.code.tex))
+(/usr/share/texmf/tex/generic/pgf/math/pgfmathbase.code.tex)))
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorepoints.code.tex)
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorepathconstruct.code.tex)
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorepathusage.code.tex)
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorescopes.code.tex)
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcoregraphicstate.code.tex)
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcoretransformations.code.tex)
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorequick.code.tex)
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcoreobjects.code.tex)
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorepathprocessing.code.tex)
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorearrows.code.tex)
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcoreshade.code.tex)
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcoreimage.code.tex)
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorelayers.code.tex)
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcoretransparency.code.tex)
+(/usr/share/texmf/tex/generic/pgf/basiclayer/pgfcorepatterns.code.tex)))
+(/usr/share/texmf/tex/generic/pgf/modules/pgfmoduleshapes.code.tex)
+(/usr/share/texmf/tex/generic/pgf/modules/pgfmoduleplot.code.tex)
+(/usr/share/texmf/tex/latex/pgf/compatibility/pgfcomp-version-0-65.sty)
+(/usr/share/texmf/tex/latex/pgf/compatibility/pgfcomp-version-1-18.sty))
+(/usr/share/texmf/tex/latex/pgf/utilities/pgffor.sty
+(/usr/share/texmf/tex/generic/pgf/utilities/pgffor.code.tex))
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/tikz.code.tex
+(/usr/share/texmf/tex/generic/pgf/libraries/pgflibraryplothandlers.code.tex)
+(/usr/share/texmf/tex/generic/pgf/modules/pgfmodulematrix.code.tex)
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarytopat
+hs.code.tex))) (/usr/share/texmf/tex/latex/pgf/utilities/pgfpages.sty)
+(/usr/share/texmf/tex/latex/pgf/utilities/xxcolor.sty)
+(/usr/share/texmf-texlive/tex/latex/tools/xspace.sty)
+(/usr/share/texmf-texlive/tex/latex/multirow/multirow.sty)
+(/usr/share/texmf-texlive/tex/latex/algorithms/algorithm.sty
+(/usr/share/texmf-texlive/tex/latex/float/float.sty)
+(/usr/share/texmf-texlive/tex/latex/base/ifthen.sty))
+(/usr/share/texmf-texlive/tex/latex/algorithms/algorithmic.sty)
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryarrow
+s.code.tex
+(/usr/share/texmf/tex/generic/pgf/libraries/pgflibraryarrows.code.tex))
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryshado
+ws.code.tex
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryfadin
+gs.code.tex
+(/usr/share/texmf/tex/generic/pgf/libraries/pgflibraryfadings.code.tex)))
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarypetri
+.code.tex)
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarycalc.
+code.tex)
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryautom
+ata.code.tex)
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryposit
+ioning.code.tex)
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryfit.c
+ode.tex)
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarychain
+s.code.tex)
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarydecor
+ations.pathreplacing.code.tex
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarydecor
+ations.code.tex
+(/usr/share/texmf/tex/generic/pgf/modules/pgfmoduledecorations.code.tex))
+(/usr/share/texmf/tex/generic/pgf/libraries/pgflibrarydecorations.pathreplacing
+.code.tex)) (./main.aux
+
+LaTeX Warning: Label `sec:query_generators' multiply defined.
+
+) (/usr/share/texmf/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/share/texmf-texlive/tex/latex/psnfss/ot1pcr.fd)
+(/usr/share/texmf-texlive/tex/latex/psnfss/omspcr.fd) (./intro.tex
+<figs/motivating_example.png, id=20, 426.393pt x 150.3216pt>
+<use figs/motivating_example.png>
+(/usr/share/texmf-texlive/tex/latex/amsfonts/umsa.fd)
+(/usr/share/texmf-texlive/tex/latex/amsfonts/umsb.fd)
+(/usr/share/texmf-texlive/tex/latex/base/ulasy.fd)
+(/usr/share/texmf-texlive/tex/latex/psnfss/ot1phv.fd) [1{/var/lib/texmf/fonts/m
+ap/pdftex/updmap/pdftex.map} <./figs/motivating_example.png>]
+
+LaTeX Warning: Reference `sec:query_selection_functions' on page 2 undefined on
+ input line 210.
+
+
+LaTeX Warning: Reference `sec:pre-filtering_of_query_generators' on page 2 unde
+fined on input line 218.
+
+
+LaTeX Warning: Reference `sec:dynamic_entity_filters' on page 2 undefined on in
+put line 218.
+
+) (./framework.tex <figs/framework.png, id=38, 1064.778pt x 334.3692pt>
+<use figs/framework.png> [2]) (./framework_qgen.tex
+<figs/qg_examples.png, id=45, 700.5372pt x 532.8708pt>
+<use figs/qg_examples.png> [3 <./figs/framework.png>])
+(./problem_description.tex
+<figs/amazon_dvd_search.png, id=52, 280.04625pt x 194.7275pt>
+<use figs/amazon_dvd_search.png> [4 <./figs/qg_examples.png> <./figs/amazon_dvd
+_search.png (PNG copy)>]
+
+LaTeX Warning: Citation `Frameworks_for_entity_matching-_A_comparison' on page 
+5 undefined on input line 109.
+
+) (./query_generators.tex [5]) (./query_strategies.tex
+Underfull \hbox (badness 10000) in paragraph at lines 57--57
+[]\OT1/ptm/m/n/10 adaptive query gen-er-a-tors (op-tional, pre-
+
+Underfull \hbox (badness 10000) in paragraph at lines 74--88
+[]\OT1/ptm/m/n/10 We de-fine a query strat-egy as a triple
+[6] (./tikz/strategy_workflow.tex)
+Overfull \hbox (5.27588pt too wide) in paragraph at lines 94--95
+ [] 
+[7]
+Overfull \hbox (2.41643pt too wide) in paragraph at lines 306--306
+[]\OT1/ptm/m/n/8 Covered| 
+
+Overfull \hbox (3.55244pt too wide) in paragraph at lines 315--315
+[]\OT1/ptm/m/n/8 1,2,3,4,5| 
+
+Underfull \hbox (badness 10000) in paragraph at lines 316--316
+[]\OT1/phv/m/n/8 Canon
+) (./evaluation.tex (./evaluation_of_query_generators.tex [8]
+
+./evaluation_of_query_generators.tex:124: LaTeX Error: Environment fiasdfasd un
+defined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.124 \begin{fiasdfasd}
+                       
+
+./evaluation_of_query_generators.tex:126: LaTeX Error: \begin{document} ended b
+y \end{fiasdfasd}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.126 \end{fiasdfasd}
+                     
+[9]
+
+LaTeX Warning: Reference `sec:pre-filtering_of_query_generators' on page 10 und
+efined on input line 249.
+
+
+LaTeX Warning: File `plots/amazon/train/adaptiveSourcesUnfiltered/cat_compariso
+n/overall_coverage.pdf' not found on input line 264.
+
+
+./evaluation_of_query_generators.tex:264: Package pdftex.def Error: File `plots
+/amazon/train/adaptiveSourcesUnfiltered/cat_comparison/overall_coverage.pdf' no
+t found.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.264   }
+         
+
+LaTeX Warning: File `plots/amazon/train/adaptiveSourcesUnfiltered/cat_compariso
+n/overall_cEfficiency.pdf' not found on input line 268.
+
+
+./evaluation_of_query_generators.tex:268: Package pdftex.def Error: File `plots
+/amazon/train/adaptiveSourcesUnfiltered/cat_comparison/overall_cEfficiency.pdf'
+ not found.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.268   }
+         
+
+LaTeX Warning: File `plots/amazon/train/adaptiveSourcesUnfiltered/cat_compariso
+n/cEfficiency.pdf' not found on input line 272.
+
+
+./evaluation_of_query_generators.tex:272: Package pdftex.def Error: File `plots
+/amazon/train/adaptiveSourcesUnfiltered/cat_comparison/cEfficiency.pdf' not fou
+nd.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.272   }
+         
+
+LaTeX Warning: File `plots/amazon/train/adaptiveSourcesUnfiltered/resultCoverag
+e/graph_level_1.pdf' not found on input line 301.
+
+
+./evaluation_of_query_generators.tex:301: Package pdftex.def Error: File `plots
+/amazon/train/adaptiveSourcesUnfiltered/resultCoverage/graph_level_1.pdf' not f
+ound.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.301   }
+         
+
+LaTeX Warning: File `plots/amazon/train/adaptiveSourcesUnfiltered/resultCoverag
+e/graph_level_2.pdf' not found on input line 304.
+
+
+./evaluation_of_query_generators.tex:304: Package pdftex.def Error: File `plots
+/amazon/train/adaptiveSourcesUnfiltered/resultCoverage/graph_level_2.pdf' not f
+ound.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.304   }
+         
+[10]
+
+LaTeX Warning: File `plots/amazon/train/recall_vs_procItems/1r_coverage.pdf' no
+t found on input line 326.
+
+
+./evaluation_of_query_generators.tex:326: Package pdftex.def Error: File `plots
+/amazon/train/recall_vs_procItems/1r_coverage.pdf' not found.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.326 ...rain/recall_vs_procItems/1r_coverage.pdf}
+                                                  
+
+LaTeX Warning: File `plots/bib/train/standardSmallUnfiltered/cat_comparison/ove
+rall_coverage.pdf' not found on input line 348.
+
+
+./evaluation_of_query_generators.tex:348: Package pdftex.def Error: File `plots
+/bib/train/standardSmallUnfiltered/cat_comparison/overall_coverage.pdf' not fou
+nd.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.348   }
+         
+
+LaTeX Warning: File `plots/bib/train/standardSmallUnfiltered/cat_comparison/ove
+rall_cEfficiency.pdf' not found on input line 352.
+
+
+./evaluation_of_query_generators.tex:352: Package pdftex.def Error: File `plots
+/bib/train/standardSmallUnfiltered/cat_comparison/overall_cEfficiency.pdf' not 
+found.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.352   }
+         
+
+LaTeX Warning: File `plots/bib/train/standardSmallUnfiltered/cat_comparison/cEf
+ficiency.pdf' not found on input line 356.
+
+
+./evaluation_of_query_generators.tex:356: Package pdftex.def Error: File `plots
+/bib/train/standardSmallUnfiltered/cat_comparison/cEfficiency.pdf' not found.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.356   }
+         
+)
+
+LaTeX Warning: Reference `sec:pre-filtering_of_query_generators' on page 11 und
+efined on input line 15.
+
+
+LaTeX Warning: File `plots/amazon/train/parQsAndSeqQsByMaxTrials/qual_eff_regar
+ding_coverage.pdf' not found on input line 23.
+
+
+./evaluation.tex:23: Package pdftex.def Error: File `plots/amazon/train/parQsAn
+dSeqQsByMaxTrials/qual_eff_regarding_coverage.pdf' not found.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.23 ...MaxTrials/qual_eff_regarding_coverage.pdf}
+                                                  
+
+LaTeX Warning: File `plots/bib/train/parQsAndSeqQsByMaxTrials/qual_eff_regardin
+g_coverage.pdf' not found on input line 28.
+
+
+./evaluation.tex:28: Package pdftex.def Error: File `plots/bib/train/parQsAndSe
+qQsByMaxTrials/qual_eff_regarding_coverage.pdf' not found.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.28 ...MaxTrials/qual_eff_regarding_coverage.pdf}
+                                                  
+
+LaTeX Warning: Reference `sec:dynamic_entity_filters' on page 11 undefined on i
+nput line 37.
+
+[11]
+
+LaTeX Warning: Reference `fig:eval_e50_harmonic' on page 12 undefined on input 
+line 64.
+
+
+LaTeX Warning: File `plots/amazon/train/seqQsByMaxTrialsOrDynFilterThreshold/ha
+rmonic_regarding_coverage.pdf' not found on input line 67.
+
+
+./evaluation.tex:67: Package pdftex.def Error: File `plots/amazon/train/seqQsBy
+MaxTrialsOrDynFilterThreshold/harmonic_regarding_coverage.pdf' not found.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.67 ...Threshold/harmonic_regarding_coverage.pdf}
+                                                  
+
+LaTeX Warning: File `plots/amazon/train/peQsByMaxTrialsOrDynFilterThreshold/har
+monic_regarding_coverage.pdf' not found on input line 72.
+
+
+./evaluation.tex:72: Package pdftex.def Error: File `plots/amazon/train/peQsByM
+axTrialsOrDynFilterThreshold/harmonic_regarding_coverage.pdf' not found.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.72 ...Threshold/harmonic_regarding_coverage.pdf}
+                                                  
+
+<plots/amazon/test/bestQs/cat_comparison/overall_coverage.pdf, id=86, 238.8925p
+t x 97.36375pt>
+<use plots/amazon/test/bestQs/cat_comparison/overall_coverage.pdf>
+<plots/amazon/test/bestQs/cat_comparison/overall_cEfficiency.pdf, id=87, 238.89
+25pt x 97.36375pt>
+<use plots/amazon/test/bestQs/cat_comparison/overall_cEfficiency.pdf>
+Underfull \hbox (badness 10000) in paragraph at lines 99--104
+[][]
+
+<plots/bib/test/bestQs/cat_comparison/overall_coverage.pdf, id=88, 238.8925pt x
+ 97.36375pt> <use plots/bib/test/bestQs/cat_comparison/overall_coverage.pdf>
+<plots/bib/test/bestQs/cat_comparison/overall_cEfficiency.pdf, id=89, 238.8925p
+t x 97.36375pt>
+<use plots/bib/test/bestQs/cat_comparison/overall_cEfficiency.pdf>
+Underfull \hbox (badness 10000) in paragraph at lines 113--118
+[][]
+) (./related_work.tex
+Underfull \vbox (badness 10000) has occurred while \output is active
+Underfull \vbox (badness 10000) has occurred while \output is active [12 <./plo
+ts/amazon/test/bestQs/cat_comparison/overall_coverage.pdf> <./plots/amazon/test
+/bestQs/cat_comparison/overall_cEfficiency.pdf> <./plots/bib/test/bestQs/cat_co
+mparison/overall_coverage.pdf> <./plots/bib/test/bestQs/cat_comparison/overall_
+cEfficiency.pdf>]) (./conclusions.tex) (./main.bbl [13])
+
+** Conference Paper **
+Before submitting the final camera ready copy, remember to:
+
+ 1. Manually equalize the lengths of two columns on the last page
+ of your paper;
+
+ 2. Ensure that any PostScript and/or PDF output post-processing
+ uses only Type 1 fonts and that every step in the generation
+ process uses the appropriate paper size.
+
+[14] (./main.aux)
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: There were multiply-defined labels.
+
+ )
+(see the transcript file for additional information){/usr/share/texmf-texlive/f
+onts/enc/dvips/base/8r.enc}</usr/share/texmf-texlive/fonts/type1/public/amsfont
+s/cm/cmex10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi10
+.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/s
+hare/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texmf-t
+exlive/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texmf-texlive/fonts
+/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-texlive/fonts/type1/publi
+c/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/c
+m/cmr5.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr6.pfb></
+usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/tex
+mf-texlive/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fo
+nts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/p
+ublic/amsfonts/cm/cmsy5.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfon
+ts/cm/cmsy6.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy7.
+pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/sh
+are/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texmf-te
+xlive/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texmf-texlive/fonts/type1/
+urw/helvetic/uhvr8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmb8a.
+pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmbi8a.pfb></usr/share/tex
+mf-texlive/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-texlive/fonts/typ
+e1/urw/times/utmri8a.pfb>
+Output written on main.pdf (14 pages, 541311 bytes).
+SyncTeX written on main.synctex.gz
+Transcript written on main.log.
+
