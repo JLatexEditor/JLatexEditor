@@ -20,6 +20,7 @@ import jlatexeditor.tools.SVN;
 import jlatexeditor.tools.SVNView;
 import jlatexeditor.tools.ThreadInfoWindow;
 import sce.component.*;
+import sce.component.SourceCodeEditorUI.Comp;
 import util.*;
 import util.diff.Diff;
 import util.filechooser.SCEFileChooser;
@@ -558,6 +559,8 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
    * @param withAndWithoutShift register the shortcut also in combination with shift?
    */
   private void createPaneShortcut(final String command, final boolean withAndWithoutShift) {
+	  final Comp comp = SourceCodeEditorUI.globalActions.contains(command) ? Comp.global : Comp.textPane;
+	  
 	  // register a property change listener to update the shortcut in the menu if it has been changed in global.properties
 	  PropertyChangeListener propertyChangeListener = new PropertyChangeListener() {
 		  public void propertyChange(PropertyChangeEvent evt) {
@@ -566,11 +569,11 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 
 			  if (shortcutString != null && !shortcutString.equals("")) {
 			    KeyStroke keyStroke = KeyStroke.getKeyStroke(shortcutString);
-			    SCEPaneUI.replaceKeyStrokeAndAction(keyStroke, command);
+			    SourceCodeEditorUI.replaceKeyStrokeAndAction(comp, keyStroke, command);
 
 			    if(withAndWithoutShift) {
 			      keyStroke = KeyStroke.getKeyStroke("shift " + shortcutString);
-			      SCEPaneUI.replaceKeyStrokeAndAction(keyStroke, command + " shift");
+				    SourceCodeEditorUI.replaceKeyStrokeAndAction(comp, keyStroke, command + " shift");
 			    }
 			  }
 		  }

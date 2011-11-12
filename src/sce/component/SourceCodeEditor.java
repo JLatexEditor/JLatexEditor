@@ -52,9 +52,6 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
     add(scrollPane, BorderLayout.CENTER);
     add(markerBar, BorderLayout.EAST);
 
-	  scrollPane.setInputMap(JComponent.WHEN_FOCUSED, new InputMap());
-	  scrollPane.setInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new InputMap());
-
     new BracketHighlighting(this);
   }
 
@@ -309,9 +306,11 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
 
   /**
    * Show search field.
+   *
+   * @param replace show replace or not
    */
-  public void toggleSearch() {
-	  if (search.hasFocus()) {
+  public void toggleSearch(boolean replace) {
+	  if (search.hasFocus() && (replace == search.isShowReplace())) {
 		  textPane.requestFocusInWindow();
 	  } else {
 		  SCEDocument document = textPane.getDocument();
@@ -326,16 +325,16 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
 			search.setVisible(true);
 			validate();
 			search.focus();
-			search.setShowReplace(false);
 	  }
+
+	  search.setShowReplace(replace);
   }
 
   /**
    * Show replace field.
    */
   public void replace() {
-    toggleSearch();
-    search.setShowReplace(true);
+    toggleSearch(true);
   }
 
   public void actionPerformed(ActionEvent e) {
@@ -355,7 +354,36 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
 	public void search(SCESearch lastSearch) {
 		add(search, BorderLayout.NORTH);
 		search.openSearch(lastSearch);
+		search.getInputMap().put(KeyStroke.getKeyStroke("f3"), SCEPaneUI.Actions.FIND_NEXT);
+		search.setActionMap(textPane.getActionMap());
 		validate();
+	}
+
+	/**
+	 * If this pane is added to a container.
+	 */
+	@Override
+	public void addNotify() {
+		super.addNotify();
+
+		scrollPane.setInputMap(JComponent.WHEN_FOCUSED, new InputMap());
+		scrollPane.setInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new InputMap());
+
+		// install actions
+		for (String action : SourceCodeEditorUI.globalActions) {
+			getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke("F3"), "find next");
+			getActionMap().put(action, new SCEPaneUI.Actions(action, textPane));
+		}
+
+		/*
+		getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke("F3"), "foo");
+		getActionMap().put("foo", new AbstractAction() {
+		  @Override
+		  public void actionPerformed(ActionEvent e) {
+			  System.out.println("asd");
+		  }
+		});
+		*/
 	}
 
 	public void dispose() {

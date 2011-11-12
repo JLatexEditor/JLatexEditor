@@ -18,10 +18,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -393,13 +390,13 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
 	public void installUI(JComponent c) {
 		this.pane = (SCEPane) c;
 
-		installInputMap(pane);
+		SourceCodeEditorUI.installInputMap(pane.getSourceCodeEditor());
 		installKeyboardActions();
 	}
 
 	public void uninstallUI(JComponent c) {
 		uninstallKeyboardActions();
-		uninstallInputMap(pane);
+		SourceCodeEditorUI.uninstallInputMap(pane.getSourceCodeEditor());
 
 		this.pane = null;
 	}
@@ -413,7 +410,14 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
 		km = getInputMap(JComponent.WHEN_FOCUSED);
 		SwingUtilities.replaceUIInputMap(pane, JComponent.WHEN_FOCUSED, km);
 
-		pane.setActionMap(Actions.getActionMap());
+		pane.getSourceCodeEditor().addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				System.out.println(e.getKeyCode());
+			}
+		});
+		
+		pane.setActionMap(Actions.getActionMap(pane));
 
 		//LazyActionMap.installLazyActionMap(pane, BasicTabbedPaneUI.class, "SCEPane.actionMap");
 		//updateMnemonics();
@@ -477,13 +481,14 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
 		public static final String UNCOMMENT                = "uncomment";
 
 		private String key;
+		private SCEPane pane;
 
-		Actions(String key) {
+		Actions(String key, SCEPane pane) {
 			this.key = key;
+			this.pane = pane;
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			SCEPane pane = (SCEPane) e.getSource();
 			SCEPaneUI ui = pane.getPaneUI();
 
 			if (ui == null) return;
@@ -562,7 +567,7 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
         pane.getUndoManager().redo(false);
       } else
       if (key.equals(FIND)) {
-        pane.getSourceCodeEditor().toggleSearch();
+        pane.getSourceCodeEditor().toggleSearch(false);
       } else
       if (key.equals(REPLACE)) {
         pane.getSourceCodeEditor().replace();
@@ -619,9 +624,9 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
       }
     }
 
-		public static ActionMap getActionMap() {
+		public static ActionMap getActionMap(SCEPane pane) {
 			ActionMap am = new ActionMap();
-			add(am, MOVE_VIEW_UP, MOVE_VIEW_UP_SHIFT, MOVE_VIEW_DOWN, MOVE_VIEW_DOWN_SHIFT,
+			add(am, pane, MOVE_VIEW_UP, MOVE_VIEW_UP_SHIFT, MOVE_VIEW_DOWN, MOVE_VIEW_DOWN_SHIFT,
 				JUMP_LEFT, JUMP_LEFT_SHIFT, JUMP_RIGHT, JUMP_RIGHT_SHIFT, JUMP_TO_FRONT, JUMP_TO_FRONT_SHIFT, JUMP_TO_END, JUMP_TO_END_SHIFT,
 				REMOVE_LINE, REMOVE_LINE_BEFORE_CARET, REMOVE_LINE_BEHIND_CARET, REMOVE_WORD_BEFORE_CARET, REMOVE_WORD_BEHIND_CARET,
 				COMPLETE,
@@ -630,9 +635,9 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
 			return am;
 		}
 
-		public static void add(ActionMap am, String... commands) {
+		public static void add(ActionMap am, SCEPane pane, String... commands) {
 			for (String command : commands) {
-				am.put(command, new Actions(command));
+				am.put(command, new Actions(command, pane));
 			}
 		}
 	}
@@ -906,59 +911,5 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
 
 	public CodeHelperPane getCodeHelperPane() {
 		return codeHelperPane;
-	}
-
-	private static final ArrayList<WeakReference<SCEPane>> allPanes = new ArrayList<WeakReference<SCEPane>>();
-	private static final HashMap<KeyStroke, String> keyStrokeMap = new HashMap<KeyStroke, String>();
-	private static final HashMap<String, KeyStroke> actionMap = new HashMap<String, KeyStroke>();
-
-	private static void installInputMap(SCEPane pane) {
-		allPanes.add(new WeakReference<SCEPane>(pane));
-
-		for (Map.Entry<KeyStroke, String> keyStrokeStringEntry : keyStrokeMap.entrySet()) {
-			pane.getInputMap().put(keyStrokeStringEntry.getKey(), keyStrokeStringEntry.getValue());
-		}
-	}
-
-	private static void uninstallInputMap(SCEPane pane) {
-		allPanes.remove(new WeakReference<SCEPane>(pane));
-
-		for (KeyStroke keyStroke : keyStrokeMap.keySet()) {
-			pane.getInputMap().remove(keyStroke);
-		}
-	}
-
-	public static void replaceKeyStrokeAndAction(KeyStroke keyStroke, String action) {
-		// remove action
-		if (actionMap.containsKey(action)) {
-			removeKeyStroke(actionMap.get(action));
-		}
-		// remove keystroke
-		if (keyStrokeMap.containsKey(keyStroke)) {
-			removeKeyStroke(keyStroke);
-		}
-		// add keystroke
-		addKeyStroke(keyStroke, action);
-	}
-
-	public static void addKeyStroke(KeyStroke keyStroke, String action) {
-		// overwrite keystroke
-		for (WeakReference<SCEPane> paneRef : allPanes) {
-			SCEPane pane = paneRef.get();
-			pane.getInputMap().put(keyStroke, action);
-		}
-		keyStrokeMap.put(keyStroke, action);
-		actionMap.put(action, keyStroke);
-	}
-
-	public static void removeKeyStroke(KeyStroke keyStroke) {
-		if (keyStrokeMap.containsKey(keyStroke)) {
-			for (WeakReference<SCEPane> paneRef : allPanes) {
-				SCEPane pane = paneRef.get();
-				pane.getInputMap().remove(keyStroke);
-			}
-		}
-		actionMap.remove(keyStrokeMap.get(keyStroke));
-		keyStrokeMap.remove(keyStroke);
 	}
 }
