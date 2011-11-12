@@ -52,7 +52,7 @@
   <command name="]" hint="define displaymath environment"/>
 
   <command name="documentclass" usage="\documentclass[@opt@]{@style@}"
-           hint="declares a document to be of the specified style">
+           hint="declares a document to be of the specified style" style="completion_command">
     <argument name="opt"/>
     <argument name="style" value="" completion="true"/>
   </command>
@@ -137,12 +137,12 @@
               hint="mnemonic consisting of any sequence of letters, numbers, and punctuation symbols not containing a comma"/>
   </command>
 
-	<command name="bibliography" usage="\bibliography{@file@}" hint="set bibliography file">
+	<command name="bibliography" usage="\bibliography{@file@}" hint="set bibliography file" style="completion_command">
 		<argument name="file" type="file|defaultExtension=bib|extensions=bib" value="" completion="true" hint="filename of the bibliography file"/>
 	</command>
 
-	<command name="bibliographystyle" usage="\bibliographystyle{@style@}" hint="sets the bibliography style">
-		<argument name="style" value="" values="alpha|abbrv|plain|unsrt" hint="bibliography style"/>
+	<command name="bibliographystyle" usage="\bibliographystyle{@style@}" hint="sets the bibliography style" style="completion_command">
+		<argument name="style" value="" completion="true" hint="bibliography style"/>
 	</command>
 
   <command name="bigskip" hint="equivalent to \vspace{\bigskipamount}">
@@ -884,8 +884,7 @@
     <argument name="counter"/>
   </command>
 
-  <command name="usepackage" usage="\usepackage[@options@]{@packages@}"
-           hint="loads the given LaTeX packages">
+  <command name="usepackage" usage="\usepackage[@options@]{@packages@}" hint="loads the given LaTeX packages" style="completion_command">
     <argument name="options"/>
     <argument name="packages" value="" completion="true"/>
   </command>
