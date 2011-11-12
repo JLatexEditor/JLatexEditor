@@ -8,7 +8,12 @@ import sce.codehelper.CHCommandArgument;
 import util.SetTrie;
 import util.SimpleTrie;
 import util.StreamUtils;
+import util.Trie;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -20,9 +25,11 @@ import java.util.HashSet;
 public class PackagesExtractor {
 	private static final String PACKAGES_FILE = "data/codehelper/packages.xml";
 	private static final String DOCCLASSES_FILE = "data/codehelper/docclasses.xml";
+	private static final String BIB_STYLES_FILE = "data/codehelper/bibStyles.txt";
 
 	private static PackageParser packageParser;
 	private static PackageParser docClassesParser;
+	private static SimpleTrie<String> bibStyles;
 
 	public static void main(String[] args) {
 		try {
@@ -60,6 +67,22 @@ public class PackagesExtractor {
 			docClassesParser = new PackageParser(DOCCLASSES_FILE);
 		}
 		return docClassesParser;
+	}
+
+	public static SimpleTrie<String> getBibStyles() {
+		if (bibStyles == null) {
+			bibStyles = new SimpleTrie<String>();
+			try {
+				BufferedReader r = new BufferedReader(new InputStreamReader(StreamUtils.getInputStream(BIB_STYLES_FILE)));
+				String line;
+				while((line = r.readLine()) != null) {
+					bibStyles.add(line, line);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return bibStyles;
 	}
 
 	/**
