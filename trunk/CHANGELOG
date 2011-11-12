@@ -11,11 +11,11 @@ New Features and other Changes in JLatexEditor
 * new features:
   - added completion for \bibliographystyle (ticket #203)
 * enhancements:
+  - commands with completion support are marked bold
   - file creation suggester asks for adding file to svn if project is under version control
   - suggest to create non-existing command when pressing alt+enter
   - invalid regular expressions in search input field are highlighted red
-  - double click in SVN view opens corresponding file
-  - commands with completion support are marked bold
+  - double click in SVN view opens corresponding file (SVN view stays experimental and incomplete)
 * bug fixes:
   - fixed a bug in SVN view which led to invalid highlighting of files in SVN view
   - fixed bug #198: F3 does not work anymore if search input field has focus
