@@ -9,11 +9,11 @@ import util.Function0;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GenericCodeHelper extends PatternHelper {
+public class GenericCodeCompletion extends PatternCompletion {
   protected WordWithPos label;
 	protected Function0<Trie<?>> getCompletionTrie;
 
-  public GenericCodeHelper(String pattern, Function0<Trie<?>> getCompletionTrie) {
+  public GenericCodeCompletion(String pattern, Function0<Trie<?>> getCompletionTrie) {
     this.pattern = new PatternPair(pattern);
 	  this.getCompletionTrie = getCompletionTrie;
   }

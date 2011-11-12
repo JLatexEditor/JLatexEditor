@@ -4,18 +4,17 @@ import de.endrullis.utils.collections.CollectionUtils;
 import jlatexeditor.PackagesExtractor;
 import sce.codehelper.CHCommand;
 import sce.codehelper.PatternPair;
-import sce.codehelper.WordWithPos;
 import util.Function1;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * CodeHelper for \\documentclass{...}.
+ * CodeCompletion for \\documentclass{...}.
  *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
-public class DocumentClassCodeHelper extends ExtPatternHelper<PackagesExtractor.Package> {
+public class DocumentClassCodeCompletion extends ExtPatternCompletion<PackagesExtractor.Package> {
 	private static final Function1<PackagesExtractor.Package, String> PACKAGE_2_NAME_FUNCTION = new Function1<PackagesExtractor.Package, String>() {
 		@Override
 		public String apply(PackagesExtractor.Package pack) {
@@ -23,7 +22,7 @@ public class DocumentClassCodeHelper extends ExtPatternHelper<PackagesExtractor.
 		}
 	};
 
-	public DocumentClassCodeHelper() {
+	public DocumentClassCodeCompletion() {
 		super("documentclasses");
 		pattern = new PatternPair("\\\\documentclass(?:\\[[^\\]]*\\])?\\{([^{}]*)");
 	}

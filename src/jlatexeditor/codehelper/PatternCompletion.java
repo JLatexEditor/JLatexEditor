@@ -1,6 +1,6 @@
 package jlatexeditor.codehelper;
 
-import sce.codehelper.CodeHelper;
+import sce.codehelper.CodeCompletion;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
 
@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
-public abstract class PatternHelper extends CodeHelper {
+public abstract class PatternCompletion extends CodeCompletion {
   protected PatternPair pattern;
   protected List<WordWithPos> params;
 

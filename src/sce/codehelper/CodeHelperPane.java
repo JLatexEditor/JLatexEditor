@@ -36,8 +36,8 @@ public class CodeHelperPane extends JPanel implements KeyListener, SCEDocumentLi
   private DefaultListModel model = null;
 
   // helpers
-  private CodeHelper codeHelper = null;
-  private CodeHelper tabCompletion = null;
+  private CodeCompletion codeCompletion = null;
+  private CodeCompletion tabCompletion = null;
 
   // the position of the code helper
   private WordWithPos wordPos = null;
@@ -110,27 +110,27 @@ public class CodeHelperPane extends JPanel implements KeyListener, SCEDocumentLi
     return popup.isVisible();
   }
 
-  public CodeHelper getCodeHelper() {
-    return codeHelper;
+  public CodeCompletion getCodeCompletion() {
+    return codeCompletion;
   }
 
-  public void setCodeHelper(CodeHelper codeHelper) {
-    this.codeHelper = codeHelper;
-    if (codeHelper != null) {
-      this.codeHelper.setSCEPane(pane);
+  public void setCodeCompletion(CodeCompletion codeCompletion) {
+    this.codeCompletion = codeCompletion;
+    if (codeCompletion != null) {
+      this.codeCompletion.setSCEPane(pane);
 
-	    if (codeHelper.autoCompletion) {
-		    idleThread = new IdleThread(codeHelper);
+	    if (codeCompletion.autoCompletion) {
+		    idleThread = new IdleThread(codeCompletion);
 	      idleThread.start();
 	    }
     }
   }
 
-  public CodeHelper getTabCompletion() {
+  public CodeCompletion getTabCompletion() {
     return tabCompletion;
   }
 
-  public void setTabCompletion(CodeHelper tabCompletion) {
+  public void setTabCompletion(CodeCompletion tabCompletion) {
     this.tabCompletion = tabCompletion;
     if (tabCompletion != null) {
       this.tabCompletion.setSCEPane(pane);
@@ -178,7 +178,7 @@ public class CodeHelperPane extends JPanel implements KeyListener, SCEDocumentLi
    * @param level completion level
    */
   private void updatePrefix(int level) {
-    if (wordPos == null || codeHelper == null) return;
+    if (wordPos == null || codeCompletion == null) return;
 
     // get selection
     Object selectedValue = null;
@@ -187,9 +187,9 @@ public class CodeHelperPane extends JPanel implements KeyListener, SCEDocumentLi
     // ask code helper for command suggestions at this position
     model.removeAllElements();
 
-    if (codeHelper.documentChanged()) {
+    if (codeCompletion.documentChanged()) {
 	    while (model.isEmpty()) {
-		    for (CHCommand command : codeHelper.getCompletions(level)) model.addElement(command);
+		    for (CHCommand command : codeCompletion.getCompletions(level)) model.addElement(command);
 		    if (model.isEmpty()) {
 			    if (level >= 3) {
 				    break;
@@ -202,7 +202,7 @@ public class CodeHelperPane extends JPanel implements KeyListener, SCEDocumentLi
 	    if (model.isEmpty()) {
 		    status.setText(status.getText() + " - no suggestions");
 	    }
-	    wordPos = codeHelper.getWordToReplace();
+	    wordPos = codeCompletion.getWordToReplace();
 
       // restore selection
       list.setSelectedValue(selectedValue, true);
@@ -369,10 +369,10 @@ public class CodeHelperPane extends JPanel implements KeyListener, SCEDocumentLi
   }
 
 	public void callCodeHelperWithCompletion() {
-		if (codeHelper.matches()) {
-		  wordPos = codeHelper.getWordToReplace();
+		if (codeCompletion.matches()) {
+		  wordPos = codeCompletion.getWordToReplace();
 		  updatePrefix(level);
-		  String replacement = codeHelper.getMaxCommonPrefix();
+		  String replacement = codeCompletion.getMaxCommonPrefix();
 
 		  if (replacement != null) {
 			  if (wordPos.word.equals(replacement)) {
@@ -394,11 +394,11 @@ public class CodeHelperPane extends JPanel implements KeyListener, SCEDocumentLi
 	private void callCodeHelperWithoutCompletion() {
 		if (popup.isVisible()) return;
 
-		if (codeHelper.matches()) {
-		  wordPos = codeHelper.getWordToReplace();
+		if (codeCompletion.matches()) {
+		  wordPos = codeCompletion.getWordToReplace();
 		  updatePrefix(level);
 
-			String replacement = codeHelper.getMaxCommonPrefix();
+			String replacement = codeCompletion.getMaxCommonPrefix();
 
 			if (replacement != null) {
 				popItUp();
@@ -506,11 +506,11 @@ public class CodeHelperPane extends JPanel implements KeyListener, SCEDocumentLi
 		private long lastTime;
 		private Pattern pattern = Pattern.compile("\\p{Alnum}*$");
 
-		public IdleThread(CodeHelper codeHelper) {
+		public IdleThread(CodeCompletion codeCompletion) {
 			super("CodeHelperPane-IdleThread");
 			setDaemon(true);
-			delay = codeHelper.autoCompletionDelay;
-			minLetters = codeHelper.autoCompletionMinLetters;
+			delay = codeCompletion.autoCompletionDelay;
+			minLetters = codeCompletion.autoCompletionMinLetters;
 		}
 
 		@Override

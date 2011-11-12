@@ -2,7 +2,7 @@ package jlatexeditor.gproperties;
 
 import de.endrullis.utils.BetterProperties2.PSet;
 import de.endrullis.utils.BetterProperties2.Range;
-import jlatexeditor.codehelper.PatternHelper;
+import jlatexeditor.codehelper.PatternCompletion;
 import jlatexeditor.codehelper.ValueCompletion;
 import sce.codehelper.CHCommand;
 import sce.codehelper.PatternPair;
@@ -14,12 +14,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
-public class GPropertiesCodeHelper extends PatternHelper {
+public class GPropertiesCodeCompletion extends PatternCompletion {
   protected String key;
   protected WordWithPos value;
   protected Range range;
 
-  public GPropertiesCodeHelper() {
+  public GPropertiesCodeCompletion() {
     pattern = new PatternPair("^([^#=]+)=([^#]*)");
   }
 

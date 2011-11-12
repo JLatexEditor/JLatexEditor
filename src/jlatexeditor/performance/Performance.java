@@ -7,7 +7,7 @@ import jlatexeditor.gproperties.GProperties;
 import jlatexeditor.quickhelp.LatexQuickHelp;
 import jlatexeditor.syntaxhighlighting.LatexStyles;
 import jlatexeditor.syntaxhighlighting.LatexSyntaxHighlighting;
-import sce.codehelper.StaticCommandsCodeHelper;
+import sce.codehelper.StaticCommandsCodeCompletion;
 import sce.codehelper.StaticCommandsReader;
 import sce.component.SCECaret;
 import sce.component.SCEDocument;
@@ -48,8 +48,8 @@ public class Performance {
     SyntaxHighlighting syntaxHighlighting = new LatexSyntaxHighlighting(pane, spellChecker, latexCommands.getCommands(), backgroundParser);
     syntaxHighlighting.start();
 
-    pane.setCodeHelper(new StaticCommandsCodeHelper("(\\\\[a-zA-Z]*)", latexCommands));
-    pane.setTabCompletion(new StaticCommandsCodeHelper("([a-zA-Z]*)", tabCompletions));
+    pane.setCodeCompletion(new StaticCommandsCodeCompletion("(\\\\[a-zA-Z]*)", latexCommands));
+    pane.setTabCompletion(new StaticCommandsCodeCompletion("([a-zA-Z]*)", tabCompletions));
     pane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
 
 		if (spellChecker != null) {

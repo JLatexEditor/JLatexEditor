@@ -9,11 +9,11 @@ import util.Function1;
 import java.util.ArrayList;
 
 /**
- * CodeHelper for \\usepackage{...}.
+ * CodeCompletion for \\usepackage{...}.
  *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
-public class UsePackageCodeHelper extends ExtPatternHelper<PackagesExtractor.Package> {
+public class UsePackageCodeCompletion extends ExtPatternCompletion<PackagesExtractor.Package> {
 	private static final Function1<PackagesExtractor.Package,CHCommand> PACKAGE_2_CHCOMMAND = new Function1<PackagesExtractor.Package, CHCommand>() {
 		@Override
 		public CHCommand apply(PackagesExtractor.Package a1) {
@@ -21,7 +21,7 @@ public class UsePackageCodeHelper extends ExtPatternHelper<PackagesExtractor.Pac
 		}
 	};
 
-	public UsePackageCodeHelper() {
+	public UsePackageCodeCompletion() {
 		super("packages");
 		pattern = new PatternPair("\\\\usepackage(?:\\[[^\\]]*\\])?\\{([^{},]+,)*([^{},]*)");
 	}

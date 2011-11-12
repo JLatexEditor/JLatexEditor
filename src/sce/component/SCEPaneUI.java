@@ -2,7 +2,7 @@ package sce.component;
 
 import jlatexeditor.Doc;
 import jlatexeditor.gproperties.GProperties;
-import sce.codehelper.CodeHelper;
+import sce.codehelper.CodeCompletion;
 import sce.codehelper.CodeHelperPane;
 import sce.codehelper.LineBreakListener;
 import sce.quickhelp.QuickHelp;
@@ -94,21 +94,21 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
   /**
    * Sets the code helper for the source code editor.
    *
-   * @param codeHelper code helper
+   * @param codeCompletion code helper
    */
-  public void setCodeHelper(CodeHelper codeHelper) {
+  public void setCodeHelper(CodeCompletion codeCompletion) {
     // remove old code helper
     if (codeHelperPane != null) codeHelperPane.destroy();
 
     // add new code helper
-    if (codeHelper != null) {
+    if (codeCompletion != null) {
       // UI key listener shall be at the end of the processor queue
       pane.removeKeyListener(this);
 
       // create auto completion list
       codeHelperPane = new CodeHelperPane(pane);
       codeHelperPane.setVisible(false);
-      codeHelperPane.setCodeHelper(codeHelper);
+      codeHelperPane.setCodeCompletion(codeCompletion);
 
       // UI key listener shall be at the end of the processor queue
       pane.addKeyListener(this);
@@ -120,7 +120,7 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
    *
    * @param tabCompletion tab completion
    */
-  public void setTabCompletion(CodeHelper tabCompletion) {
+  public void setTabCompletion(CodeCompletion tabCompletion) {
     if (codeHelperPane == null) return;
     codeHelperPane.setTabCompletion(tabCompletion);
   }

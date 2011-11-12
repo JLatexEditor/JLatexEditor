@@ -19,7 +19,7 @@ import java.util.*;
  *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
-public class CommandsCodeHelper extends ExtPatternHelper<SetTrie<PackagesExtractor.Command>> {
+public class CommandsCodeCompletion extends ExtPatternCompletion<SetTrie<PackagesExtractor.Command>> {
 	protected static final Function1<SetTrie<PackagesExtractor.Command>,String> TRIE_SET_2_STRING_FUNCTION = new Function1<SetTrie<PackagesExtractor.Command>, String>() {
 		@Override
 		public String apply(SetTrie<PackagesExtractor.Command> setTrie) {
@@ -37,7 +37,7 @@ public class CommandsCodeHelper extends ExtPatternHelper<SetTrie<PackagesExtract
 		}
 	};
 
-	public CommandsCodeHelper() {
+	public CommandsCodeCompletion() {
 		super("commands");
 	  pattern = new PatternPair("(\\\\\\p{L}*)");
   }

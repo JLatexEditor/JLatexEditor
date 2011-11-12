@@ -1,11 +1,7 @@
 package sce.codehelper;
 
-import jlatexeditor.codehelper.PatternHelper;
+import jlatexeditor.codehelper.PatternCompletion;
 import util.AbstractSimpleTrie;
-import util.SimpleTrie;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Provides a code completion with static commands (command templates).
@@ -13,7 +9,7 @@ import java.util.HashMap;
  * @author Jörg Endrullis
  * @author Stefan Endrullis
  */
-public class StaticCommandsCodeHelper extends PatternHelper {
+public class StaticCommandsCodeCompletion extends PatternCompletion {
   /** Command reference. */
   protected AbstractSimpleTrie<CHCommand> commands = null;
 	/** Maps an environment name to a list of commands. */
@@ -21,7 +17,7 @@ public class StaticCommandsCodeHelper extends PatternHelper {
   /** Last command that has been found. */
   protected WordWithPos command = null;
 
-  public StaticCommandsCodeHelper(String patternString, CommandsReader commandsReader) {
+  public StaticCommandsCodeCompletion(String patternString, CommandsReader commandsReader) {
     pattern = new PatternPair(patternString);
 	  commands = commandsReader.getCommands();
 	  // scopes = commandsReader.getScopes();

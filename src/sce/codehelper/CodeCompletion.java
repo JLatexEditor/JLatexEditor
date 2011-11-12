@@ -8,7 +8,7 @@ import sce.component.SCEPane;
  *
  * @author Stefan Endrullis
  */
-public abstract class CodeHelper {
+public abstract class CodeCompletion {
   protected SCEPane pane = null;
   protected SCEDocument document = null;
 	protected boolean autoCompletion = false;

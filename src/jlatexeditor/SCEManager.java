@@ -1,12 +1,12 @@
 package jlatexeditor;
 
-import jlatexeditor.bib.BibCodeHelper;
+import jlatexeditor.bib.BibCodeCompletion;
 import jlatexeditor.bib.BibSyntaxHighlighting;
 import jlatexeditor.changelog.ChangeLogStyles;
 import jlatexeditor.changelog.ChangeLogSyntaxHighlighting;
 import jlatexeditor.codehelper.*;
 import jlatexeditor.gproperties.GProperties;
-import jlatexeditor.gproperties.GPropertiesCodeHelper;
+import jlatexeditor.gproperties.GPropertiesCodeCompletion;
 import jlatexeditor.gproperties.GPropertiesStyles;
 import jlatexeditor.gproperties.GPropertiesSyntaxHighlighting;
 import jlatexeditor.gui.TemplateEditor;
@@ -132,7 +132,7 @@ public class SCEManager {
 
     // syntax highlighting
     SyntaxHighlighting syntaxHighlighting = new TemplateSyntaxHighlighting(scePane, spellChecker, latexCommands.getCommands(), backgroundParser, templateEditor);
-	  CombinedCodeHelper codeHelper = new CombinedCodeHelper();
+	  CombinedCodeCompletion codeHelper = new CombinedCodeCompletion();
 	  CombinedCodeAssistant codeAssistant = new CombinedCodeAssistant();
 	  codeAssistant.addAssistant(new TemplateArgumentSuggester(templateEditor));
 
@@ -149,13 +149,13 @@ public class SCEManager {
 
 	  // syntax highlighting
 	  SyntaxHighlighting syntaxHighlighting = new LatexSyntaxHighlighting(scePane, spellChecker, latexCommands.getCommands(), backgroundParser);
-		CombinedCodeHelper codeHelper = new CombinedCodeHelper();
+		CombinedCodeCompletion codeHelper = new CombinedCodeCompletion();
 		CombinedCodeAssistant codeAssistant = new CombinedCodeAssistant();
 
 		setupLatexSCEPane(scePane, syntaxHighlighting, codeHelper, codeAssistant);
 	}
 
-  private static void setupLatexSCEPane(SCEPane scePane, SyntaxHighlighting syntaxHighlighting, CombinedCodeHelper codeHelper, CombinedCodeAssistant codeAssistant) {
+  private static void setupLatexSCEPane(SCEPane scePane, SyntaxHighlighting syntaxHighlighting, CombinedCodeCompletion codeHelper, CombinedCodeAssistant codeAssistant) {
     setPaneProperties(scePane);
     SCEDocument document = scePane.getDocument();
 
@@ -166,34 +166,34 @@ public class SCEManager {
 
     // code completion and quick help
 	  if (backgroundParser != null) {
-			codeHelper.addPatternHelper(new CiteHelper(backgroundParser));
+			codeHelper.addPatternHelper(new CiteCompletion(backgroundParser));
 		  // add completion for \ref and \eqref
-			codeHelper.addPatternHelper(new GenericCodeHelper("\\\\(?:ref|eqref)\\{([^{}]*)", new Function0<Trie<?>>() {
+			codeHelper.addPatternHelper(new GenericCodeCompletion("\\\\(?:ref|eqref)\\{([^{}]*)", new Function0<Trie<?>>() {
 				public SimpleTrie<?> apply() {
 					return backgroundParser.getLabelDefs();
 				}
 			}));
 		  // add completion for \label
-			codeHelper.addPatternHelper(new GenericCodeHelper("\\\\label\\{([^{}]*)", new Function0<Trie<?>>() {
+			codeHelper.addPatternHelper(new GenericCodeCompletion("\\\\label\\{([^{}]*)", new Function0<Trie<?>>() {
 				public Trie<?> apply() {
 					return backgroundParser.getLabelRefs();
 				}
 			}));
 	  }
-    codeHelper.addPatternHelper(new UsePackageCodeHelper());
-    codeHelper.addPatternHelper(new DocumentClassCodeHelper());
-    codeHelper.addPatternHelper(new BeamerCodeHelper());
-    codeHelper.addPatternHelper(new IncludeCodeHelper());
-	  codeHelper.addPatternHelper(new CommandsCodeHelper());
-	  codeHelper.addPatternHelper(new EnvironmentCodeHelper());
+    codeHelper.addPatternHelper(new UsePackageCodeCompletion());
+    codeHelper.addPatternHelper(new DocumentClassCodeCompletion());
+    codeHelper.addPatternHelper(new BeamerCodeCompletion());
+    codeHelper.addPatternHelper(new IncludeCodeCompletion());
+	  codeHelper.addPatternHelper(new CommandsCodeCompletion());
+	  codeHelper.addPatternHelper(new EnvironmentCodeCompletion());
 	  if (backgroundParser != null) {
 	    codeHelper.addPatternHelper(new WordCompletion(backgroundParser));
 	  }
 	  codeHelper.setAutoCompletion(GProperties.getBoolean("editor.auto_completion.activated"));
 	  codeHelper.setAutoCompletionMinLetters(GProperties.getInt("editor.auto_completion.min_number_of_letters"));
 	  codeHelper.setAutoCompletionDelay(GProperties.getInt("editor.auto_completion.delay"));
-    scePane.setCodeHelper(codeHelper);
-    scePane.setTabCompletion(new StaticCommandsCodeHelper("(\\p{L}*)", tabCompletion));
+    scePane.setCodeCompletion(codeHelper);
+    scePane.setTabCompletion(new StaticCommandsCodeCompletion("(\\p{L}*)", tabCompletion));
     scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
     scePane.setLineBreakListener(new LatexLineBreakListener());
 
@@ -243,20 +243,20 @@ public class SCEManager {
 	  syntaxHighlighting.start();
 
 		// code completion and quick help
-		CombinedCodeHelper codeHelper = new CombinedCodeHelper();
+		CombinedCodeCompletion codeHelper = new CombinedCodeCompletion();
 		if (backgroundParser != null) {
-			codeHelper.addPatternHelper(new BibCodeHelper());
+			codeHelper.addPatternHelper(new BibCodeCompletion());
 		}
-		//codeHelper.addPatternHelper(new IncludeCodeHelper());
-		codeHelper.addPatternHelper(new CommandsCodeHelper());
+		//codeHelper.addPatternHelper(new IncludeCodeCompletion());
+		codeHelper.addPatternHelper(new CommandsCodeCompletion());
 		if (backgroundParser != null) {
 			codeHelper.addPatternHelper(new WordCompletion(backgroundParser));
 		}
 		codeHelper.setAutoCompletion(GProperties.getBoolean("editor.auto_completion.activated"));
 		codeHelper.setAutoCompletionMinLetters(GProperties.getInt("editor.auto_completion.min_number_of_letters"));
 		codeHelper.setAutoCompletionDelay(GProperties.getInt("editor.auto_completion.delay"));
-		scePane.setCodeHelper(codeHelper);
-		scePane.setTabCompletion(new StaticCommandsCodeHelper("(\\p{L}*)", tabCompletion));
+		scePane.setCodeCompletion(codeHelper);
+		scePane.setTabCompletion(new StaticCommandsCodeCompletion("(\\p{L}*)", tabCompletion));
 		scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
 
 		CombinedCodeAssistant codeAssistant = new CombinedCodeAssistant();
@@ -284,9 +284,9 @@ public class SCEManager {
     syntaxHighlighting.start();
 
     // code completion and quick help
-    CombinedCodeHelper codeHelper = new CombinedCodeHelper();
-    codeHelper.addPatternHelper(new GPropertiesCodeHelper());
-    scePane.setCodeHelper(codeHelper);
+    CombinedCodeCompletion codeHelper = new CombinedCodeCompletion();
+    codeHelper.addPatternHelper(new GPropertiesCodeCompletion());
+    scePane.setCodeCompletion(codeHelper);
 
     return editor;
   }
