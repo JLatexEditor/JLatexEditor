@@ -938,6 +938,23 @@
 	  <argument name="environment" type="closing_env"/>
 	</command>
 
+	<!-- Latex Beamer commands -->
+	<command name="usetheme" usage="\usetheme{@name@}" hint="choses a Beamer presenation theme" style="completion_command">
+	  <argument name="name" value="" completion="true"/>
+	</command>
+	<command name="usecolortheme" usage="\usecolortheme{@name@}" hint="choses a Beamer color theme" style="completion_command">
+	  <argument name="name" value="" completion="true"/>
+	</command>
+	<command name="usefonttheme" usage="\usefonttheme{@name@}" hint="choses a Beamer font theme" style="completion_command">
+	  <argument name="name" value="" completion="true"/>
+	</command>
+	<command name="useinnertheme" usage="\useinnertheme{@name@}" hint="choses a Beamer inner theme" style="completion_command">
+	  <argument name="name" value="" completion="true"/>
+	</command>
+	<command name="useoutertheme" usage="\useoutertheme{@name@}" hint="choses a Beamer outer theme" style="completion_command">
+	  <argument name="name" value="" completion="true"/>
+	</command>
+
 	<environment name="array" hint="array in math environment"/>
 	<environment name="description" hint="labeled list of items"/>
 	<environment name="displaymath" hint="display formulas without numbering"/>
