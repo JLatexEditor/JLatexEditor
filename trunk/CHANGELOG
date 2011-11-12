@@ -8,6 +8,8 @@ New Features and other Changes in JLatexEditor
 
 == Coming in Version 0.2.7 ==
 
+* new features:
+  - added completion for \bibliographystyle (ticket #203)
 * enhancements:
   - file creation suggester asks for adding file to svn if project is under version control
   - suggest to create non-existing command when pressing alt+enter

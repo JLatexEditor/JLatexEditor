@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Word completion.
+ *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 public class WordCompletion extends PatternCompletion {

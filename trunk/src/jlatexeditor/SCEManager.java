@@ -132,11 +132,11 @@ public class SCEManager {
 
     // syntax highlighting
     SyntaxHighlighting syntaxHighlighting = new TemplateSyntaxHighlighting(scePane, spellChecker, latexCommands.getCommands(), backgroundParser, templateEditor);
-	  CombinedCodeCompletion codeHelper = new CombinedCodeCompletion();
+	  CombinedCodeCompletion codeCompletion = new CombinedCodeCompletion();
 	  CombinedCodeAssistant codeAssistant = new CombinedCodeAssistant();
 	  codeAssistant.addAssistant(new TemplateArgumentSuggester(templateEditor));
 
-	  setupLatexSCEPane(scePane, syntaxHighlighting, codeHelper, codeAssistant);
+	  setupLatexSCEPane(scePane, syntaxHighlighting, codeCompletion, codeAssistant);
 
     return editor;
   }
@@ -149,13 +149,13 @@ public class SCEManager {
 
 	  // syntax highlighting
 	  SyntaxHighlighting syntaxHighlighting = new LatexSyntaxHighlighting(scePane, spellChecker, latexCommands.getCommands(), backgroundParser);
-		CombinedCodeCompletion codeHelper = new CombinedCodeCompletion();
+		CombinedCodeCompletion codeCompletion = new CombinedCodeCompletion();
 		CombinedCodeAssistant codeAssistant = new CombinedCodeAssistant();
 
-		setupLatexSCEPane(scePane, syntaxHighlighting, codeHelper, codeAssistant);
+		setupLatexSCEPane(scePane, syntaxHighlighting, codeCompletion, codeAssistant);
 	}
 
-  private static void setupLatexSCEPane(SCEPane scePane, SyntaxHighlighting syntaxHighlighting, CombinedCodeCompletion codeHelper, CombinedCodeAssistant codeAssistant) {
+  private static void setupLatexSCEPane(SCEPane scePane, SyntaxHighlighting syntaxHighlighting, CombinedCodeCompletion codeCompletion, CombinedCodeAssistant codeAssistant) {
     setPaneProperties(scePane);
     SCEDocument document = scePane.getDocument();
 
@@ -166,33 +166,34 @@ public class SCEManager {
 
     // code completion and quick help
 	  if (backgroundParser != null) {
-			codeHelper.addPatternHelper(new CiteCompletion(backgroundParser));
+			codeCompletion.addPatternCompletion(new CiteCompletion(backgroundParser));
 		  // add completion for \ref and \eqref
-			codeHelper.addPatternHelper(new GenericCodeCompletion("\\\\(?:ref|eqref)\\{([^{}]*)", new Function0<Trie<?>>() {
+			codeCompletion.addPatternCompletion(new GenericCodeCompletion("\\\\(?:ref|eqref)\\{([^{}]*)", new Function0<Trie<?>>() {
 				public SimpleTrie<?> apply() {
 					return backgroundParser.getLabelDefs();
 				}
 			}));
 		  // add completion for \label
-			codeHelper.addPatternHelper(new GenericCodeCompletion("\\\\label\\{([^{}]*)", new Function0<Trie<?>>() {
+			codeCompletion.addPatternCompletion(new GenericCodeCompletion("\\\\label\\{([^{}]*)", new Function0<Trie<?>>() {
 				public Trie<?> apply() {
 					return backgroundParser.getLabelRefs();
 				}
 			}));
 	  }
-    codeHelper.addPatternHelper(new UsePackageCodeCompletion());
-    codeHelper.addPatternHelper(new DocumentClassCodeCompletion());
-    codeHelper.addPatternHelper(new BeamerCodeCompletion());
-    codeHelper.addPatternHelper(new IncludeCodeCompletion());
-	  codeHelper.addPatternHelper(new CommandsCodeCompletion());
-	  codeHelper.addPatternHelper(new EnvironmentCodeCompletion());
+    codeCompletion.addPatternCompletion(new UsePackageCodeCompletion());
+    codeCompletion.addPatternCompletion(new DocumentClassCodeCompletion());
+    codeCompletion.addPatternCompletion(new BeamerCodeCompletion());
+    codeCompletion.addPatternCompletion(new IncludeCodeCompletion());
+	  codeCompletion.addPatternCompletion(new CommandsCodeCompletion());
+	  codeCompletion.addPatternCompletion(new EnvironmentCodeCompletion());
+	  codeCompletion.addPatternCompletion(new BibStyleCompletion());
 	  if (backgroundParser != null) {
-	    codeHelper.addPatternHelper(new WordCompletion(backgroundParser));
+	    codeCompletion.addPatternCompletion(new WordCompletion(backgroundParser));
 	  }
-	  codeHelper.setAutoCompletion(GProperties.getBoolean("editor.auto_completion.activated"));
-	  codeHelper.setAutoCompletionMinLetters(GProperties.getInt("editor.auto_completion.min_number_of_letters"));
-	  codeHelper.setAutoCompletionDelay(GProperties.getInt("editor.auto_completion.delay"));
-    scePane.setCodeCompletion(codeHelper);
+	  codeCompletion.setAutoCompletion(GProperties.getBoolean("editor.auto_completion.activated"));
+	  codeCompletion.setAutoCompletionMinLetters(GProperties.getInt("editor.auto_completion.min_number_of_letters"));
+	  codeCompletion.setAutoCompletionDelay(GProperties.getInt("editor.auto_completion.delay"));
+    scePane.setCodeCompletion(codeCompletion);
     scePane.setTabCompletion(new StaticCommandsCodeCompletion("(\\p{L}*)", tabCompletion));
     scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
     scePane.setLineBreakListener(new LatexLineBreakListener());
@@ -243,19 +244,19 @@ public class SCEManager {
 	  syntaxHighlighting.start();
 
 		// code completion and quick help
-		CombinedCodeCompletion codeHelper = new CombinedCodeCompletion();
+		CombinedCodeCompletion codeCompletion = new CombinedCodeCompletion();
 		if (backgroundParser != null) {
-			codeHelper.addPatternHelper(new BibCodeCompletion());
+			codeCompletion.addPatternCompletion(new BibCodeCompletion());
 		}
-		//codeHelper.addPatternHelper(new IncludeCodeCompletion());
-		codeHelper.addPatternHelper(new CommandsCodeCompletion());
+		//codeCompletion.addPatternCompletion(new IncludeCodeCompletion());
+		codeCompletion.addPatternCompletion(new CommandsCodeCompletion());
 		if (backgroundParser != null) {
-			codeHelper.addPatternHelper(new WordCompletion(backgroundParser));
+			codeCompletion.addPatternCompletion(new WordCompletion(backgroundParser));
 		}
-		codeHelper.setAutoCompletion(GProperties.getBoolean("editor.auto_completion.activated"));
-		codeHelper.setAutoCompletionMinLetters(GProperties.getInt("editor.auto_completion.min_number_of_letters"));
-		codeHelper.setAutoCompletionDelay(GProperties.getInt("editor.auto_completion.delay"));
-		scePane.setCodeCompletion(codeHelper);
+		codeCompletion.setAutoCompletion(GProperties.getBoolean("editor.auto_completion.activated"));
+		codeCompletion.setAutoCompletionMinLetters(GProperties.getInt("editor.auto_completion.min_number_of_letters"));
+		codeCompletion.setAutoCompletionDelay(GProperties.getInt("editor.auto_completion.delay"));
+		scePane.setCodeCompletion(codeCompletion);
 		scePane.setTabCompletion(new StaticCommandsCodeCompletion("(\\p{L}*)", tabCompletion));
 		scePane.setQuickHelp(new LatexQuickHelp("data/quickhelp/"));
 
@@ -284,9 +285,9 @@ public class SCEManager {
     syntaxHighlighting.start();
 
     // code completion and quick help
-    CombinedCodeCompletion codeHelper = new CombinedCodeCompletion();
-    codeHelper.addPatternHelper(new GPropertiesCodeCompletion());
-    scePane.setCodeCompletion(codeHelper);
+    CombinedCodeCompletion codeCompletion = new CombinedCodeCompletion();
+    codeCompletion.addPatternCompletion(new GPropertiesCodeCompletion());
+    scePane.setCodeCompletion(codeCompletion);
 
     return editor;
   }
