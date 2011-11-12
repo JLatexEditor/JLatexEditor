@@ -55,13 +55,15 @@ tree string =
         hPutStrLn stdout $ "\\end{pgfonlayer}"
 
 renderTerm :: Term -> String
-renderTerm term = "\\" ++ renderTerm_ term ++ ";"
+renderTerm term = "\\" ++ renderTerm_ [] term ++ ";"
 
-renderTerm_ term =
-  "node" ++ propNode term ++ " (" ++ name term ++ ") {" ++ root term ++ "}" ++
+renderTerm_ names term =
+  let naming = if name term `elem` names || name term == "" then "" else " (" ++ name term ++ ")"
+  in
+  "node" ++ propNode term ++ naming ++ " {" ++ root term ++ "}" ++
   (replace "\n" "\n  " $ 
     concat $ map (\child -> "\n  " ++ propBeforeChild child ++ "child" ++ propAfterChild child ++ 
-                            " { " ++ renderTerm_ child ++ "\n}") $ subterms term)
+                            " { " ++ renderTerm_ (name term:names) child ++ "\n}") $ subterms term)
 
 depth :: String -> Term -> Int
 depth n term
