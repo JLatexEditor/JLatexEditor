@@ -3,6 +3,8 @@ package jlatexeditor.codehelper;
 import sce.codehelper.PatternPair;
 
 /**
+ * Collection of String patterns based on regular expressions.
+ *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 public class CodePattern {
