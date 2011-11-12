@@ -152,6 +152,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   /**
    * If this pane is added to a container.
    */
+  @Override
   public void addNotify() {
     super.addNotify();
 
