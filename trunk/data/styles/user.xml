@@ -24,7 +24,7 @@
   <element name="section" style="bold" foreground="f00000"/>
   <element name="include" style="bold" foreground="008000"/>
   <element name="important_command" style="plain" foreground="f00000"/>
-  <element name="completion_command" style="plain" foreground="f00000"/>
+  <element name="completion_command" style="bold" foreground="000000"/>
 
   <element name="title" style="bold" foreground="000000"/>
 
