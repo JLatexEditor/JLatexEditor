@@ -1,22 +1,15 @@
 package jlatexeditor.codehelper;
 
-import de.endrullis.utils.ProgramUpdater;
 import sce.codehelper.CodeAssistant;
-import sce.codehelper.PatternPair;
-import sce.codehelper.SCEPopup;
-import sce.codehelper.WordWithPos;
 import sce.component.*;
 import util.FileUtil;
 import util.ProcessOutput;
 import util.ProcessUtil;
-import util.SpellChecker;
 
 import javax.swing.*;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 
 /**
  * Scripting support.
