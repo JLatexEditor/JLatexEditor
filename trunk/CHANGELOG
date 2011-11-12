@@ -16,6 +16,7 @@ New Features and other Changes in JLatexEditor
   - invalid regular expressions in search input field are highlighted red
   - double click in SVN view opens corresponding file
   - commands with completion support are marked bold
+* bug fixes:
   - fixed a bug in SVN view which led to invalid highlighting of files in SVN view
   - fixed bug #198: F3 does not work anymore if search input field has focus
 
