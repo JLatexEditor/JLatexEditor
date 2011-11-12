@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
+ * Utility to parse packages.xml and docclasses.xml.
+ *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 public class PackagesExtractor {
