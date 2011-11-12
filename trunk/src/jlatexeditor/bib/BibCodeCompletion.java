@@ -1,6 +1,6 @@
 package jlatexeditor.bib;
 
-import jlatexeditor.codehelper.PatternHelper;
+import jlatexeditor.codehelper.PatternCompletion;
 import sce.codehelper.CHCommand;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
@@ -10,12 +10,12 @@ import sce.syntaxhighlighting.ParserStateStack;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class BibCodeHelper extends PatternHelper {
+public class BibCodeCompletion extends PatternCompletion {
   protected WordWithPos name;
   protected ArrayList<CHCommand> missingParams = null;
 
   protected PatternPair keyPattern = new PatternPair("(\\w*)");
-  public BibCodeHelper() {
+  public BibCodeCompletion() {
     pattern = new PatternPair("^(@\\w*)");
   }
 

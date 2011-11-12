@@ -4,11 +4,11 @@ import sce.codehelper.CHCommand;
 import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
 
-public class CiteHelper extends PatternHelper {
+public class CiteCompletion extends PatternCompletion {
   private BackgroundParser backgroundParser;
   protected WordWithPos word;
 
-  public CiteHelper(BackgroundParser backgroundParser) {
+  public CiteCompletion(BackgroundParser backgroundParser) {
     this.backgroundParser = backgroundParser;
     pattern = new PatternPair("\\\\(?:no)?cite(?:\\[.*\\])?\\{([^{},]+,)*([^{},]*)");
   }

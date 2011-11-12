@@ -14,11 +14,11 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * CodeHelper for \\begin{...} and \\end{...}.
+ * CodeCompletion for \\begin{...} and \\end{...}.
  *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
-public class EnvironmentCodeHelper extends ExtPatternHelper<SetTrie<PackagesExtractor.Environment>> {
+public class EnvironmentCodeCompletion extends ExtPatternCompletion<SetTrie<PackagesExtractor.Environment>> {
 	protected static final Function1<SetTrie<PackagesExtractor.Environment>,String> TRIE_SET_2_STRING_FUNCTION = new Function1<SetTrie<PackagesExtractor.Environment>, String>() {
 		@Override
 		public String apply(SetTrie<PackagesExtractor.Environment> setTrie) {
@@ -36,7 +36,7 @@ public class EnvironmentCodeHelper extends ExtPatternHelper<SetTrie<PackagesExtr
 		}
 	};
 
-	public EnvironmentCodeHelper() {
+	public EnvironmentCodeCompletion() {
 		super("environments");
 	  pattern = new PatternPair("\\\\(?:begin|end)\\s*\\{([^{}]*)");
   }

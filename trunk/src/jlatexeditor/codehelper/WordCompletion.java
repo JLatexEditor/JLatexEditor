@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
-public class WordCompletion extends PatternHelper {
+public class WordCompletion extends PatternCompletion {
   private BackgroundParser backgroundParser;
   private WordWithPos word;
 

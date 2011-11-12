@@ -11,7 +11,7 @@ import java.util.Comparator;
 /**
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
-public abstract class ExtPatternHelper<T> extends PatternHelper {
+public abstract class ExtPatternCompletion<T> extends PatternCompletion {
 	protected static final Comparator<String> STRING_COMPARATOR = new Comparator<String>() {
 		@Override
 		public int compare(String o1, String o2) {
@@ -27,7 +27,7 @@ public abstract class ExtPatternHelper<T> extends PatternHelper {
 	protected String type;
 	protected WordWithPos word;
 
-	protected ExtPatternHelper(String type) {
+	protected ExtPatternCompletion(String type) {
 		this.type = type;
 	}
 

@@ -31,8 +31,8 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   /** Document. */
   SCEDocument document = null;
   /** Code Helper (code completion). */
-  CodeHelper codeHelper = null;
-  CodeHelper tabCompletion = null;
+  CodeCompletion codeCompletion = null;
+  CodeCompletion tabCompletion = null;
   /** Quick help. */
   QuickHelp quickHelp = null;
 	/** Listener for line breaks. */
@@ -160,7 +160,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
 
     // create the UI
     ui = new SCEPaneUI(this);
-    ui.setCodeHelper(codeHelper);
+    ui.setCodeHelper(codeCompletion);
     ui.setTabCompletion(tabCompletion);
     ui.setQuickHelp(quickHelp);
     ui.setLineBreakListener(lineBreakListener);
@@ -623,12 +623,12 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
   /**
    * Sets the code helper for the source code editor.
    *
-   * @param codeHelper code helper
+   * @param codeCompletion code helper
    */
-  public void setCodeHelper(CodeHelper codeHelper) {
-    this.codeHelper = codeHelper;
+  public void setCodeCompletion(CodeCompletion codeCompletion) {
+    this.codeCompletion = codeCompletion;
     if (ui != null) {
-      ui.codeHelperPane.setCodeHelper(codeHelper);
+      ui.codeHelperPane.setCodeCompletion(codeCompletion);
     }
   }
 
@@ -637,7 +637,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    *
    * @param tabCompletion tab completion
    */
-  public void setTabCompletion(CodeHelper tabCompletion) {
+  public void setTabCompletion(CodeCompletion tabCompletion) {
     this.tabCompletion = tabCompletion;
     if (ui != null) ui.setTabCompletion(tabCompletion);
   }
@@ -649,7 +649,7 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    */
   public void setQuickHelp(QuickHelp quickHelp) {
     this.quickHelp = quickHelp;
-    if (ui != null) ui.setCodeHelper(codeHelper);
+    if (ui != null) ui.setCodeHelper(codeCompletion);
   }
 
   /**

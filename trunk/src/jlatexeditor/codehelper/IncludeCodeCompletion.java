@@ -14,13 +14,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
-public class IncludeCodeHelper extends PatternHelper {
+public class IncludeCodeCompletion extends PatternCompletion {
 	protected final Pattern defaultFilePattern = Pattern.compile(".*");
   protected Pattern filePattern = null;
 	protected File path;
   protected WordWithPos fileName;
 
-  public IncludeCodeHelper() {
+  public IncludeCodeCompletion() {
     pattern = new PatternPair("\\\\(include(?:graphics)?|input|bibliography|lstinputlisting)(?:\\[[^\\]]*\\])?\\{([^{}]*/)?([^{}/]*)");
   }
 

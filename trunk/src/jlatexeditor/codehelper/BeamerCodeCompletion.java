@@ -7,19 +7,18 @@ import sce.codehelper.PatternPair;
 import sce.codehelper.WordWithPos;
 import util.Function1;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * CodeHelper for LaTeX beamer commands.
+ * CodeCompletion for LaTeX beamer commands.
  *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
-public class BeamerCodeHelper extends PatternHelper {
+public class BeamerCodeCompletion extends PatternCompletion {
 	protected String type;
 	protected WordWithPos word;
 
-	public BeamerCodeHelper() {
+	public BeamerCodeCompletion() {
 		pattern = new PatternPair("\\\\use(theme|colortheme|fonttheme|innertheme|outertheme)(?:\\[[^\\]]*\\])?\\{([^{}]*)");
 	}
 
