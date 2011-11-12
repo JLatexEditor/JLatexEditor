@@ -1,0 +1,3 @@
+#!/bin/bash
+
+/usr/bin/find /usr/share/texmf* -name *.bst | sed -r -e "s/.*\/([^\/]+)\.bst/\1/" | sort >bibStyles.txt
