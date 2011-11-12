@@ -6,7 +6,7 @@ New Features and other Changes in JLatexEditor
 # set "show_new_features" in global settings to "false".
 
 
-== Coming in Version 0.2.7 ==
+== Version 0.2.7 ==
 
 * new features:
   - added completion for \bibliographystyle (ticket #203)
