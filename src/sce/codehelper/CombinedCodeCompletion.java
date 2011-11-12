@@ -53,7 +53,7 @@ public class CombinedCodeCompletion extends PatternCompletion {
    *
    * @param patternHelper code helper to add
    */
-  public void addPatternHelper(PatternCompletion patternHelper) {
+  public void addPatternCompletion(PatternCompletion patternHelper) {
     patternHelpers.add(patternHelper);
   }
 
