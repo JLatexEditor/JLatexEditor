@@ -6,6 +6,12 @@ New Features and other Changes in JLatexEditor
 # set "show_new_features" in global settings to "false".
 
 
+== Coming Version 0.2.8 ==
+
+* enhancements:
+  - completion support and package import for more commands and environments
+
+
 == Version 0.2.7 ==
 
 * new features:
