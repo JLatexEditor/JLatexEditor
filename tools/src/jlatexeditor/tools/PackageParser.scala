@@ -13,8 +13,9 @@ import org.apache.commons.lang.StringEscapeUtils
  */
 object PackageParser {
 	val DeclareOption = ".*\\\\DeclareOption\\s*\\{([^\\}]+)}.*".r
+	val DeclareOptionBeamer = ".*\\\\DeclareOptionBeamer\\s*\\{([^\\}]+)}.*".r
 	val RequirePackage = ".*\\\\RequirePackage\\s*\\{([^\\}]+)}.*".r
-	val Def = ".*\\\\def\\s*\\\\(\\w+)([#\\[\\]\\d]*)\\s*\\{.*".r
+	val Def = ".*\\\\(?:def|let)\\s*\\\\(\\w+)([#\\[\\]\\d]*)\\s*[\\{\\\\].*".r
 	val DefArgCount = "#+".r
 	val NewCommand = ".*\\\\newcommand\\{?\\\\(\\w+)\\}?(?:\\[(\\d+)\\])?(?:\\[([^\\]]+)\\])?.*".r
 	val NewEnvironment = ".*\\\\newenvironment\\{(\\w+)\\}(?:\\[(\\d+)\\])?(?:\\[([^\\]]+)\\])?.*".r
@@ -135,10 +136,18 @@ object PackageParser {
 			line match {
 				case DeclareOption(option) =>
 					pack.options += option
+				case DeclareOptionBeamer(option) =>
+					pack.options += option
 				case RequirePackage(packList) =>
 					pack.requiresPackages ++= packList.split(",").toList.map(_.trim()).filterNot(_.contains("<"))
 				case Def(cmd, args) =>
 					pack.commands += cmd -> new Command(pack, cmd, DefArgCount.findAllIn(args).size)
+					if (cmd.startsWith("end")) {
+						val envName = cmd.substring(3)
+						for (startCmd <- pack.commands.get(envName)) {
+							pack.environments += envName -> new Environment(pack, envName, startCmd.argCount, startCmd.optionalArgs)
+						}
+					}
 				case NewCommand(cmd, args, optArg) =>
 					val argCount = if (args == null) 0 else args.toInt
 					pack.commands += cmd -> new Command(pack, cmd, argCount, if (optArg == null) List() else List(optArg))

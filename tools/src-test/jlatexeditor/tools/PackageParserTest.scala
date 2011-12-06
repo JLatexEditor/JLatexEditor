@@ -21,5 +21,11 @@ class PackageParserTest extends TestCase {
 				assertEquals(null, args)
 				assertEquals(null, optArg)
 		}
+
+		"""\let\endtabularx\relax""" match {
+			case Def(name, args) =>
+				assertEquals("endtabularx", name)
+				assertEquals("", args)
+		}
 	}
 }
