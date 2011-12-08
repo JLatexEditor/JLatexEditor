@@ -145,6 +145,10 @@
 		<argument name="style" value="" completion="true" hint="bibliography style"/>
 	</command>
 
+	<command name="usetikzlibrary" usage="\usetikzlibrary{@library_list@}" hint="import tikz libraries" style="completion_command">
+		<argument name="library_list" value="" completion="true" hint="tikz libraries"/>
+	</command>
+
   <command name="bigskip" hint="equivalent to \vspace{\bigskipamount}">
   </command>
 
