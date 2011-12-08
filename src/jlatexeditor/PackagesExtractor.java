@@ -1,5 +1,6 @@
 package jlatexeditor;
 
+import de.endrullis.utils.LazyVal;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -28,8 +29,8 @@ public class PackagesExtractor {
 
 	private static PackageParser packageParser;
 	private static PackageParser docClassesParser;
-	private static SimpleTrie<String> bibStyles;
-	private static SimpleTrie<String> tikzLibraries;
+	private static LazyVal<SimpleTrie<String>> bibStyles = fileToLazyTrie(BIB_STYLES_FILE);
+	private static LazyVal<SimpleTrie<String>> tikzLibraries = fileToLazyTrie(TIKZ_LIBRARIES_FILE);
 
 	public static void main(String[] args) {
 		try {
@@ -69,32 +70,31 @@ public class PackagesExtractor {
 		return docClassesParser;
 	}
 
-	public static SimpleTrie<String> getBibStyles() {
-		if (bibStyles == null) {
-			bibStyles = fileToTrie(BIB_STYLES_FILE);
-		}
+	public static LazyVal<SimpleTrie<String>> getBibStyles() {
 		return bibStyles;
 	}
 
-	public static SimpleTrie<String> getTikzLibraries() {
-		if (tikzLibraries == null) {
-			tikzLibraries = fileToTrie(TIKZ_LIBRARIES_FILE);
-		}
+	public static LazyVal<SimpleTrie<String>> getTikzLibraries() {
 		return tikzLibraries;
 	}
 
-	private static SimpleTrie<String> fileToTrie(String file) {
-		SimpleTrie<String> trie = new SimpleTrie<String>();
-		try {
-			BufferedReader r = new BufferedReader(new InputStreamReader(StreamUtils.getInputStream(file)));
-			String line;
-			while((line = r.readLine()) != null) {
-				trie.add(line, line);
+	private static LazyVal<SimpleTrie<String>> fileToLazyTrie(final String file) {
+		return new LazyVal<SimpleTrie<String>>() {
+			@Override
+			protected SimpleTrie<String> calcValue() {
+				SimpleTrie<String> trie = new SimpleTrie<String>();
+				try {
+					BufferedReader r = new BufferedReader(new InputStreamReader(StreamUtils.getInputStream(file)));
+					String line;
+					while((line = r.readLine()) != null) {
+						trie.add(line, line);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return trie;
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return trie;
+		};
 	}
 
 	/**

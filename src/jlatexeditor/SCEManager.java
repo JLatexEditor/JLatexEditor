@@ -1,5 +1,6 @@
 package jlatexeditor;
 
+import de.endrullis.utils.LazyVal;
 import jlatexeditor.bib.BibCodeCompletion;
 import jlatexeditor.bib.BibSyntaxHighlighting;
 import jlatexeditor.changelog.ChangeLogStyles;
@@ -30,6 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Properties;
 
 /**
@@ -186,7 +188,10 @@ public class SCEManager {
     codeCompletion.addPatternCompletion(new IncludeCodeCompletion());
 	  codeCompletion.addPatternCompletion(new CommandsCodeCompletion());
 	  codeCompletion.addPatternCompletion(new EnvironmentCodeCompletion());
-	  codeCompletion.addPatternCompletion(new BibStyleCompletion());
+	  codeCompletion.addPatternCompletion(new ValueListCompletion(new HashMap<String, LazyVal<SimpleTrie<String>>>() {{
+      put("bibliographystyle", PackagesExtractor.getBibStyles());
+      put("usetikzlibrary", PackagesExtractor.getTikzLibraries());
+    }}));
 	  if (backgroundParser != null) {
 	    codeCompletion.addPatternCompletion(new WordCompletion(backgroundParser));
 	  }

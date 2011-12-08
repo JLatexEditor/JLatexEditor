@@ -8,6 +8,8 @@ New Features and other Changes in JLatexEditor
 
 == Coming Version 0.2.8 ==
 
+* new features:
+  - added completion for \usetikzlibrary
 * enhancements:
   - completion support and package import for more commands and environments
 
