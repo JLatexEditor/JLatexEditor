@@ -29,6 +29,8 @@ abstract class UsageCounter(val fileName: String) {
 	}
 
 	def main(args: Array[String]) {
+		val determineUsageCounts = args.contains("--usageCounts")
+
 		val lastValue = usageCounts
 
 		val out = new PrintStream(fileName);
@@ -38,7 +40,11 @@ abstract class UsageCounter(val fileName: String) {
 				println(name)
 				val usageCountFor = lastValue.getOrElse(name, {
 					Thread.sleep(1000);
-					"" + GoogleCodeSearch.determineUsageCountForLatexCode(getCode(name))
+					if (determineUsageCounts) {
+						"" + GoogleCodeSearch.determineUsageCountForLatexCode(getCode(name))
+					} else {
+						"0"
+					}
 				})
 				out.println(name + "=" + usageCountFor)
 			}
