@@ -8,10 +8,8 @@ import sce.codehelper.CHCommandArgument;
 import util.SetTrie;
 import util.SimpleTrie;
 import util.StreamUtils;
-import util.Trie;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -26,10 +24,12 @@ public class PackagesExtractor {
 	private static final String PACKAGES_FILE = "data/codehelper/packages.xml";
 	private static final String DOCCLASSES_FILE = "data/codehelper/docclasses.xml";
 	private static final String BIB_STYLES_FILE = "data/codehelper/bibStyles.txt";
+	private static final String TIKZ_LIBRARIES_FILE = "data/codehelper/tikzLibraries.txt";
 
 	private static PackageParser packageParser;
 	private static PackageParser docClassesParser;
 	private static SimpleTrie<String> bibStyles;
+	private static SimpleTrie<String> tikzLibraries;
 
 	public static void main(String[] args) {
 		try {
@@ -71,18 +71,30 @@ public class PackagesExtractor {
 
 	public static SimpleTrie<String> getBibStyles() {
 		if (bibStyles == null) {
-			bibStyles = new SimpleTrie<String>();
-			try {
-				BufferedReader r = new BufferedReader(new InputStreamReader(StreamUtils.getInputStream(BIB_STYLES_FILE)));
-				String line;
-				while((line = r.readLine()) != null) {
-					bibStyles.add(line, line);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			bibStyles = fileToTrie(BIB_STYLES_FILE);
 		}
 		return bibStyles;
+	}
+
+	public static SimpleTrie<String> getTikzLibraries() {
+		if (tikzLibraries == null) {
+			tikzLibraries = fileToTrie(TIKZ_LIBRARIES_FILE);
+		}
+		return tikzLibraries;
+	}
+
+	private static SimpleTrie<String> fileToTrie(String file) {
+		SimpleTrie<String> trie = new SimpleTrie<String>();
+		try {
+			BufferedReader r = new BufferedReader(new InputStreamReader(StreamUtils.getInputStream(file)));
+			String line;
+			while((line = r.readLine()) != null) {
+				trie.add(line, line);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return trie;
 	}
 
 	/**

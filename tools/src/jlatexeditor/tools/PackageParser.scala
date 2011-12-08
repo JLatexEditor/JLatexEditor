@@ -12,16 +12,18 @@ import org.apache.commons.lang.StringEscapeUtils
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 object PackageParser {
-	val DeclareOption = ".*\\\\DeclareOption\\s*\\{([^\\}]+)}.*".r
-	val DeclareOptionBeamer = ".*\\\\DeclareOptionBeamer\\s*\\{([^\\}]+)}.*".r
-	val RequirePackage = ".*\\\\RequirePackage\\s*\\{([^\\}]+)}.*".r
-	val Def = ".*\\\\(?:def|let)\\s*\\\\(\\w+)([#\\[\\]\\d]*)\\s*[\\{\\\\].*".r
-	val DefArgCount = "#+".r
-	val NewCommand = ".*\\\\newcommand\\{?\\\\(\\w+)\\}?(?:\\[(\\d+)\\])?(?:\\[([^\\]]+)\\])?.*".r
-	val NewEnvironment = ".*\\\\newenvironment\\{(\\w+)\\}(?:\\[(\\d+)\\])?(?:\\[([^\\]]+)\\])?.*".r
-	val Input = ".*\\\\input\\s*\\{([^}]+)\\}.*".r
-	val DpkgResult = "([\\w\\.-]+): .*".r
-	val CtanPackSplit = "([^=]+)=(.*)".r
+	val DeclareOption = """.*\\DeclareOption\s*\{([^\}]+)}.*""".r
+	val DeclareOptionBeamer = """.*\\DeclareOptionBeamer\s*\{([^\}]+)}.*""".r
+	val RequirePackage = """.*\\RequirePackage\s*\{([^\}]+)}.*""".r
+	val Def = """.*\\(?:def|let)\s*\\(\w+)([#\[\]\d]*)\s*[\{\\].*""".r
+	val DefArgCount = """#+""".r
+	val NewCommand = """.*\\newcommand\{?\\(\w+)\}?(?:\[(\d+)\])?(?:\[([^\]]+)\])?.*""".r
+	val NewEnvironment = """.*\\newenvironment\{(\w+)\}(?:\[(\d+)\])?(?:\[([^\]]+)\])?.*""".r
+	val NewLength = """\\newlength\s*\{?\\(\w+)\}?.*""".r
+	val NewCounter = """\\newcounter\s*\{(\w+)\}.*""".r
+	val Input = """.*\\input\s*\{([^}]+)\}.*""".r
+	val DpkgResult = """([\w\.-]+): .*""".r
+	val CtanPackSplit = """([^=]+)=(.*)""".r
 
 	val processedFiles = new HashSet[String]
 	val files2debPackage = new HashMap[String, DebPackage]
@@ -102,6 +104,12 @@ object PackageParser {
 				val optArgString = if (env.optionalArgs.isEmpty) "" else " optionalArg=\"" + escape(env.optionalArgs(0)) + "\""
 				out.println("    <environment name=\"" + env.name + "\" argCount=\"" + env.argCount + "\"" + optArgString + usageCountString + " />")
 			}
+			for (len <- pack.lengths) {
+				out.println("    <length name=\"" + len + "\" />")
+			}
+			for (counter <- pack.counters) {
+				out.println("    <counter name=\"" + counter + "\" />")
+			}
 			out.println("  </package>")
 		}
 		out.println("</packages>")
@@ -154,6 +162,10 @@ object PackageParser {
 				case NewEnvironment(cmd, args, optArg) =>
 					val argCount = if (args == null) 0 else args.toInt
 					pack.environments += cmd -> new Environment(pack, cmd, argCount, if (optArg == null) List() else List(optArg))
+				case NewLength(len) =>
+					pack.lengths += len
+				case NewCounter(counter) =>
+					pack.counters += counter
 				case Input(fileName) =>
 					try {
 						if (!processedFiles.contains(fileName)) {
@@ -215,7 +227,9 @@ object PackageParser {
 	class Package(val file: File, val cls: Boolean, val name: String, val options: LinkedHashSet[String] = new LinkedHashSet[String],
 								val requiresPackages: HashSet[String] = new HashSet[String],
 	              val commands: LinkedHashMap[String, Command] = new LinkedHashMap[String, Command],
-	              val environments: LinkedHashMap[String, Environment] = new LinkedHashMap[String, Environment]) {
+	              val environments: LinkedHashMap[String, Environment] = new LinkedHashMap[String, Environment],
+			          val lengths: HashSet[String] = new HashSet[String],
+			          val counters: HashSet[String] = new HashSet[String]) {
 		val debPackage = try {
 			Some(findDebPackage(file.getAbsolutePath))
 		} catch {

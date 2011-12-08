@@ -27,5 +27,15 @@ class PackageParserTest extends TestCase {
 				assertEquals("endtabularx", name)
 				assertEquals("", args)
 		}
+
+		"""\newlength{\blalen}\x""" match {
+			case NewLength(len) =>
+				assertEquals("blalen", len)
+		}
+
+		"""\newlength \blalen\x""" match {
+			case NewLength(len) =>
+				assertEquals("blalen", len)
+		}
 	}
 }
