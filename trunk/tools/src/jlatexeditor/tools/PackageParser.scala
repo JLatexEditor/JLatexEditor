@@ -12,16 +12,17 @@ import org.apache.commons.lang.StringEscapeUtils
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
 object PackageParser {
-	val DeclareOption = """.*\\DeclareOption\s*\{([^\}]+)}.*""".r
-	val DeclareOptionBeamer = """.*\\DeclareOptionBeamer\s*\{([^\}]+)}.*""".r
-	val RequirePackage = """.*\\RequirePackage\s*\{([^\}]+)}.*""".r
-	val Def = """.*\\(?:def|let)\s*\\(\w+)([#\[\]\d]*)\s*[\{\\].*""".r
+	val DeclareOption = """[^%]*\\DeclareOption\s*\{([^\}]+)}.*""".r
+	val DeclareOptionBeamer = """[^%]*\\DeclareOptionBeamer\s*\{([^\}]+)}.*""".r
+	val RequirePackage = """[^%]*\\RequirePackage\s*\{([^\}]+)}.*""".r
+	val Def = """[^%]*\\(?:def|let)\s*\\(\w+)([#\[\]\d]*)\s*[\{\\].*""".r
 	val DefArgCount = """#+""".r
-	val NewCommand = """.*\\newcommand\{?\\(\w+)\}?(?:\[(\d+)\])?(?:\[([^\]]+)\])?.*""".r
-	val NewEnvironment = """.*\\newenvironment\{(\w+)\}(?:\[(\d+)\])?(?:\[([^\]]+)\])?.*""".r
-	val NewLength = """\\newlength\s*\{?\\(\w+)\}?.*""".r
-	val NewCounter = """\\newcounter\s*\{(\w+)\}.*""".r
-	val Input = """.*\\input\s*\{([^}]+)\}.*""".r
+	val NewCommand = """[^%]*\\newcommand\{?\\(\w+)\}?(?:\[(\d+)\])?(?:\[([^\]]+)\])?.*""".r
+	val DeclareSymbol = """[^%]*\\Declare(?:\w*)Symbol\s*\{?\\(\w+)\}?.*""".r
+	val NewEnvironment = """[^%]*\\newenvironment\{(\w+)\}(?:\[(\d+)\])?(?:\[([^\]]+)\])?.*""".r
+	val NewLength = """[^%]*\\newlength\s*\{?\\(\w+)\}?.*""".r
+	val NewCounter = """[^%]*\\newcounter\s*\{(\w+)\}.*""".r
+	val Input = """[^%]*\\input\s*\{([^}]+)\}.*""".r
 	val DpkgResult = """([\w\.-]+): .*""".r
 	val CtanPackSplit = """([^=]+)=(.*)""".r
 
@@ -141,44 +142,53 @@ object PackageParser {
 
 	def parseFile (pack: Package, file: File) {
 		for(line <- file.readLines) {
-			line match {
-				case DeclareOption(option) =>
-					pack.options += option
-				case DeclareOptionBeamer(option) =>
-					pack.options += option
-				case RequirePackage(packList) =>
-					pack.requiresPackages ++= packList.split(",").toList.map(_.trim()).filterNot(_.contains("<"))
-				case Def(cmd, args) =>
-					pack.commands += cmd -> new Command(pack, cmd, DefArgCount.findAllIn(args).size)
-					if (cmd.startsWith("end")) {
-						val envName = cmd.substring(3)
-						for (startCmd <- pack.commands.get(envName)) {
-							pack.environments += envName -> new Environment(pack, envName, startCmd.argCount, startCmd.optionalArgs)
-						}
-					}
-				case NewCommand(cmd, args, optArg) =>
-					val argCount = if (args == null) 0 else args.toInt
-					pack.commands += cmd -> new Command(pack, cmd, argCount, if (optArg == null) List() else List(optArg))
-				case NewEnvironment(cmd, args, optArg) =>
-					val argCount = if (args == null) 0 else args.toInt
-					pack.environments += cmd -> new Environment(pack, cmd, argCount, if (optArg == null) List() else List(optArg))
-				case NewLength(len) =>
-					pack.lengths += len
-				case NewCounter(counter) =>
-					pack.counters += counter
-				case Input(fileName) =>
-					try {
-						if (!processedFiles.contains(fileName)) {
-							processedFiles += fileName
-							//println("  input ." + fileName + ".")
-							parseFile(pack, findFile(fileName))
-						}
-					} catch {
-						case e: FileNotFoundException =>
-					}
-				case _ =>
-			}
+			parseLine1(pack, line)
 		}
+	}
+
+	def parseLine1(pack: Package, line: String) = line match {
+		case DeclareOption(option) =>
+			pack.options += option
+		case DeclareOptionBeamer(option) =>
+			pack.options += option
+		case RequirePackage(packList) =>
+			pack.requiresPackages ++= packList.split(",").toList.map(_.trim()).filterNot(_.contains("<"))
+		case Def(cmd, args) =>
+			pack.commands += cmd -> new Command(pack, cmd, DefArgCount.findAllIn(args).size)
+			if (cmd.startsWith("end")) {
+				val envName = cmd.substring(3)
+				for (startCmd <- pack.commands.get(envName)) {
+					pack.environments += envName -> new Environment(pack, envName, startCmd.argCount, startCmd.optionalArgs)
+				}
+			}
+		case NewCommand(cmd, args, optArg) =>
+			val argCount = if (args == null) 0 else args.toInt
+			pack.commands += cmd -> new Command(pack, cmd, argCount, if (optArg == null) List() else List(optArg))
+		case DeclareSymbol(cmd) =>
+			pack.commands += cmd -> new Command(pack, cmd, 0, List())
+		case NewEnvironment(cmd, args, optArg) =>
+			val argCount = if (args == null) 0 else args.toInt
+			pack.environments += cmd -> new Environment(pack, cmd, argCount, if (optArg == null) List() else List(optArg))
+		case _ => parseLine2(pack, line)
+	}
+
+	/** parseLine is splitted into parseLine1 and parseLine2 because of https://issues.scala-lang.org/browse/SI-1133 */
+	def parseLine2(pack: Package, line: String) = line match {
+		case NewLength(len) =>
+			pack.lengths += len
+		case NewCounter(counter) =>
+			pack.counters += counter
+		case Input(fileName) =>
+			try {
+				if (!processedFiles.contains(fileName)) {
+					processedFiles += fileName
+					//println("  input ." + fileName + ".")
+					parseFile(pack, findFile(fileName))
+				}
+			} catch {
+				case e: FileNotFoundException =>
+			}
+		case _ =>
 	}
 
 	def findFile(fileName: String) = {
