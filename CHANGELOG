@@ -9,7 +9,7 @@ New Features and other Changes in JLatexEditor
 == Version 0.2.9 ==
 
 * bug fixes:
-  - fixed but in completion and highlighting of \input, \include, and \includegraphics
+  - fixed bug in completion and highlighting of \input, \include, and \includegraphics
 
 
 == Version 0.2.8 ==
