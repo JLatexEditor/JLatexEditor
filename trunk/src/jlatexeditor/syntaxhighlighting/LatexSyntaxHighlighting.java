@@ -1,5 +1,6 @@
 package jlatexeditor.syntaxhighlighting;
 
+import jlatexeditor.SCEManager;
 import jlatexeditor.codehelper.BackgroundParser;
 import jlatexeditor.codehelper.ScriptingSupport;
 import jlatexeditor.syntaxhighlighting.states.DontParse;
@@ -311,7 +312,7 @@ public class LatexSyntaxHighlighting extends SyntaxHighlighting implements SCEDo
 							if (param.startsWith("/")) {
 								fileExists = new File(param).exists() || new File(param + "." + defaultExtension).exists();
 							} else {
-								File docFile = pane.getSourceCodeEditor().getFile();
+								File docFile = SCEManager.getInstance().getMainEditor().getFile();
 								if (docFile.exists()) {
 									String pathname = docFile.getParentFile().getAbsolutePath() + "/" + param;
 									String extPathname = pathname + "." +  defaultExtension;

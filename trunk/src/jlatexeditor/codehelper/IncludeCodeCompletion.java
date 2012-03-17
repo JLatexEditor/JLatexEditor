@@ -27,8 +27,8 @@ public class IncludeCodeCompletion extends PatternCompletion {
   @Override
   public boolean matches() {
     if (super.matches()) {
-      // determine dir where this file is located
-      AbstractResource resource = pane.getSourceCodeEditor().getResource();
+      // determine dir where the master document is located
+      AbstractResource resource = SCEManager.getInstance().getMainEditor().getResource();
       if (resource instanceof Doc.FileDoc) {
         Doc.FileDoc fileDoc = (Doc.FileDoc) resource;
         path = fileDoc.getFile().getParentFile();
