@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+  <video width="720" height="640" fps="12" />
+  <tracks>
+    <track>
+      <videoFilter type="editFilter">
+        <inputVideo dir="first_vid.in" />
+        <edits>
+          <edit type="multiply" startFrame="0" count="100" />
+          <edit type="multiply" startFrame="60" count="30" />
+          <edit type="multiply" startFrame="68" count="5" />
+          <edit type="multiply" startFrame="71" count="5" />
+          <edit type="multiply" startFrame="97" count="15" />
+          <edit type="multiply" startFrame="98" count="20" />
+          <edit type="multiply" startFrame="160" count="15" />
+          <edit type="multiply" startFrame="169" count="10" />
+          <edit type="multiply" startFrame="171" count="5" />
+          <edit type="multiply" startFrame="301" count="10" />
+          <edit type="multiply" startFrame="376" count="15" />
+          <edit type="multiply" startFrame="535" count="20" />
+          <edit type="multiply" startFrame="913" count="15" />
+          <edit type="multiply" startFrame="993" count="50" />
+          <edit type="delete" startFrame="1003" count="1" />
+          <edit type="delete" startFrame="1007" count="1" />
+          <edit type="multiply" startFrame="1091" count="5" />
+        </edits>
+      </videoFilter>
+    </track>
+    <track>
+      <videoFilter type="textBox" fontFace="None" startFrame="143" length="50" posX="0" posY="0" marginX="15" marginY="15" rounding="30" fillAlpha="0.75" fillColorTop="A0D2FF" fillColorBottom="82B4EB" borderAlpha="0.75" borderColor="4080B4" borderWidth="4.0" shadowAlpha="0.5" shadowColor="000000" fadeLength="10">
+        <text>
+        ‹div align="left"›‹font size="+2"›Press ‹key›Control‹/key›+‹key›Space‹/key›‹br›         to complete commands.‹/font›‹/div›</text>
+      </videoFilter>
+      <videoFilter type="textBox" fontFace="None" startFrame="0" length="100" posX="0" posY="0" marginX="1000" marginY="15" rounding="0" fillAlpha="0.5" fillColorTop="404040" fillColorBottom="000000" borderAlpha="0.0" borderColor="000000" borderWidth="0.0" shadowAlpha="0.0" shadowColor="000000" fadeLength="10">
+        <text>
+        ‹center›         ‹font size="+5"›JLatexEditor‹/font›‹br›         ... a LaTeX editor for spoilt developers‹br›         ‹br›         code completion and navigation, refactoring, version control&nbsp;‹br›         live templates, spell checking, command documentation, ...&nbsp;‹br›         ‹br›         written in Java and open source         ‹/center›</text>
+      </videoFilter>
+      <videoFilter type="textBox" fontFace="null" startFrame="212" length="0" posX="0" posY="0" marginX="15" marginY="15" rounding="30" fillAlpha="0.75" fillColorTop="A0D2FF" fillColorBottom="82B4EB" borderAlpha="0.75" borderColor="4080B4" borderWidth="4.0" shadowAlpha="0.5" shadowColor="000000" fadeLength="10">
+        <text />
+      </videoFilter>
+      <videoFilter type="textBox" fontFace="None" startFrame="226" length="50" posX="0" posY="100" marginX="15" marginY="15" rounding="30" fillAlpha="0.75" fillColorTop="A0D2FF" fillColorBottom="82B4EB" borderAlpha="0.75" borderColor="4080B4" borderWidth="4.0" shadowAlpha="0.5" shadowColor="000000" fadeLength="10">
+        <text>
+        ‹div align="left"›‹font size="+2"›Use ‹key›Control‹/key›+‹key›Q‹/key›‹br›         on commands for getting help.‹/font›‹/div›</text>
+      </videoFilter>
+      <videoFilter type="textBox" fontFace="None" startFrame="328" length="50" posX="0" posY="0" marginX="15" marginY="15" rounding="30" fillAlpha="0.75" fillColorTop="A0D2FF" fillColorBottom="82B4EB" borderAlpha="0.75" borderColor="4080B4" borderWidth="4.0" shadowAlpha="0.5" shadowColor="000000" fadeLength="10">
+        <text>
+        ‹div align="left"›‹font size="+2"›Enter a template name and‹br›          press ‹key›Tab‹/key› for expanding it.‹/font›‹/div›</text>
+      </videoFilter>
+      <videoFilter type="textBox" fontFace="None" startFrame="378" length="40" posX="0" posY="0" marginX="15" marginY="15" rounding="30" fillAlpha="0.75" fillColorTop="A0D2FF" fillColorBottom="82B4EB" borderAlpha="0.75" borderColor="4080B4" borderWidth="4.0" shadowAlpha="0.5" shadowColor="000000" fadeLength="10">
+        <text>
+        ‹div align="left"›‹font size="+2"›Use ‹key›Tab‹/key› again to‹br›         jump to the next argument.‹/font›‹/div›</text>
+      </videoFilter>
+      <videoFilter type="textBox" fontFace="None" startFrame="482" length="50" posX="0" posY="100" marginX="15" marginY="15" rounding="30" fillAlpha="0.75" fillColorTop="A0D2FF" fillColorBottom="82B4EB" borderAlpha="0.75" borderColor="4080B4" borderWidth="4.0" shadowAlpha="0.5" shadowColor="000000" fadeLength="10">
+        <text>
+        ‹div align="left"›‹font size="+2"›For figures we use the ‹code›fig‹/code› template.‹br›         (‹key›Tab‹/key› for expanding template).‹/font›‹/div›</text>
+      </videoFilter>
+      <videoFilter type="textBox" fontFace="None" startFrame="558" length="60" posX="0" posY="220" marginX="15" marginY="15" rounding="30" fillAlpha="0.75" fillColorTop="A0D2FF" fillColorBottom="82B4EB" borderAlpha="0.75" borderColor="4080B4" borderWidth="4.0" shadowAlpha="0.5" shadowColor="000000" fadeLength="10">
+        <text>
+        ‹div align="left"›‹font size="+2"›The command completion for ‹code›\includegraphics‹/code›&nbsp;‹br›         allows us to select the image file from a popup.‹/font›‹/div›</text>
+      </videoFilter>
+      <videoFilter type="textBox" fontFace="None" startFrame="673" length="50" posX="140" posY="140" marginX="15" marginY="15" rounding="30" fillAlpha="0.75" fillColorTop="A0D2FF" fillColorBottom="82B4EB" borderAlpha="0.75" borderColor="4080B4" borderWidth="4.0" shadowAlpha="0.5" shadowColor="000000" fadeLength="10">
+        <text>
+        ‹div align="left"›‹font size="+2"›Oops, we have a typo.‹br›         Let's use ‹key›Control‹/key›+‹key›Enter‹/key›‹br›         to correct it.‹/font›‹/div›</text>
+      </videoFilter>
+      <videoFilter type="textBox" fontFace="None" startFrame="747" length="45" posX="0" posY="180" marginX="15" marginY="15" rounding="30" fillAlpha="0.75" fillColorTop="A0D2FF" fillColorBottom="82B4EB" borderAlpha="0.75" borderColor="4080B4" borderWidth="4.0" shadowAlpha="0.5" shadowColor="000000" fadeLength="10">
+        <text>
+        ‹div align="left"›‹font size="+2"›Labels can be completed with‹br›         ‹key›Control‹/key›+‹key›Space‹/key› as well.‹/font›‹/div›</text>
+      </videoFilter>
+      <videoFilter type="textBox" fontFace="" startFrame="792" length="0" posX="0" posY="0" marginX="15" marginY="15" rounding="30" fillAlpha="0.75" fillColorTop="A0D2FF" fillColorBottom="82B4EB" borderAlpha="0.75" borderColor="4080B4" borderWidth="4.0" shadowAlpha="0.5" shadowColor="000000" fadeLength="10">
+        <text />
+      </videoFilter>
+      <videoFilter type="textBox" fontFace="None" startFrame="859" length="50" posX="130" posY="170" marginX="15" marginY="15" rounding="30" fillAlpha="0.75" fillColorTop="A0D2FF" fillColorBottom="82B4EB" borderAlpha="0.75" borderColor="4080B4" borderWidth="4.0" shadowAlpha="0.5" shadowColor="000000" fadeLength="10">
+        <text>
+        ‹div align="left"›‹font size="+2"›To look up a symbol‹br›         use the side panel.‹/font›‹/div›</text>
+      </videoFilter>
+      <videoFilter type="textBox" fontFace="None" startFrame="1065" length="50" posX="150" posY="150" marginX="15" marginY="15" rounding="30" fillAlpha="0.75" fillColorTop="A0D2FF" fillColorBottom="82B4EB" borderAlpha="0.75" borderColor="4080B4" borderWidth="4.0" shadowAlpha="0.5" shadowColor="000000" fadeLength="10">
+        <text>
+        ‹div align="left"›‹font size="+2"›Let's insert‹br›         a bibliography.‹/font›‹/div›</text>
+      </videoFilter>
+      <videoFilter type="textBox" fontFace="None" startFrame="1128" length="50" posX="0" posY="220" marginX="15" marginY="15" rounding="30" fillAlpha="0.75" fillColorTop="A0D2FF" fillColorBottom="82B4EB" borderAlpha="0.75" borderColor="4080B4" borderWidth="4.0" shadowAlpha="0.5" shadowColor="000000" fadeLength="10">
+        <text>
+        ‹div align="left"›‹font size="+2"›Press ‹key›Control‹/key›+‹key›S‹/key› to save the file‹br›         and to force JLE to reparse it.‹/font›‹/div›</text>
+      </videoFilter>
+      <videoFilter type="textBox" fontFace="None" startFrame="1216" length="50" posX="150" posY="-100" marginX="15" marginY="15" rounding="30" fillAlpha="0.75" fillColorTop="A0D2FF" fillColorBottom="82B4EB" borderAlpha="0.75" borderColor="4080B4" borderWidth="4.0" shadowAlpha="0.5" shadowColor="000000" fadeLength="10">
+        <text>
+        ‹div align="left"›‹font size="+2"›Let's add a citation.‹/font›‹/div›</text>
+      </videoFilter>
+      <videoFilter type="textBox" fontFace="None" startFrame="1266" length="50" posX="50" posY="-40" marginX="15" marginY="15" rounding="30" fillAlpha="0.75" fillColorTop="A0D2FF" fillColorBottom="82B4EB" borderAlpha="0.75" borderColor="4080B4" borderWidth="4.0" shadowAlpha="0.5" shadowColor="000000" fadeLength="10">
+        <text>
+        ‹div align="left"›‹font size="+2"›Type a keyword or an author name‹br›         to restrict the search space.‹/font›‹/div›</text>
+      </videoFilter>
+      <videoFilter type="textBox" fontFace="None" startFrame="1356" length="45" posX="100" posY="180" marginX="15" marginY="15" rounding="30" fillAlpha="0.75" fillColorTop="A0D2FF" fillColorBottom="82B4EB" borderAlpha="0.75" borderColor="4080B4" borderWidth="4.0" shadowAlpha="0.5" shadowColor="000000" fadeLength="10">
+        <text>
+        ‹div align="left"›‹font size="+2"›OK, time to build the PDF.‹/font›‹/div›</text>
+      </videoFilter>
+    </track>
+  </tracks>
+</project>
