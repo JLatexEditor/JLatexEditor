@@ -6,7 +6,13 @@ New Features and other Changes in JLatexEditor
 # set "show_new_features" in global settings to "false".
 
 
-== Coming Version 0.2.8 ==
+== Version 0.2.9 ==
+
+* bug fixes:
+  - fixed but in completion and highlighting of \input, \include, and \includegraphics
+
+
+== Version 0.2.8 ==
 
 * new features:
   - added completion for \usetikzlibrary
