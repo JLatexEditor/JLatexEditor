@@ -2,6 +2,7 @@ package jlatexeditor.tools;
 
 import jlatexeditor.Doc;
 import jlatexeditor.JLatexEditorJFrame;
+import jlatexeditor.SCEManager;
 import jlatexeditor.gproperties.GProperties;
 import jlatexeditor.gui.StatusBar;
 import sce.component.SCEDiff;
@@ -52,20 +53,21 @@ public class SVNView extends JPanel implements ActionListener {
 
     tree.setCellRenderer(new Renderer());
 	  
-	  tree.addMouseListener(new MouseAdapter() {
-		  @Override
-		  public void mouseClicked(MouseEvent e) {
-			  // open file on double click
-			  if (e.getClickCount() == 2) {
-				  TreePath path = tree.getPathForLocation(e.getX(), e.getY());
-				  Node node = (Node) path.getLastPathComponent();
-				  File file = node.getFile();
-				  if (file.isFile() && file.exists()) {
-					  jle.open(new Doc.FileDoc(file));
-				  }
-			  }
-		  }
-	  });
+    tree.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+          // open file on double click
+          if (e.getClickCount() == 2) {
+              TreePath path = tree.getPathForLocation(e.getX(), e.getY());
+              if(path == null) return;
+              Node node = (Node) path.getLastPathComponent();
+              File file = node.getFile();
+              if (file.isFile() && file.exists()) {
+                  jle.open(new Doc.FileDoc(file));
+              }
+          }
+      }
+    });
   }
 
   public void actionPerformed(ActionEvent e) {
@@ -119,12 +121,24 @@ public class SVNView extends JPanel implements ActionListener {
     public void run() {
       boolean hasUpdates = false;
 
+      HashSet<String> projectFiles = new HashSet<String>();
+      ArrayList<File> projectFilesToAdd = new ArrayList<File>();
+      for(File file : SCEManager.getBackgroundParser().getFiles()) {
+        projectFiles.add(file.getAbsolutePath());
+      }
+
       for (SVN.StatusResult result : results) {
         // why can . have modifications?
         if(result.getRelativePath().equals(".")) continue;
 
         String relativePath = result.getRelativePath();
-
+        
+        // not in SVN?
+        if(result.getLocalStatus() == SVN.StatusResult.Local.notInSvn
+                && projectFiles.contains(result.getFile().getAbsolutePath())) {
+          projectFilesToAdd.add(result.getFile());
+        }
+        
         Node node = get(root, relativePath);
         if(node == null) {
           if(result.getServerStatus() == SVN.StatusResult.Server.upToDate) continue;
@@ -138,6 +152,9 @@ public class SVNView extends JPanel implements ActionListener {
       }
 
       statusBar.setUpdatesAvailableVisible(hasUpdates);
+      if(projectFilesToAdd.size() > 0) {
+        statusBar.setNotInSVNVisible(true, projectFilesToAdd);
+      }
     }
   }
 

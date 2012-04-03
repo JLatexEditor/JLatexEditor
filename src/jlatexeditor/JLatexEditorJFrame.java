@@ -1235,6 +1235,9 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 			ArrayList<SVN.UpdateResult> results;
 			try {
 				results = SVN.getInstance().update(getMainEditor().getFile().getParentFile());
+        try {
+          svnView.checkForUpdates();
+        } catch(Throwable _) {}
 			} catch (Exception exception) {
 				exception.printStackTrace();
 				statusBar.showTextError("SVN update failed", "SVN update failed: " + exception.getMessage());
@@ -1253,8 +1256,6 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 			checkExternalModification(false);
 			statusBar.showMessage("SVN update", builder.toString());
 			statusBar.setUpdatesAvailableVisible(false);
-
-
 		} else
 		// svn commit
 		if (action.equals("svn commit")) {
