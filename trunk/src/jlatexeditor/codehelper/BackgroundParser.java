@@ -277,8 +277,11 @@ public class BackgroundParser extends Thread {
 	      }
 	      // commandNames.add(name);
       // label, input, include
-      } else if (command.equals("label") || command.equals("bibliography") || command.equals("input") || command.equals("include") ||
-	               command.equals("ref") || command.equals("cite") || command.equals("documentclass") || command.equals("usepackage")) {
+      } else if (command.equals("label") || command.equals("bibliography") 
+              || command.equals("input") || command.equals("include") 
+              || command.equals("ref") || command.equals("cite") 
+              || command.equals("documentclass") || command.equals("usepackage")
+              || command.equals("includegraphics")) {
         String optionalArgument = null;
         if(tex.charAt(index) == '[') {
           optionalArgument = ParseUtil.parseBalanced(tex, index+1, ']');
@@ -312,6 +315,9 @@ public class BackgroundParser extends Thread {
           }
         } else if (command.equals("bibliography")) {
           parseBib(directory, Command.unfoldRecursive(argument, buildingState.commands, 10));
+        } else if (command.equals("includegraphics")) {
+          String graphics = Command.unfoldRecursive(argument, buildingState.commands, 10);
+          buildingState.files.add(new File(directory, graphics));
         } else {
           parseTex(directory, Command.unfoldRecursive(argument, buildingState.commands, 10), done);
         }
