@@ -245,6 +245,8 @@ public class SVN {
     private Local localStatus;
     private Server serverStatus;
 
+    private boolean outdated = false;
+
     public StatusResult(File file, String relativePath, Local localStatus, Server serverStatus) {
       this.file = file;
       this.relativePath = relativePath;
@@ -266,6 +268,14 @@ public class SVN {
 
     public Server getServerStatus() {
       return serverStatus;
+    }
+
+    public boolean isOutdated() {
+      return outdated;
+    }
+
+    public void setOutdated(boolean outdated) {
+      this.outdated = outdated;
     }
   }
 }
