@@ -127,6 +127,8 @@ public class SVNView extends JPanel implements ActionListener {
         projectFiles.add(file.getAbsolutePath());
       }
 
+      setOutdated((Node) treeModel.getRoot());
+
       for (SVN.StatusResult result : results) {
         // why can . have modifications?
         if(result.getRelativePath().equals(".")) continue;
@@ -138,7 +140,7 @@ public class SVNView extends JPanel implements ActionListener {
                 && projectFiles.contains(result.getFile().getAbsolutePath())) {
           projectFilesToAdd.add(result.getFile());
         }
-        
+
         Node node = get(root, relativePath);
         if(node == null) {
           if(result.getServerStatus() == SVN.StatusResult.Server.upToDate) continue;
@@ -151,9 +153,42 @@ public class SVNView extends JPanel implements ActionListener {
         if (result.getServerStatus() == SVN.StatusResult.Server.outdated) hasUpdates = true;
       }
 
+      resetOutdated((Node) treeModel.getRoot());
+
       statusBar.setUpdatesAvailableVisible(hasUpdates);
       if(projectFilesToAdd.size() > 0) {
         statusBar.setNotInSVNVisible(true, projectFilesToAdd);
+      }
+    }
+
+    private void setOutdated(Node node) {
+      SVN.StatusResult status = node.getSvnStatus();
+      if(status != null) status.setOutdated(true);
+
+      for(int childNr = 0; childNr < node.getChildCount(); childNr++) {
+        setOutdated((Node) node.getChildAt(childNr));
+      }
+    }
+
+    private void resetOutdated(Node node) {
+      SVN.StatusResult status = node.getSvnStatus();
+      if(status != null && status.isOutdated()) {
+        if(!status.getFile().exists()) {
+          treeModel.removeNodeFromParent(node);
+          return;
+        }
+
+        node.setSvnStatus(new SVN.StatusResult(
+                status.getFile(),
+                status.getRelativePath(),
+                SVN.StatusResult.Local.unchanged,
+                SVN.StatusResult.Server.upToDate));
+
+        treeModel.nodeChanged(node);
+      }
+
+      for(int childNr = 0; childNr < node.getChildCount(); childNr++) {
+        resetOutdated((Node) node.getChildAt(childNr));
       }
     }
   }
