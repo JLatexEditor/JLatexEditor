@@ -6,6 +6,11 @@ New Features and other Changes in JLatexEditor
 # set "show_new_features" in global settings to "false".
 
 
+== Versino 0.2.10 ===
+* new features:
+  - shows warning message if project files are not in the svn
+
+
 == Version 0.2.9 ==
 
 * bug fixes:
