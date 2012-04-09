@@ -1,0 +1,1021 @@
+This is pdfTeX, Version 3.1415926-1.40.11 (TeX Live 2010)
+ restricted \write18 enabled.
+entering extended mode
+(./main-pr-do.tex
+LaTeX2e <2009/09/24>
+Babel <v3.8l> and hyphenation patterns for english, dumylang, nohyphenation, ge
+rman-x-2009-06-19, ngerman-x-2009-06-19, ancientgreek, ibycus, arabic, armenian
+, basque, bulgarian, catalan, pinyin, coptic, croatian, czech, danish, dutch, u
+kenglish, usenglishmax, esperanto, estonian, farsi, finnish, french, galician, 
+german, ngerman, swissgerman, monogreek, greek, hungarian, icelandic, assamese,
+ bengali, gujarati, hindi, kannada, malayalam, marathi, oriya, panjabi, tamil, 
+telugu, indonesian, interlingua, irish, italian, kurmanji, lao, latin, latvian,
+ lithuanian, mongolian, mongolianlmc, bokmal, nynorsk, polish, portuguese, roma
+nian, russian, sanskrit, serbian, slovak, slovenian, spanish, swedish, turkish,
+ turkmen, ukrainian, uppersorbian, welsh, loaded.
+(./opening-ch.tex
+(/usr/local/texlive/2010/texmf-dist/tex/latex/memoir/memoir.cls
+Document Class: memoir 2010/07/01 v3.6d configurable book, report, article docu
+ment class
+(/usr/local/texlive/2010/texmf-dist/tex/generic/oberdiek/ifpdf.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/ifxetex/ifxetex.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/oberdiek/ifluatex.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/etex-pkg/etex.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/memoir/mem11.clo)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/memoir/mempatch.sty))
+(./packages.tex
+(/usr/local/texlive/2010/texmf-dist/tex/latex/psnfss/palatino.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/euler/euler.sty
+Package: `euler' v2.5 <1995/03/05> (FJ and FMi)
+) (/usr/local/texlive/2010/texmf-dist/tex/latex/base/latexsym.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/local/texlive/2010/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/local/texlive/2010/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(/usr/local/texlive/2010/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/amsmath/amsopn.sty))
+(/usr/local/texlive/2010/texmf-dist/tex/latex/amsfonts/amssymb.sty
+(/usr/local/texlive/2010/texmf-dist/tex/latex/amsfonts/amsfonts.sty))
+(/usr/local/texlive/2010/texmf-dist/tex/latex/amscls/amsthm.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/wasysym/wasysym.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/local/texlive/2010/texmf-dist/tex/latex/graphics/keyval.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/graphics/graphics.sty
+(/usr/local/texlive/2010/texmf-dist/tex/latex/graphics/trig.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/latexconfig/graphics.cfg)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/pdftex-def/pdftex.def)))
+(./stmaryrd.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/base/textcomp.sty
+(/usr/local/texlive/2010/texmf-dist/tex/latex/base/ts1enc.def))
+(/usr/local/texlive/2010/texmf-dist/tex/latex/tools/indentfirst.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/tools/afterpage.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/rotating/rotating.sty
+(/usr/local/texlive/2010/texmf-dist/tex/latex/base/ifthen.sty))
+(/usr/local/texlive/2010/texmf-dist/tex/latex/tools/calc.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/base/alltt.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/wrapfig/wrapfig.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/multirow/multirow.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/tools/multicol.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/local/texlive/2010/texmf-dist/tex/generic/oberdiek/ltxcmds.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+(/usr/local/texlive/2010/texmf-dist/tex/generic/oberdiek/infwarerr.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/oberdiek/etexcmds.sty))
+(/usr/local/texlive/2010/texmf-dist/tex/generic/oberdiek/pdfescape.sty
+(/usr/local/texlive/2010/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty))
+(/usr/local/texlive/2010/texmf-dist/tex/generic/oberdiek/ifvtex.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/oberdiek/hycolor.sty
+(/usr/local/texlive/2010/texmf-dist/tex/latex/oberdiek/xcolor-patch.sty))
+(/usr/local/texlive/2010/texmf-dist/tex/latex/oberdiek/letltxmacro.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/oberdiek/intcalc.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/latexconfig/hyperref.cfg)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/oberdiek/kvoptions.sty)
+Implicit mode ON; LaTeX internals redefined
+(/usr/local/texlive/2010/texmf-dist/tex/latex/url/url.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/oberdiek/bitset.sty
+(/usr/local/texlive/2010/texmf-dist/tex/generic/oberdiek/bigintcalc.sty))
+(/usr/local/texlive/2010/texmf-dist/tex/generic/oberdiek/atbegshi.sty))
+(/usr/local/texlive/2010/texmf-dist/tex/latex/memoir/memhfixc.sty)
+* hyperref using default driver hpdftex *
+(/usr/local/texlive/2010/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/local/texlive/2010/texmf-dist/tex/latex/oberdiek/atveryend.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/oberdiek/rerunfilecheck.sty
+(/usr/local/texlive/2010/texmf-dist/tex/generic/oberdiek/uniquecounter.sty)))
+(/usr/local/texlive/2010/texmf-dist/tex/latex/endnotes/endnotes.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
+(/usr/local/texlive/2010/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
+(/usr/local/texlive/2010/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.te
+x)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/utilities/pgfutil-latex.def
+) (/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/utilities/pgfrcs.code.tex
+)) (/usr/local/texlive/2010/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty
+(/usr/local/texlive/2010/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.sty
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/systemlayer/pgfsys.code.tex
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-pdftex.d
+ef
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-common-p
+df.def)))
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.
+code.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.
+code.tex)) (/usr/local/texlive/2010/texmf-dist/tex/latex/xcolor/xcolor.sty
+(/usr/local/texlive/2010/texmf-dist/tex/latex/latexconfig/color.cfg))
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/basiclayer/pgfcore.code.tex
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex
+)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/math/pgfmathoperations.code
+.tex
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/math/pgfmathtrig.code.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/math/pgfmathrnd.code.tex))
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/math/pgfmathbase.code.tex))
+)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.co
+de.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathconst
+ruct.code.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathusage
+.code.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/basiclayer/pgfcorescopes.co
+de.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicst
+ate.code.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransform
+ations.code.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/basiclayer/pgfcorequick.cod
+e.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreobjects.c
+ode.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathproce
+ssing.code.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/basiclayer/pgfcorearrows.co
+de.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreshade.cod
+e.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.cod
+e.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/basiclayer/pgfcorelayers.co
+de.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretranspare
+ncy.code.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepatterns.
+code.tex)))
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/modules/pgfmoduleshapes.cod
+e.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/modules/pgfmoduleplot.code.
+tex)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version
+-0-65.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version
+-1-18.sty))
+(/usr/local/texlive/2010/texmf-dist/tex/latex/pgf/utilities/pgffor.sty
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex))
+
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.cod
+e.tex
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothan
+dlers.code.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.cod
+e.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarytopaths.code.tex)))
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryarrows.code.tex
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.
+code.tex))
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryautomata.code.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarybackgrounds.code.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarycalc.code.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarychains.code.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarydecorations.fractals.code.tex
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarydecorations.code.tex
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/modules/pgfmoduledecoration
+s.code.tex))
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/libraries/pgflibrarydecorat
+ions.fractals.code.tex))
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarydecorations.markings.code.tex
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/libraries/pgflibrarydecorat
+ions.markings.code.tex))
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarydecorations.pathreplacing.code.tex
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/libraries/pgflibrarydecorat
+ions.pathreplacing.code.tex))
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryfadings.code.tex
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/libraries/pgflibraryfadings
+.code.tex))
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryfit.code.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryfolding.code.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarypatterns.code.tex
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/libraries/pgflibrarypattern
+s.code.tex))
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarypositioning.code.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarymindmap.code.tex
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarytrees.code.tex))
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryshadows.code.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryshapes.geometric.code.tex
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/libraries/pgflibraryshapes.
+geometric.code.tex))
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryshapes.symbols.code.tex
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/libraries/pgflibraryshapes.
+symbols.code.tex))
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarythrough.code.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryplotmarks.code.tex
+(/usr/local/texlive/2010/texmf-dist/tex/generic/pgf/libraries/pgflibraryplotmar
+ks.code.tex)) (/usr/local/texlive/2010/texmf-dist/tex/generic/babel/babel.sty
+(/usr/local/texlive/2010/texmf-dist/tex/generic/babel/english.ldf
+(/usr/local/texlive/2010/texmf-dist/tex/generic/babel/babel.def)))
+(/usr/local/texlive/2010/texmf-dist/tex/latex/geometry/geometry.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/subfig/subfig.sty
+(/usr/local/texlive/2010/texmf-dist/tex/latex/caption/caption3.sty))
+(/usr/local/texlive/2010/texmf-dist/tex/latex/tools/xspace.sty) (./xy.sty
+(/usr/local/texlive/2010/texmf-dist/tex/generic/xypic/xy.tex Bootstrap'ing:
+catcodes, docmode,
+(/usr/local/texlive/2010/texmf-dist/tex/generic/xypic/xyrecat.tex)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/xypic/xyidioms.tex)
+
+ Xy-pic version 3.8.2 <2010/06/17>
+ Copyright (c) 1991-2010 by Kristoffer H. Rose <krisrose@tug.org>
+ Xy-pic is free software: see the User's Guide for details.
+
+Loading kernel: messages; fonts; allocations: state, direction,
+utility macros; pictures: \xy, positions, objects, decorations;
+kernel objects: directionals, circles, text; options; algorithms: directions,
+edges, connections;  Xy-pic loaded)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/xypic/xypdf.tex
+ Xy-pic option: PDF driver v.1.4 loaded)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/xypic/xymatrix.tex
+ Xy-pic option: Matrix feature v.3.8 loaded)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/xypic/xyarrow.tex
+ Xy-pic option: Arrow and Path feature v.3.7 path, \ar, loaded)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/xypic/xytips.tex
+ Xy-pic option: More Tips extension v.3.7 loaded)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/xypic/xycurve.tex
+ Xy-pic option: Curve and Spline extension v.3.11 curve, circles, loaded)
+Xy-pic pdf driver: `curve' extension support
+(/usr/local/texlive/2010/texmf-dist/tex/generic/xypic/xypdf-cu.tex loaded)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/xypic/xyframe.tex
+ Xy-pic option: Frame and Bracket extension v.3.11 loaded)
+Xy-pic pdf driver: `frame' extension support
+(/usr/local/texlive/2010/texmf-dist/tex/generic/xypic/xypdf-fr.tex loaded)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/xypic/xycolor.tex
+ Xy-pic option: Colour extension v.3.10 loaded)
+Xy-pic pdf driver: `color' extension support
+(/usr/local/texlive/2010/texmf-dist/tex/generic/xypic/xypdf-co.tex loaded))
+(/usr/local/texlive/2010/texmf-dist/tex/generic/xypic/xycrayon.tex
+ Xy-pic option: Crayola Colours v.3.6 loaded)) (./style.tex) (./macros.tex)
+(./main-pr-do.aux) (/usr/local/texlive/2010/texmf-dist/tex/latex/base/ts1cmr.fd
+) (/usr/local/texlive/2010/texmf-dist/tex/latex/psnfss/ot1ppl.fd)
+(/usr/local/texlive/2010/texmf-dist/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/local/texlive/2010/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+(/usr/local/texlive/2010/texmf-dist/tex/latex/oberdiek/grfext.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+(/usr/local/texlive/2010/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/local/texlive/2010/texmf-dist/tex/latex/oberdiek/refcount.sty)
+(/usr/local/texlive/2010/texmf-dist/tex/generic/oberdiek/gettitlestring.sty))
+Redoing nameref's sectioning
+Redoing nameref's label
+(./main-pr-do.out) (./main-pr-do.out)
+*geometry* detected driver: pdftex
+(/usr/local/texlive/2010/texmf-dist/tex/latex/amsfonts/ueur.fd)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/amsfonts/ueuf.fd)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/amsfonts/ueus.fd)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/amsfonts/ueuex.fd)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/base/ulasy.fd)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/amsfonts/umsb.fd)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/wasysym/uwasy.fd)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/stmaryrd/Ustmry.fd)
+(/usr/local/texlive/2010/texmf-dist/tex/latex/psnfss/ot1phv.fd)
+(./main-pr-do.toc) [1{/usr/local/texlive/2010/texmf-var/fonts/map/pdftex/updmap
+/pdftex.map}] [2]) (./pr-do/main.tex (./pr-do/local.def)
+
+Class memoir Warning: The \it font command is deprecated. 
+(memoir)              Use \textit{...} or {\itshape... } instead on input line 
+16.
+
+(./pr-do/abstract.tex)
+<pr-do/figs/abacus.jpg, id=117, 199.2243pt x 229.8186pt>
+<use pr-do/figs/abacus.jpg> [1] (./pr-do/intro.tex [2 <./pr-do/figs/abacus.jpg>
+]
+
+LaTeX Warning: Reference `ch:unique' on page 3 undefined on input line 87.
+
+
+LaTeX Font Warning: Font shape `U/wasy/b/n' in size <8> not available
+(Font)              Font shape `U/wasy/m/n' tried instead on input line 98.
+
+
+LaTeX Font Warning: Font shape `U/wasy/b/n' in size <6> not available
+(Font)              Font shape `U/wasy/m/n' tried instead on input line 98.
+
+
+LaTeX Font Warning: Font shape `U/stmry/b/n' undefined
+(Font)              using `U/stmry/m/n' instead on input line 98.
+
+
+Overfull \hbox (2.49623pt too wide) in paragraph at lines 143--147
+\OT1/ppl/m/n/10.95 spec-i-fi-ca-tions that do not use of pat-tern match-ing on 
+data el-e-ments. More-
+[3]) (./pr-do/specs.tex
+Overfull \hbox (1.24327pt too wide) in paragraph at lines 9--59
+[]\OT1/ppl/m/n/10.95 Stream spec-i-fi-ca-tions are for-malised as or-thog-o-nal
+, many-sorted, first-
+[4] (/usr/local/texlive/2010/texmf-dist/tex/latex/psnfss/ts1ppl.fd) [5]
+[6]
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+) (./pr-do/productivity.tex [7] [8]
+Overfull \hbox (1.90051pt too wide) in paragraph at lines 113--119
+[]\OT1/ppl/m/n/10.95 As `$[]$' is the sole stream con-struc-tor it fol-lows tha
+t ev-ery stream
+[9]) (./pr-do/do.tex
+! Undefined control sequence.
+<argument> ...f {M}}}} \notag & (1)\;\, \strfunap 
+                                                  {f}{ \strcns {\datf {0}}{\...
+l.18 \end{align}
+                
+! Undefined control sequence.
+<argument> \strfunap 
+                     {f}{\astr }
+l.18 \end{align}
+                
+! Undefined control sequence.
+<argument> ...p {f}{\astr }}} & (2)\;\, \strfunap 
+                                                  {f}{\strcns {\datf {1}}{\s...
+l.18 \end{align}
+                
+! Undefined control sequence.
+<argument> \strfunap 
+                     {f}{\astr }
+l.18 \end{align}
+                
+! Undefined control sequence.
+<argument> ...f {M}}}} \notag & (1)\;\, \strfunap 
+                                                  {f}{ \strcns {\datf {0}}{\...
+l.18 \end{align}
+                
+! Undefined control sequence.
+<argument> \strfunap 
+                     {f}{\astr }
+l.18 \end{align}
+                
+! Undefined control sequence.
+<argument> ...p {f}{\astr }}} & (2)\;\, \strfunap 
+                                                  {f}{\strcns {\datf {1}}{\s...
+l.18 \end{align}
+                
+! Undefined control sequence.
+<argument> \strfunap 
+                     {f}{\astr }
+l.18 \end{align}
+                
+
+LaTeX Warning: Reference `ex:do2' on page 10 undefined on input line 24.
+
+
+LaTeX Warning: Reference `ex:do2' on page 10 undefined on input line 27.
+
+
+LaTeX Warning: Reference `ex:do2' on page 10 undefined on input line 30.
+
+
+Overfull \hbox (12.98592pt too wide) in paragraph at lines 32--43
+\OT1/ppl/m/n/10.95 producing only one el-e-ment. Hence from the per-spec-tive o
+f a data-oblivious
+! Undefined control sequence.
+<recently read> \sdg 
+                     
+l.46 and an \emph{opponent} $\sdg
+                                 $
+! Undefined control sequence.
+<recently read> \sdg 
+                     
+l.55 ...possible strategies for the opponent $\sdg
+                                                  $.
+
+! LaTeX Error: File `figs/pstricks/doexample' not found.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.59 ...\includegraphics{figs/pstricks/doexample}}
+                                                  
+
+Underfull \hbox (badness 10000) in paragraph at lines 61--61
+[]\OT1/ppl/m/n/10.95 Figure 7.5: []\OT1/ppl/m/it/10.95 Data-oblivious
+! Undefined control sequence.
+<recently read> \sdg 
+                     
+l.67 ...changing data elements, the opponent $\sdg
+                                                  $ enforces the application...
+
+
+LaTeX Warning: Reference `ex:do2' on page 10 undefined on input line 67.
+
+! Undefined control sequence.
+<recently read> \sdg 
+                     
+l.73 for $\sdg
+              $ with the property that
+! Undefined control sequence.
+<recently read> \dg 
+                    
+l.74 $\dg
+         {\astrtrm}$ is invariant under exchange
+
+Underfull \hbox (badness 1242) in paragraph at lines 65--78
+\OT1/ppl/m/n/10.95 er-a-tion on stream terms, a func-tion
+
+Underfull \hbox (badness 1320) in paragraph at lines 65--78
+\OT1/ppl/m/n/10.95 from stream terms to stream terms:
+[10]
+! Undefined control sequence.
+<recently read> \sdg 
+                     
+l.83   is a function $\sdg
+                           \funin \ter{\asig}_{\sortS} \to \ter{\asig}_{\sor...
+
+! Undefined control sequence.
+<argument> \sdg 
+                
+l.84 ...ch that $\databstr{\funap{\sdg}{\cstrtrm}}
+                                                   = \databstr{\cstrtrm}$
+! Undefined control sequence.
+<argument> \sdg 
+                
+l.86   and $\funap{\sdg}{\cstrtrm}
+                                  $ is in closed data-constructor normal form.
+! Undefined control sequence.
+<recently read> \dgars 
+                       
+l.92   $\dgars
+              {\atrs}{\sdg}
+! Undefined control sequence.
+l.92   $\dgars{\atrs}{\sdg
+                          }
+! Undefined control sequence.
+<recently read> \sdg 
+                     
+l.94   for every data-exchange function $\sdg
+                                             $,
+! Undefined control sequence.
+<argument>  \dgars 
+                   {\atrs }{\sdg } \defdby \{ \pair {s}{t} \mid \: s,t \in \...
+l.103   \end{align*}
+                    
+! Undefined control sequence.
+<argument>  \dgars {\atrs }{\sdg 
+                                 } \defdby \{ \pair {s}{t} \mid \: s,t \in \...
+l.103   \end{align*}
+                    
+! Undefined control sequence.
+<argument> ...mid \: s,t \in \ter {\asig },\; \dg 
+                                                  {s} \to _\atrs t\} \; . 
+l.103   \end{align*}
+                    
+! Undefined control sequence.
+<argument>  \dgars 
+                   {\atrs }{\sdg } \defdby \{ \pair {s}{t} \mid \: s,t \in \...
+l.103   \end{align*}
+                    
+! Undefined control sequence.
+<argument>  \dgars {\atrs }{\sdg 
+                                 } \defdby \{ \pair {s}{t} \mid \: s,t \in \...
+l.103   \end{align*}
+                    
+! Undefined control sequence.
+<argument> ...mid \: s,t \in \ter {\asig },\; \dg 
+                                                  {s} \to _\atrs t\} \; . 
+l.103   \end{align*}
+                    
+! Undefined control sequence.
+l.105   Thus the steps $s \to_{\dgars
+                                     {\atrs}{\sdg}} t$
+! Undefined control sequence.
+l.105   Thus the steps $s \to_{\dgars{\atrs}{\sdg
+                                                 }} t$
+! Undefined control sequence.
+<recently read> \dgars 
+                       
+l.106   in $\dgars
+                  {\atrs}{\sdg}$ are
+! Undefined control sequence.
+l.106   in $\dgars{\atrs}{\sdg
+                              }$ are
+! Undefined control sequence.
+l.108   $ s \mapsto \dg
+                       {s} \to_{\atrs} t $.
+! Undefined control sequence.
+<recently read> \doLow 
+                       
+l.110 ...term $\astrtrm \in \ter{\asig}_{\sortS}$}
+                                                  
+
+Underfull \vbox (badness 10000) has occurred while \output is active [11]
+! Undefined control sequence.
+l.117     \doLow
+                {\atrs}{\astrtrm} \defdby \inf \{ \terprd{\dgars{\atrs}{\sdg...
+
+! Undefined control sequence.
+<argument> \dgars 
+                  {\atrs }{\sdg }
+l.117 ...\{ \terprd{\dgars{\atrs}{\sdg}}{\astrtrm}
+                                                   \where {}
+! Undefined control sequence.
+<argument> \dgars {\atrs }{\sdg 
+                                }
+l.117 ...\{ \terprd{\dgars{\atrs}{\sdg}}{\astrtrm}
+                                                   \where {}
+! Undefined control sequence.
+l.118     \sdg
+               \text{ a data-exchange function on } \atrs \} %\punc .
+! Undefined control sequence.
+<recently read> \doLow 
+                       
+l.122 ...is \emph{\daobly{} productive} if $\doLow
+                                                  {\atrs}{\rootsc} = \infty$...
+
+! Undefined control sequence.
+l.130     \doLow
+                {\atrs}{\astrtrm} \le \terprd{\atrs}{\astrtrm}\punc.
+! Undefined control sequence.
+<recently read> \doLow 
+                       
+l.140   \daob~lower bound $\doLow
+                                 {\atrs}{\astrtrm}$
+! Undefined control sequence.
+<recently read> \sdg 
+                     
+l.144 ...stricted to data-exchange functions~$\sdg
+                                                  $ that factor as
+! Undefined control sequence.
+l.149      \sdg
+                \funin \ter{\asig}
+! Undefined control sequence.
+<argument> \sdg 
+                _{\pebble }
+l.151 ...\overset{\sdg_{\pebble}}{\longrightarrow}
+                                                   \ter{\asig} \;
+! Undefined control sequence.
+<recently read> \sdg 
+                     
+l.152 ...ext{(for some function $\sdg_{\pebble}$)}
+                                                  
+! Undefined control sequence.
+<recently read> \sdg 
+                     
+l.152 ...ext{(for some function $\sdg_{\pebble}$)}
+                                                  
+! Undefined control sequence.
+<recently read> \sdg 
+                     
+l.152 ...ext{(for some function $\sdg_{\pebble}$)}
+                                                  
+! Undefined control sequence.
+<recently read> \sdg 
+                     
+l.152 ...ext{(for some function $\sdg_{\pebble}$)}
+                                                  
+! Undefined control sequence.
+<recently read> \sdg 
+                     
+l.165   and for every data-exchange function $\sdg
+                                                  $ on $\atrs$,
+! Undefined control sequence.
+<recently read> \sdg 
+                     
+l.166 ...ere exists a data-exchange function $\sdg
+                                                  '$ on $\atrs$ of the
+! Undefined control sequence.
+<argument> \dgars 
+                  {\atrs }{\sdg '}
+l.168   $\terprd{\dgars{\atrs}{\sdg'}}{\astrtrm}
+                                                
+! Undefined control sequence.
+<argument> \dgars {\atrs }{\sdg 
+                                '}
+l.168   $\terprd{\dgars{\atrs}{\sdg'}}{\astrtrm}
+                                                
+! Undefined control sequence.
+<argument> \dgars 
+                  {\atrs }{\sdg }
+l.170    \terprd{\dgars{\atrs}{\sdg}}{\astrtrm}
+                                               $.
+! Undefined control sequence.
+<argument> \dgars {\atrs }{\sdg 
+                                }
+l.170    \terprd{\dgars{\atrs}{\sdg}}{\astrtrm}
+                                               $.
+! Undefined control sequence.
+<recently read> \sdg 
+                     
+l.172   adapting $\sdg
+                      $ in an infinite
+
+Class memoir Warning: The \cal font command is deprecated. 
+(memoir)              Try to use \mathcal instead on input line 174.
+
+! Undefined control sequence.
+<recently read> \dgars 
+                       
+l.175 ... reduction graph of $\astrtrm$ in $\dgars
+                                                  {\atrs}{\sdg}$,
+! Undefined control sequence.
+l.175 ...raph of $\astrtrm$ in $\dgars{\atrs}{\sdg
+                                                  }$,
+! Undefined control sequence.
+<recently read> \sdg 
+                     
+l.176   thereby defining $\sdg
+                              '$ as follows:
+! Undefined control sequence.
+<argument> \sdg 
+                '
+l.180   and $\funap{\sdg'}{\astrtrm_0}
+                                       \neq \funap{\sdg}{\astrtrm}$,
+! Undefined control sequence.
+<argument> \sdg 
+                
+l.180 ...}{\astrtrm_0} \neq \funap{\sdg}{\astrtrm}
+                                                  $,
+! Undefined control sequence.
+<argument> \sdg 
+                '
+l.182   $\funap{\sdg'}{\astrtrm}
+                                 \defdby \funap{\sdg'}{\astrtrm_0}$,
+! Undefined control sequence.
+<argument> \sdg 
+                '
+l.182 ...strtrm} \defdby \funap{\sdg'}{\astrtrm_0}
+                                                  $,
+! Undefined control sequence.
+<argument> \sdg 
+                '
+l.184   $\funap{\sdg'}{\astrtrm}
+                                 \defdby \funap{\sdg}{\astrtrm}$.
+! Undefined control sequence.
+<argument> \sdg 
+                
+l.184 ...{\astrtrm} \defdby \funap{\sdg}{\astrtrm}
+                                                  $.
+! Undefined control sequence.
+<recently read> \dgars 
+                       
+l.187 ... R'}}{\astrtrm}$ of $\astrtrm$ in $\dgars
+                                                  {\atrs}{\sdg'}$
+! Undefined control sequence.
+l.187 ...rm}$ of $\astrtrm$ in $\dgars{\atrs}{\sdg
+                                                  '}$
+! Undefined control sequence.
+<recently read> \doLow 
+                       
+l.198 $\doLow
+             {\atrs}{\astrtrm_1} = \doLow{\atrs}{\astrtrm_2}$ holds
+! Undefined control sequence.
+l.198 $\doLow{\atrs}{\astrtrm_1} = \doLow
+                                         {\atrs}{\astrtrm_2}$ holds
+! Undefined control sequence.
+l.203 $ \doLow
+              {\atrs}{\databstr{\astrtrm}} \defdby \doLow{\atrs}{\astrtrm} $
+! Undefined control sequence.
+l.203 ...atrs}{\databstr{\astrtrm}} \defdby \doLow
+                                                  {\atrs}{\astrtrm} $
+
+LaTeX Warning: Reference `sec:results' on page 12 undefined on input line 207.
+
+! Undefined control sequence.
+l.217   $\strff{g} \in \Ssmincns
+                                $, $k = \arityS{\strff{g}}$, and $\ell = \ar...
+
+! Undefined control sequence.
+<recently read> \doLow 
+                       
+l.220   of $\strff{g}$}
+                        is:
+! Undefined control sequence.
+<argument> \doLow 
+                  {\atrs }{\strff {g}}
+l.222 ...oLow{\atrs}{\strff{g}}}{n_1,\ldots,n_{k}}
+                                                  
+! Undefined control sequence.
+l.224     \doLow
+                {\atrs}{\,\funap{\strff{g}}{
+! Undefined control sequence.
+<argument> \trspeb \xstrcns 
+                            \ldots \xstrcns \trspeb \,\sstrcns 
+l.230 ...b\xstrcns\ldots\xstrcns\trspeb\,\sstrcns}
+                                                  ^{\text{$m$ times}}\,\astr$.
+! Undefined control sequence.
+<argument> \trspeb \xstrcns \ldots \xstrcns 
+                                            \trspeb \,\sstrcns 
+l.230 ...b\xstrcns\ldots\xstrcns\trspeb\,\sstrcns}
+                                                  ^{\text{$m$ times}}\,\astr$.
+! Undefined control sequence.
+<recently read> \sdg 
+                     
+l.281 ... for a given data-exchange function $\sdg
+                                                  $,
+! Undefined control sequence.
+l.289   \funap{\astrfun}{\cstrtrm} \to_{\dgars
+                                              {\atrs}{\sdg}}
+! Undefined control sequence.
+l.289 ...strfun}{\cstrtrm} \to_{\dgars{\atrs}{\sdg
+                                                  }}
+! Undefined control sequence.
+l.290   \astrtrm_1 \to_{\dgars
+                              {\atrs}{\sdg}} \astrtrm_2 \to_{\dgars{\atrs}{\...
+
+! Undefined control sequence.
+l.290   \astrtrm_1 \to_{\dgars{\atrs}{\sdg
+                                          }} \astrtrm_2 \to_{\dgars{\atrs}{\...
+
+! Undefined control sequence.
+l.290 ...gars{\atrs}{\sdg}} \astrtrm_2 \to_{\dgars
+                                                  {\atrs}{\sdg}}
+! Undefined control sequence.
+l.290 ...\sdg}} \astrtrm_2 \to_{\dgars{\atrs}{\sdg
+                                                  }}
+
+LaTeX Warning: Citation `terese:2003' on page 12 undefined on input line 302.
+
+[12pdfTeX warning (ext4): destination with the same identifier (name{equation.7
+.4.3}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.311 
+      ]
+Underfull \vbox (badness 10000) has occurred while \output is active [13]
+
+! LaTeX Error: File `figs/pstricks/dobounds' not found.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.327 ...\includegraphics{figs/pstricks/dobounds}}
+                                                  
+! Undefined control sequence.
+<recently read> \doLow 
+                       
+l.352 to the \daob{} lower bound $\doLow
+                                        {\atrs}{\strff{f}}$.
+! Undefined control sequence.
+<recently read> \doLow 
+                       
+l.353 In this example the lower bound $\doLow
+                                             {\atrs}{\strff{f}}$
+! Undefined control sequence.
+<recently read> \doLow 
+                       
+l.355 In general $\doLow
+                        {\atrs}{\strff{f}}$ can even be a superposition of i...
+
+) (./pr-do/nets.tex
+Overfull \hbox (2.0751pt too wide) in paragraph at lines 1--11
+[]\OT1/ppl/m/n/10.95 We in-tro-duce peb-ble-flow nets as a means to model the `
+data-oblivious'
+
+Overfull \hbox (1.56952pt too wide) in paragraph at lines 62--70
+\OT1/ppl/m/n/10.95 graphs (for the lat-ter see [[], []]). They are $\U/eur/m/n/
+10.95 ^^V$\OT1/ppl/m/n/10.95 -terms that em-ploy $\U/eur/m/n/10.95 ^^V$\OT1/ppl
+/m/n/10.95 -bindings
+[14] (./pr-do/figs/meet.pstex_t
+<pr-do/figs/meet.pdf, id=320, 614.295pt x 794.97pt> <use pr-do/figs/meet.pdf>)
+(./pr-do/figs/recfan.pstex_t
+<pr-do/figs/recfan.pdf, id=323, 614.295pt x 794.97pt>
+<use pr-do/figs/recfan.pdf>) [15 <./pr-do/figs/meet.pdf> <./pr-do/figs/recfan.p
+df>]
+
+LaTeX Warning: Reference `ch:pr-do:secdecide' on page 16 undefined on input lin
+e 161.
+
+(./pr-do/figs/box1.pstex_t <pr-do/figs/box1.pdf, id=351, 614.295pt x 794.97pt>
+<use pr-do/figs/box1.pdf>) (./pr-do/figs/box2.pstex_t
+<pr-do/figs/box2.pdf, id=354, 614.295pt x 794.97pt> <use pr-do/figs/box2.pdf>)
+(./pr-do/figs/source.pstex_t
+<pr-do/figs/source.pdf, id=357, 614.295pt x 794.97pt>
+<use pr-do/figs/source.pdf>)
+
+LaTeX Warning: Reference `ch:pr-do:secdecide' on page 16 undefined on input lin
+e 248.
+
+[16 <./pr-do/figs/box1.pdf> <./pr-do/figs/box2.pdf> <./pr-do/figs/source.pdf>]
+Overfull \hbox (1.92232pt too wide) in paragraph at lines 266--271
+\OT1/ppl/m/n/10.95 ate from the stan-dard no-ta-tion to mean $[][]\U/euf/m/n/10
+.95 ([](\U/eur/m/n/10.95 ^^[[]; N[]\U/euf/m/n/10.95 )\U/eur/m/n/10.95 ; [] ; []
+\U/euf/m/n/10.95 (\U/eur/m/n/10.95 ^^[[]; N[]\U/euf/m/n/10.95 ))$\OT1/ppl/m/n/1
+0.95 . 
+(./pr-do/figs/genbox.pstex_t
+<pr-do/figs/genbox.pdf, id=375, 614.295pt x 794.97pt>
+<use pr-do/figs/genbox.pdf>)
+Underfull \hbox (badness 10000) in paragraph at lines 279--279
+[]\OT1/ppl/m/n/10.95 Figure 7.12: []$[]\U/euf/m/n/10.95 (\U/eur/m/n/10.95 ^^[; 
+[][]\U/euf/m/n/10.95 (\U/eur/m/n/10.95 N\U/euf/m/n/10.95 )) \U/euex/m/n/10.95 !
+
+(./pr-do/figs/gate.pstex_t <pr-do/figs/gate.pdf, id=376, 614.295pt x 794.97pt>
+<use pr-do/figs/gate.pdf>) [17 <./pr-do/figs/genbox.pdf> <./pr-do/figs/gate.pdf
+>]
+
+LaTeX Warning: Reference `ch:pr-do:secdecide' on page 18 undefined on input lin
+e 392.
+
+
+Overfull \hbox (60.7012pt too wide) in paragraph at lines 410--410
+[] 
+
+Overfull \hbox (14.1887pt too wide) in paragraph at lines 423--425
+[][]\OT1/ppl/b/n/10.95 Lemma 7.5.8. []\OT1/ppl/m/it/10.95 For all nets $\U/eur/
+m/n/10.95 N$ \OT1/ppl/m/it/10.95 and as-sign-ments $\U/eur/m/n/10.95 $\OT1/ppl
+/m/it/10.95 , we have $[]\U/euf/m/n/10.95 (\U/eur/m/n/10.95 N; \U/euf/m/n/10.9
+5 ) = [](\U/eur/m/n/10.95 N; \U/euf/m/n/10.95 )$\OT1/ppl/m/it/10.95 . 
+) (./pr-do/translation.tex
+Overfull \hbox (3.85332pt too wide) in paragraph at lines 9--20
+\OT1/ppl/m/n/10.95 quences) that pre-cisely model their quan-ti-ta-tive con-sum
+p-tion/production
+[18]
+Overfull \hbox (32.07895pt too wide) in paragraph at lines 59--59
+[] 
+(./pr-do/figs/artmorse.pstex_t
+<pr-do/figs/artmorse.pdf, id=402, 614.295pt x 794.97pt>
+<use pr-do/figs/artmorse.pdf>
+
+LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <20> not available
+(Font)              size <20.74> substituted on input line 13.
+
+
+LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <13.99994> not available
+(Font)              size <14.4> substituted on input line 13.
+
+
+LaTeX Font Warning: Font shape `OML/cmm/m/it' in size <20> not available
+(Font)              size <20.74> substituted on input line 13.
+
+
+LaTeX Font Warning: Font shape `OML/cmm/m/it' in size <13.99994> not available
+(Font)              size <14.4> substituted on input line 13.
+
+
+LaTeX Font Warning: Font shape `U/lasy/m/n' in size <20> not available
+(Font)              size <20.74> substituted on input line 13.
+
+
+LaTeX Font Warning: Font shape `U/lasy/m/n' in size <13.99994> not available
+(Font)              size <14.4> substituted on input line 13.
+
+
+LaTeX Font Warning: Font shape `U/wasy/m/n' in size <20> not available
+(Font)              size <20.74> substituted on input line 13.
+
+
+LaTeX Font Warning: Font shape `U/wasy/m/n' in size <13.99994> not available
+(Font)              size <14.4> substituted on input line 13.
+
+
+LaTeX Font Warning: Font shape `U/stmry/m/n' in size <20> not available
+(Font)              size <20.74> substituted on input line 13.
+
+
+LaTeX Font Warning: Font shape `U/stmry/m/n' in size <13.99994> not available
+(Font)              size <14.4> substituted on input line 13.
+
+)
+Overfull \hbox (30.62384pt too wide) in paragraph at lines 167--167
+[] 
+
+Overfull \hbox (32.70433pt too wide) in paragraph at lines 115--202
+[][] []
+
+Underfull \hbox (badness 10000) in paragraph at lines 115--202
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--202
+[]\OT1/ppl/m/n/10.95 Figure 7.14: [] \OT1/ppl/m/it/10.95 The net trans-la-tion 
+$\U/euf/m/n/10.95 [\OT1/phv/m/n/10.95 M\U/euf/m/n/10.95 ] =
+
+LaTeX Warning: Reference `example:J' on page 19 undefined on input line 206.
+
+
+LaTeX Warning: Reference `appsec:pop' on page 19 undefined on input line 214.
+
+) (./pr-do/decide.tex [19] [20 <./pr-do/figs/artmorse.pdf>]
+Overfull \hbox (33.6676pt too wide) in paragraph at lines 129--151
+\OT1/ppl/m/n/10.95 ap-par-ent in the def-i-ni-tion of com-po-si-tion above: the
+ net $[]\U/euf/m/n/10.95 ([][]\U/eur/m/n/10.95 ; []\U/euf/m/n/10.95 ([][]\U/eur
+/m/n/10.95 ; x\U/euf/m/n/10.95 ))$
+[21]pdfTeX warning (ext4): destination with the same identifier (name{equation.
+7.7.1}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.202 \end{align}
+                 pdfTeX warning (ext4): destination with the same identifier (n
+ame{equation.7.7.2}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.202 \end{align}
+                 
+Overfull \hbox (2.5827pt too wide) in paragraph at lines 259--259
+[] 
+[22]
+Overfull \hbox (2.54533pt too wide) in paragraph at lines 309--314
+[]\OT1/ppl/m/n/10.95 Observe that net re-duc-tion em-ploys in-fini-tary rewrit-
+ing for fixed point
+[23]
+
+LaTeX Warning: Reference `example:J' on page 24 undefined on input line 361.
+
+
+LaTeX Warning: Reference `example:J' on page 24 undefined on input line 367.
+
+
+Overfull \hbox (5.95093pt too wide) in paragraph at lines 377--377
+[] 
+
+Overfull \hbox (30.2218pt too wide) in paragraph at lines 458--458
+[] 
+
+Overfull \hbox (51.7314pt too wide) in paragraph at lines 518--518
+[] 
+) (./pr-do/trees.tex) (./pr-do/related.tex
+Overfull \hbox (4.05617pt too wide) in paragraph at lines 2--10
+[]\OT1/ppl/m/n/10.95 The de-scrip-tion of the quan-ti-ta-tive input--output be-
+haviour of a stream
+[24] [25]
+Overfull \hbox (10.00331pt too wide) in paragraph at lines 72--88
+[]\OT1/ppl/m/n/10.95 Telford and Turner [[]] ex-tend the no-tion of guard-ed-ne
+ss with a method
+) (./pr-do/exercises.tex [26]
+(/usr/local/texlive/2010/texmf-dist/tex/latex/psnfss/ot1pcr.fd)))
+(./closing.tex [27] [28] (./main-pr-do.bbl
+bibitemlist
+
+Underfull \hbox (badness 1303) in paragraph at lines 4--8
+\OT1/ppl/m/n/10.95 Tow-ers of Hanoi, and Progression-Free Se-quences of In-te-g
+ers.
+
+Underfull \hbox (badness 4217) in paragraph at lines 33--37
+[]\OT1/ppl/m/n/10.95 E. W. Di-jk-stra.  On the Pro-duc-tiv-ity of Re-cur-sive D
+ef-i-ni-
+
+Underfull \hbox (badness 1454) in paragraph at lines 33--37
+\OT1/ppl/m/n/10.95 tions.  EWD749, [][]$\OT1/pcr/m/n/10.95 http : / / www . cs 
+. utexas . edu / users / EWD /
+
+Underfull \hbox (badness 2103) in paragraph at lines 39--43
+[]\OT1/ppl/m/n/10.95 E. Gim[]enez.  Cod-i-fy-ing Guarded Def-i-ni-tions with Re
+-cur-sive
+
+Underfull \hbox (badness 1490) in paragraph at lines 39--43
+\OT1/ppl/m/n/10.95 Schemes.  In \OT1/ppl/m/it/10.95 Post-proc. Conf. on Types f
+or Proofs and Pro-grams
+[29]) [30] (./main-pr-do.aux)
+
+LaTeX Font Warning: Size substitutions with differences
+(Font)              up to 0.74pt have occurred.
+
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+
+LaTeX Warning: There were undefined references.
+
+ ) )
+(\end occurred inside a group at level 1)
+
+### simple group (level 1) entered at line 5 ({)
+### bottom level
+(see the transcript file for additional information){/usr/local/texlive/2010/te
+xmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2010/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2010/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2010/texmf-dist/fonts/typ
+e1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2010/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2010/texmf-dist/fonts/type1/p
+ublic/amsfonts/euler/euex10.pfb></usr/local/texlive/2010/texmf-dist/fonts/type1
+/public/amsfonts/euler/euex8.pfb></usr/local/texlive/2010/texmf-dist/fonts/type
+1/public/amsfonts/euler/euex9.pfb></usr/local/texlive/2010/texmf-dist/fonts/typ
+e1/public/amsfonts/euler/eufb10.pfb></usr/local/texlive/2010/texmf-dist/fonts/t
+ype1/public/amsfonts/euler/eufm10.pfb></usr/local/texlive/2010/texmf-dist/fonts
+/type1/public/amsfonts/euler/eurb10.pfb></usr/local/texlive/2010/texmf-dist/fon
+ts/type1/public/amsfonts/euler/eurm10.pfb></usr/local/texlive/2010/texmf-dist/f
+onts/type1/public/amsfonts/euler/eurm7.pfb></usr/local/texlive/2010/texmf-dist/
+fonts/type1/public/amsfonts/euler/eusm10.pfb></usr/local/texlive/2010/texmf-dis
+t/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2010/texmf
+-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2010/t
+exmf-dist/fonts/type1/hoekwater/stmaryrd/stmary10.pfb></usr/local/texlive/2010/
+texmf-dist/fonts/type1/hoekwater/stmaryrd/stmary8.pfb></usr/local/texlive/2010/
+texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2010/texmf-di
+st/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2010/texmf-dist/font
+s/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2010/texmf-dist/fonts/type1
+/urw/palatino/uplb8a.pfb></usr/local/texlive/2010/texmf-dist/fonts/type1/urw/pa
+latino/uplr8a.pfb></usr/local/texlive/2010/texmf-dist/fonts/type1/urw/palatino/
+uplri8a.pfb>
+Output written on main-pr-do.pdf (32 pages, 525015 bytes).
+Transcript written on main-pr-do.log.

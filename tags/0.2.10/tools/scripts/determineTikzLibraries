@@ -1,0 +1,3 @@
+#!/bin/bash
+
+/usr/bin/find /usr/share/texmf* -name tikzlibrary*.code.tex | sed -r -e "s/.*tikzlibrary([^\/]+)\.code\.tex/\1/" | sort >tikzLibraries.txt
