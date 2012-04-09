@@ -7,6 +7,7 @@ New Features and other Changes in JLatexEditor
 
 
 == Versino 0.2.10 ===
+
 * new features:
   - shows warning message if project files are not in the svn
 
