@@ -144,7 +144,7 @@ public class RenameElement extends AddOn {
     }
   }
 
-  private void backgroundParserUpdate(JLatexEditorJFrame jle) {
+  public static void backgroundParserUpdate(JLatexEditorJFrame jle) {
     // let parser finish current run (user might have changes)
     backgroundParserWaitFor(jle);
 
@@ -152,7 +152,7 @@ public class RenameElement extends AddOn {
     SCEManager.getBackgroundParser().parse();
   }
 
-  private boolean backgroundParserWaitFor(JLatexEditorJFrame jle) {
+  public static boolean backgroundParserWaitFor(JLatexEditorJFrame jle) {
     // wait for background parser to finish
     try {
       SCEManager.getBackgroundParser().waitForParseFinished();
@@ -163,7 +163,7 @@ public class RenameElement extends AddOn {
     return true;
   }
 
-  private void renameBibRef(JLatexEditorJFrame jle, String oldRef) {
+  public static void renameBibRef(JLatexEditorJFrame jle, String oldRef) {
       // start background parser to update document states
       backgroundParserUpdate(jle);
 
@@ -183,7 +183,7 @@ public class RenameElement extends AddOn {
       replaceInAllFiles(jle, filePoses, "(@[\\w\\W]+ *\\{ *)" + oldRef + "([ ,\\}])", "$1" + newRef + "$2", false);
   }
 
-	private void replaceInAllFiles(JLatexEditorJFrame jle, List<BackgroundParser.FilePos> filePoses, String from, String to, boolean everywhere) {
+	public static void replaceInAllFiles(JLatexEditorJFrame jle, List<BackgroundParser.FilePos> filePoses, String from, String to, boolean everywhere) {
 		HashSet<File> files = new HashSet<File>();
 
 		if (filePoses != null) {
@@ -198,7 +198,7 @@ public class RenameElement extends AddOn {
 		replaceInAllFiles(jle, files, from, to, everywhere);
 	}
 
-	private void replaceInAllFiles(JLatexEditorJFrame jle, HashSet<File> files, String from, String to, boolean everywhere) {
+	public static void replaceInAllFiles(JLatexEditorJFrame jle, HashSet<File> files, String from, String to, boolean everywhere) {
 		// put them into a set
 		HashSet<SourceCodeEditor<Doc>> editors = new HashSet<SourceCodeEditor<Doc>>();
 		if (files != null) {

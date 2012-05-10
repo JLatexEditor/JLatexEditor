@@ -24,7 +24,21 @@ import java.util.List;
  * @author Joerg Endrullis &lt;joerg@endrullis.de&gt;
  */
 public class BibAssistant implements CodeAssistant, SCEPopup.ItemHandler {
-  PatternPair authorPattern = new PatternPair("(?:^| and )(?:(?! and ) )*((?:(?! and ).)*?)", true, "(.*?)(?:$| and$| and )");
+  private PatternPair authorPattern = new PatternPair("(?:^| and )(?:(?! and ) )*((?:(?! and ).)*?)", true, "(.*?)(?:$| and$| and )");
+  private String[] valueOrder = new String[] {
+          "author", "title",
+          "booktitle",
+          "journal", "volume", "number",
+          "editor",
+          "pages",
+          "institution",
+          "publisher", "series",
+          "month", "year",
+          "edition",
+          "note",
+          "address",
+          "isbn","issn","doi","ee"
+  };
 
   public BibAssistant() {
 	}
@@ -105,7 +119,7 @@ public class BibAssistant implements CodeAssistant, SCEPopup.ItemHandler {
     ArrayList<BibEntry> stringEntries = getEntries(document, "string");
     for(BibEntry stringEntry : stringEntries) {
       if(stringEntry.getName().isEmpty()) continue;
-      String stringValue = stringEntry.getAllParameters().get(stringEntry.getName()).getValuesString();
+      String stringValue = stringEntry.getAllParameters().get(stringEntry.getName().toLowerCase()).getValuesString();
 
       int common = lcs(word.word, stringValue);
       weightedEntries.add(new WeightedElement<BibEntry>(common, stringEntry));
@@ -119,7 +133,7 @@ public class BibAssistant implements CodeAssistant, SCEPopup.ItemHandler {
     for(int itemNr = 0; itemNr < 3; itemNr++) {
       if(weightedEntries.isEmpty()) break;
       BibEntry entry = weightedEntries.remove(weightedEntries.size()-1).element;
-      list.add(new ReplaceByAction(word.word, entry.getName(), entry.getAllParameters().get(entry.getName()).getValuesString(), pane));
+      list.add(new ReplaceByAction(word.word, entry.getName(), entry.getAllParameters().get(entry.getName().toLowerCase()).getValuesString(), pane));
     }
 
     // open popup

@@ -300,7 +300,7 @@ public class SourceCodeEditor<Rs extends AbstractResource> extends JPanel implem
     getFocusedPane().lineComment(commentPrefix);
   }
 
-  public void lineUncomment(String commentPrefix) {
+  public void lineUncomment(String[] commentPrefix) {
     getFocusedPane().lineUncomment(commentPrefix);
   }
 

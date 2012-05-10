@@ -1,5 +1,6 @@
 package jlatexeditor.bib;
 
+import sce.codehelper.WordWithPos;
 import sce.component.SCEDocumentPosition;
 
 import java.util.HashMap;
@@ -9,7 +10,7 @@ public class BibEntry {
   private SCEDocumentPosition endPos = null;
 
   private String type = null;
-  private String name = "";
+  private WordWithPos name = new WordWithPos("", 0,0);
   private HashMap<String,BibKeyValuePair> parameters = new HashMap<String, BibKeyValuePair>();
   private HashMap<String,BibKeyValuePair> allParameters = new HashMap<String, BibKeyValuePair>();
 
@@ -46,10 +47,14 @@ public class BibEntry {
   }
 
   public String getName() {
+    return name.word;
+  }
+
+  public WordWithPos getNameWithPos() {
     return name;
   }
 
-  public void setName(String name) {
+  public void setName(WordWithPos name) {
     this.name = name;
   }
 

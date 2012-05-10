@@ -442,12 +442,13 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
    *
    * @param commentPrefix prefix used to mark a line as lineComment
    */
-  public void lineUncomment(String commentPrefix) {
+  public void lineUncomment(String[] commentPrefix) {
     if (!document.hasSelection()) {
       int row = caret.getRow();
       int col = caret.getColumn();
-      if (removeComment(commentPrefix, caret.getRow())) {
-        caret.moveTo(row, Math.max(col - commentPrefix.length(), 0), false);
+      int removed = removeComment(commentPrefix, caret.getRow());
+      if (removed >= 0) {
+        caret.moveTo(row, Math.max(col - removed, 0), false);
       }
     } else {
       SCEDocumentPosition startSel = document.getSelectionStart();
@@ -457,7 +458,8 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
       int endRow = endSel.getRow() - (endSel.getColumn() == 0 ? 1 : 0);
       boolean moveCaret = false;
       for (int row = startRow; row <= endRow; row++) {
-        if (removeComment(commentPrefix, row) && row == caret.getRow()) {
+        int removed = removeComment(commentPrefix, row);
+        if (removed >= 0 && row == caret.getRow()) {
           moveCaret = true;
         }
       }
@@ -472,13 +474,15 @@ public class SCEPane extends JPanel implements SCEDocumentListener, SCECaretList
     }
   }
 
-  private boolean removeComment(String commentPrefix, int row) {
+  private int removeComment(String[] commentPrefixes, int row) {
     String rowString = document.getRowsModel().getRowAsString(row);
-    if (rowString.startsWith(commentPrefix)) {
-      document.remove(row, 0, row, commentPrefix.length());
-      return true;
+    for(String commentPrefix : commentPrefixes) {
+      if (rowString.startsWith(commentPrefix)) {
+        document.remove(row, 0, row, commentPrefix.length());
+        return commentPrefix.length();
+      }
     }
-    return false;
+    return -1;
   }
 
 	/**

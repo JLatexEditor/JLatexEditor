@@ -610,9 +610,14 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
       } else
       if (key.equals(UNCOMMENT)) {
         SourceCodeEditor editor = pane.getSourceCodeEditor();
-        String lineComment = "//";
+        String[] lineComment = new String[] {"//"};
         try {
-          lineComment = ((SourceCodeEditor<? extends Doc>) editor).getResource().getProperty("lineComment");
+          String lc = ((SourceCodeEditor<? extends Doc>) editor).getResource().getProperty("lineComment");
+          if(!lc.endsWith(" ")) {
+            lineComment = new String[] {lc};
+          } else {
+            lineComment = new String[] {lc, lc.trim()};
+          }
         } catch (Throwable _) { /* ignore */ }
         editor.lineUncomment(lineComment);
       }
