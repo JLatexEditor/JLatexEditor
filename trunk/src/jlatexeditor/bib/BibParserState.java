@@ -1,8 +1,9 @@
 package jlatexeditor.bib;
 
+import sce.component.SCEDocumentPosition;
 import sce.syntaxhighlighting.ParserState;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class BibParserState implements ParserState {
   private static byte[] styles = new byte[256];
@@ -16,13 +17,20 @@ public class BibParserState implements ParserState {
   public static final int STATE_EXPECT_VALUE = 6;
   public static final int STATE_VALUE_QUOTED = 7;
   public static final int STATE_VALUE_BRACED = 8;
-  public static final int STATE_EXPECT_CLOSE = 9;
+  public static final int STATE_VALUE_BASIC  = 9;
+  public static final int STATE_EXPECT_CLOSE = 10;
 
   private int state = STATE_NOTHING;
   private int bracketLevel = 0;
-  private String entryType = null;
-  private ArrayList<String> keys = new ArrayList<String>();
-  private ArrayList<String> allKeys = null;
+
+  // current entry
+  private BibEntry entry = new BibEntry();
+  private BibKeyValuePair value = new BibKeyValuePair();
+  private SCEDocumentPosition valueOpening = new SCEDocumentPosition(0,0);
+
+  // list of all entries
+  private int entryNr = 0;
+  private HashMap<Integer,BibEntry> entryByNr = new HashMap<Integer, BibEntry>();
 
   static {
     for (int i = 0; i < styles.length; i++) styles[i] = (byte) i;
@@ -35,9 +43,11 @@ public class BibParserState implements ParserState {
   public ParserState copy() {
     BibParserState copy = new BibParserState(state);
     copy.bracketLevel = bracketLevel;
-    copy.entryType = entryType;
-    copy.keys = new ArrayList<String>(keys);
-    copy.allKeys = allKeys;
+    copy.entry = entry != null ? entry.copy() : null;
+    copy.value = value.copy();
+    copy.valueOpening = valueOpening;
+    copy.entryNr = entryNr;
+    copy.entryByNr = entryByNr;
     return copy;
   }
 
@@ -61,34 +71,52 @@ public class BibParserState implements ParserState {
     this.bracketLevel = bracketLevel;
   }
 
-  public String getEntryType() {
-    return entryType;
+  public BibEntry getEntry() {
+    return entry;
   }
 
-  public void setEntryType(String entryType) {
-    this.entryType = entryType;
+  public void setEntry(BibEntry entry) {
+    this.entry = entry;
+
+    entryByNr.put(entryNr, entry);
+    entryNr++;
   }
 
-  public ArrayList<String> getKeys() {
-    return keys;
+  public void resetEntry() {
+    entry = new BibEntry();
   }
 
-  public void setKeys(ArrayList<String> keys) {
-    this.keys = keys;
+  public BibKeyValuePair getValue() {
+    return value;
   }
 
-  public ArrayList<String> getAllKeys() {
-    return allKeys;
+  public void setValue(BibKeyValuePair value) {
+    this.value = value;
   }
 
-  public void setAllKeys(ArrayList<String> allKeys) {
-    this.allKeys = allKeys;
+  public SCEDocumentPosition getValueOpening() {
+    return valueOpening;
+  }
+
+  public void setValueOpening(SCEDocumentPosition valueOpening) {
+    this.valueOpening = valueOpening;
+  }
+
+  public int getEntryNr() {
+    return entryNr;
+  }
+
+  public HashMap<Integer, BibEntry> getEntryByNr() {
+    return entryByNr;
   }
 
   public boolean equals(Object obj) {
     if(!(obj instanceof BibParserState)) return false;
     BibParserState b = (BibParserState) obj;
-    return state == b.state && bracketLevel == b.bracketLevel && equals(entryType, b.entryType) && equals(keys, b.keys);
+    return state == b.state && bracketLevel == b.bracketLevel
+            && equals(entry.getType(), b.getEntry().getType())
+            && equals(entry.getParameters(), b.getEntry().getParameters())
+            && entryNr == b.entryNr;
   }
 
   private boolean equals(Object o1, Object o2) {

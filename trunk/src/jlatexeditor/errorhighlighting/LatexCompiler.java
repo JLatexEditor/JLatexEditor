@@ -68,7 +68,9 @@ public class LatexCompiler extends Thread {
     compileStart();
 
     String baseName = file.getName();
-    baseName = baseName.substring(0, baseName.lastIndexOf(".tex"));
+    int texIndex = baseName.lastIndexOf(".tex");
+    if(texIndex < 0) return;
+    baseName = baseName.substring(0, texIndex);
 
     // Command line shell
     try {

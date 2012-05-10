@@ -103,7 +103,7 @@ up_down term nodes =
       zip5 (a:as) (b:bs) (c:cs) (d:ds) (e:es) = (a,b,c,d,e) : zip5 as bs cs ds es
       zip5 _ _ _ _ _ = [] 
   in zip5 
-      ("" : nodes)
+      (head nodes : nodes)
       (directions $ (-1):depths)
       nodes
       (directions $ depths ++ [-1])
@@ -130,7 +130,7 @@ renderHighlight c tree highlight =
   (if depth_lr lst tree <= depth_lr root tree 
    then south_east c root ++ " -- " 
    else east c root ++ " -- ") ++
-  north_east c root ++ " -- " ++ north c root ++ " -- " ++
+  north_east c root ++ " -- " ++ north c root ++ " -- " ++ 
   -- remaining path
   renderHighlight_ c tree (up_down tree $ nodes highlight) 
 

@@ -1,6 +1,7 @@
 package jlatexeditor;
 
 import de.endrullis.utils.LazyVal;
+import jlatexeditor.bib.BibAssistant;
 import jlatexeditor.bib.BibCodeCompletion;
 import jlatexeditor.bib.BibSyntaxHighlighting;
 import jlatexeditor.changelog.ChangeLogStyles;
@@ -267,6 +268,7 @@ public class SCEManager {
 
 		CombinedCodeAssistant codeAssistant = new CombinedCodeAssistant();
 		try {
+		  codeAssistant.addAssistant(new BibAssistant());
 		  codeAssistant.addAssistant(new SpellCheckSuggester(createSpellChecker()));
 		} catch (Exception ignored) {
 		}
