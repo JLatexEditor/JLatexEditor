@@ -230,7 +230,7 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
 
           BibKeyValuePair value = state.getValue();
           if(value != null && value.getKey() != null) {
-            entry.getParameters().put(value.getKey().word, value);
+            entry.getParameters().put(value.getKey().word.toLowerCase(), value);
           }
 
           entry.setEndPos(new SCEDocumentPosition(sce_char));
@@ -248,7 +248,7 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
       if(state.getState() == BibParserState.STATE_EXPECT_NAME && !Character.isWhitespace(c)) {
         char delimiter[] = COMMA_OR_BRACKET;
         String entryName = LatexSyntaxHighlighting.getUntil(row, char_nr, delimiter);
-        state.getEntry().setName(entryName);
+        state.getEntry().setName(new WordWithPos(entryName, new SCEDocumentPosition(sce_char)));
         if(c == ',' || entryName == null) {
           sce_char.style = stateStyles[LatexStyles.TEXT];
           if(c == ',') state.setState(BibParserState.STATE_EXPECT_KEY);
@@ -293,7 +293,7 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
 
         BibKeyValuePair value = state.getValue();
         if(value != null && value.getKey() != null) {
-          state.getEntry().getParameters().put(value.getKey().word, value);
+          state.getEntry().getParameters().put(value.getKey().word.toLowerCase(), value);
         }
 
         state.setState(BibParserState.STATE_EXPECT_KEY);
@@ -315,13 +315,13 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
         if(entry != null) {
           // non-existing key
           if(!entry.getAll().contains(keyLower)) {
-            entryStyle = stateStyles[LatexStyles.ERROR];
+            entryStyle = stateStyles[LatexStyles.COMMENT];
           }
         }
 
         boolean isString = state.getEntry().getType().toLowerCase().equals("string");
         if(isString) {
-          state.getEntry().setName(key);
+          state.getEntry().setName(new WordWithPos(key, new SCEDocumentPosition(sce_char)));
 
           // check whether entry name is in use
           for(int entryNr = 0; entryNr < state.getEntryNr()-1; entryNr++) {
@@ -338,7 +338,7 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
 
         BibKeyValuePair value = new BibKeyValuePair();
         value.setKey(new WordWithPos(key, new SCEDocumentPosition(sce_char)));
-        state.getEntry().getParameters().put(key, value);
+        state.getEntry().getParameters().put(keyLower, value);
         state.setValue(value);
 
         state.setState(BibParserState.STATE_EXPECT_EQ);
@@ -410,7 +410,6 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
           state.getValue().addValue(new WordWithPos(text, start, end));
 
           boolean isString = state.getEntry().getType().toLowerCase().equals("string");
-          if(isString) state.getEntry().setName(state.getValue().getKey().word);
           state.setState(!isString ? BibParserState.STATE_EXPECT_COMMA : BibParserState.STATE_EXPECT_CLOSE);
         }
 
@@ -444,7 +443,7 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
     return stateStack;
   }
 
-  private void markError(SCEDocumentRow row, int startColumn, int length) {
+  private void mark(int style, SCEDocumentRow row, int startColumn, int length) {
     SCEDocumentChar[] chars = row.chars;
     int endColumn = startColumn + length;
     for (int i = startColumn; i < endColumn; i++) {
