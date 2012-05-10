@@ -160,7 +160,10 @@ public class BackgroundParser extends Thread {
 
   public void parse() {
 	  synchronized (syncObject) {
-		  if (parsing) return;
+      // reparse bib file
+      bibModified = 0;
+
+      if (parsing) return;
 		  syncObject.notify();
 	  }
   }

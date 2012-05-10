@@ -21,6 +21,11 @@ public class WordWithPos extends SCEDocumentRange {
 		this.word = word;
 	}
 
+  public WordWithPos(String word, SCEDocumentPosition start, SCEDocumentPosition end) {
+    super(start, end);
+    this.word = word;
+  }
+
   @Override
   public String toString() {
     return word + " @(" + startPos.getRow() + "," + startPos.getColumn() + ")";

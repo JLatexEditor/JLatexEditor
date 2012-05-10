@@ -58,4 +58,10 @@ public class SCEDocumentRange {
 	public int getEndCol() {
 		return endPos.getColumn();
 	}
+
+  public boolean contains(int row, int column) {
+    if(row < startPos.getRow() || (row == startPos.getRow() && column < startPos.getColumn())) return false;
+    if(row > endPos.getRow() || (row == endPos.getRow() && column > endPos.getColumn())) return false;
+    return true;
+  }
 }

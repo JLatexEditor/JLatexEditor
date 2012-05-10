@@ -1,143 +1,71 @@
 package jlatexeditor.bib;
 
-import sce.codehelper.CHCommand;
+import sce.component.SCEDocumentPosition;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.HashMap;
 
-public class BibEntry extends CHCommand {
-  private String[] required;
-  private String[] optional;
-  private HashSet<String> all;
+public class BibEntry {
+  private SCEDocumentPosition startPos = null;
+  private SCEDocumentPosition endPos = null;
 
-  public BibEntry(String name, String description, String[] required, String[] optional) {
-    super("@" + name);
+  private String type = null;
+  private String name = "";
+  private HashMap<String,BibKeyValuePair> parameters = new HashMap<String, BibKeyValuePair>();
+  private HashMap<String,BibKeyValuePair> allParameters = new HashMap<String, BibKeyValuePair>();
 
-    setHint(description);
-    this.required = required;
-    this.optional = optional;
-
-    all = new HashSet<String>();
-    List<String> keys = new ArrayList<String>();
-    keys.addAll(Arrays.asList(required));
-    keys.addAll(Arrays.asList(optional));
-    for(String key : keys) {
-      String splits[] = key.split("/");
-      all.addAll(Arrays.asList(splits));
-    }
-
-    String usage = "&at;" + name + "{@|@,\n";
-    for(String key : getRequired()) usage += "  " + key + " = {},\n";
-    usage += "}\n";
-    setUsage(usage);
+  public BibEntry copy() {
+    BibEntry copy = new BibEntry();
+    copy.type = type;
+    copy.parameters = new HashMap<String, BibKeyValuePair>(parameters);
+    copy.allParameters = allParameters;
+    return copy;
   }
 
-  public String[] getRequired() {
-    return required;
+  public SCEDocumentPosition getStartPos() {
+    return startPos;
   }
 
-  public String[] getOptional() {
-    return optional;
+  public void setStartPos(SCEDocumentPosition startPos) {
+    this.startPos = startPos;
   }
 
-  public HashSet getAll() {
-    return all;
+  public SCEDocumentPosition getEndPos() {
+    return endPos;
   }
 
-  public static BibEntry getEntry(String type) {
-    type = type.toLowerCase();
-    for(BibEntry entry : ENTRIES) {
-      if(entry.getName().equals(type)) return entry;
-    }
-    return null;
+  public void setEndPos(SCEDocumentPosition endPos) {
+    this.endPos = endPos;
   }
-  
-  public static BibEntry ENTRIES[] = new BibEntry[] {
-          new BibEntry(
-                  "article",
-                  "An article from a journal or magazine.",
-                  new String[] {"author", "title", "journal", "year"},
-                  new String[] {"volume", "number", "pages", "month", "note", "key"}
-          ),
-          new BibEntry(
-                  "book",
-                  "A book with an explicit publisher.",
-                  new String[] {"author/editor", "title", "publisher", "year"},
-                  new String[] {"volume", "series", "address", "edition", "month", "note", "key"}
-          ),
-          new BibEntry(
-                  "booklet",
-                  "A work that is printed and bound, but without a named publisher or sponsoring institution.",
-                  new String[] {"title"},
-                  new String[] {"author", "howpublished", "address", "month", "year", "note", "key"}
-          ),
-          new BibEntry(
-                  "conference",
-                  "The same as inproceedings, included for Scribe compatibility.",
-                  new String[] {"author", "title", "booktitle", "year"},
-                  new String[] {"editor", "pages", "organization", "publisher", "address", "month", "note", "key"}
-          ),
-          new BibEntry(
-                  "inbook",
-                  "A part of a book, usually untitled. May be a chapter (or section or whatever) and/or a range of pages.",
-                  new String[] {"author/editor", "title", "chapter/pages", "publisher", "year"},
-                  new String[] {"volume", "series", "address", "edition", "month", "note", "key"}
-          ),
-          new BibEntry(
-                  "incollection",
-                  "A part of a book having its own title.",
-                  new String[] {"author", "title", "booktitle", "year"},
-                  new String[] {"editor", "pages", "organization", "publisher", "address", "month", "note", "key"}
-          ),
-          new BibEntry(
-                  "inproceedings",
-                  "An article in a conference proceedings.",
-                  new String[] {"author", "title", "booktitle", "year"},
-                  new String[] {"editor", "series", "pages", "organization", "publisher", "address", "month", "note", "key"}
-          ),
-          new BibEntry(
-                  "manual",
-                  "Technical documentation.",
-                  new String[] {"title"},
-                  new String[] {"author", "organization", "address", "edition", "month", "year", "note", "key"}
-          ),
-          new BibEntry(
-                  "mastersthesis",
-                  "A Master's thesis.",
-                  new String[] {"author", "title", "school", "year"},
-                  new String[] {"address", "month", "note", "key"}
-          ),
-          new BibEntry(
-                  "misc",
-                  "For use when nothing else fits.",
-                  new String[] {"none"},
-                  new String[] {"author", "title", "howpublished", "month", "year", "note", "key"}
-          ),
-          new BibEntry(
-                  "phdthesis",
-                  "A Ph.D. thesis.",
-                  new String[] {"author", "title", "school", "year"},
-                  new String[] {"address", "month", "note", "key"}
-          ),
-          new BibEntry(
-                  "proceedings",
-                  "The proceedings of a conference.",
-                  new String[] {"title", "year"},
-                  new String[] {"editor", "publisher", "organization", "address", "month", "note", "key"}
-          ),
-          new BibEntry(
-                  "techreport",
-                  "A report published by a school or other institution, usually numbered within a series.",
-                  new String[] {"author", "title", "institution", "year"},
-                  new String[] {"type", "number", "address", "month", "note", "key"}
-          ),
-          new BibEntry(
-                  "unpublished",
-                  "A document having an author and title, but not formally published.",
-                  new String[] {"author", "title", "note"},
-                  new String[] {"month", "year", "key"}
-          )
-  };
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public HashMap<String,BibKeyValuePair> getParameters() {
+    return parameters;
+  }
+
+  public void setParameters(HashMap<String,BibKeyValuePair> parameters) {
+    this.parameters = parameters;
+  }
+
+  public HashMap<String,BibKeyValuePair> getAllParameters() {
+    return allParameters;
+  }
+
+  public void setAllParameters(HashMap<String,BibKeyValuePair> allParameters) {
+    this.allParameters = allParameters;
+  }
 }

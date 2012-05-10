@@ -9,6 +9,7 @@ import sce.syntaxhighlighting.ParserStateStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class BibCodeCompletion extends PatternCompletion {
   protected WordWithPos name;
@@ -31,7 +32,7 @@ public class BibCodeCompletion extends PatternCompletion {
     int row = pane.getCaret().getRow();
     int column = pane.getCaret().getColumn();
 
-    ParserStateStack stateStack = BibSyntaxHighlighting.parseRow(rows[row], column);
+    ParserStateStack stateStack = BibSyntaxHighlighting.parseRow(rows[row], column, document);
     BibParserState state = (BibParserState) stateStack.peek();
 
     if(column == 0 && state.getState() == BibParserState.STATE_NOTHING) {
@@ -49,15 +50,15 @@ public class BibCodeCompletion extends PatternCompletion {
         name = new WordWithPos("", row, column);
       }
 
-      ArrayList<String> keys = state.getAllKeys();
-      BibEntry entry = BibEntry.getEntry("@" + state.getEntryType());
+      HashMap<String,BibKeyValuePair> keys = state.getEntry().getAllParameters();
+      BibEntryPattern entry = BibEntryPattern.getEntry("@" + state.getEntry().getType());
       if(entry == null) return false;
 
       ArrayList<String> bibKeys = new ArrayList<String>();
       bibKeys.addAll(Arrays.asList(entry.getRequired()));
       bibKeys.addAll(Arrays.asList(entry.getOptional()));
       for(String bibKey : bibKeys) {
-        if(!keys.contains(bibKey)) {
+        if(!keys.containsKey(bibKey)) {
           CHCommand command = new CHCommand(bibKey);
           command.setUsage(bibKey + " = {@|@},");
           missingParams.add(command);
@@ -89,7 +90,7 @@ public class BibCodeCompletion extends PatternCompletion {
 
     if(missingParams == null) {
       // entry completion
-      for(BibEntry entry : BibEntry.ENTRIES) {
+      for(BibEntryPattern entry : BibEntryPattern.ENTRIES) {
         if(entry.getName().startsWith(name.toLowerCase())) list.add(entry);
       }
     } else {
