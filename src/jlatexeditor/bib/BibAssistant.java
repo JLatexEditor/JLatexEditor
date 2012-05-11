@@ -86,7 +86,7 @@ public class BibAssistant implements CodeAssistant, SCEPopup.ItemHandler {
             }
 
             // author
-            if(key.equals("author")) {
+            if(key.equals("author") || key.equals("editor")) {
               List<WordWithPos> params = authorPattern.find(pane, BibKeyValuePair.getInnerStart(value), BibKeyValuePair.getInnerEnd(value));
               if(params != null) {
                 WordWithPos name = params.get(0);
