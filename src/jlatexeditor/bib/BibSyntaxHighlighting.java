@@ -9,7 +9,9 @@ import sce.syntaxhighlighting.ParserStateStack;
 import sce.syntaxhighlighting.SyntaxHighlighting;
 import util.SetTrie;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -32,6 +34,8 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
   // do we need to parse
   private boolean parseNeeded = false;
   private boolean currentlyChanging = false;
+
+  public static HashMap<String,String[]> stringMap = new HashMap<String, String[]>();
 
   public BibSyntaxHighlighting(SCEPane pane, BackgroundParser parser) {
 	  super("BibTexSyntaxHighlighting");
@@ -127,7 +131,7 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
 
     while (!ready && row_nr < rowsCount) {
       SCEDocumentRow row = rows[row_nr];
-      ParserStateStack stateStack = parseRow(row, row.length, document);
+      ParserStateStack stateStack = parseRow(row, row.length, document, rows, false);
 
       // go to the next row
       row_nr++;
@@ -143,13 +147,14 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
     }
   }
 
-  public static ParserStateStack parseRow(SCEDocumentRow row, int length, SCEDocument document) {
+  public static ParserStateStack parseRow(SCEDocumentRow row, int length, SCEDocument document, SCEDocumentRow rows[], boolean simulate) {
     // this may never be
     if (row.parserStateStack == null) throw new RuntimeException("Internal parser error occurred.");
 
     // the current states state (at the beginning of the row)
     ParserStateStack stateStack = row.parserStateStack.copy();
     BibParserState state = (BibParserState) stateStack.peek();
+    if(simulate) state = (BibParserState) state.copy();
 
     // reset the modified value of the row
     row.modified = false;
@@ -164,7 +169,7 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
       chars[char_nr].style = stateStyles[Character.isWhitespace(c) ? LatexStyles.TEXT : LatexStyles.COMMENT];
 
       // @type
-      if(state.getState() == BibParserState.STATE_NOTHING && c == '@') {
+      if(c == '@' && (state.getState() == BibParserState.STATE_NOTHING || char_nr==0)) {
         String entryType = LatexSyntaxHighlighting.getWord(row, char_nr + 1, false);
         if(entryType == null) {
           sce_char.style = stateStyles[LatexStyles.ERROR];
@@ -180,11 +185,13 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
         state.setState(BibParserState.STATE_EXPECT_OPEN);
 
         BibEntry entry = new BibEntry();
-        state.setEntry(entry);
+        if(!simulate) state.setEntry(entry);
         entry.setStartPos(new SCEDocumentPosition(sce_char));
         entry.setType(entryType);
-        entry.setParameters(new HashMap<String, BibKeyValuePair>());
-        entry.setAllParameters(new HashMap<String, BibKeyValuePair>());
+
+        state.setValue(new BibKeyValuePair());
+
+        state.setBracketLevel(0);
         continue;
       }
 
@@ -193,14 +200,16 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
         sce_char.style = stateStyles[LatexStyles.BRACKET];
         if(c != '{') sce_char.style = LatexStyles.ERROR;
 
-        boolean isString = state.getEntry().getType().toLowerCase().equals("string");
+        boolean isString = state.getEntry().getType(false).toLowerCase().equals("string");
         state.setState(!isString ? BibParserState.STATE_EXPECT_NAME : BibParserState.STATE_EXPECT_KEY);
+        state.setBracketLevel(1);
         continue;
       }
 
       // close string entry }
       if(state.getState() == BibParserState.STATE_EXPECT_CLOSE && !Character.isWhitespace(c)) {
         sce_char.style = stateStyles[LatexStyles.BRACKET];
+
         if(c != '}') {
           sce_char.style = LatexStyles.ERROR;
           continue;
@@ -211,20 +220,29 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
       if(c == '}' && state.getState() != BibParserState.STATE_VALUE_QUOTED) {
         sce_char.style = stateStyles[LatexStyles.BRACKET];
 
-        if(state.getBracketLevel() > 1) {
-          state.setBracketLevel(state.getBracketLevel()-1);
+        int bracketLevel = state.getBracketLevel();
+        if(bracketLevel > 0) {
+          state.setBracketLevel(bracketLevel-1);
+        }
+
+        if(bracketLevel > 2) {
         } else
-        if(state.getBracketLevel() == 1) {
+        if(bracketLevel == 2) {
           // exit value
           SCEDocumentPosition start = state.getValueOpening();
           SCEDocumentPosition end = new SCEDocumentPosition(sce_char,0,1);
           String text = document != null ? document.getText(start, end) : "";
-
           state.getValue().addValue(new WordWithPos(text, start, end));
 
+          if(state.getValue().getKey().word.equalsIgnoreCase("pages")) {
+            if(text.matches(".*([^-])-([^-]).*")) {
+              mark(rows, stateStyles[LatexStyles.getStyle("baderror")], start, end);
+            }
+          }
+
           state.setState(BibParserState.STATE_EXPECT_COMMA);
-          state.setBracketLevel(0);
-        } else {
+        } else
+        if(bracketLevel == 1) {
           // exit block
           BibEntry entry = state.getEntry();
 
@@ -237,8 +255,36 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
           entry.getAllParameters().clear();
           entry.getAllParameters().putAll(entry.getParameters());
 
+          boolean isString = entry.getType(false).toLowerCase().equals("string");
+          if(isString) {
+            BibKeyValuePair keyValue = entry.getAllParameters().get(entry.getName());
+            String[] values = BibAssistant.getValues(keyValue);
+            stringMap.put(entry.getName().toLowerCase(), values);
+          } else {
+            String canonicalEntryName = BibAssistant.getCanonicalEntryName(entry);
+
+            if(!entry.getName().startsWith(canonicalEntryName)) {
+              WordWithPos name = entry.getNameWithPos();
+              mark(rows, stateStyles[LatexStyles.getStyle("suggestion")], name.getStartPos(), name.getEndPos());
+            }
+
+            // lexicographic order
+            if(state.getEntryNr() > 1) {
+              BibEntry previousEntry = state.getEntryByNr().get(state.getEntryNr()-2);
+              String previousEntryName = BibAssistant.getCanonicalEntryName(previousEntry);
+
+              if(previousEntryName.compareTo(canonicalEntryName) > 0) {
+                SCEDocumentPosition end = new SCEDocumentPosition(entry.getStartPos().getRow(), entry.getStartPos().getColumn() + entry.getType(false).length()+1);
+                mark(rows, stateStyles[LatexStyles.getStyle("suggestion")], entry.getStartPos(), end);
+              }
+            }
+
+          }
+
           state.setState(BibParserState.STATE_NOTHING);
           state.resetEntry();
+        } else {
+          sce_char.style = stateStyles[LatexStyles.COMMENT];
         }
 
         continue;
@@ -311,7 +357,7 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
 
         byte entryStyle = stateStyles[LatexStyles.MATH_COMMAND];
 
-        BibEntryPattern entry = BibEntryPattern.getEntry("@" + state.getEntry().getType());
+        BibEntryPattern entry = BibEntryPattern.getEntry("@" + state.getEntry().getType(false));
         if(entry != null) {
           // non-existing key
           if(!entry.getAll().contains(keyLower)) {
@@ -319,7 +365,7 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
           }
         }
 
-        boolean isString = state.getEntry().getType().toLowerCase().equals("string");
+        boolean isString = state.getEntry().getType(false).toLowerCase().equals("string");
         if(isString) {
           state.getEntry().setName(new WordWithPos(key, new SCEDocumentPosition(sce_char)));
 
@@ -409,8 +455,13 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
           String text = document != null ? document.getText(start, end) : "";
           state.getValue().addValue(new WordWithPos(text, start, end));
 
-          boolean isString = state.getEntry().getType().toLowerCase().equals("string");
-          state.setState(!isString ? BibParserState.STATE_EXPECT_COMMA : BibParserState.STATE_EXPECT_CLOSE);
+          if(state.getValue().getKey().word.equalsIgnoreCase("pages")) {
+            if(text.matches(".*([^-])-([^-]).*")) {
+              mark(rows, stateStyles[LatexStyles.getStyle("baderror")], start, end);
+            }
+          }
+
+          state.setState(BibParserState.STATE_EXPECT_COMMA);
         }
 
         continue;
@@ -430,9 +481,8 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
 
           state.setBracketLevel(state.getBracketLevel()+1);
         } else
-        if(state.getBracketLevel() == 0 && c == ',') {
-          boolean isString = state.getEntry().getType().toLowerCase().equals("string");
-          state.setState(!isString ? BibParserState.STATE_EXPECT_COMMA : BibParserState.STATE_EXPECT_CLOSE);
+        if(state.getBracketLevel() == 1 && c == ',') {
+          state.setState(BibParserState.STATE_EXPECT_COMMA);
           char_nr--;
         }
 
@@ -443,11 +493,18 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
     return stateStack;
   }
 
-  private void mark(int style, SCEDocumentRow row, int startColumn, int length) {
-    SCEDocumentChar[] chars = row.chars;
-    int endColumn = startColumn + length;
-    for (int i = startColumn; i < endColumn; i++) {
-      chars[i].style = LatexStyles.ERROR;
+  private static void mark(SCEDocumentRow rows[], byte style, SCEPosition start, SCEPosition end) {
+    int startRow = start.getRow();
+    int endRow = end.getRow();
+    for(int rowNr = startRow; rowNr <= endRow; rowNr++) {
+      SCEDocumentRow row = rows[rowNr];
+
+      int min = rowNr == startRow ? start.getColumn() : 0;
+      int max = Math.min(row.length, rowNr == endRow ? end.getColumn() : row.length);
+      SCEDocumentChar[] chars = row.chars;
+      for (int i = min; i < max; i++) {
+        chars[i].style = style;
+      }
     }
   }
 

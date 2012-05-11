@@ -34,6 +34,10 @@ public class SCEDocumentRange {
     return startPos;
   }
 
+  public void setStartPos(SCEPosition startPos) {
+    this.startPos = startPos;
+  }
+
   /**
    * Returns the end position of the range.
    *
@@ -43,7 +47,11 @@ public class SCEDocumentRange {
     return endPos;
   }
 
-	public int getStartRow() {
+  public void setEndPos(SCEPosition endPos) {
+    this.endPos = endPos;
+  }
+
+  public int getStartRow() {
 		return startPos.getRow();
 	}
 

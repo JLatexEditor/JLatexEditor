@@ -164,11 +164,15 @@ public class RenameElement extends AddOn {
   }
 
   public static void renameBibRef(JLatexEditorJFrame jle, String oldRef) {
+    renameBibRef(jle, oldRef, oldRef);
+  }
+
+  public static void renameBibRef(JLatexEditorJFrame jle, String oldRef, String suggestRef) {
       // start background parser to update document states
       backgroundParserUpdate(jle);
 
       // ask user for new label
-      String newRef = JOptionPane.showInputDialog(jle, "Rename bibtex entry: ", oldRef);
+      String newRef = JOptionPane.showInputDialog(jle, "Rename bibtex entry: ", suggestRef);
       if (newRef == null || newRef.equals(oldRef)) return;
 
       // wait for background parser to finish

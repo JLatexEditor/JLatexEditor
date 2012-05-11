@@ -234,7 +234,7 @@ public class SCEManager {
 		return null;
 	}
 
-	public static SourceCodeEditor<Doc> createBibSourceCodeEditor() {
+	public static SourceCodeEditor<Doc> createBibSourceCodeEditor(JLatexEditorJFrame jle) {
 	  SourceCodeEditor<Doc> editor = new SourceCodeEditor<Doc>(null);
 
 	  SCEPane scePane = editor.getTextPane();
@@ -268,10 +268,9 @@ public class SCEManager {
 
 		CombinedCodeAssistant codeAssistant = new CombinedCodeAssistant();
 		try {
-		  codeAssistant.addAssistant(new BibAssistant());
+		  codeAssistant.addAssistant(new BibAssistant(jle));
 		  codeAssistant.addAssistant(new SpellCheckSuggester(createSpellChecker()));
-		} catch (Exception ignored) {
-		}
+		} catch (Exception ignored) { ignored.printStackTrace(); }
 		scePane.addCodeAssistantListener(codeAssistant);
 
 	  return editor;
