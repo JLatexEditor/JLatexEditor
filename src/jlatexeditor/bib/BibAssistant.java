@@ -312,36 +312,35 @@ public class BibAssistant implements CodeAssistant, SCEPopup.ItemHandler {
   }
 
   /**
-   * Longest common subsequence: http://introcs.cs.princeton.edu/java/96optimization/.
+   * Longest common substring: http://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Longest_common_substring
    */
   private int lcs(String x, String y) {
+    if (x == null || y == null || x.length() == 0 || y.length() == 0) {
+      return 0;
+    }
+
+    int maxLen = 0;
     int xlength = x.length();
     int ylength = y.length();
+    int[][] table = new int[xlength][ylength];
 
-    int[][] opt = new int[xlength+1][ylength+1];
-
-    for (int i = xlength-1; i >= 0; i--) {
-      for (int j = ylength-1; j >= 0; j--) {
-        if (x.charAt(i) == y.charAt(j))
-          opt[i][j] = opt[i+1][j+1] + 1;
-        else
-          opt[i][j] = Math.max(opt[i+1][j], opt[i][j+1]);
+    for (int i = 0; i < xlength; i++) {
+      for (int j = 0; j < ylength; j++) {
+        if (x.charAt(i) == y.charAt(j)) {
+          if (i == 0 || j == 0) {
+            table[i][j] = 1;
+          }
+          else {
+            table[i][j] = table[i - 1][j - 1] + 1;
+          }
+          if (table[i][j] > maxLen) {
+            maxLen = table[i][j];
+          }
+        }
       }
     }
 
-    int length = 0;
-    int i = 0, j = 0;
-    while(i < xlength && j < ylength) {
-      if (x.charAt(i) == y.charAt(j)) {
-        length++;
-        i++;
-        j++;
-      }
-      else if (opt[i+1][j] >= opt[i][j+1]) i++;
-      else                                 j++;
-    }
-
-    return length;
+    return maxLen;
   }
 
   private String oneLine(String text) {
