@@ -283,7 +283,7 @@ public class BibAssistant implements CodeAssistant, SCEPopup.ItemHandler {
       if(value.startsWith("\"") || value.startsWith("{")) {
         builder.append(value.substring(1,value.length()-1));
       } else
-      if(Character.isDigit(value.charAt(0))) {
+      if(value.isEmpty() || Character.isDigit(value.charAt(0))) {
         builder.append(value);
       } else {
         String[] nvalues = BibSyntaxHighlighting.stringMap.get(value.toLowerCase());
