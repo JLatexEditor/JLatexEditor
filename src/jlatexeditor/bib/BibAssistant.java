@@ -511,6 +511,7 @@ public class BibAssistant implements CodeAssistant, SCEPopup.ItemHandler {
         String otherName = getCanonicalEntryName(otherEntry);
         if(name.compareTo(otherName) < 0) {
           document.insert(text, otherEntry.getStartPos().getRow(), 0);
+          break;
         }
       }
     }
