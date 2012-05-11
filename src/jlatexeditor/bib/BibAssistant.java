@@ -269,7 +269,7 @@ public class BibAssistant implements CodeAssistant, SCEPopup.ItemHandler {
     }
     builder.append(year);
 
-    return builder.toString();
+    return builder.toString().trim();
   }
 
   public static String unfold(String[] values) {
@@ -477,7 +477,7 @@ public class BibAssistant implements CodeAssistant, SCEPopup.ItemHandler {
       for(String key : keys) maxLength = Math.max(key.length(), maxLength);
 
       StringBuilder builder = new StringBuilder();
-      builder.append("@").append(entry.getType(false));
+      builder.append("@").append(entry.getType(false).toLowerCase());
       builder.append("{").append(entry.getName()).append(",\n");
       for(String akey : keyOrder) {
         if(!keys.remove(akey)) continue;
@@ -531,6 +531,9 @@ public class BibAssistant implements CodeAssistant, SCEPopup.ItemHandler {
 
       if(v.startsWith("\"") || v.startsWith("{")) {
         builder.append("{").append(v.substring(1,v.length()-1)).append("}");
+      } else
+      if(v.isEmpty() || Character.isDigit(v.charAt(0))) {
+        builder.append("{").append(v).append("}");
       } else {
         builder.append(v.toLowerCase());
       }
