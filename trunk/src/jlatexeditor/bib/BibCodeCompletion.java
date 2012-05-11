@@ -32,7 +32,7 @@ public class BibCodeCompletion extends PatternCompletion {
     int row = pane.getCaret().getRow();
     int column = pane.getCaret().getColumn();
 
-    ParserStateStack stateStack = BibSyntaxHighlighting.parseRow(rows[row], column, document);
+    ParserStateStack stateStack = BibSyntaxHighlighting.parseRow(rows[row], column, document, rows, true);
     BibParserState state = (BibParserState) stateStack.peek();
 
     if(column == 0 && state.getState() == BibParserState.STATE_NOTHING) {
@@ -51,7 +51,7 @@ public class BibCodeCompletion extends PatternCompletion {
       }
 
       HashMap<String,BibKeyValuePair> keys = state.getEntry().getAllParameters();
-      BibEntryPattern entry = BibEntryPattern.getEntry("@" + state.getEntry().getType());
+      BibEntryPattern entry = BibEntryPattern.getEntry("@" + state.getEntry().getType(false));
       if(entry == null) return false;
 
       ArrayList<String> bibKeys = new ArrayList<String>();

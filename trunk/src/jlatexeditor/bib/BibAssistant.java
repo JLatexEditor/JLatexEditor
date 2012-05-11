@@ -1,6 +1,8 @@
 package jlatexeditor.bib;
 
+import com.sun.tools.javac.util.Pair;
 import jlatexeditor.JLatexEditorJFrame;
+import jlatexeditor.addon.RenameElement;
 import org.jetbrains.annotations.Nullable;
 import sce.codehelper.CodeAssistant;
 import sce.codehelper.PatternPair;
@@ -24,8 +26,13 @@ import java.util.List;
  * @author Joerg Endrullis &lt;joerg@endrullis.de&gt;
  */
 public class BibAssistant implements CodeAssistant, SCEPopup.ItemHandler {
+  private JLatexEditorJFrame jle;
+
   private PatternPair authorPattern = new PatternPair("(?:^| and )(?:(?! and ) )*((?:(?! and ).)*?)", true, "(.*?)(?:$| and$| and )");
-  private String[] valueOrder = new String[] {
+  private PatternPair entryTypePattern = new PatternPair("^\\@([^\\{])*");
+  private PatternPair entryNamePattern = new PatternPair("^\\@[^\\{]+\\{ *([^,\\{]*)", true, "([^, ]*)(?:$|,| )");
+
+  private String[] keyOrder = new String[] {
           "author", "title",
           "booktitle",
           "journal", "volume", "number",
@@ -40,7 +47,8 @@ public class BibAssistant implements CodeAssistant, SCEPopup.ItemHandler {
           "isbn","issn","doi","ee"
   };
 
-  public BibAssistant() {
+  public BibAssistant(JLatexEditorJFrame jle) {
+    this.jle = jle;
 	}
 
 	public boolean assistAt(SCEPane pane) {
@@ -49,7 +57,7 @@ public class BibAssistant implements CodeAssistant, SCEPopup.ItemHandler {
     int row = pane.getCaret().getRow();
     int column = pane.getCaret().getColumn();
 
-    ParserStateStack stateStack = BibSyntaxHighlighting.parseRow(rows[row], column, document);
+    ParserStateStack stateStack = BibSyntaxHighlighting.parseRow(rows[row], column, document, rows, true);
     BibParserState state = (BibParserState) stateStack.peek();
 
     if(column == 0 && state.getState() == BibParserState.STATE_NOTHING) {
@@ -106,6 +114,44 @@ public class BibAssistant implements CodeAssistant, SCEPopup.ItemHandler {
       }
     }
 
+    { // entry name correction
+      List<WordWithPos> params = entryNamePattern.find(pane);
+      if(params != null) {
+        BibEntry entry = state.getEntryByNr().get(state.getEntryNr());
+        if(entry == null) return false;
+
+        String canonicalEntryName = BibAssistant.getCanonicalEntryName(entry);
+        if(canonicalEntryName.equals(entry.getName())) return false;
+
+        RenameElement.renameBibRef(jle, entry.getName(), canonicalEntryName);
+
+        return true;
+      }
+
+    }
+
+    { // entry position correction
+      List<WordWithPos> params = entryTypePattern.find(pane);
+      if(params != null) {
+        BibEntry entry = state.getEntryByNr().get(state.getEntryNr());
+        if(entry == null) return false;
+
+        List<Object> list = new ArrayList<Object>();
+        list.add(new ReformatEntry(entry, pane));
+
+        SCEPosition end = new SCEDocumentPosition(document.getRowsModel().getRowsCount()-1, 0);
+        BibEntry nextEntry = state.getEntryByNr().get(state.getEntryNr()+1);
+        if(nextEntry != null) end = nextEntry.getStartPos();
+
+        list.add(new MoveEntry(state.getEntryNr(), entry, end, pane));
+
+        // open popup
+        pane.getPopup().openPopup(list, this);
+
+        return true;
+      }
+    }
+
     return false;
 	}
 
@@ -149,17 +195,22 @@ public class BibAssistant implements CodeAssistant, SCEPopup.ItemHandler {
     int entriesCount = state.getEntryNr();
     for(int entryNr = 0; entryNr < entriesCount; entryNr++) {
       BibEntry entry = state.getEntryByNr().get(entryNr);
-      if(type != null && !entry.getType().equalsIgnoreCase(type)) continue;
+      if(type != null && !entry.getType(false).equalsIgnoreCase(type)) continue;
       entries.add(entry);
     }
 
     return entries;
   }
 
-  private String getAuthorString(String name) {
-    name = name.trim().toLowerCase();
+  public static Pair<String,String> getFirstAndLast(String name) {
+    name = name.replace('~', ' ');
+    String pname = "";
+    while(pname.length() != name.length()) {
+      pname = name;
+      name = name.replaceFirst("\\\\.","");
+    }
     name = name.replaceAll("[^\\w\\d\\., ]", "");
-    name = name.replaceAll(" +"," ");
+    name = name.replaceAll(" +"," ").trim();
 
     String firstName = "", lastName = "";
 
@@ -176,6 +227,73 @@ public class BibAssistant implements CodeAssistant, SCEPopup.ItemHandler {
         lastName = split[1];
       }
     }
+
+    return new Pair<String, String>(firstName.trim(), lastName.trim());
+  }
+
+  public static String[] getValues(BibKeyValuePair keyValue) {
+    if(keyValue == null) return new String[0];
+
+    ArrayList<WordWithPos> valuesList = keyValue.getValues();
+    String[] values = new String[keyValue.getValues().size()];
+    for(int nr = 0; nr < values.length; nr++) {
+      values[nr] = valuesList.get(nr).word;
+    }
+    return values;
+  }
+
+  public static String getCanonicalEntryName(BibEntry entry) {
+    if(entry.getType(true).equalsIgnoreCase("string")) return "";
+
+    BibKeyValuePair author = entry.getAllParameters().get("author");
+    String nameString = unfold(getValues(author)).replace('\n', ' ').trim();
+    if(nameString.equals("")) {
+      BibKeyValuePair editor = entry.getAllParameters().get("editor");
+      nameString = unfold(getValues(editor)).replace('\n', ' ').trim();
+    }
+    String year = unfold(getValues(entry.getAllParameters().get("year")));
+    return BibAssistant.getCanonicalEntryName(nameString.split(" and "), year);
+  }
+
+  public static String getCanonicalEntryName(String[] names, String year) {
+    StringBuilder builder = new StringBuilder();
+
+    for(String name : names) {
+      String last = getFirstAndLast(name).snd;
+      for(String prefix : new String[] {"van ", "von ", "de ", "der "}) {
+        if(last.startsWith(prefix)) last = last.substring(prefix.length());
+      }
+      last = last.toLowerCase().replaceAll("[^\\w]","");
+      if(last.length() > 4) last = last.substring(0,4);
+      builder.append(last).append(":");
+    }
+    builder.append(year);
+
+    return builder.toString();
+  }
+
+  public static String unfold(String[] values) {
+    return unfold(values, new StringBuilder(), 8);
+  }
+
+  public static String unfold(String[] values, StringBuilder builder, int depth) {
+    if(depth < 0 || values == null) return "";
+
+    for(String value : values) {
+      if(value.startsWith("\"") || value.startsWith("{")) {
+        builder.append(value.substring(1,value.length()-1));
+      } else {
+        unfold(BibSyntaxHighlighting.stringMap.get(value.toLowerCase()), builder, depth-1);
+      }
+    }
+
+    return builder.toString();
+  }
+
+  public static String getAuthorString(String name) {
+    Pair<String,String> fs = getFirstAndLast(name);
+    String firstName = fs.fst.toLowerCase();
+    String lastName = fs.snd.toLowerCase();
 
     lastName = lastName.replaceAll(" ","");
     lastName = lastName.replaceAll("\\W","");
@@ -334,6 +452,84 @@ public class BibAssistant implements CodeAssistant, SCEPopup.ItemHandler {
       replaceAll(document, action.getString(), action.getReplaceKey());
       pane.setFreezeCaret(false);
     }
+
+    if(item instanceof ReformatEntry) {
+      ReformatEntry action = (ReformatEntry) item;
+
+      BibEntry entry = action.getEntry();
+      SCEPosition start = entry.getStartPos();
+      SCEPosition end = entry.getEndPos();
+
+      SCEDocument document = action.getPane().getDocument();
+
+      ArrayList<String> keys = new ArrayList<String>(entry.getAllParameters().keySet());
+      Collections.sort(keys);
+
+      int maxLength = 0;
+      for(String key : keys) maxLength = Math.max(key.length(), maxLength);
+
+      StringBuilder builder = new StringBuilder();
+      builder.append("@").append(entry.getType(false));
+      builder.append("{").append(entry.getName()).append(",\n");
+      for(String akey : keyOrder) {
+        if(!keys.remove(akey)) continue;
+        appendKeyValue(builder, entry, akey, maxLength);
+      }
+      for(String akey : keys) {
+        appendKeyValue(builder, entry, akey, maxLength);
+      }
+
+      document.replace(start, end, builder.toString());
+    }
+
+    if(item instanceof MoveEntry) {
+      MoveEntry action = (MoveEntry) item;
+
+      BibEntry entry = action.getEntry();
+      SCEPosition start = entry.getStartPos();
+      SCEPosition end = action.getEnd();
+
+      SCEDocument document = action.getPane().getDocument();
+
+      String text = document.getText(start, end);
+      document.remove(start, end);
+
+      String name = getCanonicalEntryName(entry);
+      BibParserState state = (BibParserState) document.getRowsModel().getRows()[0].parserStateStack.peek();
+      for(int entryNr = 0; entryNr < action.getEntryNr(); entryNr++) {
+        BibEntry otherEntry = state.getEntryByNr().get(entryNr);
+        String otherName = getCanonicalEntryName(otherEntry);
+        if(name.compareTo(otherName) < 0) {
+          document.insert(text, otherEntry.getStartPos().getRow(), 0);
+        }
+      }
+    }
+  }
+
+  private void appendKeyValue(StringBuilder builder, BibEntry entry, String akey, int maxLength) {
+    builder.append("  ").append(akey);
+    for(int spaceNr = 0; spaceNr < maxLength - akey.length(); spaceNr++) {
+      builder.append(' ');
+    }
+    builder.append(" = ");
+    boolean firstValue = true;
+    BibKeyValuePair values = entry.getAllParameters().get(akey);
+    for(WordWithPos value : values.getValues()) {
+      if(!firstValue) builder.append(" # ");
+
+      String v = value.word.replace('\n',' ').replaceAll(" +", " ");
+
+      if(akey.equals("pages")) v = v.replaceAll("([^-])-([^-])", "$1--$2");
+
+      if(v.startsWith("\"") || v.startsWith("{")) {
+        builder.append("{").append(v.substring(1,v.length()-1)).append("}");
+      } else {
+        builder.append(v.toLowerCase());
+      }
+
+      firstValue = false;
+    }
+    builder.append(",\n");
   }
 
 // inner class
@@ -399,6 +595,64 @@ public class BibAssistant implements CodeAssistant, SCEPopup.ItemHandler {
     @Override
     public String toString() {
       return "Replace by: " + replaceValue;
+    }
+  }
+
+  class ReformatEntry {
+    private BibEntry entry;
+    private SCEPane pane;
+
+    ReformatEntry(BibEntry entry, SCEPane pane) {
+      this.entry = entry;
+      this.pane = pane;
+    }
+
+    public BibEntry getEntry() {
+      return entry;
+    }
+
+    public SCEPane getPane() {
+      return pane;
+    }
+
+    @Override
+    public String toString() {
+      return "Reformat Entry";
+    }
+  }
+
+  class MoveEntry {
+    private int entryNr;
+    private BibEntry entry;
+    private SCEPosition end;
+    private SCEPane pane;
+
+    MoveEntry(int entryNr, BibEntry entry, SCEPosition end, SCEPane pane) {
+      this.entryNr = entryNr;
+      this.entry = entry;
+      this.end = end;
+      this.pane = pane;
+    }
+
+    public int getEntryNr() {
+      return entryNr;
+    }
+
+    public BibEntry getEntry() {
+      return entry;
+    }
+
+    public SCEPosition getEnd() {
+      return end;
+    }
+
+    public SCEPane getPane() {
+      return pane;
+    }
+
+    @Override
+    public String toString() {
+      return "Move Entry";
     }
   }
 

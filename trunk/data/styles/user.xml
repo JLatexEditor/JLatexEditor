@@ -21,6 +21,7 @@
   <element name="parser_stop" style="bold,italic" foreground="db8717"/>
   <element name="error" style="plain" foreground="ff0000"/>
   <element name="baderror" style="plain" background="ff9988"/>
+  <element name="suggestion" style="plain" background="ffcc88"/>
   <element name="begin" style="bold" foreground="000080"/>
   <element name="section" style="bold" foreground="f00000"/>
   <element name="include" style="bold" foreground="008000"/>

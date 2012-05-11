@@ -114,8 +114,9 @@ public class BibParserState implements ParserState {
     if(!(obj instanceof BibParserState)) return false;
     BibParserState b = (BibParserState) obj;
     return state == b.state && bracketLevel == b.bracketLevel
-            && equals(entry.getType(), b.getEntry().getType())
+            && equals(entry.getType(false), b.getEntry().getType(false))
             && equals(entry.getParameters(), b.getEntry().getParameters())
+            && entry.getAllParameters() == b.getEntry().getAllParameters()
             && entryNr == b.entryNr;
   }
 

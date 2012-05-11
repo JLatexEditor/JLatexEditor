@@ -2,12 +2,13 @@ package jlatexeditor.bib;
 
 import sce.codehelper.WordWithPos;
 import sce.component.SCEDocumentPosition;
+import sce.component.SCEDocumentRange;
+import sce.component.SCEPosition;
 
 import java.util.HashMap;
 
 public class BibEntry {
-  private SCEDocumentPosition startPos = null;
-  private SCEDocumentPosition endPos = null;
+  private SCEDocumentRange range = new SCEDocumentRange(0,0,0,0);
 
   private String type = null;
   private WordWithPos name = new WordWithPos("", 0,0);
@@ -16,30 +17,32 @@ public class BibEntry {
 
   public BibEntry copy() {
     BibEntry copy = new BibEntry();
+    copy.range = range;
     copy.type = type;
+    copy.name = name;
     copy.parameters = new HashMap<String, BibKeyValuePair>(parameters);
     copy.allParameters = allParameters;
     return copy;
   }
 
-  public SCEDocumentPosition getStartPos() {
-    return startPos;
+  public SCEPosition getStartPos() {
+    return range.getStartPos();
   }
 
   public void setStartPos(SCEDocumentPosition startPos) {
-    this.startPos = startPos;
+    range.setStartPos(startPos);
   }
 
-  public SCEDocumentPosition getEndPos() {
-    return endPos;
+  public SCEPosition getEndPos() {
+    return range.getEndPos();
   }
 
   public void setEndPos(SCEDocumentPosition endPos) {
-    this.endPos = endPos;
+    range.setEndPos(endPos);
   }
 
-  public String getType() {
-    return type;
+  public String getType(boolean allowNull) {
+    return type != null || allowNull ? type : "";
   }
 
   public void setType(String type) {

@@ -345,8 +345,6 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
     createPaneShortcut(SCEPaneUI.Actions.REMOVE_WORD_BEHIND_CARET, false);
     createPaneShortcut(SCEPaneUI.Actions.COMPLETE, false);
 
-    createPaneShortcut(SCEPaneUI.Actions.BIBTEX_MOVE, false);
-
     createPaneShortcut(SCEPaneUI.Actions.UNDO, false);
     createPaneShortcut(SCEPaneUI.Actions.REDO, false);
     createPaneShortcut(SCEPaneUI.Actions.FIND, false);
@@ -676,7 +674,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 		  editor = SCEManager.createChangeLogSourceCodeEditor();
 		} else
 		if (doc.getName().endsWith(".bib")) {
-		  editor = SCEManager.createBibSourceCodeEditor();
+		  editor = SCEManager.createBibSourceCodeEditor(this);
 		} else {
 		  editor = SCEManager.createLatexSourceCodeEditor();
 		}
