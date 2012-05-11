@@ -352,6 +352,9 @@ public class BibAssistant implements CodeAssistant, SCEPopup.ItemHandler {
   private void replaceAll(SCEDocument document, String search, String replaceKey) {
     ArrayList<BibEntry> entries = getEntries(document, null);
     for(BibEntry entry : entries) {
+      // do not replace in strings, until we have some clever algorithm for deciding when
+      if(entry.getType(false).equalsIgnoreCase("string")) continue;
+
       for(BibKeyValuePair keyValues : entry.getAllParameters().values()) {
         boolean oneLine = keyValues.getKey().word.equalsIgnoreCase("author");
         for(WordWithPos value : keyValues.getValues()) {
