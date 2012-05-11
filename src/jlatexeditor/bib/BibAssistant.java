@@ -1,6 +1,6 @@
 package jlatexeditor.bib;
 
-import com.sun.tools.javac.util.Pair;
+import de.endrullis.utils.Pair;
 import jlatexeditor.JLatexEditorJFrame;
 import jlatexeditor.addon.RenameElement;
 import org.jetbrains.annotations.Nullable;
