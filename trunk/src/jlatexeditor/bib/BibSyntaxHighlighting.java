@@ -217,7 +217,9 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
       }
 
       // closing bracket
-      if(c == '}' && state.getState() != BibParserState.STATE_VALUE_QUOTED) {
+      if(c == '}'
+              && state.getState() != BibParserState.STATE_VALUE_QUOTED
+              && state.getState() !=  BibParserState.STATE_VALUE_BASIC) {
         sce_char.style = stateStyles[LatexStyles.BRACKET];
 
         int bracketLevel = state.getBracketLevel();
@@ -426,13 +428,13 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
       if(state.getState() == BibParserState.STATE_VALUE_BASIC) {
         sce_char.style = stateStyles[LatexStyles.TEXT];
 
-        if(c == ',' || c == ' ') {
+        if(c == ',' || c == ' ' || c == '}') {
           SCEDocumentPosition start = state.getValueOpening();
           SCEDocumentPosition end = new SCEDocumentPosition(sce_char);
           String text = document != null ? document.getText(start, end) : "";
-          state.getValue().addValue(new WordWithPos(text, start, end));
+          state.getValue().addValue(new WordWithPos(text.trim(), start, end));
 
-          if(c == ',') char_nr--;
+          if(c == ',' || c == '}') char_nr--;
           state.setState(BibParserState.STATE_EXPECT_COMMA);
           continue;
         }
