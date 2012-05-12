@@ -6,7 +6,7 @@ New Features and other Changes in JLatexEditor
 # set "show_new_features" in global settings to "false".
 
 
-== Version 0.2.10 ===
+== Version 0.2.10 ==
 
 * new features:
   - shows warning message if project files are not in the svn
@@ -64,9 +64,9 @@ New Features and other Changes in JLatexEditor
 == Version 0.2.3 ==
 
 * new features:
-	- diff view shows changes within lines and allows you to take over or reject particular changes
-	- template editor for defining user live templates
-	- installer and updater for Mac OS X
+  - diff view shows changes within lines and allows you to take over or reject particular changes
+  - template editor for defining user live templates
+  - installer and updater for Mac OS X
 * minor enhancements:
   - search is automatically limited to selection range if selection is spanning at least one line
   - the depth of the awesome deep bracket matching can now be configured (editor.bracket_matching.depth)
