@@ -20,4 +20,9 @@ public class None<T> implements Option<T> {
 	public boolean isNone() {
 		return true;
 	}
+
+	@Override
+	public boolean isDefined() {
+		return false;
+	}
 }

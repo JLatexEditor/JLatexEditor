@@ -27,4 +27,11 @@ public interface Option<T> {
 	 * @return true if the option is none
 	 */
 	public boolean isNone();
+
+	/**
+	 * Returns true if the option has an value (is not none).
+	 *
+	 * @return true if the option has an value (is not none)
+	 */
+	public boolean isDefined();
 }
