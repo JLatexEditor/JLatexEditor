@@ -26,4 +26,9 @@ public class Some<T> implements Option<T> {
 	public boolean isNone() {
 		return false;
 	}
+
+	@Override
+	public boolean isDefined() {
+		return true;
+	}
 }
