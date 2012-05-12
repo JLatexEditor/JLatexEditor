@@ -273,9 +273,10 @@ public class BibSyntaxHighlighting extends SyntaxHighlighting implements SCEDocu
             // lexicographic order
             if(state.getEntryNr() > 1) {
               BibEntry previousEntry = state.getEntryByNr().get(state.getEntryNr()-2);
-              String previousEntryName = BibAssistant.getCanonicalEntryName(previousEntry);
+              String sortKey = BibAssistant.getSortingKey(entry);
+              String previousSortKey = BibAssistant.getSortingKey(previousEntry);
 
-              if(previousEntryName.compareTo(canonicalEntryName) > 0) {
+              if(previousSortKey.compareTo(sortKey) > 0) {
                 SCEDocumentPosition end = new SCEDocumentPosition(entry.getStartPos().getRow(), entry.getStartPos().getColumn() + entry.getType(false).length()+1);
                 mark(rows, stateStyles[LatexStyles.getStyle("suggestion")], entry.getStartPos(), end);
               }
