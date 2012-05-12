@@ -306,7 +306,7 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
       directory2fileName.put(next.getAbsolutePath(), directory.getName());
 
       directory = next;
-      if(directory != null) parentPath.add(new DirectorySpacer(),0);
+	    parentPath.add(new DirectorySpacer(),0);
     }
     parentPath.revalidate();
     parentPath.repaint();
@@ -339,7 +339,7 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
       setCurrentDirectory(file);
     } else {
       result = RESULT_OK;
-      dialog.hide();
+      dialog.setVisible(false);
     }
   }
 
@@ -359,7 +359,7 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
     Timer timer = new Timer();
     timer.scheduleAtFixedRate(new PrefixTimer(), 500, 500);
 
-    dialog.show();
+    dialog.setVisible(true);
     dialog.removeKeyListener(this);
 
     timer.cancel();
@@ -385,7 +385,7 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
       try {
         highlighter.removeAllHighlights();
         highlighter.addHighlight(0, filePrefix.length(), highlightPainter);
-      } catch (BadLocationException e) {
+      } catch (BadLocationException ignored) {
       }
 
       fileName.setBackground(Color.WHITE);
@@ -419,7 +419,7 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
       openSelectedFile();
     }
     if(actionEvent.getSource() == buttonCancel) {
-      dialog.hide();
+      dialog.setVisible(false);
     }
     if(actionEvent.getSource() == fileFilter) {
       setCurrentDirectory(directory);
@@ -472,7 +472,7 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
     boolean stop = KeyUtils.isStopKey(keyEvent);
 
     if(stop && filePrefix.length() == 0 && (time - filePrefixReset) > 1000) {
-      dialog.hide();
+      dialog.setVisible(false);
     }
     if(stop) filePrefixReset = 0;
 
@@ -510,7 +510,7 @@ public class SCEFileChooser extends JPanel implements ListSelectionListener, Mou
       try {
         highlighter.removeAllHighlights();
         highlighter.addHighlight(0, filePrefix.length(), highlightPainter);
-      } catch (BadLocationException e) {
+      } catch (BadLocationException ignored) {
       }
 
       fileList.repaint();
