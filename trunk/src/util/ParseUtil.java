@@ -1,5 +1,7 @@
 package util;
 
+import static de.endrullis.utils.Tuple.*;
+
 import java.util.ArrayList;
 
 public class ParseUtil {
@@ -10,10 +12,10 @@ public class ParseUtil {
 	 * @param index start index
 	 * @return (character / command / argument, nextIndex)
 	 */
-	public static Tuple<String,Integer> parseItem(String text, int index) {
+	public static Tuple2<String,Integer> parseItem(String text, int index) {
 		if (text.charAt(index) == '{') {
 			String argument = parseBalanced(text, index + 1, '}');
-			return new Tuple<String, Integer>(argument, index + argument.length() + 2);
+			return _(argument, index + argument.length() + 2);
 		} else {
 			while (text.charAt(index) == ' ') index++;
 			if (text.charAt(index) == '\\') {
@@ -24,9 +26,9 @@ public class ParseUtil {
 				} else {
 					index++;
 				}
-				return new Tuple<String, Integer>(text.substring(startIndex, index), index);
+				return _(text.substring(startIndex, index), index);
 			} else {
-				return new Tuple<String, Integer>("" + text.charAt(index), index + 1);
+				return _("" + text.charAt(index), index + 1);
 			}
 		}
 	}

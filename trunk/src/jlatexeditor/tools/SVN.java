@@ -1,10 +1,11 @@
 package jlatexeditor.tools;
 
+import static de.endrullis.utils.Tuple.*;
+
 import jlatexeditor.gproperties.GProperties;
 import util.ProcessUtil;
 import util.StreamUtils;
 import util.SystemUtils;
-import util.Tuple;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -73,7 +74,7 @@ public class SVN {
     return results;
   }
 
-	public synchronized Tuple<Boolean, String> commit(File dir, String message) throws Exception {
+	public synchronized Tuple2<Boolean, String> commit(File dir, String message) throws Exception {
     message = message.replace('"', ' ');
     message = message.replace('\\', ' ');
 
@@ -111,7 +112,7 @@ public class SVN {
 
 		checkProcessResult(svn, "SVN update");
 
-    return new Tuple<Boolean, String>(success, builder.toString());
+    return _(success, builder.toString());
   }
 
   public synchronized ArrayList<StatusResult> status(File dir, boolean remote) throws Exception {

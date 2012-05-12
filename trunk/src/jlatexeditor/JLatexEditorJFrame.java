@@ -5,8 +5,8 @@
 
 package jlatexeditor;
 
-import de.endrullis.utils.ProgramUpdater;
-import de.endrullis.utils.StringUtils;
+import de.endrullis.utils.*;
+import static de.endrullis.utils.Tuple.*;
 import jlatexeditor.addon.AddOn;
 import jlatexeditor.codehelper.BackgroundParser;
 import jlatexeditor.errorhighlighting.LatexCompiler;
@@ -1267,7 +1267,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 							null,
 							"");
 			if (message != null) {
-				Tuple<Boolean, String> result = null;
+				Tuple2<Boolean, String> result = null;
 				try {
 					result = SVN.getInstance().commit(getMainEditor().getFile().getParentFile(), message);
 				} catch (Exception exception) {
@@ -1275,7 +1275,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 					statusBar.showMessage("SVN update failed", "SVN update failed: " + exception.getMessage());
 					return;
 				}
-				statusBar.showMessage("SVN commit", "<html>SVN commit:<br><br>" + result.second + "</html>");
+				statusBar.showMessage("SVN commit", "<html>SVN commit:<br><br>" + result._2 + "</html>");
 			}
 		} else if (action.equals("set master document")) {
 			setMasterDocument(getActiveEditor().getResource());
