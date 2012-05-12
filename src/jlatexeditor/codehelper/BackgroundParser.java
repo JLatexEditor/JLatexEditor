@@ -1,5 +1,7 @@
 package jlatexeditor.codehelper;
 
+import static de.endrullis.utils.Tuple.*;
+
 import jlatexeditor.Doc;
 import jlatexeditor.JLatexEditorJFrame;
 import jlatexeditor.PackagesExtractor;
@@ -8,7 +10,6 @@ import sce.component.SourceCodeEditor;
 import util.ParseUtil;
 import util.SetTrie;
 import util.SimpleTrie;
-import util.Tuple;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -247,9 +248,9 @@ public class BackgroundParser extends Thread {
 
 	      boolean isCommand = command.equals("newcommand") || command.equals("renewcommand") || command.equals("DeclareRobustCommand");
 
-	      Tuple<String,Integer> itemPositionPair = ParseUtil.parseItem(tex, index);
-	      String name = itemPositionPair.first;
-        index = itemPositionPair.second;
+	      Tuple2<String,Integer> itemPositionPair = ParseUtil.parseItem(tex, index);
+	      String name = itemPositionPair._1;
+        index = itemPositionPair._2;
         // number of arguments
         int numberOfArgs = 0;
 	      String optional = null, body = null;

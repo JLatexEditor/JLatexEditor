@@ -1,7 +1,8 @@
 package sce.codehelper;
 
+import static de.endrullis.utils.Tuple.*;
+
 import sce.component.*;
-import util.Tuple;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -49,12 +50,12 @@ public class Template {
 	  template.document.insert(newTemplate, row, column);
 
 		// set the caret position and remove it from template
-		Tuple<String, SCEDocumentPosition> pair = template.getTransformedTemplate(templateWithAt, arguments, row, column);
-		templateWithAt = pair.first;
+		Tuple2<String, SCEDocumentPosition> pair = template.getTransformedTemplate(templateWithAt, arguments, row, column);
+		templateWithAt = pair._1;
 
 		// if it's a simple template without arguments we just insert it and move the caret to the end position
 		if (arguments.size() == 0 && !templateWithAt.contains("\n")) {
-			template.caret.moveTo(pair.second, false);
+			template.caret.moveTo(pair._2, false);
 			return null;
 		}
 
@@ -63,7 +64,7 @@ public class Template {
 
 		template.template = newTemplate;
 		template.templateArguments = arguments;
-		template.templateCaretPosition = pair.second;
+		template.templateCaretPosition = pair._2;
 
 	  // initialize the argument values and occurrences
 	  for (CHCommandArgument argument : arguments) {
@@ -139,7 +140,7 @@ public class Template {
 			return CodeHelperPane.spaces;
 	}
 
-	private Tuple<String, SCEDocumentPosition> getTransformedTemplate(String templateWithAt, ArrayList<CHCommandArgument> arguments, int row, int column) {
+	private Tuple2<String, SCEDocumentPosition> getTransformedTemplate(String templateWithAt, ArrayList<CHCommandArgument> arguments, int row, int column) {
 		int cursorIndex = templateWithAt.lastIndexOf("@|@");
 		if (cursorIndex != -1) {
 			templateWithAt = templateWithAt.substring(0, cursorIndex) + templateWithAt.substring(cursorIndex + 1);
@@ -160,7 +161,7 @@ public class Template {
 			}
 		}
 
-		return new Tuple<String,SCEDocumentPosition>(templateWithAt, document.createDocumentPosition(caret_row, caret_column));
+		return _(templateWithAt, document.createDocumentPosition(caret_row, caret_column));
 	}
 
 	public boolean goToPreviousArgument() {
