@@ -242,6 +242,10 @@ public class BibAssistant implements CodeAssistant, SCEPopup.ItemHandler {
     return values;
   }
 
+  public static String getSortingKey(BibEntry entry) {
+    return entry.getName() != null ? entry.getName() : "";
+  }
+
   public static String getCanonicalEntryName(BibEntry entry) {
     if(entry.getType(true).equalsIgnoreCase("string")) return "";
 
@@ -502,18 +506,27 @@ public class BibAssistant implements CodeAssistant, SCEPopup.ItemHandler {
       SCEDocument document = action.getPane().getDocument();
 
       String text = document.getText(start, end);
-      document.remove(start, end);
 
-      String name = getCanonicalEntryName(entry);
-      BibParserState state = (BibParserState) document.getRowsModel().getRows()[0].parserStateStack.peek();
-      for(int entryNr = 0; entryNr < action.getEntryNr(); entryNr++) {
+      String sortKey = getSortingKey(entry);
+      SCEDocumentRow[] rows = document.getRowsModel().getRows();
+      BibParserState state = (BibParserState) rows[rows.length-1].parserStateStack.peek();
+      for(int entryNr = 0; entryNr < state.getEntryNr(); entryNr++) {
+        if(entryNr == action.getEntryNr()) continue;
         BibEntry otherEntry = state.getEntryByNr().get(entryNr);
-        String otherName = getCanonicalEntryName(otherEntry);
-        if(name.compareTo(otherName) < 0) {
+        if(otherEntry.getType(false).equals("string")) continue;
+
+        String otherSortKey = getSortingKey(otherEntry);
+        if(sortKey.compareTo(otherSortKey) < 0) {
+          document.remove(start, end);
           document.insert(text, otherEntry.getStartPos().getRow(), 0);
-          break;
+          return;
         }
       }
+
+      // insert at the end
+      document.insert("\n" + text, rows.length-1, rows[rows.length-1].length);
+      document.remove(start, end);
+      action.getPane().getCaret().moveTo(rows.length-1,0,false);
     }
   }
 
