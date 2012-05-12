@@ -19,7 +19,8 @@ public abstract class AddOn {
 			new CloseEnvironment(),
 			new ColumnRealigner(),
 			new FileSearch(),
-			new ExtractCommand()
+			new ExtractCommand(),
+			new CompileAndOpen()
 		};
 
 		for (AddOn addOn : addOns) {

@@ -1,6 +1,9 @@
 package jlatexeditor.addon;
 
 import jlatexeditor.JLatexEditorJFrame;
+import jlatexeditor.errorhighlighting.LatexCompileError;
+import jlatexeditor.errorhighlighting.LatexCompileListener;
+import jlatexeditor.errorhighlighting.LatexCompiler;
 import sce.codehelper.WordWithPos;
 import sce.component.SCEPane;
 
@@ -13,16 +16,29 @@ import java.util.Iterator;
  */
 public class CompileAndOpen extends AddOn {
 	protected CompileAndOpen() {
-		super("build pdf and open", "Build pdf and Open Document", "alt B");
+		super("build pdf and open", "Build pdf and Open Document", "alt SPACE");
 	}
 
 	@Override
-	public void run(JLatexEditorJFrame jle) {
-		SCEPane pane = jle.getActiveEditor().getTextPane();
-		Iterator<WordWithPos> openEnvIterator = EnvironmentUtils.getOpenEnvIterator(pane);
-		WordWithPos env = openEnvIterator.next();
-		if (env != null) {
-			pane.insert("\\end{" + env.word + "}");
-		}
+	public void run(final JLatexEditorJFrame jle) {
+		jle.saveAll();
+		LatexCompiler compiler = jle.compile(LatexCompiler.Type.pdf);
+
+		if (compiler == null) return;
+
+		compiler.addLatexCompileListener(new LatexCompileListener() {
+			@Override
+			public void compileStarted() {
+			}
+
+			@Override
+			public void compileEnd() {
+				jle.performForwardSearch();
+			}
+
+			@Override
+			public void latexError(LatexCompileError error) {
+			}
+		});
 	}
 }

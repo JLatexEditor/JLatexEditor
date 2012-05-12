@@ -938,11 +938,11 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 		return false;
 	}
 
-	public void compile(LatexCompiler.Type type) {
+	public LatexCompiler compile(LatexCompiler.Type type) {
 		if (!hasDocumentClass(getMainEditor().getTextPane().getDocument())) {
 			if (JOptionPane.showConfirmDialog(this, "Could not find a \\documentclass in your document.  Compile anyway?",
 				"Compile without \\documentclass ?", JOptionPane.YES_NO_CANCEL_OPTION) != JOptionPane.YES_OPTION) {
-				return;
+				return null;
 			}
 		}
 
@@ -960,6 +960,8 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
     latexCompiler.addLatexCompileListener(errorHighlighting);
 
     latexCompiler.start();
+
+		return latexCompiler;
   }
 
   private void closeTab(int tab) {
@@ -1161,39 +1163,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
     } else
 
     if (action.equals("forward search")) {
-      try {
-        SourceCodeEditor editor = getActiveEditor();
-        int line = editor.getTextPane().getCaret().getRow()+1;
-        String texfile = editor.getFile().getAbsolutePath();
-	      String mainFile = getMainEditor().getFile().getAbsolutePath();
-	      int extensionIndex = mainFile.lastIndexOf(".tex");
-	      if (extensionIndex == -1) return; // no tex file
-				String file = mainFile.substring(0, extensionIndex);
-
-	      String forwardSearchCommand = GProperties.getString("forward search.viewer");
-	      if (forwardSearchCommand == null || forwardSearchCommand.trim().equals("")) {
-		      JOptionPane.showMessageDialog(this, "Please go to Settings->Forward Search and select the document viewer of your choice\nor configure the command to start the viewer manually in the global settings (forward search.viewer).", "Document viewer needs to be set", JOptionPane.INFORMATION_MESSAGE);
-		      return;
-	      }
-
-	      ArrayList<String> list = StringUtils.tokenize(forwardSearchCommand);
-        String[] array = new String[list.size()];
-        list.toArray(array);
-
-        for(int index = 0; index < array.length; index++) {
-          String token = array[index];
-          token = token.replaceAll("%line", line+"");
-          token = token.replaceAll("%file", file);
-          token = token.replaceAll("%texfile", texfile);
-          token = token.replaceAll("&nbsp;", " ");
-          array[index] = token;
-          System.out.println(token);
-        }
-        ProcessUtil.exec(array, getMainEditor().getFile().getParentFile());
-      } catch(Exception ex) {
-        logger.log(Level.SEVERE, "Forward search failed", ex);
-	      JOptionPane.showMessageDialog(this, "Forward search failed", ex.getMessage(), JOptionPane.ERROR_MESSAGE);
-      }
+	    performForwardSearch();
     } else
 
 		// diff
@@ -1321,6 +1291,42 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 			new ThreadInfoWindow();
 		}
   }
+
+	public void performForwardSearch() {
+		try {
+		  SourceCodeEditor editor = getActiveEditor();
+		  int line = editor.getTextPane().getCaret().getRow()+1;
+		  String texfile = editor.getFile().getAbsolutePath();
+			String mainFile = getMainEditor().getFile().getAbsolutePath();
+			int extensionIndex = mainFile.lastIndexOf(".tex");
+			if (extensionIndex == -1) return; // no tex file
+						String file = mainFile.substring(0, extensionIndex);
+
+			String forwardSearchCommand = GProperties.getString("forward search.viewer");
+			if (forwardSearchCommand == null || forwardSearchCommand.trim().equals("")) {
+				JOptionPane.showMessageDialog(this, "Please go to Settings->Forward Search and select the document viewer of your choice\nor configure the command to start the viewer manually in the global settings (forward search.viewer).", "Document viewer needs to be set", JOptionPane.INFORMATION_MESSAGE);
+				return;
+			}
+
+			ArrayList<String> list = StringUtils.tokenize(forwardSearchCommand);
+		  String[] array = new String[list.size()];
+		  list.toArray(array);
+
+		  for(int index = 0; index < array.length; index++) {
+		    String token = array[index];
+		    token = token.replaceAll("%line", line+"");
+		    token = token.replaceAll("%file", file);
+		    token = token.replaceAll("%texfile", texfile);
+		    token = token.replaceAll("&nbsp;", " ");
+		    array[index] = token;
+		    System.out.println(token);
+		  }
+		  ProcessUtil.exec(array, getMainEditor().getFile().getParentFile());
+		} catch(Exception ex) {
+		  logger.log(Level.SEVERE, "Forward search failed", ex);
+			JOptionPane.showMessageDialog(this, "Forward search failed", ex.getMessage(), JOptionPane.ERROR_MESSAGE);
+		}
+	}
 
 	private void showTool(int tab) {
 		if (!toolsTab.isVisible()) toolsTab.setVisible(true);
