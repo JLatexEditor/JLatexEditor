@@ -4,6 +4,7 @@ import jlatexeditor.JLatexEditorJFrame;
 import jlatexeditor.errorhighlighting.LatexCompileError;
 import jlatexeditor.errorhighlighting.LatexCompileListener;
 import jlatexeditor.errorhighlighting.LatexCompiler;
+import jlatexeditor.errorhighlighting.LatexCompilerAdapter;
 import sce.codehelper.WordWithPos;
 import sce.component.SCEPane;
 
@@ -26,18 +27,10 @@ public class CompileAndOpen extends AddOn {
 
 		if (compiler == null) return;
 
-		compiler.addLatexCompileListener(new LatexCompileListener() {
-			@Override
-			public void compileStarted() {
-			}
-
+		compiler.addLatexCompileListener(new LatexCompilerAdapter() {
 			@Override
 			public void compileEnd() {
 				jle.performForwardSearch();
-			}
-
-			@Override
-			public void latexError(LatexCompileError error) {
 			}
 		});
 	}
