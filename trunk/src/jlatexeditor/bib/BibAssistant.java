@@ -1,6 +1,8 @@
 package jlatexeditor.bib;
 
 import de.endrullis.utils.Pair;
+import de.endrullis.utils.TriGram;
+import de.endrullis.utils.Tuple;
 import jlatexeditor.JLatexEditorJFrame;
 import jlatexeditor.addon.RenameElement;
 import org.jetbrains.annotations.Nullable;
@@ -163,12 +165,15 @@ public class BibAssistant implements CodeAssistant, SCEPopup.ItemHandler {
     ArrayList<WeightedElement<BibEntry>> weightedEntries = new ArrayList<WeightedElement<BibEntry>>();
 
     ArrayList<BibEntry> stringEntries = getEntries(document, "string");
+
+    TriGram triGram = new TriGram();
+    HashSet<Long> trigramsWord = triGram.trigrams(word.word);
     for(BibEntry stringEntry : stringEntries) {
       if(stringEntry.getName().isEmpty()) continue;
       String stringValue = stringEntry.getAllParameters().get(stringEntry.getName().toLowerCase()).getValuesString();
 
-      int common = lcs(word.word, stringValue);
-      weightedEntries.add(new WeightedElement<BibEntry>(common, stringEntry));
+      double similarity = triGram.compare(trigramsWord, stringValue);
+      weightedEntries.add(new WeightedElement<BibEntry>(similarity, stringEntry));
     }
 
     Collections.sort(weightedEntries);
@@ -313,38 +318,6 @@ public class BibAssistant implements CodeAssistant, SCEPopup.ItemHandler {
     firstName = firstName.replaceAll("\\W","");
 
     return lastName + "." + firstName;
-  }
-
-  /**
-   * Longest common substring: http://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Longest_common_substring
-   */
-  private int lcs(String x, String y) {
-    if (x == null || y == null || x.length() == 0 || y.length() == 0) {
-      return 0;
-    }
-
-    int maxLen = 0;
-    int xlength = x.length();
-    int ylength = y.length();
-    int[][] table = new int[xlength][ylength];
-
-    for (int i = 0; i < xlength; i++) {
-      for (int j = 0; j < ylength; j++) {
-        if (x.charAt(i) == y.charAt(j)) {
-          if (i == 0 || j == 0) {
-            table[i][j] = 1;
-          }
-          else {
-            table[i][j] = table[i - 1][j - 1] + 1;
-          }
-          if (table[i][j] > maxLen) {
-            maxLen = table[i][j];
-          }
-        }
-      }
-    }
-
-    return maxLen;
   }
 
   private String oneLine(String text) {
