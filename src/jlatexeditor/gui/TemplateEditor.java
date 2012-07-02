@@ -77,8 +77,8 @@ public class TemplateEditor extends JDialog {
 				saveTemplateIfChanged(false);
 				loadTemplate(getSelectedTemplate());
 
-        invalidate();
-        doLayout();
+				invalidate();
+				doLayout();
 			}
 		});
 		reloadTemplateList();
@@ -273,7 +273,7 @@ public class TemplateEditor extends JDialog {
 		if (newTemplate != null) {
 			newTemplate.setUsage(editor.getText());
 			newTemplate.setEnabled(enabledCheckBox.isSelected());
-      // TODO: fixme... the following line can throw a NullPointerException
+			// TODO: fixme... the following line can throw a NullPointerException
 			if (!getTemplates().get(newTemplate.getName()).deepEquals(newTemplate)) {
 				int options = allowCancel ? JOptionPane.YES_NO_CANCEL_OPTION : JOptionPane.YES_NO_OPTION;
 				int res = JOptionPane.showConfirmDialog(owner, "Do you want to save your changes for template \"" + newTemplate.getName() + "\"", "Save changes?", options);
@@ -747,8 +747,8 @@ public class TemplateEditor extends JDialog {
 		gbc.insets = new Insets(0, 4, 4, 4);
 		panel5.add(saveButton, gbc);
 		cancelButton = new JButton();
-		cancelButton.setText("Cancel");
-		cancelButton.setMnemonic('C');
+		cancelButton.setText("Revoke Changes");
+		cancelButton.setMnemonic('R');
 		cancelButton.setDisplayedMnemonicIndex(0);
 		gbc = new GridBagConstraints();
 		gbc.gridx = 3;

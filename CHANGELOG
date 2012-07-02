@@ -6,6 +6,11 @@ New Features and other Changes in JLatexEditor
 # set "show_new_features" in global settings to "false".
 
 
+== Coming Version 0.2.11 ==
+
+* fixed issue #223: Cancel button of template editor does not work
+
+
 == Version 0.2.10 ==
 
 * new features:
