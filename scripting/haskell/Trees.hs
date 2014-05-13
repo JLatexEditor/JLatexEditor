@@ -1,7 +1,7 @@
 
 module Trees where
 
-import IO hiding (try)
+import System.IO hiding (try)
 import System.Environment
 import System.Process
 
