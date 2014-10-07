@@ -103,7 +103,7 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     stop.setBackground(new Color(255,128,128));
     stop.setOpaque(true);
     stop.addMouseListener(this);
-    stop.setBorder(BorderFactory.createLineBorder(new Color(255,128,128),3,true));
+    stop.setBorder(BorderFactory.createMatteBorder(3,3,3,3,new Color(255,128,128)));
     stop.setVisible(false);
     workingPanel.add(working);
     workingPanel.add(stop);
