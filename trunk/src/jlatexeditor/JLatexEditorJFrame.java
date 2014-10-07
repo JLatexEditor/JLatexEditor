@@ -702,11 +702,11 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 		return editor;
 	}
 
-	public SourceCodeEditor<Doc> open(Doc doc) {
+	public synchronized SourceCodeEditor<Doc> open(Doc doc) {
 		return open(doc, true);
 	}
 
-	public SourceCodeEditor<Doc> open(Doc doc, boolean selectTab) {
+	public synchronized SourceCodeEditor<Doc> open(Doc doc, boolean selectTab) {
     try {
       // is existing object if it already exists, otherwise add it to docMap
       if (docMap.containsKey(doc.getUri())) {
@@ -937,6 +937,10 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 		}
 		return false;
 	}
+
+  public void stopCompile() {
+    if (latexCompiler != null) latexCompiler.halt();
+  }
 
 	public LatexCompiler compile(LatexCompiler.Type type) {
 		if (!hasDocumentClass(getMainEditor().getTextPane().getDocument())) {
@@ -1393,6 +1397,8 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
       if (!file.exists()) continue;
 
       Long oldModified = lastModified.get(file);
+      if(oldModified == null) continue;
+
       Long newModified = file.lastModified();
       // has the file been changed?
       if (!oldModified.equals(newModified)) {

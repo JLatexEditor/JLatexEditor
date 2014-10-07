@@ -34,7 +34,7 @@ public class BracketHighlighting implements SCECaretListener {
     editor.getTextPane().getCaret().addSCECaretListener(this);
   }
 
-  public void update() {
+  public synchronized void update() {
     if (last < System.nanoTime() - 100000000) {
       execute();
     } else {

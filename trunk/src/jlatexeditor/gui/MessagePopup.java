@@ -11,9 +11,6 @@ import java.awt.event.MouseListener;
  * Display messages.
  */
 public class MessagePopup extends JPopupMenu implements MouseListener, KeyListener {
-  private long startTime = -1;
-  private long alphaTime = 1000000000;
-
   private JLabel label;
 	private Color backgroundColor = new Color(192, 239, 192);
 	private Color strokeColor = new Color(0, 128, 0);
@@ -59,10 +56,10 @@ public class MessagePopup extends JPopupMenu implements MouseListener, KeyListen
   }
 
   public void paint(Graphics g) {
-    if (startTime < 0) startTime = System.nanoTime();
+    //if (startTime < 0) startTime = System.nanoTime();
     Graphics2D g2D = (Graphics2D) g;
 
-    float alpha = Math.min(1f, 0.1f + 0.9f * (System.nanoTime() - startTime) / alphaTime);
+    float alpha = 1f;
     g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, alpha));
 
     g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -79,11 +76,6 @@ public class MessagePopup extends JPopupMenu implements MouseListener, KeyListen
     g2D.setColor(Color.BLACK);
     g2D.translate((getWidth() - label.getWidth()) / 2, (getHeight() - label.getHeight()) / 2);
     label.paint(g);
-
-    // continue repainting
-    if (alpha < 1) {
-      repaint();
-    }
   }
 
   public void mouseClicked(MouseEvent e) {

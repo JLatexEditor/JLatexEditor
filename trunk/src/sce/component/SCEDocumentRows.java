@@ -17,13 +17,24 @@ public class SCEDocumentRows {
   private SCEDocumentPosition editRangeStart = null;
   private SCEDocumentPosition editRangeEnd = null;
 
+  private final static char WRAP = '\r';
+
   public SCEDocumentRows() {
     // initialize text data
     rowsCount = 1;
     rows = new SCEDocumentRow[capacityIncrement];
-    for (int row_nr = 0; row_nr < rows.length; row_nr++) {
-      rows[row_nr] = new SCEDocumentRow();
-      rows[row_nr].row_nr = row_nr;
+
+    for (int index = 0; index < rows.length; index++) {
+      rows[index] = new SCEDocumentRow();
+    }
+    updateRowNrs();
+  }
+
+  private void updateRowNrs() {
+    int row_nr = 0;
+    for (SCEDocumentRow row : rows) {
+      row.row_nr = row_nr;
+      row_nr += row.chars[row.length - 1].character == WRAP ? 0 : 1;
     }
   }
 
@@ -120,8 +131,8 @@ public class SCEDocumentRows {
   public String getText(SCEPosition start, SCEPosition end) {
     SCEDocumentRow[] usedRows = getRows();
 
-    int startRow = Math.min(start.getRow(), usedRows.length);
-    int endRow = Math.min(end.getRow(), usedRows.length);
+    int startRow = Math.min(start.getRow(), usedRows.length-1);
+    int endRow = Math.min(end.getRow(), usedRows.length-1);
 
     StringBuffer textBuffer = new StringBuffer();
 
@@ -319,7 +330,7 @@ public class SCEDocumentRows {
     // convert the text into a character array
     char charText[] = text.toCharArray();
 
-    // is there a rowbreak within the text?
+    // is there a row break within the text?
     if (text.indexOf('\n') == -1) {
       insert(charText, 0, charText.length, row_nr, column_nr);
       column_nr += charText.length;
@@ -366,7 +377,7 @@ public class SCEDocumentRows {
   private void insert(SCEDocumentChar[] chars, int offset, int length, int row_nr, int column_nr) {
     if (chars == null || length <= 0) return;
 
-    prepereInsert(row_nr, column_nr, length);
+    prepareInsert(row_nr, column_nr, length);
     // insert new data
     rows[row_nr].setCharacters(chars, offset, length, column_nr);
 
@@ -386,7 +397,7 @@ public class SCEDocumentRows {
   private void insert(char[] charText, int offset, int length, int row_nr, int column_nr) {
     if (charText == null || length <= 0) return;
 
-    prepereInsert(row_nr, column_nr, length);
+    prepareInsert(row_nr, column_nr, length);
     // insert new data
     rows[row_nr].setCharacters(charText, offset, length, column_nr);
 
@@ -404,9 +415,11 @@ public class SCEDocumentRows {
     System.arraycopy(rows, 0, newRows, 0, rows.length);
     for (int row_nr = rows.length; row_nr < newRows.length; row_nr++) {
       newRows[row_nr] = new SCEDocumentRow();
-      newRows[row_nr].row_nr = row_nr;
     }
     rows = newRows;
+
+    // can be optimzed
+    updateRowNrs();
   }
 
   /**
@@ -426,18 +439,19 @@ public class SCEDocumentRows {
     for (int row_nr = row; row_nr < row + count; row_nr++) rows[row_nr] = new SCEDocumentRow();
     // increase rows count
     rowsCount += count;
-    // new line numbers
-    for (int row_nr = row; row_nr < rowsCount; row_nr++) rows[row_nr].row_nr = row_nr;
+
+    // new line numbers, can be optimized
+    updateRowNrs();
   }
 
   /**
-   * Prepers a insert by shifting the data.
+   * Prepares an insert by shifting the data.
    *
    * @param row_nr    the row
    * @param column_nr the column
    * @param length    the length
    */
-  private void prepereInsert(int row_nr, int column_nr, int length) {
+  private void prepareInsert(int row_nr, int column_nr, int length) {
     // do we have enough space left?
     if (rows[row_nr].length + length >= rows[row_nr].chars.length) {
       rows[row_nr].increaseMaxCharacters(length + capacityIncrement);
@@ -489,10 +503,11 @@ public class SCEDocumentRows {
     int deleteCount = endRow - startRow;
     System.arraycopy(rows, endRow + 1, rows, startRow + 1, rowsCount - endRow - 1);
     rowsCount -= deleteCount;
-    // recreate the doublicated rows
+    // recreate the duplicated rows
     for (int row_nr = rowsCount; row_nr < rowsCount + deleteCount; row_nr++) rows[row_nr] = new SCEDocumentRow();
-    // set the new row numbers
-    for (int row_nr = startRow; row_nr < rowsCount + deleteCount; row_nr++) rows[row_nr].row_nr = row_nr;
+
+    // set the new row numbers, can be optimized
+    updateRowNrs();
 
     return true;
   }

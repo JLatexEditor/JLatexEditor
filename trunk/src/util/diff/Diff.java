@@ -18,8 +18,8 @@ import java.util.List;
  */
 public class Diff {
   public static String diffPlain(String text1, String text2) {
-    String[] lines1 = ArrayUtil.toArray(lines(text1));
-    String[] lines2 = ArrayUtil.toArray(lines(text2));
+    String[] lines1 = ArrayUtil.toStringArray(lines(text1));
+    String[] lines2 = ArrayUtil.toStringArray(lines(text2));
 
     return diffPlain(lines1, lines2);
   }

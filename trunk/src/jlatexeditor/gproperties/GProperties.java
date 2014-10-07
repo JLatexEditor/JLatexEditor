@@ -122,7 +122,8 @@ public class GProperties {
     properties.addEntry(new Def(EDITOR_FONT_NAME, new PSet(MONOSPACE_FONTS_ARRAY), "Monospaced"));
     properties.addEntry(new Def(EDITOR_FONT_SIZE, INT_GT_0, "13"));
     properties.addEntry(new Def(EDITOR_FONT_ANTIALIASING, new PSet(TEXT_ANTIALIAS_KEYS), "On"));
-    properties.addEntry(new Def("editor.columns_per_row", INT_GT_0, "0"));
+    properties.addEntry(new Def("editor.wrap", BOOLEAN, "true"));
+    properties.addEntry(new Def("editor.columns_per_row", INT_GT_0, "120"));
     properties.addEntry(new Def("editor.hide_mouse_during_typing", BOOLEAN, "true"));
 	  properties.addEntry(new Comment(" Code completion"));
 	  properties.addEntry(new Def("editor.completion.commands.filter.level1", INT, "1000"));

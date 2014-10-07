@@ -1,8 +1,6 @@
 package sce.codehelper;
 
-import org.jetbrains.annotations.Nullable;
 import sce.component.SCECaret;
-import sce.component.SCEDocumentPosition;
 import sce.component.SCEPane;
 import sce.component.SCEPosition;
 
@@ -44,13 +42,13 @@ public class PatternPair {
     return find(pane, pos.getRow(), pos.getColumn(), null, null);
   }
 
-  public List<WordWithPos> find(SCEPane pane, @Nullable SCEPosition start, @Nullable SCEPosition end) {
+  public List<WordWithPos> find(SCEPane pane, SCEPosition start, SCEPosition end) {
     SCECaret caret = pane.getCaret();
 
     return find(pane, caret.getRow(), caret.getColumn(), start, end);
   }
 
-  public List<WordWithPos> find(SCEPane pane, int row, int column, @Nullable SCEPosition start, @Nullable SCEPosition end) {
+  public List<WordWithPos> find(SCEPane pane, int row, int column, SCEPosition start, SCEPosition end) {
     String string = pane.getDocument().getRowsModel().getRowAsString(row);
 
     if(end != null && row == end.getRow()) {

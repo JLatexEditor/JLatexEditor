@@ -619,8 +619,8 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 
 			// update position map
 			if (text2row.length < text.length()) {
-				text2row = new int[text.length()];
-				text2column = new int[text.length()];
+				text2row = new int[text.length()+1];
+				text2column = new int[text.length()+1];
 			}
 			int rowNr = 0;
 			int columnNr = 0;
@@ -635,6 +635,8 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 					columnNr = 0;
 				}
 			}
+      text2row[text.length()] = rowNr;
+      text2column[text.length()] = columnNr;
 		}
 
 		private void search(boolean move) {
@@ -757,9 +759,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 						// search
 						search(searchChanged);
 					} catch (Throwable ignored) {
-						// unexpected error, inform user and continue
-						ignored.printStackTrace();
-
+						// unexpected error, recover
 						try {
 							sleep(500);
 						} catch (InterruptedException _) {
