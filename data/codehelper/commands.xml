@@ -224,7 +224,7 @@
   </command>
 
   <command name="emph" usage="\emph{@text@}" hint="emphasis the given text">
-	  <argument name="text" type="italic"/>
+	  <argument name="text"/>
   </command>
 
   <command name="ensuremath" usage="\ensuremath{@text set in math mode@}"
@@ -790,7 +790,7 @@
 	</command>
 
   <command name="textit" usage="\textit{@text@}" hint="italic font">
-	  <argument name="text" type="italic"/>
+	  <argument name="text"/>
   </command>
 
   <command name="textbf" usage="\textbf{@text@}" hint="bold font">
@@ -810,7 +810,7 @@
   </command>
 
   <command name="textsl" usage="\textsl{@text@}" hint="slanted font">
-	  <argument name="text" type="italic"/>
+	  <argument name="text"/>
   </command>
 
   <command name="texttt" usage="\texttt{@text@}" hint="type writer font">

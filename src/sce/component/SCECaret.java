@@ -177,7 +177,12 @@ public class SCECaret extends SCEPosition implements ActionListener {
 
     // inform listeners
     for (SCECaretListener caretListener : caretListeners) {
-      caretListener.caretMoved(getRow(), getColumn(), lastRow, lastColumn);
+      try {
+        caretListener.caretMoved(getRow(), getColumn(), lastRow, lastColumn);
+      } catch(RuntimeException e) {
+        // warn user, but continue
+        e.printStackTrace();
+      }
     }
 
     // upate last Motion time

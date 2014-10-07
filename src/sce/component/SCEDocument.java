@@ -2,7 +2,6 @@ package sce.component;
 
 import jlatexeditor.gproperties.GProperties;
 import jlatexeditor.syntaxhighlighting.states.RootState;
-import org.jetbrains.annotations.Nullable;
 import sce.syntaxhighlighting.ParserStateStack;
 
 import java.awt.*;
@@ -194,11 +193,11 @@ public class SCEDocument {
   /**
    * Updates the selection range of the document.
    *
-   * @param start the selection start
-   * @param end   the selection end
+   * @param start the selection start (nullable)
+   * @param end   the selection end (nullable)
    * @param userTriggeredSelection whether user has triggered the selection
    */
-  public void setSelectionRange(@Nullable SCEPosition start, @Nullable SCEPosition end, boolean userTriggeredSelection) {
+  public void setSelectionRange(SCEPosition start, SCEPosition end, boolean userTriggeredSelection) {
 	  this.userTriggeredSelection = userTriggeredSelection;
 	  if (start == null || end == null) {
       selectionStart = null;

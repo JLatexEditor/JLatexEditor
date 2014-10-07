@@ -1,7 +1,5 @@
 package util;
 
-import org.jetbrains.annotations.NonNls;
-
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -124,11 +122,11 @@ public abstract class ParamsExt2 {
 	}
 
 	/** Defines a new option. */
-	public Option option(@NonNls String name, Character mnemonic, String description) {
+	public Option option(String name, Character mnemonic, String description) {
 		return option(name, mnemonic, description, 0);
 	}
 	/** Defines a new option. */
-	public Option option(@NonNls String name, Character mnemonic, String description, int paramsCount) {
+	public Option option(String name, Character mnemonic, String description, int paramsCount) {
 		Option option = new Option(name, mnemonic, description, paramsCount);
 		if (name != null) {
 			optionByName.put(name, option);
@@ -158,7 +156,7 @@ public abstract class ParamsExt2 {
 		protected boolean set = false;
 		protected ArrayList<String> values = new ArrayList<String>();
 
-	  public Option(@NonNls String name, Character mnemonic, String description, int paramsCount) {
+	  public Option(String name, Character mnemonic, String description, int paramsCount) {
 	    this.name = name;
 	    this.mnemonic = mnemonic;
 	    this.description = description;

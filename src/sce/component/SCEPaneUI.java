@@ -178,7 +178,7 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
     document.insert(e.getKeyChar() + "", caret.getRow(), caret.getColumn());
   }
 
-  public void keyPressed(KeyEvent e) {
+  public synchronized void keyPressed(KeyEvent e) {
     if (e.isConsumed()) return;
 
     if(mouseIsVisible && GProperties.getBoolean("editor.hide_mouse_during_typing")) {

@@ -16,6 +16,12 @@ public class ArrayUtil {
     return array;
   }
 
+  public static String[] toStringArray(Collection<String> collection) {
+    String array[] = new String[collection.size()];
+    collection.toArray(array);
+    return array;
+  }
+
   /**
    * Convert an array into an ArrayList.
    */

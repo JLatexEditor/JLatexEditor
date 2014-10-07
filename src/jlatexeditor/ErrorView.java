@@ -50,6 +50,7 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
   private JScrollPane scrollWarningReference = new JScrollPane(listWarningReference);
 
   private JLabel working;
+  private JLabel stop;
 
 	ErrorPopupMenu popup = new ErrorPopupMenu();
 
@@ -92,9 +93,22 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     JPanel treePanel = new JPanel();
     treePanel.setBackground(Color.WHITE);
     treePanel.setLayout(new BorderLayout());
+
+    JPanel workingPanel = new JPanel();
+    workingPanel.setBackground(Color.WHITE);
+    workingPanel.setLayout(new FlowLayout());
 	  working = new JLabel(new ImageIcon(getClass().getResource("/images/working32.gif")));
 	  working.setVisible(false);
-	  treePanel.add(working, BorderLayout.NORTH);
+    stop = new JLabel("stop");
+    stop.setBackground(new Color(255,128,128));
+    stop.setOpaque(true);
+    stop.addMouseListener(this);
+    stop.setBorder(BorderFactory.createLineBorder(new Color(255,128,128),3,true));
+    stop.setVisible(false);
+    workingPanel.add(working);
+    workingPanel.add(stop);
+
+	  treePanel.add(workingPanel, BorderLayout.NORTH);
 	  JScrollPane treeScrollPane = new JScrollPane(tree);
 	  treeScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 	  treePanel.add(treeScrollPane, BorderLayout.CENTER);
@@ -105,7 +119,7 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     setResizeWeight(0);
   }
 
-  public void clear() {
+  public synchronized void clear() {
     latexOutput.setText("");
     lmError.clear();
     lmHbox.clear();
@@ -117,16 +131,18 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     repaint();
   }
 
-  public void compileStarted(String text) {
+  public synchronized void compileStarted(String text) {
     working.setText(text);
     working.setVisible(true);
+    stop.setVisible(true);
   }
 
-  public void compileFinished() {
+  public synchronized void compileFinished() {
     working.setVisible(false);
+    stop.setVisible(false);
   }
 
-  public void update() {
+  public synchronized void update() {
 	  nodeError.update();
 	  nodeHbox.update();
 	  nodeWarning.update();
@@ -134,47 +150,51 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
 	  nodeWarningReference.update();
   }
 
-  public void appendLine(String line) {
+  public synchronized void appendLine(String line) {
     latexOutput.append(line);
     latexOutput.append("\n");
   }
 
-	public int getLinesCount() {
+	public synchronized int getLinesCount() {
 		return latexOutput.getLineCount();
 	}
 
-  public void addError(LatexCompileError error) {
-    errors.add(error);
-    if (error.getType() == LatexCompileError.TYPE_ERROR) lmError.addElement(new ErrorComponent(error));
-    if (error.getType() == LatexCompileError.TYPE_OVERFULL_HBOX) lmHbox.addElement(new ErrorComponent(error));
-    if (error.getType() == LatexCompileError.TYPE_WARNING) {
-      String message = error.getMessage().toLowerCase();
-      if(message.contains("citation")) {
-        lmWarningCitation.addElement(new ErrorComponent(error));
-      } else
-      if(message.contains("reference")) {
-        lmWarningReference.addElement(new ErrorComponent(error));
-      } else {
-        lmWarning.addElement(new ErrorComponent(error));
+  public synchronized void addError(final LatexCompileError error) {
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        errors.add(error);
+        if (error.getType() == LatexCompileError.TYPE_ERROR) lmError.addElement(new ErrorComponent(error));
+        if (error.getType() == LatexCompileError.TYPE_OVERFULL_HBOX) lmHbox.addElement(new ErrorComponent(error));
+        if (error.getType() == LatexCompileError.TYPE_WARNING) {
+          String message = error.getMessage().toLowerCase();
+          if(message.contains("citation")) {
+            lmWarningCitation.addElement(new ErrorComponent(error));
+          } else
+          if(message.contains("reference")) {
+            lmWarningReference.addElement(new ErrorComponent(error));
+          } else {
+            lmWarning.addElement(new ErrorComponent(error));
+          }
+        }
+        update();
+        repaint();
       }
-    }
-    update();
-    repaint();
+    });
   }
 
-  public ArrayList<LatexCompileError> getErrors() {
+  public synchronized ArrayList<LatexCompileError> getErrors() {
     return (ArrayList<LatexCompileError>) errors.clone();
   }
 
-  public void setText(String text) {
+  public synchronized void setText(String text) {
     latexOutput.setText(text);
   }
 
-  public String getText() {
+  public synchronized String getText() {
     return latexOutput.getText();
   }
 
-  public void valueChanged(TreeSelectionEvent e) {
+  public synchronized void valueChanged(TreeSelectionEvent e) {
     TreeNode node = (TreeNode) e.getNewLeadSelectionPath().getLastPathComponent();
     listError.clearSelection();
     listHbox.clearSelection();
@@ -201,7 +221,7 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
     }
   }
 
-	public void selectNode(ErrorTreeNode node) {
+	public synchronized void selectNode(ErrorTreeNode node) {
 		Object[] path = {nodeRoot, node};
 		if (node == nodeRoot) {
 			path = new Object[]{nodeRoot};
@@ -262,15 +282,24 @@ public class ErrorView extends JSplitPane implements TreeSelectionListener, List
 	}
 
 	public void mousePressed(MouseEvent e) {
+    if (e.getSource() == stop) {
+      latexEditor.stopCompile();
+      compileFinished();
+    }
+
 		if (e.getButton() == 3) {
 			if (e.getSource() instanceof JList) {
 				JList list = (JList) e.getSource();
 				int index = list.locationToIndex(e.getPoint());
-				Object elementAt = list.getModel().getElementAt(index);
-				if (elementAt instanceof ErrorComponent) {
-					ErrorComponent ec = (ErrorComponent) elementAt;
-					popup.show(list, ec.error, e.getX(), e.getY());
-				}
+        try {
+          Object elementAt = list.getModel().getElementAt(index);
+          if (elementAt instanceof ErrorComponent) {
+            ErrorComponent ec = (ErrorComponent) elementAt;
+            popup.show(list, ec.error, e.getX(), e.getY());
+          }
+        } catch(Exception ex) {
+          // index sometimes fails to exist?
+        }
 			}
 		}
 	}
