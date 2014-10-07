@@ -4,14 +4,11 @@ import jlatexeditor.*;
 import jlatexeditor.addon.ExtractCommand;
 import jlatexeditor.quickhelp.LatexQuickHelp;
 import sce.codehelper.CodeAssistant;
-import sce.codehelper.PatternPair;
 import sce.codehelper.SCEPopup;
 import sce.codehelper.WordWithPos;
 import sce.component.SCEDocument;
-import sce.component.SCEDocumentRow;
 import sce.component.SCEPane;
 import sce.component.SourceCodeEditor;
-import sun.print.BackgroundLookupListener;
 import util.ParseUtil;
 
 import java.io.File;

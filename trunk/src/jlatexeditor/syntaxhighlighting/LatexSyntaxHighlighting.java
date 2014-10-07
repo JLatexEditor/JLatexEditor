@@ -14,7 +14,6 @@ import sce.component.*;
 import sce.syntaxhighlighting.ParserState;
 import sce.syntaxhighlighting.ParserStateStack;
 import sce.syntaxhighlighting.SyntaxHighlighting;
-import sun.font.Script;
 import util.Function1;
 import util.SimpleTrie;
 import util.SpellChecker;

@@ -3,7 +3,7 @@ package jlatexeditor.codehelper;
 import jlatexeditor.PackagesExtractor;
 import jlatexeditor.SCEManager;
 import jlatexeditor.quickhelp.LatexQuickHelp;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import util.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.Collections;
