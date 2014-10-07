@@ -34,7 +34,7 @@ public class SCEDocumentRows {
     int row_nr = 0;
     for (SCEDocumentRow row : rows) {
       row.row_nr = row_nr;
-      row_nr += row.chars[row.length - 1].character == WRAP ? 0 : 1;
+      row_nr += row.length > 0 && row.chars[row.length - 1].character == WRAP ? 0 : 1;
     }
   }
 
