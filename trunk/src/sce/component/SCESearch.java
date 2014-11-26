@@ -618,7 +618,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 			if (!caseSensitive.isSelected()) text = text.toLowerCase();
 
 			// update position map
-			if (text2row.length < text.length()) {
+			if (text2row.length <= text.length()) {
 				text2row = new int[text.length()+1];
 				text2column = new int[text.length()+1];
 			}
@@ -704,7 +704,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 					input.setBackground(ERROR_COLOR);
 					document.clearSelection();
 				} else {
-					// set the selection
+          // set the selection
 					if (selectionRange != null && setSelection) document.setSelectionRange(selectionRange, false);
 
 					if (move) next(true, true);
@@ -757,15 +757,16 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 						if (documentChanged) continue;
 
 						// search
-						search(searchChanged);
+            search(searchChanged);
 					} catch (Throwable ignored) {
 						// unexpected error, recover
 						try {
 							sleep(500);
 						} catch (InterruptedException _) {
 						}
-						searchChanged = true;
 						documentChanged = true;
+
+            ignored.printStackTrace();
 					}
 				}
 			} catch (InterruptedException ignored) {
