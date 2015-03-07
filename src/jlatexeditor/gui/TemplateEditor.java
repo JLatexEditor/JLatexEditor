@@ -526,8 +526,8 @@ public class TemplateEditor extends JDialog {
 		JComboBox functionName = new JComboBox(getFunctionsNames());
 
 		Object[] message = {
-			"Derived argument:", derivedArgument,
-			"\nFunction:", functionName
+				"Derived argument:", derivedArgument,
+				"\nFunction:", functionName
 		};
 		int resp = JOptionPane.showConfirmDialog(owner, message, "Declare command", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
@@ -561,7 +561,7 @@ public class TemplateEditor extends JDialog {
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new GridBagLayout());
 		final JSplitPane splitPane1 = new JSplitPane();
-		splitPane1.setDividerLocation(179);
+		splitPane1.setDividerLocation(514);
 		GridBagConstraints gbc;
 		gbc = new GridBagConstraints();
 		gbc.gridx = 0;

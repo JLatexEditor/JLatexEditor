@@ -5,8 +5,8 @@
 
 package jlatexeditor;
 
-import de.endrullis.utils.*;
-import static de.endrullis.utils.Tuple.*;
+import de.endrullis.utils.ProgramUpdater;
+import de.endrullis.utils.StringUtils;
 import jlatexeditor.addon.AddOn;
 import jlatexeditor.codehelper.BackgroundParser;
 import jlatexeditor.errorhighlighting.LatexCompiler;
@@ -45,6 +45,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+
+import static de.endrullis.utils.Tuple.Tuple2;
 
 public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction, ActionListener, WindowListener, ChangeListener, MouseMotionListener, TreeSelectionListener, SCETabbedPane.CloseListener {
   public static final File FILE_LAST_SESSION = new File(GProperties.SETTINGS_DIR + "/last.session");
@@ -1209,7 +1211,7 @@ public class JLatexEditorJFrame extends JFrame implements SCEManagerInteraction,
 				results = SVN.getInstance().update(getMainEditor().getFile().getParentFile());
         try {
           svnView.checkForUpdates();
-        } catch(Throwable _) {}
+        } catch(Throwable ignored) {}
 			} catch (Exception exception) {
 				exception.printStackTrace();
 				statusBar.showTextError("SVN update failed", "SVN update failed: " + exception.getMessage());
