@@ -217,6 +217,12 @@
   <command name="ddots" hint="produces a diagonal ellipsis (math mode)">
   </command>
 
+	<command name="pgfdeclareimage" usage="\pgfdeclareimage[@opt@]{@id@}{@file@}" hint="declares an pgf image">
+		<argument name="opt"/>
+		<argument name="id"/>
+		<argument name="file" type="file|defaultExtension=png|extensions=eps,ps,png,pdf" value="" completion="true"/>
+	</command>
+
   <command name="dotfill" hint="produces a rubber length that produces dots instead of just spaces">
   </command>
 
