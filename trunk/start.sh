@@ -16,7 +16,8 @@ if [ $# == 1 ]; then
 	fi
 fi
 
-cd `dirname $0`
+JLE_SCRIPT=`readlink -f $0`
+cd `dirname $JLE_SCRIPT`
 
 LIB=""
 for file in `ls lib/`
