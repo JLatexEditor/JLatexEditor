@@ -15,7 +15,7 @@ public class ParseUtil {
 	public static Tuple2<String,Integer> parseItem(String text, int index) {
 		if (text.charAt(index) == '{') {
 			String argument = parseBalanced(text, index + 1, '}');
-			return _(argument, index + argument.length() + 2);
+			return t(argument, index + argument.length() + 2);
 		} else {
 			while (text.charAt(index) == ' ') index++;
 			if (text.charAt(index) == '\\') {
@@ -26,9 +26,9 @@ public class ParseUtil {
 				} else {
 					index++;
 				}
-				return _(text.substring(startIndex, index), index);
+				return t(text.substring(startIndex, index), index);
 			} else {
-				return _("" + text.charAt(index), index + 1);
+				return t("" + text.charAt(index), index + 1);
 			}
 		}
 	}

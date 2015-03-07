@@ -2,17 +2,15 @@ package sce.component;
 
 import de.endrullis.utils.KeyUtils;
 import jlatexeditor.gproperties.GProperties;
-import util.gui.TabOrder;
 
 import javax.swing.*;
-import java.util.List;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
-import java.util.*;
+import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -762,7 +760,7 @@ public class SCESearch extends JPanel implements ActionListener, KeyListener, SC
 						// unexpected error, recover
 						try {
 							sleep(500);
-						} catch (InterruptedException _) {
+						} catch (InterruptedException ignored2) {
 						}
 						documentChanged = true;
 

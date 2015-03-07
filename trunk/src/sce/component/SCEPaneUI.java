@@ -19,8 +19,6 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * SourceCodeEditor UI.
@@ -572,7 +570,7 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
         String lineComment = "//";
         try {
           lineComment = ((SourceCodeEditor<? extends Doc>) editor).getResource().getProperty("lineComment");
-        } catch (Throwable _) { /* ignore */ }
+        } catch (Throwable ignored) { /* ignore */ }
         pane.getSourceCodeEditor().lineComment(lineComment);
       } else
       if (key.equals(UNCOMMENT)) {
@@ -585,7 +583,7 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
           } else {
             lineComment = new String[] {lc, lc.trim()};
           }
-        } catch (Throwable _) { /* ignore */ }
+        } catch (Throwable ignored) { /* ignore */ }
         editor.lineUncomment(lineComment);
       }
 		}

@@ -1,14 +1,15 @@
 package sce.codehelper;
 
-import static de.endrullis.utils.Tuple.*;
-
+import de.endrullis.utils.Tuple;
 import sce.component.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import static de.endrullis.utils.Tuple.Tuple2;
+
 /**
- * Live template expasion.
+ * Live template expansion.
  *
  * @author Stefan Endrullis &lt;stefan@endrullis.de&gt;
  */
@@ -161,7 +162,7 @@ public class Template {
 			}
 		}
 
-		return _(templateWithAt, document.createDocumentPosition(caret_row, caret_column));
+		return Tuple.t(templateWithAt, document.createDocumentPosition(caret_row, caret_column));
 	}
 
 	public boolean goToPreviousArgument() {

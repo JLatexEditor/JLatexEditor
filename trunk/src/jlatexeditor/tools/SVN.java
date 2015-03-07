@@ -112,7 +112,7 @@ public class SVN {
 
 		checkProcessResult(svn, "SVN update");
 
-    return _(success, builder.toString());
+    return t(success, builder.toString());
   }
 
   public synchronized ArrayList<StatusResult> status(File dir, boolean remote) throws Exception {
