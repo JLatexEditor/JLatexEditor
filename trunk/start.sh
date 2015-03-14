@@ -16,7 +16,8 @@ if [ $# == 1 ]; then
 	fi
 fi
 
-JLE_SCRIPT=`readlink -f $0`
+JLE_SCRIPT=$0
+# JLE_SCRIPT=`readlink -f $0`
 cd `dirname $JLE_SCRIPT`
 
 LIB=""
