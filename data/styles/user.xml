@@ -12,7 +12,7 @@
   <element name="italic" style="italic" foreground="000000"/>
   <element name="bold" style="bold" foreground="000000"/>
   <element name="command" style="plain" foreground="0000ff"/>
-  <element name="comment" style="italic" foreground="808080"/>
+  <element name="comment" style="plain" foreground="808080"/>
   <element name="bracket" style="bold" foreground="2fbf53"/>
   <element name="number" style="plain" foreground="000000"/>
   <element name="math" style="plain" foreground="00a000"/>
