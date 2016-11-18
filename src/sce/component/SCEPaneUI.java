@@ -8,7 +8,6 @@ import sce.codehelper.LineBreakListener;
 import sce.quickhelp.QuickHelp;
 import sce.quickhelp.QuickHelpPane;
 import sce.syntaxhighlighting.BracketHighlighting;
-import sun.swing.DefaultLookup;
 
 import javax.swing.*;
 import javax.swing.plaf.ComponentUI;
@@ -423,10 +422,10 @@ public class SCEPaneUI extends ComponentUI implements KeyListener, MouseListener
 
 	protected InputMap getInputMap(int condition) {
 		if (condition == JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT) {
-			return (InputMap) DefaultLookup.get(pane, this, "SCEPane.ancestorInputMap");
+			return (InputMap) UIManager.get("SCEPane.ancestorInputMap", pane.getLocale()); // DefaultLookup.get(pane, this, "SCEPane.ancestorInputMap");
 		}
 		else if (condition == JComponent.WHEN_FOCUSED) {
-			return (InputMap) DefaultLookup.get(pane, this, "SCEPane.focusInputMap");
+			return (InputMap) UIManager.get("SCEPane.focusInputMap", pane.getLocale()); // DefaultLookup.get(pane, this, "SCEPane.focusInputMap");
 		}
 		return null;
 	}
