@@ -81,8 +81,8 @@ Development:
 
 Developers that took part in the development of JLatexEditor:
 
-* [Jörg Endrullis](http://joerg.endrullis.de/)
-* [Stefan Endrullis](http://stefan.endrullis.de/)
+* [Jörg Endrullis](http://joerg.endrullis.de/)
+* [Stefan Endrullis](http://stefan.endrullis.de/)
 * [Rena Bakhshi](http://www.few.vu.nl/~rbakhshi/)
 
 ## License
