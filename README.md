@@ -30,7 +30,7 @@ Download the lastest release for your platform, unpack it and run the script `jl
 ### Latest release
 + Linux: [​tar.gz](http://endrullis.de/JLatexEditor/releases/JLatexEditor-latest.tar.gz),
     - Debian / Ubuntu: [deb Package](http://endrullis.de/JLatexEditor/releases/jlatexeditor-latest.deb)
-    - Arch Linux: [Package](https://aur.archlinux.org/packages.php?ID=44123) (created by Matthias Busl) 
+    - Arch Linux: [Package](https://web.archive.org/web/20150806063924/https://aur.archlinux.org/packages.php?ID=44123) (created by Matthias Busl) 
 + Mac: [tar.gz](http://endrullis.de/JLatexEditor/releases/JLatexEditor-latest.tar.gz)
 + Windows: [zip](http://endrullis.de/JLatexEditor/releases/JLatexEditor-latest.zip)
 
