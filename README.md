@@ -1,6 +1,8 @@
-# JLatexEditor
 
 ![Logo](/assets/img/logo.png)
+
+# JLatexEditor
+
 
 
 JLatexEditor is a cross-platform open source LaTeX editor. The editor is in constant development. It is well-tested on Linux and Mac OS X, but has to be considered pre-alpha version, and only for experimental use for Windows.
