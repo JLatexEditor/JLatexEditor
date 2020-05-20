@@ -46,7 +46,7 @@ Download the lastest release for your platform, unpack it and run the script `jl
 *  [Manual](https://github.com/JLatexEditor/JLatexEditor/wiki)
 * for post questions please use the mailing list ​jle-users (TODO: fix this)
 
-For the list of current features, see [Features wiki page](Features).
+For the list of current features, see [Features wiki page](wiki/Features).
 
 
 
