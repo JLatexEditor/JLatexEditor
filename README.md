@@ -43,7 +43,7 @@ Download the lastest release for your platform, unpack it and run the script `jl
 
 ## Documentation
 
-*  [[Manual|Wiki]]
+*  [Manual](Wiki)
 * for post questions please use the mailing list ​jle-users (TODO: fix this)
 
 
