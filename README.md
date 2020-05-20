@@ -3,7 +3,6 @@
 
 # JLatexEditor
 
-![Github Actions Status](https://github.com/JLatexEditor/Build/badge.svg)
 
 JLatexEditor is a cross-platform open source LaTeX editor. The editor is in constant development. It is well-tested on Linux and Mac OS X, but has to be considered pre-alpha version, and only for experimental use for Windows.
 
@@ -64,11 +63,15 @@ There are several way you can contribute to this project:
 
 Clone the repository:
 
-`git clone https://github.com/JLatexEditor/JLatexEditor.git`
+```
+git clone https://github.com/JLatexEditor/JLatexEditor.git`
+```
 
 Build and run:
 
-`ant runJLatexEditor`
+```
+ant runJLatexEditor
+```
 
 Development:
 
@@ -78,18 +81,10 @@ Development:
 
 Developers that took part in the development of JLatexEditor:
 
-* ​Jörg Endrullis
-* ​Stefan Endrullis
-* ​Rena Bakhshi 
+ * [Jörg Endrullis](http://joerg.endrullis.de/)
+ * [Stefan Endrullis](http://stefan.endrullis.de/)
+ * [Rena Bakhshi](http://www.few.vu.nl/~rbakhshi/)
 
 ## License
 
 This program is free software; you can redistribute it and/or modify it under the ​GNU General Public License version 3. See the [LICENSE](LICENSE) file for more details.
-
-## Links
-
-* ​Wikipedia article about the JLatexEditor 
-
-## JLatexEditor on Twitter
-
-* Follow us on ​Twiter @latexeditor 
