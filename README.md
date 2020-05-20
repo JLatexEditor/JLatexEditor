@@ -43,16 +43,12 @@ Download the lastest release for your platform, unpack it and run the script `jl
 
 ## Documentation
 
-*  [Manual](Wiki)
+*  [Manual](https://github.com/JLatexEditor/JLatexEditor/wiki)
 * for post questions please use the mailing list ​jle-users (TODO: fix this)
 
+For the list of current features, see [Features wiki page](Features).
 
 
-## In work
-
-* multi-language support (partially available) 
-
-* for more features and fixed coming soon see the list of ​open tickets for milestone 0.3 
 
 ## How to get involved?
 
