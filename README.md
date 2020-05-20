@@ -9,9 +9,9 @@ JLatexEditor is a cross-platform open source LaTeX editor. The editor is in cons
 
 ## Operating System Support
 
-* GNU/Linux: yes
+* GNU/Linux
+* Mac OS
 * Windows: highly experimental (not yet for production use)
-* Mac OS: yes 
 
 The support for Windows will be improved in the next stable release.
 
