@@ -3,7 +3,7 @@
 
 # JLatexEditor
 
-
+![Github Actions Status](https://github.com/JLatexEditor/Build/badge.svg)
 
 JLatexEditor is a cross-platform open source LaTeX editor. The editor is in constant development. It is well-tested on Linux and Mac OS X, but has to be considered pre-alpha version, and only for experimental use for Windows.
 
@@ -46,7 +46,7 @@ Download the lastest release for your platform, unpack it and run the script `jl
 *  [Manual](https://github.com/JLatexEditor/JLatexEditor/wiki)
 * for post questions please use the mailing list ​jle-users (TODO: fix this)
 
-For the list of current features, see [Features wiki page](wiki/Features).
+For the list of current features, see [Features wiki page](Features).
 
 
 
