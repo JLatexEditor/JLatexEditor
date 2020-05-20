@@ -47,9 +47,7 @@ The ​older releases ...
 
 ## Screenshots
 
-![JLatex editor showing LaTeX compiler error in the editor](/assets/screenshot/screenshot_0.2.10_showing_latex_error_mini.png)
-
-![JLatex editor showing a list of bibtex entries in the completion for `\cite{}`](/assets/screenshot/screenshot_0.1.28_cite_completion_minor_restricted_mini.png)
+![JLatex editor showing LaTeX compiler error in the editor](/assets/screenshot/screenshot_0.2.10_showing_latex_error_mini.png) ![JLatex editor showing a list of bibtex entries in the completion for `\cite{}`](/assets/screenshot/screenshot_0.1.28_cite_completion_minor_restricted_mini.png)
 
 ## Features
 
