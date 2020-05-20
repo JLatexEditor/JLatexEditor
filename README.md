@@ -15,9 +15,8 @@ JLatexEditor is a cross-platform open source LaTeX editor. The editor is in cons
 
 The support for Windows will be improved in the next stable release.
 
-TODO: update this
-
 ## Install requirements
+TODO: update this
 
 * Java (recommended JDK 8 or higher)
 * Apache Ant
@@ -29,11 +28,14 @@ TODO: update this
 Download the lastest release for your platform, unpack it and run the script `jlatexeditor` (or `jlatexeditor.bat` in case of Windows) to start the editor
 
 ### Latest release
-+ Linux: ​tar.gz,
-    - Debian / Ubuntu: Include Debian/Ubuntu Repository, ​deb Package
-    - Arch Linux: [Package](https://aur.archlinux.org/packages.php?ID=44123] (created by Matthias Busl) 
-+ Mac: ​tar.gz
-+ Windows: ​zip 
++ Linux: [​tar.gz](http://endrullis.de/JLatexEditor/releases/JLatexEditor-latest.tar.gz),
+    - Debian / Ubuntu: [deb Package](http://endrullis.de/JLatexEditor/releases/jlatexeditor-latest.deb)
+    - Arch Linux: [Package](https://aur.archlinux.org/packages.php?ID=44123) (created by Matthias Busl) 
++ Mac: [tar.gz](http://endrullis.de/JLatexEditor/releases/JLatexEditor-latest.tar.gz)
++ Windows: [zip](http://endrullis.de/JLatexEditor/releases/JLatexEditor-latest.zip)
+
+[See](CHANGELOG) what's new? 
+
 
 The ​older releases ...
  
