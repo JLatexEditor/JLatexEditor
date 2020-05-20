@@ -15,6 +15,12 @@ The support for Windows will be improved in the next stable release.
 
 TODO: update this
 
+## Install requirements
+
+* Java (recommended JDK 8 or higher)
+* Apache Ant
+* Maven 
+
 ## Download
 
 ### Installation 
@@ -28,7 +34,7 @@ Download the lastest release for your platform, unpack it and run the script `jl
 + Windows: ​zip 
 
 The ​older releases ...
-* Source code 
+ 
 
 ## Documentation
 
@@ -117,7 +123,9 @@ Build and run:
 
 `ant runJLatexEditor`
 
-Development (TODO broken link to wiki)
+Development:
+
+(TODO broken link to wiki)
 
 ## Credits
 
@@ -129,7 +137,7 @@ Developers that took part in the development of JLatexEditor:
 
 ## License
 
-This program is free software; you can redistribute it and/or modify it under the ​GNU General Public License version 3.
+This program is free software; you can redistribute it and/or modify it under the ​GNU General Public License version 3. See the [LICENSE](LICENSE) file for more details.
 
 ## Links
 
