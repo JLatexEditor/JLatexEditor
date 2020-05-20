@@ -43,9 +43,9 @@ The ​older releases ...
 
 ## Screenshots
 
-![error_msg](/assets/screenshots/screenshot_0.2.10_showing_latex_error_mini.png)
+![error_msg](/assets/screenshot/screenshot_0.2.10_showing_latex_error_mini.png)
 
-![completion_cite](/assets/screenshots/screenshot_0.1.28_cite_completion_minor_restricted_mini.png)
+![completion_cite](/assets/screenshot/screenshot_0.1.28_cite_completion_minor_restricted_mini.png)
 
 ## Features
 
