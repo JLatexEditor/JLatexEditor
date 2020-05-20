@@ -62,7 +62,7 @@ There are several way you can contribute to this project:
 ## Source code
 
 Clone the repository:
-
+commit 
 ```
 git clone https://github.com/JLatexEditor/JLatexEditor.git`
 ```
@@ -81,9 +81,9 @@ Development:
 
 Developers that took part in the development of JLatexEditor:
 
- * [Jörg Endrullis](http://joerg.endrullis.de/)
- * [Stefan Endrullis](http://stefan.endrullis.de/)
- * [Rena Bakhshi](http://www.few.vu.nl/~rbakhshi/)
+* [Jörg Endrullis](http://joerg.endrullis.de/)
+* [Stefan Endrullis](http://stefan.endrullis.de/)
+* [Rena Bakhshi](http://www.few.vu.nl/~rbakhshi/)
 
 ## License
 
