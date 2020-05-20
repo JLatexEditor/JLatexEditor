@@ -25,8 +25,10 @@ The support for Windows will be improved in the next stable release.
  
  (TODO: are these all of the requirements?)
 
-## Installation and usage:
-Download the lastest release for your platform, unpack it and run the script `jlatexeditor` (or `jlatexeditor.bat` in case of Windows) to start the editor
+## Installation:
+
+### Usage
+Download the lastest release for your platform, unpack it. Run the script `jlatexeditor` (or `jlatexeditor.bat` in case of Windows) to start the editor.
 
 ### Latest release
 + Linux: [​tar.gz](http://endrullis.de/JLatexEditor/releases/JLatexEditor-latest.tar.gz),
@@ -50,15 +52,14 @@ TODO: do we need mvn install? We should mention `start.sh` and `startDebug.sh`
 
 ## Documentation
 
-*  [Manual](https://github.com/JLatexEditor/JLatexEditor/wiki)
-* for post questions please use the mailing list ​jle-users (TODO: fix this)
+* [Manual](https://github.com/JLatexEditor/JLatexEditor/wiki)
+* for question and issues, use the issue tracker of this repository.
+* [Contribution guidelines for this project](docs/CONTRIBUTING.md)
 
 For the list of current features, see [Features wiki page](Features).
 
 
-
-
-## Contributors
+## Credits
 
 Developers that took part in the development of JLatexEditor:
 
