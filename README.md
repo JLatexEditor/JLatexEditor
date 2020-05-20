@@ -17,14 +17,17 @@ TODO: update this
 
 ## Download
 
-* installation: download the lastest release for your platform, unpack it and run the script jlatexeditor (or jlatexeditor.bat in case of Windows) to start the editor
-* latest release:
-    + Linux: ​tar.gz,
-         - Debian / Ubuntu: Include Debian/Ubuntu Repository, ​deb Package
-         - Arch Linux: ​Package (created by Matthias Busl) 
-    + Mac: ​tar.gz
-    + Windows: ​zip 
-* ​older releases
+### Installation 
+Download the lastest release for your platform, unpack it and run the script `jlatexeditor` (or `jlatexeditor.bat` in case of Windows) to start the editor
+
+### Latest release
++ Linux: ​tar.gz,
+    - Debian / Ubuntu: Include Debian/Ubuntu Repository, ​deb Package
+    - Arch Linux: [Package](https://aur.archlinux.org/packages.php?ID=44123] (created by Matthias Busl) 
++ Mac: ​tar.gz
++ Windows: ​zip 
+
+The ​older releases ...
 * Source code 
 
 ## Documentation
