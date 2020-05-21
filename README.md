@@ -76,9 +76,9 @@ aptitude install jlatexeditor
 Clone the repository, build and run:
 
 ```bash
-$ git clone https://github.com/JLatexEditor/JLatexEditor.git`
-$ cd JLatexEditor
-$ ant runJLatexEditor
+git clone https://github.com/JLatexEditor/JLatexEditor.git`
+cd JLatexEditor
+ant runJLatexEditor
 ```
 TODO: do we need mvn install? We should mention `start.sh` and `startDebug.sh`
 
