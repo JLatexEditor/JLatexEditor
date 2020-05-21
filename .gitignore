@@ -2,3 +2,8 @@
 
 build
 depcache
+
+# ide
+.idea
+.eclipse
+.vscode
