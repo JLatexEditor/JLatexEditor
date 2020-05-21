@@ -63,9 +63,7 @@ aptitude install jlatexeditor
 
 ### Latest release
 
-[See](CHANGELOG) what's new? 
-
-Users can also download the latest release, pre-packaged for most popular systems:
+[See](CHANGELOG) what's new. Users can also download the latest release, pre-packaged for most popular systems:
 + Linux: [​tar.gz](http://endrullis.de/JLatexEditor/releases/JLatexEditor-latest.tar.gz),
     - Debian / Ubuntu: [Using repository](#debrepo), [deb Package](http://endrullis.de/JLatexEditor/releases/jlatexeditor-latest.deb)
     - Arch Linux: [Package](https://web.archive.org/web/20150806063924/https://aur.archlinux.org/packages.php?ID=44123) (created by Matthias Busl) 
