@@ -39,7 +39,7 @@ if [ -f ~/.jlatexeditor/settings.conf ]; then
   source ~/.jlatexeditor/settings.conf
 fi
 
-svn up
+git pull origin master
 ant clearDependentClasses
 ant compile
 
