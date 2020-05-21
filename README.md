@@ -89,12 +89,10 @@ instead of `start.sh`.
 
 ## Documentation
 
-* [Manual](https://github.com/JLatexEditor/JLatexEditor/wiki)
-* for question and issues, use the issue tracker of this repository.
-* [Contribution guidelines for this project](docs/CONTRIBUTING.md)
-
-For the list of current features, see [Features wiki page](Features).
-
+* Manual on the [wiki](https://github.com/JLatexEditor/JLatexEditor/wiki).
+* For the list of current features, see [Features wiki page](Features).
+* For question and issues, use the issue tracker of this repository.
+* Read contribution guidelines for this project [here](docs/CONTRIBUTING.md).
 
 ## Credits
 
