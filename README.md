@@ -4,7 +4,9 @@
 # JLatexEditor
 
 
-JLatexEditor is a cross-platform open source LaTeX editor. The editor is in constant development. It is well-tested on Linux and Mac OS X, but has to be considered pre-alpha version, and only for experimental use for Windows.
+JLatexEditor is a cross-platform open source LaTeX editor. It creates a unique development environment for a user by integrating many tools needed to write LaTeX documents, and is highly configurable.
+
+The editor is in constant development. It is well-tested on Linux and Mac OS X, but has to be considered pre-alpha version, and only for experimental use for Windows.
 
 ![JLatex editor showing LaTeX compiler error in the editor](/assets/screenshot/screenshot_0.2.10_showing_latex_error_mini.png) ![JLatex editor showing a list of bibtex entries in the completion for `\cite{}`](/assets/screenshot/screenshot_0.1.28_cite_completion_minor_restricted_mini.png)
 
