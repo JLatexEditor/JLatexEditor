@@ -18,7 +18,7 @@ fi
 
 cd `dirname $0`
 
-svn up
+git pull origin master
 ant clearDependentClasses
 ant compile
 
