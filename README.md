@@ -37,7 +37,7 @@ Including the Debian/Ubuntu repository of `apt.endrullis.de` allows you to insta
 Add the repository:
 ```bash
 # create sources list
-sudo echo 'deb http://apt.endrullis.de/ natty main' >/etc/apt/sources.list.d/endrullis-natty.list
+sudo echo 'deb http://apt.endrullis.de/ precise main' >/etc/apt/sources.list.d/endrullis-precise.list
 # import gpg key packages are signed with
 sudo wget http://apt.endrullis.de/public.gpg -O- | sudo apt-key add -
 ```
