@@ -31,7 +31,7 @@ The support for Windows will be improved in the next stable release.
 Download the lastest release for your platform, unpack it. Run the script `jlatexeditor` (or `jlatexeditor.bat` in case of Windows) to start the editor.
 
 
-### How To Include the Ubuntu/Debian Repository for the JLatexEditor
+### Include the Ubuntu/Debian Repository for the JLatexEditor
 Including the Debian/Ubuntu repository of `apt.endrullis.de` allow you to install and update the JLatexEditor via apt-get or aptitude.
 
 #### Ubuntu Users 
@@ -49,6 +49,8 @@ sudo aptitude install jlatexeditor
 ```
 
 #### Debian Users
+<a name="debrepo"></a>
+
 Add the repository (run as root):
 ```bash
 # create sources list
@@ -63,13 +65,17 @@ aptitude install jlatexeditor
 ```
 
 ### Latest release
+
+[See](CHANGELOG) what's new? 
+
+Users can also download the latest release, pre-packaged for most popular systems:
 + Linux: [​tar.gz](http://endrullis.de/JLatexEditor/releases/JLatexEditor-latest.tar.gz),
-    - Debian / Ubuntu: [deb Package](http://endrullis.de/JLatexEditor/releases/jlatexeditor-latest.deb)
+    - Debian / Ubuntu: [Using repository](#debrepo), [deb Package](http://endrullis.de/JLatexEditor/releases/jlatexeditor-latest.deb)
     - Arch Linux: [Package](https://web.archive.org/web/20150806063924/https://aur.archlinux.org/packages.php?ID=44123) (created by Matthias Busl) 
 + Mac: [tar.gz](http://endrullis.de/JLatexEditor/releases/JLatexEditor-latest.tar.gz)
 + Windows: [zip](http://endrullis.de/JLatexEditor/releases/JLatexEditor-latest.zip)
 
-[See](CHANGELOG) what's new? 
+
 
 ### Development
 
