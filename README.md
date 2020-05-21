@@ -19,11 +19,8 @@ The support for Windows will be improved in the next stable release.
 
 ## Requirements
 
- - **Java** (recommended JDK 8 or higher)
+ - **Oracle Java** (recommended JDK 8 or higher)
  - **Apache Ant** 
- - **Maven**
- 
- (TODO: are these all of the requirements?)
 
 ## Installation:
 
@@ -84,9 +81,11 @@ Clone the repository, build and run:
 ```bash
 git clone https://github.com/JLatexEditor/JLatexEditor.git`
 cd JLatexEditor
-ant runJLatexEditor
+./start.sh
 ```
-TODO: do we need mvn install? We should mention `start.sh` and `startDebug.sh`
+
+If you would like to run JLatexEditor in the debug mode, please use `startDebug.sh`
+instead of `start.sh`.
 
 ## Documentation
 
