@@ -188,7 +188,7 @@ public class LatexCompiler extends Thread {
     }
   }
 
-	public void parseLatexOutput(File file, BufferedReader in) throws IOException {
+  public void parseLatexOutput(File file, BufferedReader in) throws IOException {
 		LatexCompileError error;
 
     HashMap<File,FileContent> file2content = new HashMap<File,FileContent>();
@@ -198,7 +198,7 @@ public class LatexCompiler extends Thread {
 		errorView.appendLine(versionString);
 		String line = in.readLine();
 		errorView.appendLine(line);
-		while (line != null) {
+		while (line != null && !isInterrupted()) {
 		  // error messages
 		  Matcher errorMatcher = fileLineError.matcher(line);
 		  if (line.startsWith("!") || errorMatcher.matches()) {
@@ -214,7 +214,7 @@ public class LatexCompiler extends Thread {
 		      error.setFile(SystemUtils.newFile(file.getParentFile(), fileName), fileName);
 		      error.setLine(Integer.parseInt(errorMatcher.group(2)));
 			    String message = errorMatcher.group(3);
-			    while (!message.endsWith(".")) {
+			    while (!message.endsWith(".") && !isInterrupted()) {
 				    line = in.readLine();
 				    errorView.appendLine(line);
 				    message += line;
@@ -227,7 +227,7 @@ public class LatexCompiler extends Thread {
 
 			  ArrayList<String> linesBeforeLineNumber = new ArrayList<String>();
 			  boolean discoveredEmptyLine = false;
-		    while (line != null && !line.startsWith("l.")) {
+		    while (line != null && !line.startsWith("l.") && !isInterrupted()) {
 			    if (line.equals("")) {
 				    discoveredEmptyLine = true;
 			    }
@@ -293,7 +293,7 @@ public class LatexCompiler extends Thread {
                     String theLine = fileContent.getLines().get(errorLine);
                     int nrOfLetters = lastOccurrence + before.length() - causeLineEntry.getKey();
                     int errorColumn = 0;
-                    while (errorColumn < theLine.length()) {
+                    while (errorColumn < theLine.length() && !isInterrupted()) {
                       char c = theLine.charAt(errorColumn);
                       if(c != ' ' && c != '\n' && c != '\r') {
                         nrOfLetters--;
@@ -344,7 +344,7 @@ public class LatexCompiler extends Thread {
 		    error.setFile(SystemUtils.newFile(file.getParentFile(), fileName), fileName);
 
 			  String unwrappedLine = line;
-			  while (!unwrappedLine.endsWith(".")) {
+			  while (!unwrappedLine.endsWith(".") && !isInterrupted()) {
 				  line = in.readLine();
 				  errorView.appendLine(line);
 				  unwrappedLine += line;
@@ -381,7 +381,7 @@ public class LatexCompiler extends Thread {
 		    error.setFile(SystemUtils.newFile(file.getParentFile(), fileName), fileName);
 		    error.setMessage(line);
 
-		    while (!line.trim().equals("")) {
+		    while (!line.trim().equals("") && !isInterrupted()) {
 		      int linePos = line.indexOf("at lines ");
 		      if (linePos != -1) {
 		        linePos += "at lines ".length();
@@ -409,7 +409,7 @@ public class LatexCompiler extends Thread {
 		          (line.indexOf(')') != -1 && (line.startsWith("[") || line.indexOf(".tex") != 0 || line.indexOf(".sty") != 0 || line.indexOf(".bbl") != 0 || line.indexOf(".aux") != 0))) {
 		    int position = 0;
 
-		    while (position < line.length()) {
+		    while (position < line.length() && !isInterrupted()) {
 		      int open = line.indexOf('(', position);
 		      int close = line.indexOf(')', position);
 
@@ -417,7 +417,7 @@ public class LatexCompiler extends Thread {
 
 		      if (close == -1 || (open != -1 && open < close)) {
 		        String fileName = "";
-		        while (true) {
+		        while (!isInterrupted()) {
 		          int space = line.indexOf(' ', open);
 		          if (space == -1) space = line.length();
 		          close = line.indexOf(')', open);
@@ -453,7 +453,7 @@ public class LatexCompiler extends Thread {
 		}
 	}
 
-	public void halt() {
+  public void halt() {
     try {
       if (latexCompiler != null) latexCompiler.destroy();
     } catch (Exception ignore) {
@@ -462,7 +462,7 @@ public class LatexCompiler extends Thread {
       if (bibtex != null) bibtex.destroy();
     } catch (Exception ignore) {
     }
-    stop();
+    interrupt();
   }
 
   private void compileStart() {
